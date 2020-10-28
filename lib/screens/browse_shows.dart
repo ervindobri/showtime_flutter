@@ -234,17 +234,21 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                               width: _width,
                               decoration: BoxDecoration(
                                   color: bgColor,
+                                  // color: CupertinoColors.black,
                                   borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(sliverRadius),
                                     topRight: Radius.circular(sliverRadius),
                                   )
                               ),
-                              child: ListView.builder(
-                                // physics: PageScrollPhysics(),
-                                itemCount: snapshot.data.showList.length,
-                                itemBuilder: (context, index){
-                                  return ShowCard(show: snapshot.data.showList[index]);
-                                },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 0.0),
+                                child: ListView.builder(
+                                  // physics: PageScrollPhysics(),
+                                  itemCount: snapshot.data.showList.length,
+                                  itemBuilder: (context, index){
+                                    return ShowCard(show: snapshot.data.showList[index]);
+                                  },
+                                ),
                               ),
                             ),
 
@@ -406,31 +410,37 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                     // color: CupertinoColors.black,
                     child: AnimationLimiter(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child: GridView.count(
-                          physics: NeverScrollableScrollPhysics(),
-                          crossAxisCount: 3,
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 50),
+                        child: Wrap(
+                          spacing: 8.0, // gap between adjacent chips
+                          runSpacing: 4.0, // gap between lines
                           children: List.generate(
                               snapshot.data.docs.length,
                                   (index) => AnimationConfiguration.staggeredGrid(
                                     position: index,
                                     duration: const Duration(milliseconds: 375),
-                                    columnCount: 3,
+                                    columnCount: 4,
                                     child: ScaleAnimation(
                                       child: FadeInAnimation(
                                         child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
+                                          padding: const EdgeInsets.all(5.0),
                                           child: ChoiceChip(
                                                     selected: _selectedIndex == index,
-                                                    label: Text(
-                                                        snapshot.data.docs[index].data()['term'],
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                            decoration: TextDecoration.underline,
-                                                            color: greenColor,
-                                                            fontFamily: 'Raleway',
-                                                            fontSize: _width/20
+                                                    // materialTapTargetSize: MaterialTapTargetSize.padded,
+                                                    label: Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Container(
+                                                        child: Text(
+                                                            snapshot.data.docs[index].data()['term'],
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                                decoration: TextDecoration.underline,
+                                                                color: greenColor,
+                                                                fontFamily: 'Raleway',
+                                                                fontSize: _width/20
+                                                            ),
                                                         ),
+                                                      ),
                                                     ),
                                                     shadowColor: CupertinoColors.black,
                                                     backgroundColor: Colors.white,
