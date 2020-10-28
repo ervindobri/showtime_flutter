@@ -1,6 +1,5 @@
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/components/popular_appbar.dart';
-import 'package:eWoke/components/sliver_appbar.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/network/imdb.dart';
@@ -9,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:shimmer/shimmer.dart';
 
 class MostPopularShows extends StatefulWidget {
 
@@ -59,6 +59,7 @@ class _MostPopularShowsState extends State<MostPopularShows> {
     // TODO: implement dispose
     // _controller.removeListener(() {});
     // _controller.dispose();
+    popularShows.clear();
     super.dispose();
   }
   @override
@@ -66,6 +67,7 @@ class _MostPopularShowsState extends State<MostPopularShows> {
     //TODO: set scrolloffset to 0 after sorting ASC/DESC
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
+    const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
 
     // if (_controller.hasClients) print(_controller.position);
 
@@ -83,6 +85,8 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                   if ( popularShows.isNotEmpty){
                     print("fetched already");
                     return CustomScrollView(
+                      physics: NeverScrollableScrollPhysics(),
+                      // key: UniqueKey(),
                       controller: _controller,
                       slivers: [
                         SliverPersistentHeader(
@@ -120,8 +124,8 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                               decoration: BoxDecoration(
                                   color: bgColor,
                                   borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(25.0),
-                                    topRight: Radius.circular(25.0),
+                                    topLeft: Radius.circular(sliverRadius),
+                                    topRight: Radius.circular(sliverRadius),
                                   )
                               ),
                               child: Padding(
@@ -146,6 +150,9 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                             if ( snapshot.hasData && snapshot.connectionState == ConnectionState.done){
                               popularShows = snapshot.data;
                               return CustomScrollView(
+                                // key: UniqueKey(),
+                                physics: NeverScrollableScrollPhysics(),
+
                                 controller: _controller,
                                 slivers: [
                                   SliverPersistentHeader(
@@ -176,14 +183,29 @@ class _MostPopularShowsState extends State<MostPopularShows> {
 
                                     ),
                                   ),
-                                  displayLabel(_width),
-                                  mostPopularList(popularShows),
+                                  // displayLabel(_width),
+                                  SliverFillRemaining(
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                            color: bgColor,
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(sliverRadius),
+                                              topRight: Radius.circular(sliverRadius),
+                                            )
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                          child: mostPopularList(popularShows),
+                                        )),
+                                  ),
                                 ],
                               );
                             }
                             else{
                               print("fetching data;");
                               return CustomScrollView(
+                                // key: UniqueKey(),
+                                physics: NeverScrollableScrollPhysics(),
                                 controller: _controller,
                                 slivers: [
                                   SliverPersistentHeader(
@@ -247,13 +269,71 @@ class _MostPopularShowsState extends State<MostPopularShows> {
 
                                     ),
                                   ),
-                                  SliverToBoxAdapter(
+                                  SliverFillRemaining(
                                     child: Container(
-                                      child: Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor: AlwaysStoppedAnimation(pinkColor),
+                                        decoration: BoxDecoration(
+                                            color: bgColor,
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(sliverRadius),
+                                              topRight: Radius.circular(sliverRadius),
+                                            )
                                         ),
-                                      ),
+                                        child: Shimmer.fromColors(
+                                          highlightColor: Colors.white,
+                                          baseColor: Colors.grey.shade300,
+                                          direction: ShimmerDirection.ttb,
+                                          child: StaggeredGridView.countBuilder(
+                                            itemCount: 10,
+                                            mainAxisSpacing: 4.0,
+                                            crossAxisSpacing: 4.0,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              return Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                child: Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Container(
+                                                        height: _height/20,
+                                                        width: _width,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey.shade300,
+                                                          borderRadius: _radius,
+                                                          boxShadow: [ new BoxShadow(
+                                                              color: Colors.black.withOpacity(.3),
+                                                              blurRadius: 15.0,
+                                                              spreadRadius:-4,
+                                                              offset: Offset(0, 5)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: Container(
+                                                        height: _height/3.1,
+                                                        width: _width,
+                                                        // color: Colors.blue,
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey.shade300,
+                                                          borderRadius: _radius,
+                                                          boxShadow: [ new BoxShadow(
+                                                              color: Colors.black.withOpacity(.3),
+                                                              blurRadius: 15.0,
+                                                              spreadRadius:-4,
+                                                              offset: Offset(0, 5)),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }, crossAxisCount: 4,
+                                            staggeredTileBuilder:(int index) =>
+                                            new StaggeredTile.count(2, index.isEven ? 4 : 4),
+                                          ),
+                                        ),
                                     ),
                                   ),
                                 ],
@@ -266,6 +346,7 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                     else{
                       print("Waiting on IMDB data");
                       return CustomScrollView(
+                        // key: UniqueKey(),
                         controller: _controller,
                         slivers: [
                           SliverPersistentHeader(
@@ -329,8 +410,26 @@ class _MostPopularShowsState extends State<MostPopularShows> {
 
                             ),
                           ),
-                          displayLabel(_width),
-                          mostPopularList(popularShows),
+                          // displayLabel(_width),
+                          SliverFillRemaining(
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    color: bgColor,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(sliverRadius),
+                                      topRight: Radius.circular(sliverRadius),
+                                    )
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation(const Color(0xFFFF006F)),
+                                    ),
+                                  )
+                                )
+                            ),
+                          ),
                         ],
                       );
                     }

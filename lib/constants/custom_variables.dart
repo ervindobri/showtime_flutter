@@ -37,6 +37,7 @@ const SCHEDULE_URL = "/episodesbydate?date=";
 
 const IMDBSHOW_URL = "http://api.tvmaze.com/lookup/shows?imdb=";
 
+const double sliverRadius = 35.0;
 
 const PLACEHOLDER_IMAGE = "https://wolper.com.au/wp-content/uploads/2017/10/image-placeholder.jpg";
 

@@ -11,6 +11,7 @@ import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
 import 'package:eWoke/ui/search_card.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -122,7 +123,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
         child: SafeArea(
         child: Container(
           // height: _height*.16,
-          color: Colors.white,
+          color: greenColor,
           child: _searched
               ? FutureBuilder(
               future: showSearchObject,
@@ -166,6 +167,15 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                         ),
                         SliverFillRemaining(
                           child: Container(
+                            height: _height,
+                            width: _width,
+                            decoration: BoxDecoration(
+                                color: bgColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(sliverRadius),
+                                  topRight: Radius.circular(sliverRadius),
+                                )
+                            ),
                             child: Center(
                               child: CircularProgressIndicator(
                                 valueColor: AlwaysStoppedAnimation(greenColor),
@@ -185,48 +195,60 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                       searchHistory.add(_showName);
                       FirestoreUtils().setSearchHistory(_showName);
                     }
-                    return Container(
-                      color: bgColor,
-                      child: CustomScrollView(
-                        physics: ClampingScrollPhysics(),
-                        slivers: [
-                          SliverPersistentHeader(
-                            pinned: true,
-                            floating: true,
-                            delegate: PopularSliverDelegate(
-                              back: back(context),
-                              child: Container(
-                                width: _width,
-                                decoration: BoxDecoration(
-                                    color: greenColor,
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(25.0),
-                                      bottomRight: Radius.circular(25.0),
-                                    )
-                                ),
-                                // color: Colors.black,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
-                                      child: _textField(),
-                                    ),
-                                  ],
-                                ),
+                    return CustomScrollView(
+                      physics: ClampingScrollPhysics(),
+                      slivers: [
+                        SliverPersistentHeader(
+                          pinned: true,
+                          floating: true,
+                          delegate: PopularSliverDelegate(
+                            back: back(context),
+                            child: Container(
+                              width: _width,
+                              decoration: BoxDecoration(
+                                  color: greenColor,
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(25.0),
+                                    bottomRight: Radius.circular(25.0),
+                                  )
                               ),
-                              hideTitleWhenExpanded: true,
-                              expandedHeight: _height*.15,
-
+                              // color: Colors.black,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                                    child: _textField(),
+                                  ),
+                                ],
+                              ),
                             ),
+                            hideTitleWhenExpanded: true,
+                            expandedHeight: _height*.15,
+
                           ),
-                          SliverList(
-                              delegate: SliverChildBuilderDelegate((context, int index) {
-//                      children: snapshot.data.showList.map((e) => ShowCard(show: e)).toList(),
-                                return ShowCard(show: snapshot.data.showList[index]);
-                              }, childCount: snapshot.data.showList.length)
-                          )],
-                      ),
+                        ),
+                        SliverFillRemaining(
+                            child: Container(
+                              height: _height,
+                              width: _width,
+                              decoration: BoxDecoration(
+                                  color: bgColor,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(sliverRadius),
+                                    topRight: Radius.circular(sliverRadius),
+                                  )
+                              ),
+                              child: ListView.builder(
+                                // physics: PageScrollPhysics(),
+                                itemCount: snapshot.data.showList.length,
+                                itemBuilder: (context, index){
+                                  return ShowCard(show: snapshot.data.showList[index]);
+                                },
+                              ),
+                            ),
+
+                        )],
                     );
                   }
                   else{
@@ -316,9 +338,15 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                 // hasScrollBody: false,
                 // fillOverscroll: false,
                 child: Container(
-                  width: _width,
                   height: _height,
-                  // color: Colors.black,
+                  width: _width,
+                  decoration: BoxDecoration(
+                      color: bgColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(sliverRadius),
+                        topRight: Radius.circular(sliverRadius),
+                      )
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -326,9 +354,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                        padding: const EdgeInsets.symmetric(vertical: 25.0),
                        child: displaySearchHistory(context),
                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                          child: createSearchResultView(context)),
+                      // createSearchResultView(context),
                     ],
                   ),
                 ),
@@ -378,45 +404,54 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                     width: _width,
                     height: _height*.3,
                     // color: CupertinoColors.black,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                      child: StaggeredGridView.countBuilder(
-                          crossAxisCount: 4,
-                          scrollDirection: Axis.vertical,
+                    child: AnimationLimiter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child: GridView.count(
                           physics: NeverScrollableScrollPhysics(),
-                          itemCount: snapshot.data.docs.length,
-                          staggeredTileBuilder: (int index) =>
-                          new StaggeredTile.count(2, 2),
-                          mainAxisSpacing: 1.0,
-                          crossAxisSpacing: 1.0,
-                          itemBuilder: (context, int index){
-                            return ChoiceChip(
-                              selected: _selectedIndex == index,
-                              label: Text(
-                                snapshot.data.docs[index].data()['term'],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    color: greenColor,
-                                    fontFamily: 'Raleway',
-                                    fontSize: _width/20
-                                ),
-                              ),
-                              shadowColor: CupertinoColors.black,
-                              backgroundColor: Colors.white,
-                              elevation: 10,
-                              disabledColor: Colors.yellow,
-                              onSelected: (bool selected) {
-                                //Search if its selected
-                                setState(() {
-                                  if (selected) {
-                                    _selectedIndex = index;
-                                    _searchShows(snapshot.data.docs[index].data()['term']);
-                                  }
-                                });
-                              },
-                            );
-                          }
+                          crossAxisCount: 3,
+                          children: List.generate(
+                              snapshot.data.docs.length,
+                                  (index) => AnimationConfiguration.staggeredGrid(
+                                    position: index,
+                                    duration: const Duration(milliseconds: 375),
+                                    columnCount: 3,
+                                    child: ScaleAnimation(
+                                      child: FadeInAnimation(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: ChoiceChip(
+                                                    selected: _selectedIndex == index,
+                                                    label: Text(
+                                                        snapshot.data.docs[index].data()['term'],
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                            decoration: TextDecoration.underline,
+                                                            color: greenColor,
+                                                            fontFamily: 'Raleway',
+                                                            fontSize: _width/20
+                                                        ),
+                                                    ),
+                                                    shadowColor: CupertinoColors.black,
+                                                    backgroundColor: Colors.white,
+                                                    elevation: 5,
+                                                    disabledColor: Colors.yellow,
+                                                    onSelected: (bool selected) {
+                                                        //Search if its selected
+                                                        setState(() {
+                                                            if (selected) {
+                                                              _selectedIndex = index;
+                                                              _searchShows(snapshot.data.docs[index].data()['term']);
+                                                            }
+                                                        });
+                                                  },
+                                                ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                            ),
+                        ),
                       ),
                     ),
                   );

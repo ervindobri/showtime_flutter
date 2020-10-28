@@ -399,6 +399,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         padding: const EdgeInsets.only(right: 25.0, bottom: 10),
                         child: InkWell(
                           onTap: () async {
+                            //TODO: handle clearing and destroying stored data
+                            popularShows.clear();
                             await FirebaseAuth.instance.signOut();
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
@@ -510,7 +512,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                       if  (snapshot.hasData){
                                         return Center(
                                           child: Text(
-                                            showGreetings(),
+                                            showGreetings(snapshot.data.firstName),
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: 'Raleway',
@@ -1052,7 +1054,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           .snapshots();
     }
 
-
+    //TODO: fix false empty schedule
     return Container(
       width: _width,
       height: _height * .41,
@@ -1304,7 +1306,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   }
 
-  String showGreetings() {
+  String showGreetings(String firstName) {
     var timeNow = DateTime.now().hour;
     String greetings =  "";
     if (timeNow <= 12) {
@@ -1316,7 +1318,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     } else {
       greetings =  'Good Night';
     }
-    return greetings + ", ${currentUser.firstName}!";
+    return greetings + ", ${firstName}!";
   }
 
 

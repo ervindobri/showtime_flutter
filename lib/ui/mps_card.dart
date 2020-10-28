@@ -88,6 +88,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
 //    print("getting details: ${widget.show.name}");
     showDetails =  await getDetailResults(show: widget.show);
   }
+
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;

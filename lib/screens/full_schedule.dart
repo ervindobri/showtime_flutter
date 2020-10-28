@@ -124,8 +124,8 @@ class _FullScheduleState extends State<FullSchedule> {
                       decoration: BoxDecoration(
                           color: greenColor,
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(25.0),
-                            bottomRight: Radius.circular(25.0),
+                            bottomLeft: Radius.circular(sliverRadius),
+                            bottomRight: Radius.circular(sliverRadius),
                           )
                       ),
                       child: Column(
@@ -150,8 +150,8 @@ class _FullScheduleState extends State<FullSchedule> {
                               decoration: BoxDecoration(
                                 color: bgColor,
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25.0),
-                                  topRight: Radius.circular(25.0),
+                                  topLeft: Radius.circular(sliverRadius),
+                                  topRight: Radius.circular(sliverRadius),
                                 )
                               ),
                               child: buildCarousel(list),

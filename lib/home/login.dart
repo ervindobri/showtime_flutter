@@ -475,9 +475,9 @@ class _LoginScreenState extends State<LoginScreen>
                                                       // print("saved");
                                                   }
                                                     Navigator.of(context)
-                                                        .pushReplacement(CupertinoPageRoute(
+                                                        .pushAndRemoveUntil(CupertinoPageRoute(
                                                       builder: (context) => HomeView(),
-                                                    ));
+                                                    ),(route) => false);
                                                 });
                                         }
                                         else{

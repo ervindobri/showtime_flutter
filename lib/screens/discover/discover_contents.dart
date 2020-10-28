@@ -128,6 +128,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
 
+    //TODO: SORTING by runtime exception
     // print(sortedList.length);
     return Scaffold(
       resizeToAvoidBottomInset: false,

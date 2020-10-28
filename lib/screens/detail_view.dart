@@ -74,6 +74,8 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
     int columnCount = 2;
 //    print(show.name);
 
+    //TODO: REDESIGN detail view, with episode carousel, and pinned sliver with back button and show title
+    //TODO: change details gridview, to BADGES like avatars
     return Scaffold(
       body: SmartRefresher(
         enablePullDown: true,
