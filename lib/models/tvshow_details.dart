@@ -1,4 +1,6 @@
+import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/tvshow.dart';
+import 'package:html/parser.dart';
 
 import 'episode.dart';
 
@@ -64,6 +66,23 @@ class TVShowDetails extends TVShow{
   @override
   String toString() {
     return 'TVShowDetails{description: $description, ratingCount: $ratingCount, pictures: $pictures, imagePath: $imagePath, episodes: $episodes, totalSeasons: $totalSeasons, episodePerSeason: $episodePerSeason}';
+  }
+
+  String countryCode(){
+    // print(countryCodes[0]["name"]);
+    var x  = countryCodes.firstWhere((element) => element["name"] == this.language);
+    return x["code"].toString().toUpperCase() ?? r"N\A";
+  }
+
+  //TODO: refactor
+  String parseHtmlString() {
+    try {
+      var document = parse(this.summary);
+      String parsedString = parse(document.body.text).documentElement.text;
+      return parsedString;
+    } catch (e) {
+      return "No description";
+    }
   }
 
   factory TVShowDetails.fromJson(TVShow show, List <dynamic> json){
