@@ -30,6 +30,19 @@ class Network{
       throw Exception("Error getting show data!");
     }
   }
+
+  Future<TVShow> getShowInfo({String showID}) async{
+    var searchURL = SHOW_URL + showID;
+    final response = await get(Uri.encodeFull(searchURL));
+
+    if (response.statusCode == 200) {
+      return TVShow.fromJson(json.decode(response.body));
+    }
+    else {
+      throw Exception("Error getting show data!");
+    }
+  }
+
   Future<List<dynamic>> getEpisodes({String showID}) async{
     var searchURL = EPISODES_URL + showID + '/episodes';
     final response = await get(Uri.encodeFull(searchURL));

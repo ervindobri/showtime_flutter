@@ -388,7 +388,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              padding: const EdgeInsets.symmetric(horizontal: 50.0),
               child: Text(
                 "Last searches",
                 style: TextStyle(

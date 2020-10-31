@@ -46,14 +46,14 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
 
   bool _done = false;
 
-  double radius = 25.0;
-
-  bool isExpanded = false;
+  // double radius = 25.0;
+  //
+  // bool isExpanded = false;
 
   getDetailResults({TVShow show}) => new Network().getDetailResults(show: show);
 
-  Animation<double> animation;
-  AnimationController _controller;
+  // Animation<double> animation;
+  // AnimationController _controller;
 
   @override
   void setState(fn) {
@@ -72,15 +72,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
     _checkIfAdded();
     _getShowDetails();
 
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 550),
-      vsync: this,
-    );
 
-    animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInCubic,
-    );
   }
 
   _checkIfAdded() async {
@@ -118,265 +110,16 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
         padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 25),
         child: InkWell(
           onTap: () {
-            _controller.reset();
             //TODO: add snapping sheet
             showModalBottomSheet(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(radius),
-                      topRight: Radius.circular(radius)),
+                      topLeft: Radius.circular(25.0),
+                      topRight: Radius.circular(25.0)),
                 ),
                 context: context,
                 builder: (BuildContext context) {
-                  double height = .66;
-                  _controller.duration = Duration(milliseconds: 500);
-                  _controller.forward();
-                  return ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(radius),
-                          topRight: Radius.circular(radius)),
-                      child:
-                          NotificationListener<DraggableScrollableNotification>(
-                        onNotification: (n) {
-                          if (n.extent < .87) {
-                            setState(() {
-                              isExpanded = false;
-                            });
-                          } else {
-                            setState(() {
-                              isExpanded = true;
-                            });
-                          }
-                          return true;
-                        },
-                        child: DraggableScrollableSheet(
-                            expand: false,
-                            initialChildSize: height,
-                            minChildSize: height,
-                            maxChildSize: .95, //TODO: calculate safe height
-                            builder: (context, scrollController) {
-                              return Container(
-                                  width: _width,
-                                  height: _height * .95,
-                                  decoration: BoxDecoration(
-                                    color: bgColor,
-                                    //              borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(25.0),
-                                        topRight: Radius.circular(25.0)),
-                                  ),
-                                  child: CustomScrollView(
-                                      // physics: NeverScrollableScrollPhysics(),
-                                      controller: scrollController,
-                                      slivers: <Widget>[
-                                        SliverPersistentHeader(
-                                            pinned: true,
-                                            floating: false,
-                                            delegate: ImageSliverAppBarDelegate(
-                                                expandedHeight: _height * .3,
-                                                show:
-                                                    showDetails)), //TOP IMAGES and title
-                                        SliverToBoxAdapter(
-                                          child: AnimationLimiter(
-                                            child: Column(
-                                              // physics: PageScrollPhysics(),
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 25.0,
-                                                      vertical: 10.0),
-                                                  child: Container(
-                                                    height: _height / 20,
-                                                    width: _width,
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.end,
-                                                      children: List.generate(
-                                                          showDetails.genres
-                                                              .length, (index) {
-                                                        return AnimationConfiguration
-                                                            .staggeredList(
-                                                          duration: Duration(
-                                                              milliseconds:
-                                                                  200),
-                                                          position: index,
-                                                          child:
-                                                              FadeInAnimation(
-                                                            delay: Duration(
-                                                                milliseconds:
-                                                                    50 * index),
-                                                            child:
-                                                                SlideTransition(
-                                                              position: Tween<
-                                                                  Offset>(
-                                                                begin: Offset(
-                                                                    0, 0.1),
-                                                                end:
-                                                                    Offset.zero,
-                                                              ).animate(
-                                                                  animation),
-                                                              child: Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        5.0),
-                                                                child:
-                                                                    Container(
-                                                                  height:
-                                                                      _height /
-                                                                          20,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color:
-                                                                        greenColor,
-                                                                    borderRadius:
-                                                                        _radius,
-                                                                  ),
-                                                                  child:
-                                                                      Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            5.0),
-                                                                    child:
-                                                                        Center(
-                                                                      child:
-                                                                          Text(
-                                                                        showDetails
-                                                                            .genres[index],
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.white,
-                                                                            fontFamily: 'Raleway'),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }),
-                                                    ),
-                                                  ),
-                                                ),
-                                                FadeTransition(
-                                                    opacity: Tween<double>(
-                                                      begin: 0,
-                                                      end: 1,
-                                                    ).animate(animation),
-                                                    child: displayBadges(
-                                                        _height, _width)),
-                                                if (isExpanded)
-                                                  FadeTransition(
-                                                    opacity: Tween<double>(
-                                                      begin: 0,
-                                                      end: 1,
-                                                    ).animate(animation),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          horizontal: 25.0,
-                                                          vertical: 15.0),
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    bottom:
-                                                                        5.0),
-                                                            child: Text(
-                                                              "Summary",
-                                                              style: TextStyle(
-                                                                fontSize:
-                                                                    _width / 20,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w700,
-                                                                color:
-                                                                    greyTextColor,
-                                                                fontFamily:
-                                                                    'Raleway',
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          ExpandableText(
-                                                              text: showDetails
-                                                                  .parseHtmlString(),
-                                                              textLabel:
-                                                                  isExpanded
-                                                                      ? Text(
-                                                                          "Show more",
-                                                                          style:
-                                                                              TextStyle(color: greenColor),
-                                                                        )
-                                                                      : Text(
-                                                                          "...",
-                                                                          style:
-                                                                              TextStyle(color: greyTextColor),
-                                                                        )),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                if (isExpanded)
-                                                  FadeTransition(
-                                                    opacity: Tween<double>(
-                                                      begin: 0,
-                                                      end: 1,
-                                                    ).animate(animation),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      25.0,
-                                                                  vertical:
-                                                                      5.0),
-                                                          child: Text(
-                                                            "Latest episodes",
-                                                            style: TextStyle(
-                                                              fontSize:
-                                                                  _width / 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
-                                                              color:
-                                                                  greyTextColor,
-                                                              fontFamily:
-                                                                  'Raleway',
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        latestEpisodesCarousel(
-                                                            _width,
-                                                            _height,
-                                                            showDetails),
-                                                      ],
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ]));
-                            }),
-                      ));
+                  return DetailView(show: showDetails);
                 },
                 isScrollControlled: true);
           },
@@ -663,112 +406,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
         ));
   }
 
-  //TODO: DONE add more detail badges - status, language
-  getBadges() {
-    List<DetailBadge> badges = [];
 
-    badges.add(new DetailBadge(
-      text: showDetails.rating.toString(),
-      colors: [pinkColor, lightPinkColor],
-    ));
-    badges.add(new DetailBadge(
-      text: showDetails.runtime.toString(),
-      colors: [goldColor, lightGoldColor],
-    ));
-    badges.add(new DetailBadge(
-      text: showDetails.status.toString(),
-      colors: [blueColor, Colors.lightBlue],
-    ));
-    badges.add(new DetailBadge(
-      text: showDetails.countryCode(),
-      colors: [orangeColor, Colors.orangeAccent],
-    ));
-    return badges;
-  }
-
-  Widget displayBadges(double _height, double _width) {
-    List<Widget> badges = getBadges();
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-      child: Container(
-          // color: Colors.grey,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(25.0)),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.grey.withOpacity(.3),
-                    offset: Offset(2, 3),
-                    blurRadius: 10,
-                    spreadRadius: 2)
-              ]),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: AutoSizeText(
-                          "Details",
-                          style: TextStyle(
-                            color: greyTextColor,
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.w700,
-                            fontSize: _width / 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: AutoSizeText(
-                        "About",
-                        style: TextStyle(
-                          color: greenColor,
-                          fontFamily: 'Raleway',
-                          fontSize: _width / 20,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 10, right: 10, bottom: 15.0),
-                child: Container(
-                  width: _width,
-                  height: _height / 9,
-                  child: AnimationLimiter(
-                    child: ListView.builder(
-                      itemCount: badges.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          duration: const Duration(milliseconds: 375),
-                          child: FadeInAnimation(
-                            duration: Duration(milliseconds: 350),
-                            child: SlideAnimation(
-                              horizontalOffset: 20.0,
-                              child: badges[index],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              )
-            ],
-          )),
-    );
-  }
 
   @override
   void dispose() {
@@ -777,9 +415,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
     super.dispose();
   }
 
-  Widget latestEpisodesCarousel(double width, double height, TVShowDetails showDetails) {
-          return LatestEpisodesCarousel(show: showDetails);
-  }
+
 
   // void _updateRating(TVShowDetails show) {
   //   FirebaseFirestore.instance

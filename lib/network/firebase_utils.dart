@@ -105,7 +105,7 @@ class FirestoreUtils{
   }
 
   getSearchHistory() {
-    return searchHistory.orderBy('date').snapshots();
+    return searchHistory.orderBy('date').limit(6).snapshots();
   }
 }
 

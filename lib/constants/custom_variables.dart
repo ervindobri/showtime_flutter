@@ -25,12 +25,10 @@ const lightGoldColor = const Color(0xffffe27a);
 const orangeColor = const Color(0xFFff2819);
 const bgColor = const Color(0xFFF9F9F9);
 
+
 const EPISODES_URL = "https://api.tvmaze.com/shows/";
-
 const SEARCH_URL = "http://api.tvmaze.com/search/shows?q=";
-
 const FULL_SCHEDULE_URL = "https://api.tvmaze.com/schedule/full";
-
 //Concat these two to get episodes by date
 const SHOW_URL = "https://api.tvmaze.com/shows/";
 const SCHEDULE_URL = "/episodesbydate?date=";
@@ -66,7 +64,12 @@ const List DISCOVER_DATA = [ ["Overall Progress", 0xFF595959, 0xFFB1B1B1, FontAw
 List<String> searchHistory = [];
 const List SORT_CATEGORIES = [ "Title", "Year", "Runtime" , "Progress", "Rating"];
 
-
+const Map<String, String> statusCodes = {
+  "Ended" : "END",
+  "Running" : "RUN",
+  "To Be Determined" : "TBD",
+  "In Development" : "ID"
+};
 
 
 List<Map<dynamic,String>> countryCodes = [

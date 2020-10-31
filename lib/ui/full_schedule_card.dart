@@ -2,14 +2,18 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/components/animated_cliprrect.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/episode.dart';
+import 'package:eWoke/models/tvshow.dart';
+import 'package:eWoke/models/tvshow_details.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
+import 'package:eWoke/screens/detail_view.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:flip_panel/flip_panel.dart';
 import 'package:flutter/cupertino.dart';
@@ -58,6 +62,9 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
   WatchedTVShow show;
   Future<List<dynamic>> episodesObject;
 
+  TVShowDetails showDetails;
+
+
   @override
   void setState(fn) {
     if(mounted) {
@@ -67,6 +74,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
 
   @override
   void initState() {
+    _getShowDetails();
 
     _tapped = false;
     _animatedRadius = BorderRadius.only(
@@ -88,6 +96,15 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
     });
     startTimer();
     _tapped = false;
+
+  }
+
+
+  getDetailResults({TVShow show}) => new Network().getDetailResults(show: show);
+
+  _getShowDetails() async {
+    TVShow show = await Network().getShowInfo(showID: widget.episodes[0].embedded['show']['id'].toString());
+    showDetails =  await getDetailResults(show: show);
   }
 
   void startTimer() {
@@ -179,7 +196,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                           errorWidget: (context, url, error) => Icon(Icons.error),
                         ),
                         Visibility(
-                          visible: _tapped ? true : false,
+                          visible: _tapped,
                           child: ClipRRect(
                             borderRadius: _radius,
                             child: BackdropFilter(
@@ -213,7 +230,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(top: 10.0),
+                                                padding: const EdgeInsets.only(top: 20.0),
                                                 child: Center(
                                                   child: Text(
                                                       "${countdown[0].toString()} : ${countdown[1].toString()} : ${countdown[2].toString()} : ${countdown[3].toString()}",
@@ -281,12 +298,15 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.all(8.0),
-                                                      child: Text(
-                                                        widget.episodes[0].name,
+                                                      child: AutoSizeText(
+                                                        latestEpisode(),
+                                                        minFontSize: 10,
+                                                        maxLines: 3,
+                                                        maxFontSize: 25,
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                             fontSize: _width/20,
-                                                            fontWeight: FontWeight.w100,
+                                                            fontWeight: FontWeight.w600,
                                                             fontFamily: 'Raleway',
                                                             color: greyTextColor
                                                         ),
@@ -420,9 +440,18 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                       color: greenColor,
                                                       shape: CircleBorder(),
                                                       onPressed: (){
-                                                        setState(() {
-                                                          _tapped = false;
-                                                        });
+                                                        // print(showDetails.toString());
+                                                        showModalBottomSheet(
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.only(
+                                                                  topLeft: Radius.circular(25.0),
+                                                                  topRight: Radius.circular(25.0)),
+                                                            ),
+                                                            context: context,
+                                                            builder: (BuildContext context) {
+                                                              return DetailView(show: showDetails);
+                                                            },
+                                                            isScrollControlled: true);
                                                       },
                                                       child: Container(
                                                         width: 50.0,
@@ -484,8 +513,11 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                           child: Flex(
                                             direction: Axis.vertical,
                                               children: [
-                                                Text(
+                                                AutoSizeText(
                                                     countdown[0].toString(),
+                                                    maxLines: 1,
+                                                    minFontSize: 10,
+                                                    maxFontSize: 20,
                                                     style: countDownStyle
                                                 ),
                                                 Padding(
@@ -585,5 +617,14 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
     else{
       return "${int.parse(countdown).abs()} day(s) ago";
     }
+  }
+
+  String latestEpisode() {
+      for(Episode x in widget.episodes){
+          if( !x.aired()){
+              return x.name;
+          }
+      }
+      return widget.episodes[0].name;
   }
 }
