@@ -133,11 +133,12 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                     width: cardWidth,
                                     height: 50,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left: 30.0, right: 10, top: 10),
+                                      padding: const EdgeInsets.only(left: 50.0, right: 10, top: 10),
                                       child: AutoSizeText(
                                           widget.episode.embedded['show']['name'],
                                           textAlign: TextAlign.right,
                                           softWrap: true,
+                                          maxFontSize: 25,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: _width / 15,

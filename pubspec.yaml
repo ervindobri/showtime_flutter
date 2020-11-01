@@ -96,6 +96,7 @@ flutter:
      - waiting.flr
      - blink.flr
      - empty.flr
+     - empty-blue.flr
      - showtime-avatar.png
   #   - images/a_dot_ham.jpeg
 

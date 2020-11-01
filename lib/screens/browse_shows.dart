@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/components/back.dart';
+import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/components/popular_appbar.dart';
 import 'package:eWoke/components/search_history_chip.dart';
 import 'package:eWoke/components/sliver_appbar.dart';
@@ -153,7 +154,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                                     child: _textField(),
                                   ),
                                 ],
@@ -217,7 +218,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                                     child: _textField(),
                                   ),
                                 ],
@@ -279,7 +280,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                                     child: _textField(),
                                   ),
                                 ],
@@ -328,7 +329,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                             child: _textField(),
                         ),
                       ],
@@ -388,7 +389,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 40),
               child: Text(
                 "Last searches",
                 style: TextStyle(
@@ -403,61 +404,59 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
               stream: FirestoreUtils().getSearchHistory(),
               builder: (context, snapshot) {
                 if ( snapshot.hasData){
-                  // print(snapshot.data.docs['bad']);
-                  return Container(
-                    width: _width,
-                    height: _height*.3,
-                    // color: CupertinoColors.black,
-                    child: AnimationLimiter(
+                  // snapshot.data.docs.forEach((element) {
+                  //   print(element.data());
+                  // });
+                  return AnimationLimiter(
+                    child: Container(
+                      width: _width,
+                      height: _height*.4,
+                      // color: CupertinoColors.black,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 50),
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                         child: Wrap(
-                          spacing: 8.0, // gap between adjacent chips
-                          runSpacing: 4.0, // gap between lines
+                          spacing: 3.0, // gap between adjacent chips
+                          runSpacing: 2.0, // gap between lines
                           children: List.generate(
                               snapshot.data.docs.length,
-                                  (index) => AnimationConfiguration.staggeredGrid(
+                                  (index) => AnimationConfiguration.staggeredList(
                                     position: index,
-                                    duration: const Duration(milliseconds: 375),
-                                    columnCount: 4,
-                                    child: ScaleAnimation(
-                                      child: FadeInAnimation(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: ChoiceChip(
-                                                    selected: _selectedIndex == index,
-                                                    // materialTapTargetSize: MaterialTapTargetSize.padded,
-                                                    label: Padding(
-                                                      padding: const EdgeInsets.all(8.0),
+                                    child: FadeInAnimation(
+                                      delay: Duration(milliseconds: index*25),
+                                      child: Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomElevation(
+                                                    color: Colors.grey.withOpacity(.2),
+                                                    child: FlatButton(
+                                                      color: Colors.white,
+                                                      highlightColor: Colors.greenAccent.shade200,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.all(
+                                                          Radius.circular(25.0),),
+                                                      ),
+                                                      onPressed: (){
+                                                        setState(() {
+                                                          _searchShows(snapshot.data.docs[index].data()['term']);
+                                                        });
+                                                      },
                                                       child: Container(
-                                                        child: Text(
-                                                            snapshot.data.docs[index].data()['term'],
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                                decoration: TextDecoration.underline,
-                                                                color: greenColor,
-                                                                fontFamily: 'Raleway',
-                                                                fontSize: _width/20
-                                                            ),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: Text(
+                                                              snapshot.data.docs[index].data()['term'],
+                                                              textAlign: TextAlign.center,
+                                                              style: TextStyle(
+                                                                  decoration: TextDecoration.underline,
+                                                                  color: greenColor,
+                                                                  fontFamily: 'Raleway',
+                                                                  fontSize: _width/20
+                                                              ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                    shadowColor: CupertinoColors.black,
-                                                    backgroundColor: Colors.white,
-                                                    elevation: 5,
-                                                    disabledColor: Colors.yellow,
-                                                    onSelected: (bool selected) {
-                                                        //Search if its selected
-                                                        setState(() {
-                                                            if (selected) {
-                                                              _selectedIndex = index;
-                                                              _searchShows(snapshot.data.docs[index].data()['term']);
-                                                            }
-                                                        });
-                                                  },
-                                                ),
-                                        ),
-                                      ),
+                                                  ),
+                                            ),
                                     ),
                                   ),
                             ),

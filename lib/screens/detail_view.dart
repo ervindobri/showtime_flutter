@@ -83,7 +83,6 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
     const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
     const double height = .66;
 
-
     //TODO: REDESIGN detail view, with episode carousel, and pinned sliver with back button and show title
     //TODO: change details gridview, to BADGES like avatars
     return ClipRRect(

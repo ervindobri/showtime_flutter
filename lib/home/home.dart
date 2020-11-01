@@ -45,8 +45,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
 
   PanelController _pc = new PanelController();
-  AnimationController animationController;
-  Animation<double> animation;
+
 
   StreamSubscription<ConnectivityResult> subscription;
   var connectionStatus;
@@ -60,6 +59,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   Future<SessionUser> _currentUserObject;
   SessionUser currentUser = SessionUser();
+  String firstName = "";
 
   @override
   void initState() {
@@ -79,16 +79,23 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       });
     });
 
-    // getUserRoleWithFuture();
     _currentUserObject = getUserData();
-    getUserData().then((value) => currentUser = value);
 
     _allWatchedShowsStream = FirebaseFirestore.instance
         .collection("${auth.currentUser.email}/shows/watched_shows")
         .orderBy('lastWatched', descending: true)
         .snapshots();
+    print("init");
+  }
 
-    print(_allWatchedShowsStream);
+  @override
+  void dispose(){
+    _allWatchedShowsStream = null;
+    _watchedShowsStream = null;
+    subscription = null;
+    _currentUserObject = null;
+    _pc = null;
+    super.dispose();
   }
 
   bool checkInternetConnectivity() {
@@ -510,9 +517,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     future: _currentUserObject,
                                   builder: (context, snapshot) {
                                       if  (snapshot.hasData){
+                                        currentUser = snapshot.data;
+                                        // print("User data fetched!${snapshot.data.firstName}");
                                         return Center(
                                           child: Text(
-                                            showGreetings(snapshot.data.firstName),
+                                            showGreetings(firstName),
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontFamily: 'Raleway',
@@ -1046,13 +1055,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Widget _buildScheduledShowView() {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-
-    if ( _allWatchedShowsStream == null){
-      _allWatchedShowsStream = FirebaseFirestore.instance
-          .collection("${auth.currentUser.email}/shows/watched_shows")
-          .orderBy('lastWatched', descending: true)
-          .snapshots();
-    }
+    final _allWatchedShowsStream = FirebaseFirestore.instance
+        .collection("${auth.currentUser.email}/shows/watched_shows")
+        .orderBy('lastWatched', descending: true)
+        .snapshots();
 
     //TODO: fix false empty schedule
     return Container(
@@ -1065,13 +1071,15 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           ? StreamBuilder(
               stream: _allWatchedShowsStream,
               builder: (context, snapshot) {
-                watchedShowIdList.clear();
+                // print(snapshot.connectionState);
                 if (snapshot.hasData) {
-                  // print("data");
+                  watchedShowIdList.clear();
                   snapshot.data.documents.forEach((f) {
                     watchedShowIdList.add(int.parse(f.documentID));
                   });
                   _scheduledEpisodes = getEpisodeList(watchedShowIdList);
+
+                  // print("fetching scheduled episodes");
 
                   return Center(
                     child: FutureBuilder(
@@ -1094,21 +1102,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                               ),
                             );
                           default:
-                            if (snapshot.hasError)
-                              return Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.4,
-                                child: Center(
-                                  child: Text(
-                                    "Please ensure you have an active internet connection",
-                                    textAlign: TextAlign.center,
-
-                                  ),
-                                ),
-                              );
-                            else
                               print("building list${snapshot.data.length}" );
-
                               return snapshot.data.length == 0
                                   ? Container(
                                   width: _width*.8,
@@ -1124,10 +1118,18 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                       ? snapshot.data.length
                                       : 5,
                                   itemBuilder: (context, int index) {
-                                    scheduledEpisodes.add(snapshot.data[index]);
-                                    return Center(
-                                        child: ScheduleCard(
-                                            episode: snapshot.data[index][0]));
+                                      scheduledEpisodes.add(snapshot.data[index]);
+                                      int notAired = snapshot.data[index].length - 1;
+                                      for(int i=0; i< snapshot.data[index].length ; i++){
+                                          if ( !snapshot.data[index][i].aired()){
+                                            notAired = i;
+                                            break;
+
+                                          }
+                                      }
+                                      return Center(
+                                          child: ScheduleCard(
+                                              episode: snapshot.data[index][notAired]));
                                   });
 
                             return Text('Result: ${snapshot.data}');
@@ -1137,18 +1139,15 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   );
 
                 } else {
-                  print("no scheduled view");
-                  _allWatchedShowsStream = FirebaseFirestore.instance
-                      .collection("${auth.currentUser.email}/shows/watched_shows")
-                      .orderBy('lastWatched', descending: true)
-                      .snapshots();
-                  print(_allWatchedShowsStream.length.then((value) => value));
-                  return Container(
-                    child: SizedBox(
-                      child: FlareActor(
-                        "assets/empty.flr"
+                  // print("no scheduled view");
+                  return InkWell(
+                    child: Container(
+                      child: SizedBox(
+                        child: FlareActor(
+                          "assets/empty.flr"
+                        )
                       )
-                    )
+                    ),
                   );
                 }
               })
@@ -1180,10 +1179,16 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, int index) {
 //                            print(snapshot.data[index]);
-
+                            int notAired = snapshot.data[index].length - 1;
+                            for(int i=0; i< snapshot.data[index].length ; i++){
+                              if ( !snapshot.data[index][i].aired()){
+                                notAired = i;
+                                break;
+                              }
+                            }
                             return Center(
                                 child: ScheduleCard(
-                                    episode: snapshot.data[index][0]));
+                                    episode: snapshot.data[index][notAired]));
                           });
                       return Text('Result: ${snapshot.data}');
                   }
@@ -1211,7 +1216,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
     //Sort by airdate instead id
     list.sort((a, b) => a[0].airDate.compareTo(b[0].airDate));
-    print("Scheduled shows:${list.length}");
+    // print("Scheduled shows:${list.length}");
     return list;
   }
 
@@ -1281,18 +1286,19 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   Future<SessionUser> getUserData() async {
     String currID = auth.currentUser.email;
-    print(currID);
+    // print(currID);
     SessionUser user = SessionUser();
     var snapshots = FirebaseFirestore.instance
         .doc("$currID/user")
         .snapshots();
     snapshots.forEach((element) {
       if ( element.exists){
-        // print(element.data());
-        // print(auth.currentUser.uid);
+        setState(() {
+          firstName = element.data()['firstName'];
+        });
         user.id = auth.currentUser.uid;
         user.emailAddress = currID;
-        user.firstName = element.data()['firstName'];
+        user.firstName = firstName;
         user.lastName = element.data()['lastName'];
         user.sex = element.data()['sex'];
         user.age = element.data()['age'];
@@ -1318,6 +1324,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     } else {
       greetings =  'Good Night';
     }
+    // print(firstName);
     return greetings + ", ${firstName}!";
   }
 

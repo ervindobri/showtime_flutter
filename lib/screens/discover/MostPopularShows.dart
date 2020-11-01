@@ -59,7 +59,7 @@ class _MostPopularShowsState extends State<MostPopularShows> {
     // TODO: implement dispose
     // _controller.removeListener(() {});
     // _controller.dispose();
-    popularShows.clear();
+    // popularShows.clear();
     super.dispose();
   }
   @override
@@ -108,7 +108,7 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                                     child: _textField(),
                                   ),
                                 ],
@@ -152,7 +152,6 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                               return CustomScrollView(
                                 // key: UniqueKey(),
                                 physics: NeverScrollableScrollPhysics(),
-
                                 controller: _controller,
                                 slivers: [
                                   SliverPersistentHeader(
@@ -172,7 +171,7 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                                              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                                               child: _textField(),
                                             ),
                                           ],
@@ -225,7 +224,7 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                                              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                                               child: _textField(),
                                             ),
                                           ],
@@ -366,7 +365,7 @@ class _MostPopularShowsState extends State<MostPopularShows> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 10),
+                                      padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
                                       child: _textField(),
                                     ),
                                   ],

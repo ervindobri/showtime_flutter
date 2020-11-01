@@ -1,22 +1,24 @@
-import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/components/back.dart';
+import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/main.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/network.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:eWoke/ui/watch_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:animate_icons/animate_icons.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'dart:developer';
 
-import '../../main.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:flare_flutter/flare_actor.dart';
+
 
 
 class DiscoverWatchList extends StatefulWidget {
@@ -48,6 +50,12 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   String _searchTerm;
   int _index = 0;
 
+  var watchlistBlue = const Color(0xFF59b4ff);
+
+  ScrollController listController = new ScrollController(
+    initialScrollOffset: 0
+  );
+
 
   @override
   void initState() {
@@ -62,14 +70,22 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     if ( allWatchedShows.isEmpty){
       _watchedShowsStream = FirebaseFirestore.instance.collection("${auth.currentUser.email}/shows/watched_shows").snapshots();
     }
-    print(sortedList.length);
-  }
+    log(sortedList.length.toString());
+    listController.addListener(onListen);
 
+
+  }
   @override
   void dispose() {
-//    controller.dispose();
+    // TODO: implement dispose
+    listController.removeListener(onListen);
     super.dispose();
   }
+
+  void onListen() {
+    setState(() {});
+  }
+
 
   _onpressed() {
     setState(() {
@@ -84,16 +100,15 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   Widget _textField() {
     return CupertinoTextField(
         onSubmitted: (value) {
-            setState(() {
-              _searchTerm = value;
-            });
+          setState(() => _searchTerm = value);
+          _filter.clear();
         },
         controller: _filter,
         clearButtonMode: OverlayVisibilityMode.editing,
         keyboardType: TextInputType.text,
         placeholder: "Search watchlist",
         placeholderStyle: TextStyle(
-          color: greyTextColor,
+          color: greyTextColor.withOpacity(.5),
           fontSize: 20.0,
           fontFamily: 'Raleway',
         ),
@@ -124,158 +139,194 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
       );
   }
   Widget build(BuildContext context) {
-    //TODO: set scrolloffset to 0 after sorting ASC/DESC
+    //TODO: set scrolloffset to 0 after sorting
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
 
-    //TODO: SORTING by runtime exception
-    // print(sortedList.length);
+    if (listController.hasClients) debugPrint(listController.position.toString());
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Container(
-        color:  const Color(0xFF59b4ff),
+        color:  watchlistBlue,
         child: SafeArea(
-          child: Container(
-            width: _width,
-            height: _height,
-            color: const Color(0xFF59b4ff),
-            child: Column(
-              // alignment: Alignment.center,
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: _width,
-                  height: _height*.16,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF59b4ff),
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(25.0),
-                      bottomRight: Radius.circular(25.0),
-                    )
-                  ),
-                  // color: Colors.black,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 0),
-                          child: _textField(),
-                        ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              back(context),
-                              _sorting
-                                  ? InkWell(
-                                  onTap: () {
-                                    _onpressed();
-                                    _sortWatchList(criteria, !_ascending);
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 8.0),
-                                        child: AutoSizeText(
-                                          criteria,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Raleway',
-                                            fontSize: 13,
+          child: Stack(
+            children: [
+              Container(
+                width: _width,
+                height: _height,
+                color: watchlistBlue,
+                child: Column(
+                  // alignment: Alignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: _width,
+                      height: _height*.16,
+                      decoration: BoxDecoration(
+                        color: watchlistBlue,
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(25.0),
+                          bottomRight: Radius.circular(25.0),
+                        )
+                      ),
+                      // color: Colors.black,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 0),
+                              child: _textField(),
+                            ),
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  back(context),
+                                  InkWell(
+                                    onTap: () async {
+                                      showModalBottomSheet(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(25.0),
+                                                topRight: Radius.circular(25.0)),
                                           ),
-                                        ),
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return createBottomSheet();
+                                          });
+                                    },
+                                    child: Container(
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "Sort",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Raleway',
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: Icon(Icons.sort),
+                                            color: Colors.white,
+                                            iconSize: 25,
+                                            onPressed: () async {
+                                              showModalBottomSheet(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.only(
+                                                        topLeft: Radius.circular(25.0),
+                                                        topRight: Radius.circular(25.0)),
+                                                  ),
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return createBottomSheet();
+                                                  });
+                                            },
+                                          ),
+                                        ],
                                       ),
-                                      AnimateIcons(
-                                        controller: controller,
-                                        startIcon: Icons.keyboard_arrow_up,
-                                        endIcon: Icons.keyboard_arrow_down,
-                                        size: 25.0,
-                                        duration: Duration(milliseconds: 200),
-                                        color: Colors.white,
-                                        clockwise: false,
-                                        onStartIconPress: () {
-                                          _onpressed();
-                                          _sortWatchList(criteria, !_ascending);
-                                          return true;
-                                        },
-                                        onEndIconPress: () {
-                                          _onpressed();
-                                          _sortWatchList(criteria, !_ascending);
-                                          return true;
-                                        },
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                      )
-                                  : Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: Container(),
-                                  ),
-                              InkWell(
-                                onTap: () async {
-                                  showModalBottomSheet(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(25.0),
-                                            topRight: Radius.circular(25.0)),
-                                      ),
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return createBottomSheet();
-                                      });
-                                },
-                                child: Container(
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "Sort",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontFamily: 'Raleway',
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons.sort),
-                                        color: Colors.white,
-                                        iconSize: 25,
-                                        onPressed: () async {
-                                          showModalBottomSheet(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.only(
-                                                    topLeft: Radius.circular(25.0),
-                                                    topRight: Radius.circular(25.0)),
-                                              ),
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return createBottomSheet();
-                                              });
-                                        },
-                                      ),
-                                    ],
+                                ]),
+                          ],
+                        ),
+                      ),
+                    Expanded(
+                      child: Container(
+                        height: _height * .8,
+                        decoration: BoxDecoration(
+                            color: bgColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25.0),
+                              topRight: Radius.circular(25.0),
+                            )
+                        ),
+                        // ignore: missing_required_param
+                        child: createListView(),
+                      ),
+                    ), //pass title, and get content
+                  ],
+                ),
+              ),
+              Positioned(
+                bottom: 50,
+                left: 50,
+                child: _sorting
+                    ? CustomElevation(
+                      color: Colors.blueAccent.withOpacity(.3),
+                      child: FlatButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                        ),
+                        color: watchlistBlue,
+                        // elevation: 10,
+                        highlightColor: Colors.blueAccent.shade700,
+                        onPressed: () {
+                          _onpressed();
+                          _sortWatchList(criteria, !_ascending);
+                        },
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: AutoSizeText(
+                                  criteria,
+                                  minFontSize: 10,
+                                  maxFontSize: 20,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Raleway',
+                                    fontSize: 20,
                                   ),
                                 ),
                               ),
-                            ]),
-                      ],
-                    ),
-                  ),
-                Expanded(
-                  child: Container(
-                    height: _height * .8,
-                    decoration: BoxDecoration(
-                        color: bgColor,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(25.0),
-                          topRight: Radius.circular(25.0),
-                        )
-                    ),
-                    child: createListView(),
-                  ),
-                ), //pass title, and get content
-              ],
-            ),
+                              AnimateIcons(
+                                controller: controller,
+                                startIcon: Icons.keyboard_arrow_up,
+                                endIcon: Icons.keyboard_arrow_down,
+                                size: 35.0,
+                                duration: Duration(milliseconds: 200),
+                                color: Colors.white,
+                                clockwise: false,
+                                onStartIconPress: () {
+                                  _onpressed();
+                                  _sortWatchList(criteria, !_ascending);
+                                  if ( listController.hasClients){
+                                    listController.animateTo(
+                                        0,
+                                        duration: Duration(milliseconds: 200),
+                                        curve: Curves.ease);
+                                  }
+
+                                  return true;
+                                },
+                                onEndIconPress: () {
+                                  _onpressed();
+                                  _sortWatchList(criteria, !_ascending);
+                                  if ( listController.hasClients){
+                                    listController.animateTo(
+                                        0,
+                                        duration: Duration(milliseconds: 200),
+                                        curve: Curves.easeOut
+                                    );
+                                  }
+                                  return true;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                    : Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Container(),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -283,27 +334,25 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   }
 
   getCriteria(WatchedTVShow a, String criteria) {
+    // print(a);
     Map<String, dynamic> criteriaMap = {
       "Title": a.name,
       "Year": a.startDate,
       "Runtime": a.runtime,
-      "Progress": a.calculateProgress(),
-      "Rating" : a.rating
+      "Progress": a.calculateProgress() ?? 0.0,
+      "Rating" : a.rating ?? 0.0
     };
     return criteriaMap[criteria];
   }
 
   void _sortWatchList(String x, bool ascending) {
-//    print(sortedList.length);
     setState(() {
       _ascending = ascending;
     });
     if (ascending) {
       sortedList.sort((a, b) => getCriteria(a, x).compareTo(getCriteria(b, x)));
-//      print(sortedList.length);
     } else {
       sortedList.sort((a, b) => getCriteria(b, x).compareTo(getCriteria(a, x)));
-//      print(sortedList.length);
     }
   }
 
@@ -411,34 +460,98 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     );
   }
 
-  createListView() {
+  Widget createListView() {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-
+    log(_searchTerm);
+    log(listController.hasClients.toString());
     if ( allWatchedShows.isNotEmpty){
-      print("already fetched");
-      return new WatchlistView(
-        list: sortedList.where((e) => e.name.toLowerCase().contains( _searchTerm.toLowerCase())).toList(),
-      );
+      log("already fetched");
+      var temp = sortedList.where((e) => e.name.toLowerCase().contains( _searchTerm.toLowerCase())).toList();
+      if ( temp.length > 0){
+        return WatchlistView(
+          list: temp,
+          scrollController: listController,
+        );
+      }
+      else{
+        return Container(
+          width: _width,
+          height: _height,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 40.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 30),
+                  child: AutoSizeText(
+                    "Oopsie! You missed that shot. Try again",
+                    minFontSize: 20,
+                    maxFontSize: 30,
+                    maxLines: 3,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.roboto(
+                      color: watchlistBlue,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700
+                    ),
+                  ),
+                ),
+                FlatButton(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                      color: watchlistBlue
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                  ),
+                  textColor: watchlistBlue,
+                  color: bgColor, onPressed: () {
+                    setState(() {
+                      _searchTerm = "";
+                    });
+                }, child: Container(
+                  width: _width/3.5,
+                  child: AutoSizeText(
+                    "All shows",
+                    minFontSize: 16,
+                    maxFontSize: 20,
+                    maxLines: 3,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.roboto(
+                        fontSize: 25,
+                        decoration: TextDecoration.underline
+                    ),
+                  ),
+                ),
+                ),
+                SizedBox(
+                  width: _width*.8,
+                  height: _height/3,
+                  child: FlareActor("assets/empty-blue.flr",
+                      alignment: Alignment.center,
+                      fit: BoxFit.contain,
+                      animation: "Idle"),
+
+                )
+              ],
+            ),
+          ),
+        );
+      }
     }
     else{
         if (!_sorting){
+          log("not sorting");
           return StreamBuilder(
               stream: _watchedShowsStream,
               builder: (_, snapshot) {
+                log("stream");
                 List<Widget> children;
+                // ignore: missing_enum_constant_in_switch
                 switch( snapshot.connectionState){
                   case ConnectionState.waiting:
                     return Container();
-                    break;
-                  case ConnectionState.none:
-                  // TODO: Handle this case.
-                    break;
-                  case ConnectionState.active:
-                  // TODO: Handle this case.
-                    break;
-                  case ConnectionState.done:
-                  // TODO: Handle this case.
                     break;
                 }
                 if (!snapshot.hasData) {
@@ -467,7 +580,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                     default:
                       list.clear();
                       allWatchedShows.clear();
-                      print("cleared watched tv show lists");
+                      log("cleared watched tv show lists");
                       snapshot.data.documents.forEach((f) {
                         WatchedTVShow show = new WatchedTVShow(
                           id: f.documentID,
@@ -492,7 +605,8 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                 List filteredList = sortedList.where((e) => e.name.toLowerCase().contains( _searchTerm.toLowerCase())).toList();
                 if ( _searchTerm != ""){
                   if (filteredList.length > 0 ){
-                    return WatchlistView(list: filteredList,);
+                    return WatchlistView(list: filteredList,              scrollController: listController,
+                    );
                   }
                   else{
                     return Text("No data");
@@ -500,21 +614,31 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                 }
                 else {
                   return WatchlistView(
-                      list: allWatchedShows
+                      list: allWatchedShows,
+                    scrollController: listController,
+
                   );
                 }
               }
           );
         }
         else{
+          //If we are searching,
           if ( _searchTerm != ""){
-            return new WatchlistView(
+            log("building search view");
+
+            return WatchlistView(
               list: sortedList.where((e) => e.name.toLowerCase().contains( _searchTerm.toLowerCase())).toList(),
+              scrollController: listController,
+
             );
           }
           else{
+            //If we are not searching
+            log("building search view");
             return new WatchlistView(
               list: sortedList,
+              scrollController: listController,
             );
           }
         }
@@ -524,23 +648,28 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
 
 class WatchlistView extends StatefulWidget {
   final List list;
+  final ScrollController scrollController;
 
-  const WatchlistView({Key key, this.list}) : super(key: key);
+  const WatchlistView({Key key, this.list, this.scrollController}) : super(key: key);
   @override
   _WatchlistViewState createState() => _WatchlistViewState();
 }
 
 class _WatchlistViewState extends State<WatchlistView> {
-  ScrollController scrollController = ScrollController(
-    initialScrollOffset: 0.0,
-  );
+  // ScrollController scrollController = ScrollController(
+  //   initialScrollOffset: 0.0,
+  // );
+  ScrollController scrollController;
 
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    scrollController = widget.scrollController;
     scrollController.addListener(onListen);
+
+    print("watchliested");
   }
 
   @override
@@ -553,8 +682,6 @@ class _WatchlistViewState extends State<WatchlistView> {
   void onListen() {
     setState(() {});
   }
-
-
 
   final options = LiveOptions(
     // Start animation after (default zero)
@@ -581,12 +708,13 @@ class _WatchlistViewState extends State<WatchlistView> {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     final itemSize = _height / 2.7;
-
+    // print("watchlist");
     return AnimationLimiter(
       child: ListView.builder(
           // options: options,
           // key: UniqueKey(),
-          controller: scrollController,
+          // physics: ,
+          controller: widget.scrollController,
           itemCount: widget.list.length,
           itemBuilder: (_, index) {
             final itemPositionOffset = index * itemSize;
@@ -599,8 +727,9 @@ class _WatchlistViewState extends State<WatchlistView> {
               position: index,
               duration: const Duration(milliseconds: 375),
               child: SlideAnimation(
-                verticalOffset: 50.0,
+                verticalOffset: 50.0*index,
                 child: FadeInAnimation(
+                  delay: Duration(milliseconds:index*50 ),
                   child: Center(
                     child: Transform(
                       alignment: Alignment.center,
@@ -634,38 +763,6 @@ class _WatchlistViewState extends State<WatchlistView> {
   }
 }
 
-Widget createWatchlist(ScrollController scrollController, List<WatchedTVShow> data, BuildContext context) {
-  double _width = MediaQuery.of(context).size.width;
-  double _height = MediaQuery.of(context).size.height;
-  final itemSize = _height / 3 + 30;
-//  print(itemSize);
-  if (data.length > 0) {
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: [
-        LiveSliverList(
-          showItemInterval: Duration(milliseconds: 250),
-          showItemDuration: Duration(milliseconds: 300),
-          itemCount: null,
-          controller: null,
-          itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-              final itemPositionOffset = index * itemSize;
-              final difference = scrollController.offset - itemPositionOffset;
-              final percent = 1 - (difference / (itemSize / 2));
-              return Center(
-                child: InkWell(
-                    onTap: () => Navigator.push(context, _createRouteShowDetail(data, index, _width, _height)),
-                    child: WatchedCardInList(show: data[index])),
-              );
-          },
-
-        ),
-      ],
-    );
-  } else {
-    return Container();
-  }
-}
 
  _createRouteShowDetail(List<WatchedTVShow> data, int index, double _width, double _height) {
   Future<List<dynamic>> episodes = new Network().getEpisodes(showID: data[index].id);
