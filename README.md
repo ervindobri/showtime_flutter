@@ -1,6 +1,6 @@
 # eWoke
 
-A new Flutter project.
+A flutter project to follow your favorite shows.
 
 ## Getting Started
 
