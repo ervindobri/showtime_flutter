@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.9.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -97,6 +97,7 @@ flutter:
      - blink.flr
      - empty.flr
      - empty-blue.flr
+     - ohno.flr
      - showtime-avatar.png
   #   - images/a_dot_ham.jpeg
 

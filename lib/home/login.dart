@@ -398,49 +398,97 @@ class _LoginScreenState extends State<LoginScreen>
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 15.0),
-                                        child: Container(
-                                          child: TextFormField(
-                                            controller: repasswordController,
-                                            autofocus: false,
-                                            validator: (value) {
-                                              if ( value != passwordController.text){
-                                                return "Passwords do not match!";
-                                              }
-                                              return null;
-                                            },
-                                            style: new TextStyle(
-                                                fontSize: 15.0,
-                                                fontFamily: 'Raleway',
-                                                color: greyTextColor),
-                                            decoration: const InputDecoration(
-                                              contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                                filled: true,
-                                                fillColor: Colors.white,
-                                                hintText: 'password123',
-                                                focusColor: greenColor,
-                                                enabledBorder: const OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                      color: blueColor),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(50.0)),
-                                                ),
-                                                border: const OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                      color: blueColor),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.circular(50.0)),
-                                                ),
-                                                focusedBorder:
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              // height: textFieldHeight,
+                                              child: TextFormField(
+                                                validator: (value) {
+                                                  if ( value != passwordController.text){
+                                                    return "Passwords do not match!";
+                                                  }
+                                                  return null;
+                                                },
+                                                keyboardType:
+                                                TextInputType.visiblePassword,
+                                                controller: passwordController,
+                                                obscureText: _showPassword,
+                                                style: new TextStyle(
+                                                    fontSize: 15.0,
+                                                    fontFamily: 'Raleway',
+                                                    color: greyTextColor),
+                                                decoration: const InputDecoration(
+                                                    contentPadding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 10.0),
+                                                    errorStyle: TextStyle(
+                                                        fontFamily: 'Raleway',
+                                                        color: orangeColor
+                                                    ),
+                                                    errorText: null,
+                                                    errorMaxLines: 1,
+                                                    filled: true,
+                                                    fillColor: Colors.white,
+                                                    hintText: 'password1234',
+                                                    focusColor: greenColor,
+                                                    enabledBorder:
                                                     const OutlineInputBorder(
-                                                  borderSide: const BorderSide(
-                                                      color: greenColor,
-                                                      width: 2),
-                                                  borderRadius: BorderRadius.all(
-                                                      Radius.circular(50.0)),
-                                                )),
-                                          ),
+                                                      borderSide: const BorderSide(
+                                                          color: greenColor),
+                                                      borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(50.0)),
+                                                    ),
+                                                    border: const OutlineInputBorder(
+                                                      borderSide: const BorderSide(
+                                                          color: greenColor),
+                                                      borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(50.0)),
+                                                    ),
+                                                    focusedBorder:
+                                                    const OutlineInputBorder(
+                                                      borderSide: const BorderSide(
+                                                          color: greenColor, width: 1.5),
+                                                      borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(50.0)),
+                                                    ),
+                                                    errorBorder: const OutlineInputBorder(
+                                                      borderSide: const BorderSide(
+                                                          color: orangeColor, width: 1.5),
+                                                      borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(50.0)),
+                                                    )),
+                                              ),
+                                            ),
+                                            Container(
+                                              height: textFieldHeight,
+                                              child: Align(
+                                                  alignment: Alignment.centerRight,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 15.0),
+                                                    child: InkWell(
+                                                        onTap: () {
+                                                          setState(() {
+                                                            _showPassword =
+                                                            !_showPassword;
+                                                            eye = _showPassword
+                                                                ? FaIcon(
+                                                              FontAwesomeIcons.eye,
+                                                              color: greenColor,
+                                                            )
+                                                                : FaIcon(
+                                                              FontAwesomeIcons
+                                                                  .eyeSlash,
+                                                              color: greenColor,
+                                                            );
+                                                          });
+                                                        },
+                                                        child: eye),
+                                                  )),
+                                            ),
+                                          ],
                                         ),
                                       )
                                     ],
@@ -474,9 +522,10 @@ class _LoginScreenState extends State<LoginScreen>
                                                       _storage.write(key: 'password', value: passwordController.text);
                                                       // print("saved");
                                                   }
+                                                  final home = HomeView();
                                                     Navigator.of(context)
                                                         .pushAndRemoveUntil(CupertinoPageRoute(
-                                                      builder: (context) => HomeView(),
+                                                      builder: (context) => home,
                                                     ),(route) => false);
                                                 });
                                         }

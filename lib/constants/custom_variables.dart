@@ -39,6 +39,10 @@ const double sliverRadius = 35.0;
 
 const PLACEHOLDER_IMAGE = "https://wolper.com.au/wp-content/uploads/2017/10/image-placeholder.jpg";
 
+
+List<String> sexCategories = ["Female", "Male"];
+
+
 List<WatchedTVShow> watchedShowList = new List<WatchedTVShow>();
 List<TVShowDetails> showDetailList = new List<TVShowDetails>();
 List<WatchedTVShow> favorites = new List<WatchedTVShow>();

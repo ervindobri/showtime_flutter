@@ -9,18 +9,21 @@ import 'package:eWoke/main.dart';
 import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
+import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
 import 'package:eWoke/placeholders/schedule_card_placeholder.dart';
 import 'package:eWoke/screens/browse_shows.dart';
 import 'package:eWoke/screens/full_schedule.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
-import 'file:///C:/Users/Winter/IdeaProjects/eWoke/lib/screens/discover/discover.dart';
+import 'package:eWoke/screens/discover/discover.dart';
 import 'package:eWoke/ui/schedule_card.dart';
 import 'package:eWoke/ui/watch_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:connectivity/connectivity.dart';
@@ -34,32 +37,39 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
-  Stream<QuerySnapshot> _watchedShowsStream;
-  Stream<QuerySnapshot> _allWatchedShowsStream;
+   Stream<QuerySnapshot> _watchedShowsStream;
+   Stream<QuerySnapshot> _allWatchedShowsStream;
 
-  PanelState _panelState;
+   PanelState _panelState;
   Widget title =
       Container(color: bgColor, child: Image(image: AssetImage('showTIME.png'), height: 50));
-  Widget _customTitle;
+   Widget _customTitle;
 
 
 
   PanelController _pc = new PanelController();
 
 
-  StreamSubscription<ConnectivityResult> subscription;
+   StreamSubscription<ConnectivityResult> subscription;
   var connectionStatus;
 
-  Future<List<List<Episode>>> _scheduledEpisodes;
-  List<int> watchedShowIdList = new List<int>();
+   Future<List<List<Episode>>> _scheduledEpisodes;
+  List<int> watchedShowIdList = [];
 
   bool disconnected = true;
 
 
 
-  Future<SessionUser> _currentUserObject;
+   Future<SessionUser> _currentUserObject;
+
   SessionUser currentUser = SessionUser();
   String firstName = "";
+  String lastName = "";
+  int age = 0;
+  String sex = "";
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 
   @override
   void initState() {
@@ -86,7 +96,380 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         .orderBy('lastWatched', descending: true)
         .snapshots();
     print("init");
+
+
   }
+
+  void _showDialog(){
+    final double _width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final double _height = MediaQuery
+        .of(context)
+        .size
+        .height;
+    showAnimatedDialog(
+      context: context,
+      animationType: DialogTransitionType.slideFromLeftFade,
+      barrierDismissible: false,
+      duration: Duration(milliseconds: 100),
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async => false,
+          child: CustomDialogWidget(
+            backgroundColor: Colors.grey.shade100,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(25)),
+            ),
+            title: Center(
+              child: Text(
+                'Profile',
+              ),
+            ),
+            titleTextStyle: TextStyle(
+                fontFamily: 'Raleway',
+                fontSize: 25,
+                fontWeight: FontWeight.w700,
+                color: greyTextColor
+            ),
+            titlePadding: EdgeInsets.only(
+                top: 5.0,
+                // bottom: 10.0,
+                left: 25.0,
+                right: 25.0
+            ),
+            //TODO content add rive animation
+            content: SingleChildScrollView(
+              child: Container(
+                height: _height*.65,
+                width: _width*.85,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                          backgroundColor: greyTextColor,
+                          minRadius: 60,
+                          maxRadius: 60,
+                          backgroundImage: AssetImage(
+                              "assets/showtime-avatar.png"
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "First Name",
+                                  style: TextStyle(
+                                      fontFamily: 'Raleway',
+                                      fontSize: 20,
+                                      color: greyTextColor.withOpacity(.5)
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 30.0),
+                              child: Container(
+                                width: _width/3.5,
+                                child: TextFormField(
+                                  validator: (text){
+                                    if ( text.isEmpty){
+                                      return "Enter first name";
+                                    }
+                                    else{
+                                      setState(() {
+                                        firstName = text.toString();
+                                      });
+                                      return null;
+                                    }
+                                    return null;
+                                  },
+                                  onFieldSubmitted: (text){
+
+                                  },
+                                  keyboardType: TextInputType.name,
+                                  textCapitalization: TextCapitalization.words,
+                                  autofocus: false,
+                                  style: new TextStyle(
+                                      fontSize: 15.0,
+                                      fontFamily: 'Raleway',
+                                      color: greyTextColor),
+                                  decoration: const InputDecoration(
+                                    errorStyle: TextStyle(
+                                        fontFamily: 'Raleway',
+                                        color: orangeColor
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'John',
+                                    focusColor: greenColor,
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: blueColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0)),
+                                    ),
+                                    border: const OutlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: blueColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0)),
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: greenColor, width: 2),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0)),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: orangeColor, width: 2),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0)),
+                                    ),
+                                  ),
+
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .end,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "Last Name",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontFamily: 'Raleway',
+                                      fontSize: 20,
+                                      color: greyTextColor.withOpacity(.5)
+
+                        ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 30.0),
+                              child: Container(
+                                width: _width/3.5,
+                                child: TextFormField(
+                                  validator: (text){
+                                    if ( text.toString().isEmpty){
+                                      return "Enter last name";
+                                    }
+                                    else{
+                                      setState(() {
+                                        lastName = text.toString();
+                                      });
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.name,
+                                  textCapitalization: TextCapitalization.words,
+                                  autofocus: false,
+                                  style: new TextStyle(
+                                      fontSize: 15.0,
+                                      fontFamily: 'Raleway',
+                                      color: greyTextColor),
+                                  decoration: const InputDecoration(
+                                    errorStyle: TextStyle(
+                                        fontFamily: 'Raleway',
+                                        color: orangeColor
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                    hintText: 'Doe',
+                                    focusColor: greenColor,
+                                    enabledBorder: const OutlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: blueColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0)),
+                                    ),
+                                    border: const OutlineInputBorder(
+                                      borderSide:
+                                      BorderSide(color: blueColor),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0)),
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: greenColor, width: 2),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0)),
+                                    ),
+                                    errorBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: orangeColor, width: 2),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50.0)),
+                                    ),
+                                  ),
+
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .end,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "Age",
+                                  textAlign: TextAlign.left,
+
+                                  style: TextStyle(
+                                      fontFamily: 'Raleway',
+                                      fontSize: 20,
+                                      color: greyTextColor.withOpacity(.5)
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 30.0),
+                              child: Container(
+                                width: _width/3.5,
+                                height: 50,
+                                child: CupertinoPicker(
+                                    onSelectedItemChanged: (int value) {
+                                      setState(() {
+                                        age = value+1;
+                                      });
+                                    },
+                                    itemExtent: 50,
+                                    looping: true,
+                                    children: List.generate(128, (index) => Center(child: Text(
+                                        (index+1).toString(),
+                                          style: TextStyle(
+                                            color: greenColor,
+                                            fontWeight: FontWeight.w700
+                                          ),))),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment
+                              .end,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "Sex : ",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontFamily: 'Raleway',
+                                      fontSize: 20,
+                                      color: greyTextColor.withOpacity(.5)
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 30.0),
+                              child: Container(
+                                width: _width/3.5,
+                                height: 50,
+                                child: CupertinoPicker(
+                                  onSelectedItemChanged: (int value) {
+                                     sex = sexCategories[value];
+                                  },
+                                  itemExtent: 50,
+                                  looping: true,
+                                  children:List.generate(sexCategories.length, (index) =>
+                                      Center(
+                                    child: Text(
+                                      sexCategories[index],
+                                      style: TextStyle(
+                                          color: greenColor,
+                                          fontWeight: FontWeight.w700
+                                      ),
+                                    ),
+                                  )),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            elevation: 5,
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 10, bottom: 10),
+                child: InkWell(
+                    onTap: () {
+                      //TOOD: SAVE PROFILE DATA TO FIREBASE
+                      if (_formKey.currentState.validate()) {
+                        print("validating");
+                        FirestoreUtils().saveProfile(firstName, lastName, age, sex);
+                        Future.delayed(const Duration(milliseconds: 100), () async{
+                          Navigator.pop(context);
+                        });
+                      }
+                      else{
+                        Fluttertoast.showToast(
+                            msg: "Can't validate!",
+                            toastLength: Toast.LENGTH_LONG,
+                            backgroundColor: orangeColor,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 2
+                        );
+                      }
+
+
+                    },
+                  child: Text(
+                    'Save',
+                    style: TextStyle(
+                        color: greenColor,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   void dispose(){
@@ -95,6 +478,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     subscription = null;
     _currentUserObject = null;
     _pc = null;
+    auth = null;
     super.dispose();
   }
 
@@ -312,19 +696,38 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       ),
                       elevation: 5,
                       actions: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10, bottom: 10),
-                          child: InkWell(
-                            onTap: () => Navigator.pop(context),
-                            child: Text(
-                              'Close',
-                              style: TextStyle(
-                                  color: greenColor,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w300
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 20, bottom: 10),
+                              child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                      color: greenColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w600
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 10, bottom: 10),
+                              child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: Text(
+                                  'Close',
+                                  style: TextStyle(
+                                      color: greenColor,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w300
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     );
@@ -409,9 +812,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             //TODO: handle clearing and destroying stored data
                             popularShows.clear();
                             await FirebaseAuth.instance.signOut();
+                            final login = LoginScreen();
                             Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
-                                  builder: (context) => LoginScreen(),
+                                  builder: (context) => login,
                                 )
                             );
                           },
@@ -519,17 +923,40 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                       if  (snapshot.hasData){
                                         currentUser = snapshot.data;
                                         // print("User data fetched!${snapshot.data.firstName}");
-                                        return Center(
-                                          child: Text(
-                                            showGreetings(firstName),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Raleway',
-                                                fontSize: 22,
-                                                fontWeight: FontWeight.w700
+                                        if ( snapshot.data.firstName != null) {
+                                          return Center(
+                                            child: Text(
+                                              showGreetings(firstName),
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Raleway',
+                                                  fontSize: 22,
+                                                  fontWeight: FontWeight.w700
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        }
+                                        else{
+                                          //show alert dialog to complete profile
+                                          // Timer.run(() => _showDialog());
+                                          return Center(
+                                            child: InkWell(
+                                              onTap:(){
+                                                Timer.run(() => _showDialog());
+                                              },
+                                              child: Text(
+                                                "Complete profile",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Raleway',
+                                                    fontSize: 22,
+                                                    fontWeight: FontWeight.w700
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+
                                       }
                                       else{
                                         return Container(
@@ -824,7 +1251,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                               child: StreamBuilder(
                                                   stream: _watchedShowsStream,
                                                   builder: (context, snapshot) {
-                                                    List<Widget> children;
+                                                    List<Widget> children = [Container()];
                                                     if (snapshot.hasError) {
                                                       children = <Widget>[
                                                         Icon(
@@ -844,7 +1271,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                       switch (
                                                       snapshot.connectionState) {
                                                         case ConnectionState.waiting:
-  //                                                    print("waiting");
+                                                          print("waiting");
   //                                                    children = <Widget>[ createCarouselSlider(watchedShowList, context) ];
                                                           children = <Widget>[
                                                             Container(
@@ -870,7 +1297,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                             )
                                                           ];
                                                           break;
-                                                        default:
+                                                        case ConnectionState.done:
+                                                          print("done");
                                                           watchedShowList.clear();
                                                           allWatchedShows.clear();
                                                           snapshot.data.documents
@@ -907,6 +1335,33 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                             createCarouselSlider(
                                                                 watchedShowList.take(5).toList(),
                                                                 context)
+                                                          ];
+                                                          break;
+                                                        case ConnectionState.none:
+                                                          // TODO: Handle this case.
+                                                          print("no connection");
+                                                          break;
+                                                        case ConnectionState.active:
+                                                          // TODO: Handle this case.
+                                                          print("active");
+                                                          children = [
+                                                            Container(
+                                                              height: _height/3,
+                                                              child: Center(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.all(25.0),
+                                                                  child: Text(
+                                                                    "Press the eye above for magic",
+                                                                    textAlign: TextAlign.center,
+                                                                    style: TextStyle(
+                                                                      color: Colors.white,
+                                                                      fontFamily: 'Raleway',
+                                                                      fontSize: _height/25
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              )
+                                                            )
                                                           ];
                                                           break;
                                                       }
@@ -1140,14 +1595,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
                 } else {
                   // print("no scheduled view");
-                  return InkWell(
-                    child: Container(
-                      child: SizedBox(
-                        child: FlareActor(
-                          "assets/empty.flr"
-                        )
+                  return Container(
+                    child: SizedBox(
+                      child: FlareActor(
+                        "assets/empty.flr"
                       )
-                    ),
+                    )
                   );
                 }
               })
@@ -1155,43 +1608,56 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               child: FutureBuilder(
                 future: _scheduledEpisodes,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      return Container(
-                        height: MediaQuery.of(context).size.height * 0.4,
-                        child: Shimmer.fromColors(
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 3,
-                              itemBuilder: (_, index) =>
-                                  ScheduleCardPlaceholder()),
-                          baseColor: Colors.grey[100],
-                          highlightColor: Colors.grey[300],
-                        ),
-                      );
-                    default:
+                  if ( snapshot.hasData){
+                    print("schedyled shows");
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return Container(
+                          height: MediaQuery.of(context).size.height * 0.4,
+                          child: Shimmer.fromColors(
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 3,
+                                itemBuilder: (_, index) =>
+                                    ScheduleCardPlaceholder()),
+                            baseColor: Colors.grey[100],
+                            highlightColor: Colors.grey[300],
+                          ),
+                        );
+                      case ConnectionState.done:
                         scheduledEpisodes.clear();
                         snapshot.data.forEach((list) {
-                            scheduledEpisodes.add(list);
+                          scheduledEpisodes.add(list);
                         });
-                      return ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, int index) {
+                        return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (context, int index) {
 //                            print(snapshot.data[index]);
-                            int notAired = snapshot.data[index].length - 1;
-                            for(int i=0; i< snapshot.data[index].length ; i++){
-                              if ( !snapshot.data[index][i].aired()){
-                                notAired = i;
-                                break;
+                              int notAired = snapshot.data[index].length - 1;
+                              for(int i=0; i< snapshot.data[index].length ; i++){
+                                if ( !snapshot.data[index][i].aired()){
+                                  notAired = i;
+                                  break;
+                                }
                               }
-                            }
-                            return Center(
-                                child: ScheduleCard(
-                                    episode: snapshot.data[index][notAired]));
-                          });
-                      return Text('Result: ${snapshot.data}');
+                              return Center(
+                                  child: ScheduleCard(
+                                      episode: snapshot.data[index][notAired]));
+                            });
+                    }
                   }
+                  else{
+                    print("no schedyled shows");
+                    return Container(
+                        child: SizedBox(
+                            child: FlareActor(
+                                "assets/empty.flr"
+                            )
+                        )
+                    );
+                  }
+
                 },
               ),
             ),

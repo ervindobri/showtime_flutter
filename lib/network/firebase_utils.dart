@@ -11,6 +11,7 @@ class FirestoreUtils{
   final CollectionReference watchedShows = FirebaseFirestore.instance.collection('${auth.currentUser.email}/shows/watched_shows');
   final CollectionReference favorites = FirebaseFirestore.instance.collection("${auth.currentUser.email}/shows/favorites");
   final CollectionReference searchHistory = FirebaseFirestore.instance.collection("${auth.currentUser.email}/shows/search_history");
+  final DocumentReference userProfile = FirebaseFirestore.instance.doc("${auth.currentUser.email}/user");
 
 
   void addToFavorites(WatchedTVShow show){
@@ -106,6 +107,15 @@ class FirestoreUtils{
 
   getSearchHistory() {
     return searchHistory.orderBy('date',descending: true).limit(6).snapshots();
+  }
+
+  void saveProfile(String firstName, String lastName, int age, String sex) {
+    userProfile.set({
+      'age' : age,
+      'firstName' : firstName,
+      'lastName' : lastName,
+      'sex' : sex
+    });
   }
 }
 

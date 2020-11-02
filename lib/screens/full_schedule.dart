@@ -12,8 +12,8 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:auto_search/auto_search.dart';
 import 'package:cupertino_stepper/cupertino_stepper.dart';
-
-import '../ui/full_schedule_card.dart';
+import 'package:flare_flutter/flare_actor.dart';
+import 'package:eWoke/ui/full_schedule_card.dart';
 
 class FullSchedule extends StatefulWidget {
   @override
@@ -159,7 +159,57 @@ class _FullScheduleState extends State<FullSchedule> {
                   )
                       : Container(
                           height: _height,
-                          child: Text("There are no scheduled shows for you!"),
+                          decoration: BoxDecoration(
+                              color: bgColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(sliverRadius),
+                                topRight: Radius.circular(sliverRadius),
+                              )
+                          ),
+                          child: Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 65.0, horizontal: 35),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                        "Oh no!",
+                                        style: TextStyle(
+                                          color: greyTextColor,
+                                          fontSize: 35,
+                                          fontWeight: FontWeight.w700,
+                                          fontFamily: 'Raleway'
+                                        ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "There are no scheduled shows for you!",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            color: greyTextColor,
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.w300,
+                                            fontFamily: 'Raleway'
+                                        ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    child: Container(
+                                      width: _width,
+                                      height: _height/3,
+                                      child: FlareActor("assets/ohno.flr",
+                                          alignment: Alignment.center,
+                                          fit: BoxFit.contain,
+                                          animation: "error-message"),
+                                    )
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                 ),
               ],
