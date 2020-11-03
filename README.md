@@ -1,4 +1,4 @@
-# eWoke
+# showTIME
 
 A flutter project to follow your favorite shows.
 
