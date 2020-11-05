@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/models/tvshow_details.dart';
 import 'package:eWoke/models/watched.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../main.dart';
 
@@ -12,6 +13,7 @@ class FirestoreUtils{
   final CollectionReference favorites = FirebaseFirestore.instance.collection("${auth.currentUser.email}/shows/favorites");
   final CollectionReference searchHistory = FirebaseFirestore.instance.collection("${auth.currentUser.email}/shows/search_history");
   final DocumentReference userProfile = FirebaseFirestore.instance.doc("${auth.currentUser.email}/user");
+  final Duration loginTime = Duration(milliseconds: 600);
 
 
   void addToFavorites(WatchedTVShow show){
@@ -117,5 +119,46 @@ class FirestoreUtils{
       'sex' : sex
     });
   }
+  Future<String> authUser(String userName, String password) {
+    print('Name: ${userName}, Password: ${password}');
+
+    return Future.delayed(loginTime).then((_) async {
+      try {
+        UserCredential userCredential = await auth.signInWithEmailAndPassword(
+            email: userName, password: password);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          return 'Username does not exist';
+        } else if (e.code == 'wrong-password') {
+          return 'Wrong password!';
+        } else {
+          return e.code;
+        }
+      }
+      return null;
+    });
+  }
+  Future<String> registerUser(String userName, String password) {
+    // print('Name: ${data.name}, Password: ${data.password}');
+
+    return Future.delayed(loginTime).then((_) async {
+      try {
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+            email: userName, password: password);
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          return 'The password provided is too weak.';
+        } else if (e.code == 'email-already-in-use') {
+          return 'The account already exists for that email.';
+        }
+      } catch (e) {
+        return e.toString();
+      }
+      return null;
+    });
+  }
+
+
 }
 

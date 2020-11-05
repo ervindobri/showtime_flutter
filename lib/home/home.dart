@@ -478,7 +478,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     subscription = null;
     _currentUserObject = null;
     _pc = null;
-    auth = null;
     super.dispose();
   }
 
@@ -869,7 +868,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   }
 
   Widget homeScreenBody(BuildContext context, GlobalKey<ScaffoldState> _slidingPanelKey) {
-      if ( auth != null){
+      if ( auth.currentUser != null){
         _watchedShowsStream = FirebaseFirestore.instance
             .collection("${auth.currentUser.email}/shows/watched_shows")
             .orderBy('lastWatched', descending: true)
@@ -1472,7 +1471,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       child: FaIcon(
                         data[3],
                         color: Colors.white,
-                        size: 30,
+                        size: _width/12,
                       ),
                     ),
                   ),

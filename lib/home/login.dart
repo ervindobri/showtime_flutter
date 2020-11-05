@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/main.dart';
+import 'package:eWoke/network/firebase_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,6 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
-  Duration loginTime = Duration(milliseconds: 600);
   bool selected = false; // remember me
   bool logging = true;
 
@@ -41,25 +41,7 @@ class _LoginScreenState extends State<LoginScreen>
   final _storage = FlutterSecureStorage();
 
 
-  Future<String> _authUser(String userName, String password) {
-    print('Name: ${userName}, Password: ${password}');
 
-    return Future.delayed(loginTime).then((_) async {
-      try {
-        UserCredential userCredential = await auth.signInWithEmailAndPassword(
-            email: userName, password: password);
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          return 'Username does not exist';
-        } else if (e.code == 'wrong-password') {
-          return 'Wrong password!';
-        } else {
-          return e.code;
-        }
-      }
-      return null;
-    });
-  }
 
   // /password validator possible structure
   passwordValidator(String password) {
@@ -69,27 +51,6 @@ class _LoginScreenState extends State<LoginScreen>
       return 'PasswordShort';
     }
     return null;
-  }
-
-  Future<String> _registerUser(String userName, String password) {
-    // print('Name: ${data.name}, Password: ${data.password}');
-
-    return Future.delayed(loginTime).then((_) async {
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: userName, password: password);
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          return 'The password provided is too weak.';
-        } else if (e.code == 'email-already-in-use') {
-          return 'The account already exists for that email.';
-        }
-      } catch (e) {
-        return e.toString();
-      }
-      return null;
-    });
   }
 
 
@@ -509,7 +470,7 @@ class _LoginScreenState extends State<LoginScreen>
                                     });
                                     if (logging) {
                                       Future.delayed(const Duration(milliseconds: 300), () async{
-                                        String auth = await _authUser(nameController.text, passwordController.text);
+                                        String auth = await FirestoreUtils().authUser(nameController.text, passwordController.text);
                                         if (auth == null){
                                             setState(() {
                                               _state = 2;
@@ -550,7 +511,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       }
                                       else{
                                         Future.delayed(const Duration(milliseconds: 300), () async{
-                                          String auth = await _registerUser(nameController.text,passwordController.text);
+                                          String auth = await FirestoreUtils().registerUser(nameController.text,passwordController.text);
                                           if (auth == null){
                                             setState(() {
                                               _state = 2;
@@ -661,6 +622,5 @@ class _LoginScreenState extends State<LoginScreen>
     catch(e){
       //
     }
-
   }
 }
