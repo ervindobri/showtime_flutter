@@ -71,6 +71,8 @@ dependencies:
   slide_countdown_clock: ^1.0.3
   google_fonts: ^1.1.1
   snapping_sheet: ^2.0.1
+#  sticky_grouped_list: ^1.2.0
+  sticky_and_expandable_list: ^0.2.3
 
 dev_dependencies:
   flutter_test:
@@ -98,6 +100,7 @@ flutter:
      - empty.flr
      - empty-blue.flr
      - ohno.flr
+     - loadingcouch.flr
      - showtime-avatar.png
   #   - images/a_dot_ham.jpeg
 

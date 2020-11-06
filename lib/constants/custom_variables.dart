@@ -53,14 +53,14 @@ List<WatchedTVShow> list = new List<WatchedTVShow>();
 List<WatchedTVShow> allWatchedShows = new List<WatchedTVShow>();
 
 const Map<String, Badge> allBadges = {
-  "fresh" : Badge(icon: FontAwesomeIcons.fire, colors:[fireColor, Colors.orange]),
-  "paused" : Badge(icon: FontAwesomeIcons.pause, colors:[Colors.purple, Colors.indigo]),
-  "justStarted" : Badge(icon: FontAwesomeIcons.airFreshener, colors:[goldColor, lightGoldColor]),
-  "watching" : Badge(icon: FontAwesomeIcons.hourglassHalf, colors:[greyTextColor, Colors.white54]),
-  "finished" : Badge(icon: FontAwesomeIcons.checkDouble, colors:[greenColor, Colors.greenAccent]),
-  "hasMoreEpisodes" : Badge(icon: FontAwesomeIcons.pizzaSlice, colors:[Colors.orangeAccent, Colors.orange]),
-  "waiting" : Badge(icon: FontAwesomeIcons.stopwatch20, colors:[Colors.lightBlue, blueColor]),
-  "favorite" : Badge(icon: FontAwesomeIcons.solidHeart, colors:[pinkColor,lightPinkColor]),
+  "fresh" : Badge(description: "Fresh", icon: FontAwesomeIcons.fire, colors:[fireColor, Colors.orange]),
+  "paused" : Badge(description: "Paused watching",icon: FontAwesomeIcons.pause, colors:[Colors.purple, Colors.indigo]),
+  "justStarted" : Badge(description: "Just started",icon: FontAwesomeIcons.airFreshener, colors:[goldColor, lightGoldColor]),
+  "watching" : Badge(description: "Watching",icon: FontAwesomeIcons.hourglassHalf, colors:[greyTextColor, Colors.white54]),
+  "finished" : Badge(description: "Finished",icon: FontAwesomeIcons.checkDouble, colors:[greenColor, Colors.greenAccent]),
+  "hasMoreEpisodes" : Badge(description: "Running",icon: FontAwesomeIcons.pizzaSlice, colors:[Colors.orangeAccent, Colors.orange]),
+  "waiting" : Badge(description: "Waiting for new episodes",icon: FontAwesomeIcons.stopwatch20, colors:[Colors.lightBlue, blueColor]),
+  "favorite" : Badge(description: "Favorite",icon: FontAwesomeIcons.solidHeart, colors:[pinkColor,lightPinkColor]),
 };
 
 

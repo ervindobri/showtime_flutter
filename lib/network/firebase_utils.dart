@@ -1,18 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/models/tvshow_details.dart';
+import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../main.dart';
+import 'network.dart';
 
 //TODO: REFACTOR FIRESTORE- CODE USAGES
 
 class FirestoreUtils{
-  final CollectionReference watchedShows = FirebaseFirestore.instance.collection('${auth.currentUser.email}/shows/watched_shows');
-  final CollectionReference favorites = FirebaseFirestore.instance.collection("${auth.currentUser.email}/shows/favorites");
-  final CollectionReference searchHistory = FirebaseFirestore.instance.collection("${auth.currentUser.email}/shows/search_history");
-  final DocumentReference userProfile = FirebaseFirestore.instance.doc("${auth.currentUser.email}/user");
+  final CollectionReference watchedShows = FirebaseFirestore.instance.collection('${auth.currentUser?.email}/shows/watched_shows');
+  final CollectionReference favorites = FirebaseFirestore.instance.collection("${auth.currentUser?.email}/shows/favorites");
+  final CollectionReference searchHistory = FirebaseFirestore.instance.collection("${auth.currentUser?.email}/shows/search_history");
+  final DocumentReference userProfile = FirebaseFirestore.instance.doc("${auth.currentUser?.email}/user");
   final Duration loginTime = Duration(milliseconds: 600);
 
 
@@ -158,7 +161,50 @@ class FirestoreUtils{
       return null;
     });
   }
+  Future<List<List<Episode>>> getEpisodeList(List<int> watchedShowIdList) async {
+    EpisodeList episodes = await Network().getScheduledEpisodes();
+    List<List<Episode>> list = [];
 
+    watchedShowIdList.forEach((id) {
+      List<Episode> current = new List<Episode>();
+      episodes.episodes.forEach((episode) {
+        if (episode.embedded['show']['id'] == id) {
+          current.add(episode);
+        }
+      });
+      if (current.length > 0) {
+        list.add(current);
+      }
+    });
 
+    //Sort by airdate instead id
+    list.sort((a, b) => a[0].airDate.compareTo(b[0].airDate));
+    // print("Scheduled shows:${list.length}");
+    return list;
+  }
+
+  Future<SessionUser> getUserData() async {
+    String currID = auth.currentUser.email;
+    // print(currID);
+    SessionUser user = SessionUser();
+    var snapshots = FirebaseFirestore.instance
+        .doc("$currID/user")
+        .snapshots();
+    snapshots.forEach((element) {
+      if ( element.exists){
+        user.id = auth.currentUser.uid;
+        user.emailAddress = currID;
+        user.firstName = element.data()['firstName'];
+        user.lastName = element.data()['lastName'];
+        user.sex = element.data()['sex'];
+        user.age = element.data()['age'];
+        // var sessionUser = user = SessionUser.fromSnapshot(element.data());
+        // user = SessionUser(emailAddress: auth.currentUser.email,firstName: element.data()['firstName'],lastName: element.data()['lastName'], sex: element.data()['sex'] ,age: element.data()['age']);
+        return user;
+      }
+    });
+
+    return user;
+  }
 }
 

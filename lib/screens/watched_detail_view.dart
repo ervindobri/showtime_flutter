@@ -286,6 +286,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
             ),
           );
   }
+  //TODO: REFACTOR FIRESTORE
   updateEpisode(WatchedTVShow show) {
     FirebaseFirestore.instance
         .collection("${auth.currentUser.email}/shows/watched_shows")

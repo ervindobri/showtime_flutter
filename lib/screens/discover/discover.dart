@@ -1,4 +1,4 @@
-import 'package:eWoke/screens/discover/MostPopularShows.dart';
+import 'package:eWoke/screens/discover/most_popular_shows.dart';
 import 'package:eWoke/screens/discover/discover_contents.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -143,7 +143,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
 
-    if (listController.hasClients) debugPrint(listController.position.toString());
+    // if (listController.hasClients) debugPrint(listController.position.toString());
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -463,10 +463,10 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   Widget createListView() {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    log(_searchTerm);
-    log(listController.hasClients.toString());
+    // log(_searchTerm);
+    // log(listController.hasClients.toString());
     if ( allWatchedShows.isNotEmpty){
-      log("already fetched");
+      // log("already fetched");
       var temp = sortedList.where((e) => e.name.toLowerCase().contains( _searchTerm.toLowerCase())).toList();
       if ( temp.length > 0){
         return WatchlistView(
@@ -542,11 +542,11 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     }
     else{
         if (!_sorting){
-          log("not sorting");
+          // log("not sorting");
           return StreamBuilder(
               stream: _watchedShowsStream,
               builder: (_, snapshot) {
-                log("stream");
+                // log("stream");
                 List<Widget> children;
                 // ignore: missing_enum_constant_in_switch
                 switch( snapshot.connectionState){
@@ -580,7 +580,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                     default:
                       list.clear();
                       allWatchedShows.clear();
-                      log("cleared watched tv show lists");
+                      // log("cleared watched tv show lists");
                       snapshot.data.documents.forEach((f) {
                         WatchedTVShow show = new WatchedTVShow(
                           id: f.documentID,

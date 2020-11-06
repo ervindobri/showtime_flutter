@@ -32,13 +32,17 @@ import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class HomeView extends StatefulWidget {
+  final SessionUser user;
+  final List<WatchedTVShow> watchedShowsList;
+  final List<Episode> notAiredList;
+
+  const HomeView({Key key, this.user, this.watchedShowsList, this.notAiredList}) : super(key: key);
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
-   Stream<QuerySnapshot> _watchedShowsStream;
-   Stream<QuerySnapshot> _allWatchedShowsStream;
+
 
    PanelState _panelState;
   Widget title =
@@ -50,19 +54,13 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   PanelController _pc = new PanelController();
 
 
-   StreamSubscription<ConnectivityResult> subscription;
-  var connectionStatus;
 
-   Future<List<List<Episode>>> _scheduledEpisodes;
-  List<int> watchedShowIdList = [];
 
   bool disconnected = true;
 
 
 
-   Future<SessionUser> _currentUserObject;
 
-  SessionUser currentUser = SessionUser();
   String firstName = "";
   String lastName = "";
   int age = 0;
@@ -76,25 +74,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     // TODO: implement initState
     super.initState();
     _panelState = PanelState.CLOSED;
-    watchedShowList.clear();
+    // watchedShowList.clear();
     _customTitle = title;
-    allWatchedShows.clear();
+    // allWatchedShows.clear();
 
-    //Listen to actve/inactive connection
-    subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      setState(() {
-        connectionStatus = result;
-      });
-    });
 
-    _currentUserObject = getUserData();
-
-    _allWatchedShowsStream = FirebaseFirestore.instance
-        .collection("${auth.currentUser.email}/shows/watched_shows")
-        .orderBy('lastWatched', descending: true)
-        .snapshots();
+    print(widget.notAiredList.length);
     print("init");
 
 
@@ -473,22 +458,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   @override
   void dispose(){
-    _allWatchedShowsStream = null;
-    _watchedShowsStream = null;
-    subscription = null;
-    _currentUserObject = null;
+
     _pc = null;
     super.dispose();
   }
 
-  bool checkInternetConnectivity() {
-    if (connectionStatus == ConnectivityResult.none) {
-        return false;
-    }
-    else{
-      return true;
-    }
-  }
+
 
   BorderRadiusGeometry radius = BorderRadius.only(
     topLeft: Radius.circular(50.0),
@@ -497,7 +472,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   final double _initFabHeight = 120.0;
   double _panelHeightOpen;
-  double _panelHeightClosed = 50.0;
+
 
   @override
   Widget build(BuildContext context) {
@@ -516,9 +491,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         .of(context)
         .size
         .height * .80;
-    checkInternetConnectivity();
 
-
+    final double _panelHeightClosed = _height/10;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       //new line
@@ -597,7 +571,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Text(
-                                    "${currentUser.firstName}",
+                                    "${widget.user.firstName}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -624,7 +598,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Text(
-                                    "${currentUser.lastName}",
+                                    "${widget.user.lastName}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -652,7 +626,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Text(
-                                    "${currentUser.age}",
+                                    "${widget.user.age}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -679,7 +653,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     ),
                                   ),
                                   Text(
-                                    "${currentUser.sex}",
+                                    "${widget.user.sex}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -851,33 +825,29 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       body: Container(
         color: greenColor,
         child: SafeArea(
-          child: checkInternetConnectivity()
-              ? homeScreenBody(context, _slidingPanelKey)
-              : Container(
-            width: _width,
-            height: _height,
-
-            child: FlareActor("assets/no internet.flr",
-                alignment: Alignment.center,
-                fit: BoxFit.contain,
-                animation: "play"),
-          ),
+          child:
+          // checkInternetConnectivity()
+              // ?
+          homeScreenBody(context, _slidingPanelKey)
+          //     : Container(
+          //   width: _width,
+          //   height: _height,
+          //
+          //   child: FlareActor("assets/no internet.flr",
+          //       alignment: Alignment.center,
+          //       fit: BoxFit.contain,
+          //       animation: "play"),
+          // ),
         ),
       ),
     );
   }
 
   Widget homeScreenBody(BuildContext context, GlobalKey<ScaffoldState> _slidingPanelKey) {
-      if ( auth.currentUser != null){
-        _watchedShowsStream = FirebaseFirestore.instance
-            .collection("${auth.currentUser.email}/shows/watched_shows")
-            .orderBy('lastWatched', descending: true)
-            .snapshots();
-      }
-      double _width = MediaQuery.of(context).size.width;
-      double _height = MediaQuery.of(context).size.height;
-      _panelHeightOpen = MediaQuery.of(context).size.height * .80;
-
+      final double _width = MediaQuery.of(context).size.width;
+      final double _height = MediaQuery.of(context).size.height;
+      final _panelHeightOpen = _height * .80;
+      final _panelHeightClosed = _height/10;
       return Center(
         child: Stack(
                 children: <Widget>[
@@ -916,57 +886,16 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
-                                FutureBuilder(
-                                    future: _currentUserObject,
-                                  builder: (context, snapshot) {
-                                      if  (snapshot.hasData){
-                                        currentUser = snapshot.data;
-                                        // print("User data fetched!${snapshot.data.firstName}");
-                                        if ( snapshot.data.firstName != null) {
-                                          return Center(
-                                            child: Text(
-                                              showGreetings(firstName),
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontFamily: 'Raleway',
-                                                  fontSize: 22,
-                                                  fontWeight: FontWeight.w700
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                        else{
-                                          //show alert dialog to complete profile
-                                          // Timer.run(() => _showDialog());
-                                          return Center(
-                                            child: InkWell(
-                                              onTap:(){
-                                                Timer.run(() => _showDialog());
-                                              },
-                                              child: Text(
-                                                "Complete profile",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontFamily: 'Raleway',
-                                                    fontSize: 22,
-                                                    fontWeight: FontWeight.w700
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }
-
-                                      }
-                                      else{
-                                        return Container(
-                                          child: Center(
-                                            child: CircularProgressIndicator(
-                                              valueColor: AlwaysStoppedAnimation(Colors.white),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                  }
+                                Center(
+                                  child: Text(
+                                    showGreetings(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Raleway',
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.w700
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -1247,132 +1176,67 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         Container(
                                           child: Align(
                                               alignment: Alignment.bottomCenter,
-                                              child: StreamBuilder(
-                                                  stream: _watchedShowsStream,
+                                              child: widget.watchedShowsList.length > 0
+                                                ? StreamBuilder(
+                                                  stream:  FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots(),
                                                   builder: (context, snapshot) {
-                                                    List<Widget> children = [Container()];
-                                                    if (snapshot.hasError) {
-                                                      children = <Widget>[
-                                                        Icon(
-                                                          Icons.error_outline,
-                                                          color: Colors.white,
-                                                          size: 60,
-                                                        ),
-                                                        Padding(
-                                                          padding:
-                                                          const EdgeInsets.only(
-                                                              top: 16),
-                                                          child: Text(
-                                                              'Error: ${snapshot.error}'),
-                                                        )
-                                                      ];
-                                                    } else {
-                                                      switch (
-                                                      snapshot.connectionState) {
-                                                        case ConnectionState.waiting:
-                                                          print("waiting");
-  //                                                    children = <Widget>[ createCarouselSlider(watchedShowList, context) ];
-                                                          children = <Widget>[
-                                                            Container(
-                                                              height: MediaQuery.of(
-                                                                  context)
-                                                                  .size
-                                                                  .height *
-                                                                  0.4,
-                                                              child: Center(
-                                                                child: Theme(
-                                                                  data: Theme.of(
-                                                                      context)
-                                                                      .copyWith(
-                                                                      accentColor:
-                                                                      Colors
-                                                                          .white),
-                                                                  child:
-                                                                  CircularProgressIndicator(
-                                                                    strokeWidth: 6.5,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            )
-                                                          ];
-                                                          break;
-                                                        case ConnectionState.done:
-                                                          print("done");
-                                                          watchedShowList.clear();
-                                                          allWatchedShows.clear();
-                                                          snapshot.data.documents
-                                                              .forEach((f) {
-                                                            // print(f.data);
-                                                            WatchedTVShow show = new WatchedTVShow(
-                                                                id: f.documentID,
-                                                                name:
-                                                                f.data()['name'],
-                                                                startDate: f.data()[
-                                                                'start_date'],
-                                                                runtime: f.data()[
-                                                                'runtime'],
-                                                                imageThumbnailPath: f.data()[
-                                                                'image_thumbnail_path'],
-                                                                totalSeasons: f.data()[
-                                                                'total_seasons'],
-                                                                episodePerSeason: f.data()[
-                                                                'episodesPerSeason'],
-                                                                currentSeason: f.data()[
-                                                                'currentSeason'],
-                                                                currentEpisode: f.data()[
-                                                                'currentEpisode'],
-                                                                firstWatchDate: f.data()[
-                                                                'startedWatching'],
-                                                                rating: f.data()['rating'],
-                                                                lastWatchDate:
-                                                                f.data()['lastWatched'],
-                                                                favorite: f.data()['favorite'] ?? false);
-                                                            watchedShowList.add(show);
-                                                            allWatchedShows.add(show);
-                                                          });
-                                                          children = <Widget>[
-                                                            createCarouselSlider(
-                                                                watchedShowList.take(5).toList(),
-                                                                context)
-                                                          ];
-                                                          break;
-                                                        case ConnectionState.none:
-                                                          // TODO: Handle this case.
-                                                          print("no connection");
-                                                          break;
-                                                        case ConnectionState.active:
-                                                          // TODO: Handle this case.
-                                                          print("active");
-                                                          children = [
-                                                            Container(
-                                                              height: _height/3,
-                                                              child: Center(
-                                                                child: Padding(
-                                                                  padding: const EdgeInsets.all(25.0),
-                                                                  child: Text(
-                                                                    "Press the eye above for magic",
-                                                                    textAlign: TextAlign.center,
-                                                                    style: TextStyle(
-                                                                      color: Colors.white,
-                                                                      fontFamily: 'Raleway',
-                                                                      fontSize: _height/25
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              )
-                                                            )
-                                                          ];
-                                                          break;
-                                                      }
+                                                    if (snapshot.hasData){
+                                                      watchedShowList.clear();
+                                                      // allWatchedShows.clear();
+                                                      snapshot.data.documents
+                                                          .forEach((f) {
+                                                        // print(f.data);
+                                                        WatchedTVShow show = new WatchedTVShow(
+                                                            id: f.documentID,
+                                                            name:
+                                                            f.data()['name'],
+                                                            startDate: f.data()[
+                                                            'start_date'],
+                                                            runtime: f.data()[
+                                                            'runtime'],
+                                                            imageThumbnailPath: f.data()[
+                                                            'image_thumbnail_path'],
+                                                            totalSeasons: f.data()[
+                                                            'total_seasons'],
+                                                            episodePerSeason: f.data()[
+                                                            'episodesPerSeason'],
+                                                            currentSeason: f.data()[
+                                                            'currentSeason'],
+                                                            currentEpisode: f.data()[
+                                                            'currentEpisode'],
+                                                            firstWatchDate: f.data()[
+                                                            'startedWatching'],
+                                                            rating: f.data()['rating'],
+                                                            lastWatchDate:
+                                                            f.data()['lastWatched'],
+                                                            favorite: f.data()['favorite'] ?? false);
+                                                        watchedShowList.add(show);
+                                                        // allWatchedShows.add(show);
+                                                      });
                                                     }
-                                                    return Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                      crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                      children: children,
-                                                    );
-                                                  })),
+                                                    return createCarouselSlider(
+                                                        watchedShowList.take(5).toList(),
+                                                      context);
+                                                  }
+                                                )
+                                                : Container(
+                                                  height: _height/3,
+                                                  child: Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(25.0),
+                                                        child: Text(
+                                                          "Press the eye above for magic",
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontFamily: 'Raleway',
+                                                              fontSize: _height/25
+                                                          ),
+                                                        ),
+                                                      )
+                                                  )
+                                              )
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -1509,10 +1373,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Widget _buildScheduledShowView() {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    final _allWatchedShowsStream = FirebaseFirestore.instance
-        .collection("${auth.currentUser.email}/shows/watched_shows")
-        .orderBy('lastWatched', descending: true)
-        .snapshots();
+    // final _allWatchedShowsStream = FirebaseFirestore.instance
+    //     .collection("${auth.currentUser.email}/shows/watched_shows")
+    //     .orderBy('lastWatched', descending: true)
+    //     .snapshots();
 
     //TODO: fix false empty schedule
     return Container(
@@ -1520,170 +1384,29 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       height: _height * .41,
       // color: blueColor,
       color: bgColor,
-
-      child: watchedShowIdList.length == 0
-          ? StreamBuilder(
-              stream: _allWatchedShowsStream,
-              builder: (context, snapshot) {
-                // print(snapshot.connectionState);
-                if (snapshot.hasData) {
-                  watchedShowIdList.clear();
-                  snapshot.data.documents.forEach((f) {
-                    watchedShowIdList.add(int.parse(f.documentID));
-                  });
-                  _scheduledEpisodes = getEpisodeList(watchedShowIdList);
-
-                  // print("fetching scheduled episodes");
-
-                  return Center(
-                    child: FutureBuilder(
-                      future: _scheduledEpisodes,
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        print("building scheduled view");
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.waiting:
-                            return Container(
-                              // height: MediaQuery.of(context).size.height * 0.4,
-                              child: Shimmer.fromColors(
-                                loop: 1,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: 2,
-                                    itemBuilder: (_, index) =>
-                                        ScheduleCardPlaceholder()),
-                                baseColor: Colors.grey[300],
-                                highlightColor: Colors.white,
-                              ),
+      child: widget.notAiredList.length > 0
+              ? ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.notAiredList.length < 5
+                        ? widget.notAiredList.length
+                        : 5,
+                    itemBuilder: (context, int index) {
+                            return Center(
+                                child: ScheduleCard(
+                                    episode: widget.notAiredList[index])
                             );
-                          default:
-                              print("building list${snapshot.data.length}" );
-                              return snapshot.data.length == 0
-                                  ? Container(
-                                  width: _width*.8,
-                                  child: SizedBox(
-                                      child: FlareActor(
-                                          "assets/empty.flr",
-                                        animation: "Idle",
-                                      )
-                                  )
-                              ) : ListView.builder(
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: snapshot.data.length < 5
-                                      ? snapshot.data.length
-                                      : 5,
-                                  itemBuilder: (context, int index) {
-                                      scheduledEpisodes.add(snapshot.data[index]);
-                                      int notAired = snapshot.data[index].length - 1;
-                                      for(int i=0; i< snapshot.data[index].length ; i++){
-                                          if ( !snapshot.data[index][i].aired()){
-                                            notAired = i;
-                                            break;
-
-                                          }
-                                      }
-                                      return Center(
-                                          child: ScheduleCard(
-                                              episode: snapshot.data[index][notAired]));
-                                  });
-
-                            return Text('Result: ${snapshot.data}');
-                        }
-                      },
-                    ),
-                  );
-
-                } else {
-                  // print("no scheduled view");
-                  return Container(
+                    }
+                )
+                : Container(
                     child: SizedBox(
                       child: FlareActor(
                         "assets/empty.flr"
                       )
                     )
-                  );
-                }
-              })
-          : Center(
-              child: FutureBuilder(
-                future: _scheduledEpisodes,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if ( snapshot.hasData){
-                    print("schedyled shows");
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Container(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          child: Shimmer.fromColors(
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: 3,
-                                itemBuilder: (_, index) =>
-                                    ScheduleCardPlaceholder()),
-                            baseColor: Colors.grey[100],
-                            highlightColor: Colors.grey[300],
-                          ),
-                        );
-                      case ConnectionState.done:
-                        scheduledEpisodes.clear();
-                        snapshot.data.forEach((list) {
-                          scheduledEpisodes.add(list);
-                        });
-                        return ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (context, int index) {
-//                            print(snapshot.data[index]);
-                              int notAired = snapshot.data[index].length - 1;
-                              for(int i=0; i< snapshot.data[index].length ; i++){
-                                if ( !snapshot.data[index][i].aired()){
-                                  notAired = i;
-                                  break;
-                                }
-                              }
-                              return Center(
-                                  child: ScheduleCard(
-                                      episode: snapshot.data[index][notAired]));
-                            });
-                    }
-                  }
-                  else{
-                    print("no schedyled shows");
-                    return Container(
-                        child: SizedBox(
-                            child: FlareActor(
-                                "assets/empty.flr"
-                            )
-                        )
-                    );
-                  }
-
-                },
-              ),
-            ),
-    );
+                  )
+      );
   }
 
-  Future<List<List<Episode>>> getEpisodeList(List<int> watchedShowIdList) async {
-      EpisodeList episodes = await Network().getScheduledEpisodes();
-      List<List<Episode>> list = [];
-
-    watchedShowIdList.forEach((id) {
-      List<Episode> current = new List<Episode>();
-      episodes.episodes.forEach((episode) {
-        if (episode.embedded['show']['id'] == id) {
-          current.add(episode);
-        }
-      });
-      if (current.length > 0) {
-        list.add(current);
-      }
-    });
-
-    //Sort by airdate instead id
-    list.sort((a, b) => a[0].airDate.compareTo(b[0].airDate));
-    // print("Scheduled shows:${list.length}");
-    return list;
-  }
 
   Widget _createRouteShowDetail(List<WatchedTVShow> data, int index) {
     double _height = MediaQuery.of(context).size.height;
@@ -1749,35 +1472,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   }
 
 
-  Future<SessionUser> getUserData() async {
-    String currID = auth.currentUser.email;
-    // print(currID);
-    SessionUser user = SessionUser();
-    var snapshots = FirebaseFirestore.instance
-        .doc("$currID/user")
-        .snapshots();
-    snapshots.forEach((element) {
-      if ( element.exists){
-        setState(() {
-          firstName = element.data()['firstName'];
-        });
-        user.id = auth.currentUser.uid;
-        user.emailAddress = currID;
-        user.firstName = firstName;
-        user.lastName = element.data()['lastName'];
-        user.sex = element.data()['sex'];
-        user.age = element.data()['age'];
-        // var sessionUser = user = SessionUser.fromSnapshot(element.data());
-        // user = SessionUser(emailAddress: auth.currentUser.email,firstName: element.data()['firstName'],lastName: element.data()['lastName'], sex: element.data()['sex'] ,age: element.data()['age']);
-        return user;
-      }
-    });
 
-    return user;
 
-  }
-
-  String showGreetings(String firstName) {
+  String showGreetings() {
     var timeNow = DateTime.now().hour;
     String greetings =  "";
     if (timeNow <= 12) {
@@ -1790,7 +1487,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       greetings =  'Good Night';
     }
     // print(firstName);
-    return greetings + ", ${firstName}!";
+    return greetings + ", ${widget.user.firstName}!";
   }
 
 

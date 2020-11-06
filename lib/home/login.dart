@@ -2,6 +2,7 @@
 import 'dart:ui';
 
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/home/splash.dart';
 import 'package:eWoke/main.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -470,8 +471,9 @@ class _LoginScreenState extends State<LoginScreen>
                                     });
                                     if (logging) {
                                       Future.delayed(const Duration(milliseconds: 300), () async{
-                                        String auth = await FirestoreUtils().authUser(nameController.text, passwordController.text);
-                                        if (auth == null){
+                                        print(auth.currentUser);
+                                        String authenticate = await FirestoreUtils().authUser(nameController.text, passwordController.text);
+                                        if (authenticate == null){
                                             setState(() {
                                               _state = 2;
                                             });
@@ -483,7 +485,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                       _storage.write(key: 'password', value: passwordController.text);
                                                       // print("saved");
                                                   }
-                                                  final home = HomeView();
+                                                  final home = SplashScreen();
                                                     Navigator.of(context)
                                                         .pushAndRemoveUntil(CupertinoPageRoute(
                                                       builder: (context) => home,
@@ -496,7 +498,7 @@ class _LoginScreenState extends State<LoginScreen>
                                             _state = 0;
                                           });
                                           Fluttertoast.showToast(
-                                              msg: "$auth",
+                                              msg: "$authenticate",
                                               toastLength: Toast.LENGTH_LONG,
                                               backgroundColor: orangeColor,
                                               gravity: ToastGravity.BOTTOM,
@@ -511,8 +513,8 @@ class _LoginScreenState extends State<LoginScreen>
                                       }
                                       else{
                                         Future.delayed(const Duration(milliseconds: 300), () async{
-                                          String auth = await FirestoreUtils().registerUser(nameController.text,passwordController.text);
-                                          if (auth == null){
+                                          String authenticate = await FirestoreUtils().registerUser(nameController.text,passwordController.text);
+                                          if (authenticate == null){
                                             setState(() {
                                               _state = 2;
                                             });
@@ -530,7 +532,7 @@ class _LoginScreenState extends State<LoginScreen>
                                               _state = 0;
                                             });
                                             Fluttertoast.showToast(
-                                                msg: "$auth",
+                                                msg: "$authenticate",
                                                 toastLength: Toast.LENGTH_LONG,
                                                 backgroundColor: orangeColor,
                                                 gravity: ToastGravity.BOTTOM,
