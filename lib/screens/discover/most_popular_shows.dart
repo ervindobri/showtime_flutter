@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/components/example_section.dart';
 import 'package:eWoke/components/popular_appbar.dart';
@@ -12,9 +13,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:simple_animations/simple_animations.dart';
-// import 'package:sticky_grouped_list/sticky_grouped_list.dart';
-import 'package:sticky_and_expandable_list/sticky_and_expandable_list.dart';
-
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class MostPopularShows extends StatefulWidget {
   @override
@@ -48,23 +48,48 @@ class _MostPopularShowsState extends State<MostPopularShows>
   int nrShows = 10;
 
   int maxShows = 100;
+
+  var _selectedIndex = 0;
+
+  Map<int, List<dynamic>> limitMap = {
+    1: [0, "1-10"],
+    2: [10, "11-20"],
+    3: [20, "21-30"],
+    4: [30, "31-40"],
+    5: [40, "41-50"],
+    6: [50, "51-60"],
+    7: [60, "61-70"],
+    8: [70, "71-80"],
+    9: [80, "81-90"],
+    10: [90, "91-100"],
+  };
+
+  PageController pageController;
+
+  int maxPages = 10;
+  String label = "";
+  var pink = const Color(0xFFFF006F);
+
+  
   @override
   void initState() {
     // TODO: implement initState
     nrShows += threshold;
     // maxShows = nrShows*10 + threshold;
 
-
     animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
-    sizeAnimation = Tween(begin: 1.0, end: 0.0).animate(
-        CurvedAnimation(
-            curve: Curves.fastOutSlowIn, parent: animationController));
+    sizeAnimation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+        curve: Curves.fastOutSlowIn, parent: animationController));
     animationController.forward();
 
+    pageController = PageController(
+      initialPage: _selectedIndex,
+    );
+    
     super.initState();
     print("mps");
     //in the initState() or use it how you want...
@@ -75,6 +100,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
           "currentCountry": "US",
           "homeCountry": "US"
         });
+    label = limitMap[1][1];
   }
 
   @override
@@ -98,345 +124,638 @@ class _MostPopularShowsState extends State<MostPopularShows>
     // print(sortedList.length);
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        toolbarHeight: 0,
+        brightness: Brightness.dark,
+        backgroundColor: pink,
+        shadowColor: Colors.transparent,
+      ),
       body: Container(
-        color: const Color(0xFFFF006F),
+        color: pink,
         child: SafeArea(
           child: Container(
-            color: const Color(0xFFFF006F),
+            color: pink,
             child: FutureBuilder(
                 future: future,
                 builder: (context, snapshot) {
-                  if (popularShows.isNotEmpty) {
-                    print("fetched already");
+                  if ( limitedShows.isNotEmpty){
                     return CustomScrollView(
-                      physics: NeverScrollableScrollPhysics(),
                       // key: UniqueKey(),
-                      controller: _controller,
-                      slivers: [
-                        SliverPersistentHeader(
-                          pinned: true,
-                          floating: true,
-                          delegate: PopularSliverDelegate(
-                            back: back(context),
-                            child: Container(
-                              width: _width,
-                              decoration: BoxDecoration(
-                                  color: const Color(0xFFFF006F),
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(25.0),
-                                    bottomRight: Radius.circular(25.0),
-                                  )),
-                              // color: Colors.black,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 30.0, vertical: 10),
-                                    child: _textField(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            hideTitleWhenExpanded: true,
-                            expandedHeight: _height * .15,
-                          ),
-                        ),
-                        SliverFillRemaining(
-                          child: ListView(
-                            // direction: Axis.vertical,
-                            children: [
-                              if(!animationController.isCompleted)SizeTransition(
-                                axis: Axis.vertical,
-                                axisAlignment: 1,
-                                sizeFactor: sizeAnimation,
-                                child: Container(
-                                  height: _height / 2,
-                                  decoration: BoxDecoration(
-                                      color: const Color(0xFFFF006F),
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(sliverRadius),
-                                        topRight: Radius.circular(sliverRadius),
-                                      )),
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: _controller,
+                        slivers: [
+                          SliverPersistentHeader(
+                            delegate: PopularSliverDelegate(
+                              child: Container(
+                                width: _width,
+                                height: _height * .15,
+                                decoration: BoxDecoration(
+                                    color: pink,
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(25.0),
+                                      bottomRight: Radius.circular(25.0),
+                                    )),
+                                // color: Colors.black,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30.0, vertical: 10),
+                                      child: _textField(),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Container(
-                                  height: _height,
-                                  decoration: BoxDecoration(
-                                      color: bgColor,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(sliverRadius),
-                                        topRight: Radius.circular(sliverRadius),
-                                      )),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
-                                    child: mostPopularList(popularShows),
-                                  )),
-                            ],
+                              expandedHeight: _height * .15,
+                              back: back(context),
+                            ),
                           ),
-                        ),
-                      ],
-                    );
-                  }
-                  else {
-                    if (snapshot.hasData) {
-                      // popular.clear();
-                      print(snapshot.data.length);
-                      if (popular == null) {
-                        getShowLinks(snapshot.data.take(maxShows));
-                        popular = getShowList();
-                      }
-                      // print(popular.length);
-                      return FutureBuilder(
-                          future: popular,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData &&
-                                snapshot.connectionState ==
-                                    ConnectionState.done) {
-                              popularShows = snapshot.data;
-                              return CustomScrollView(
-                                // key: UniqueKey(),
-                                physics: NeverScrollableScrollPhysics(),
-                                controller: _controller,
-                                slivers: [
-                                  SliverPersistentHeader(
-                                    delegate: PopularSliverDelegate(
-                                      child: Container(
-                                        width: _width,
-                                        height: _height * .15,
-                                        decoration: BoxDecoration(
-                                            color: const Color(0xFFFF006F),
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(25.0),
-                                              bottomRight:
-                                                  Radius.circular(25.0),
-                                            )),
-                                        // color: Colors.black,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 30.0,
-                                                      vertical: 10),
-                                              child: _textField(),
-                                            ),
-                                          ],
+                          SliverFillRemaining(
+                            child: Stack(
+                              children: [
+                                ListView(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  // direction: Axis.vertical,
+                                  children: [
+                                    if (!animationController.isCompleted)
+                                      SizeTransition(
+                                        axis: Axis.vertical,
+                                        axisAlignment: 1,
+                                        sizeFactor: sizeAnimation,
+                                        child: Container(
+                                          height: _height / 2,
+                                          decoration: BoxDecoration(
+                                              color: pink,
+                                              borderRadius: BorderRadius.only(
+                                                topLeft:
+                                                Radius.circular(sliverRadius),
+                                                topRight:
+                                                Radius.circular(sliverRadius),
+                                              )),
                                         ),
                                       ),
-                                      expandedHeight: _height * .15,
-                                      back: back(context),
+                                    CarouselSlider.builder(
+                                      itemBuilder: (BuildContext context, int index) {
+                                        popular = getShowList(limitMap[index + 1]);
+                                        return FutureBuilder(
+                                            future: popular,
+                                            builder: (context, snapshot) {
+                                              // print(limitedShows.length);
+                                              if ( limitedShows != null && limitedShows.length > index){
+                                                return Container(
+                                                    height: _height,
+                                                    decoration: BoxDecoration(
+                                                        color: bgColor,
+                                                        borderRadius:
+                                                        BorderRadius.only(
+                                                          topLeft: Radius.circular(
+                                                              sliverRadius),
+                                                          topRight: Radius.circular(
+                                                              sliverRadius),
+                                                        )),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 10.0),
+                                                      child: mostPopularList(
+                                                          limitedShows[index]),
+                                                    ));
+                                              }
+                                              else{
+                                                if (snapshot.hasData) {
+                                                  limitedShows.add(snapshot.data);
+                                                  popularShows = [...limitedShows[index]]; //notice the spread operator
+                                                  return Container(
+                                                      height: _height,
+                                                      decoration: BoxDecoration(
+                                                          color: bgColor,
+                                                          borderRadius:
+                                                          BorderRadius.only(
+                                                            topLeft: Radius.circular(
+                                                                sliverRadius),
+                                                            topRight: Radius.circular(
+                                                                sliverRadius),
+                                                          )),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 10.0),
+                                                        child: mostPopularList(
+                                                            limitedShows[index]),
+                                                      ));
+                                                }
+                                                else {
+                                                  print("fetching data;");
+                                                  return Container(
+                                                    decoration: BoxDecoration(
+                                                        color: bgColor,
+                                                        borderRadius: BorderRadius.only(
+                                                          topLeft: Radius.circular(sliverRadius),
+                                                          topRight: Radius.circular(sliverRadius),
+                                                        )
+                                                    ),
+                                                    child: Shimmer.fromColors(
+                                                      highlightColor:
+                                                      Colors.white,
+                                                      baseColor:
+                                                      Colors.grey.shade300,
+                                                      direction:
+                                                      ShimmerDirection.ttb,
+                                                      child: StaggeredGridView
+                                                          .countBuilder(
+                                                        itemCount: 12,
+                                                        mainAxisSpacing: 4.0,
+                                                        crossAxisSpacing: 4.0,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                        context,
+                                                            int index) {
+                                                          return Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                8.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                  const EdgeInsets
+                                                                      .all(
+                                                                      8.0),
+                                                                  child:
+                                                                  Container(
+                                                                    height:
+                                                                    _height /
+                                                                        20,
+                                                                    width:
+                                                                    _width,
+                                                                    decoration:
+                                                                    BoxDecoration(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade300,
+                                                                      borderRadius:
+                                                                      _radius,
+                                                                      boxShadow: [
+                                                                        new BoxShadow(
+                                                                            color: Colors.black.withOpacity(
+                                                                                .3),
+                                                                            blurRadius:
+                                                                            15.0,
+                                                                            spreadRadius:
+                                                                            -4,
+                                                                            offset:
+                                                                            Offset(0, 5)),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding:
+                                                                  const EdgeInsets
+                                                                      .all(
+                                                                      8.0),
+                                                                  child:
+                                                                  Container(
+                                                                    height:
+                                                                    _height /
+                                                                        3.1,
+                                                                    width:
+                                                                    _width,
+                                                                    // color: Colors.blue,
+                                                                    decoration:
+                                                                    BoxDecoration(
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade300,
+                                                                      borderRadius:
+                                                                      _radius,
+                                                                      boxShadow: [
+                                                                        new BoxShadow(
+                                                                            color: Colors.black.withOpacity(
+                                                                                .3),
+                                                                            blurRadius:
+                                                                            15.0,
+                                                                            spreadRadius:
+                                                                            -4,
+                                                                            offset:
+                                                                            Offset(0, 5)),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                        crossAxisCount: 4,
+                                                        staggeredTileBuilder:
+                                                            (int index) =>
+                                                        new StaggeredTile
+                                                            .count(
+                                                            2,
+                                                            index.isEven
+                                                                ? 4
+                                                                : 4),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              }
+
+                                            });
+                                      },
+                                      options: CarouselOptions(
+                                          height: _height,
+                                          enableInfiniteScroll: false,
+                                          onPageChanged: (val, reason){
+                                            setState(() {
+                                              if ( val == 0){
+                                                _selectedIndex = val;
+                                              }
+                                              else if( val == maxPages -1 ){
+                                                _selectedIndex = 2;
+                                              }
+                                              else{
+                                                _selectedIndex = 1;
+                                                label = limitMap[val+1][1].toString();
+                                              }
+                                            });
+                                          },
+                                          aspectRatio: 1,
+                                          viewportFraction: 1,
+                                          initialPage: _selectedIndex),
+                                      itemCount: maxPages,
+                                    )
+                                  ],
+                                ),
+                                Positioned(
+                                  bottom: 20,
+                                  left: _width/2 - 100,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(25.0)
+                                      ),
+                                      child: GNav(
+                                        gap: 8,
+                                        iconSize: 20,
+                                        selectedIndex: _selectedIndex,
+                                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                        duration: Duration(milliseconds: 500),
+                                        color: Colors.grey[800],
+                                        activeColor: pink,
+                                        backgroundColor: pink,
+                                        tabBackgroundColor: Colors.white,
+                                        tabMargin: EdgeInsets.all(5),
+                                        textStyle: GoogleFonts.roboto(
+                                          fontSize: 15,
+                                          color: pink,
+                                        ),
+                                        tabs: [
+                                          GButton(
+                                            iconColor: Colors.white,
+                                            icon: FontAwesomeIcons.chevronCircleLeft,
+                                            text: '1-10',
+                                          ),
+                                          GButton(
+                                            text: label,
+                                            iconColor: Colors.white,
+                                            icon: Icons.queue_play_next_rounded,
+                                          ),
+                                          GButton(
+                                            text: '91-100',
+                                            iconColor: Colors.white,
+                                            icon: FontAwesomeIcons.chevronCircleRight
+                                          ),
+                                        ],
+                                        // onTabChange: (index) {
+                                        //   setState(() {
+                                        //     _selectedIndex = index;
+                                        //   });
+                                        // }),
+                                      ),
                                     ),
                                   ),
-                                  // displayLabel(_width),
-                                  SliverFillRemaining(
-                                    child: ListView(
-                                      // direction: Axis.vertical,
-                                      children: [
-                                        if(!animationController.isCompleted)SizeTransition(
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]);
+                  }
+                  else{
+                    if (snapshot.hasData) {
+                      getShowLinks(snapshot.data.take(maxShows));
+                      // popularShows.clear();
+                      return CustomScrollView(
+                        // key: UniqueKey(),
+                          physics: NeverScrollableScrollPhysics(),
+                          controller: _controller,
+                          slivers: [
+                            SliverPersistentHeader(
+                              delegate: PopularSliverDelegate(
+                                child: Container(
+                                  width: _width,
+                                  height: _height * .15,
+                                  decoration: BoxDecoration(
+                                      color: pink,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(25.0),
+                                        bottomRight: Radius.circular(25.0),
+                                      )),
+                                  // color: Colors.black,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 30.0, vertical: 10),
+                                        child: _textField(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                expandedHeight: _height * .15,
+                                back: back(context),
+                              ),
+                            ),
+                            SliverFillRemaining(
+                              child: Stack(
+                                children: [
+                                  ListView(
+                                    // direction: Axis.vertical,
+                                    children: [
+                                      if (!animationController.isCompleted)
+                                        SizeTransition(
                                           axis: Axis.vertical,
                                           axisAlignment: 1,
                                           sizeFactor: sizeAnimation,
                                           child: Container(
                                             height: _height / 2,
                                             decoration: BoxDecoration(
-                                                color: const Color(0xFFFF006F),
+                                                color: pink,
                                                 borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(sliverRadius),
-                                                  topRight: Radius.circular(sliverRadius),
+                                                  topLeft:
+                                                  Radius.circular(sliverRadius),
+                                                  topRight:
+                                                  Radius.circular(sliverRadius),
                                                 )),
                                           ),
                                         ),
-                                        Container(
-                                            height: _height,
-                                            decoration: BoxDecoration(
-                                                color: bgColor,
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(sliverRadius),
-                                                  topRight: Radius.circular(sliverRadius),
-                                                )),
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 10.0),
-                                              child: mostPopularList(popularShows),
-                                            )),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            } else {
-                              print("fetching data;");
-                              return CustomScrollView(
-                                // key: UniqueKey(),
-                                physics: NeverScrollableScrollPhysics(),
-                                controller: _controller,
-                                slivers: [
-                                  SliverPersistentHeader(
-                                    delegate: PopularSliverDelegate(
-                                      child: Container(
-                                        width: _width,
-                                        height: _height * .15,
-                                        decoration: BoxDecoration(
-                                            color: const Color(0xFFFF006F),
-                                            borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(25.0),
-                                              bottomRight:
-                                                  Radius.circular(25.0),
-                                            )),
-                                        // color: Colors.black,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 30.0,
-                                                      vertical: 10),
-                                              child: _textField(),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      expandedHeight: _height * .15,
-                                      back: Row(
-                                        children: [
-                                          Container(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 25.0),
-                                              child: InkWell(
-                                                onTap: () =>
-                                                    Navigator.pop(context),
-                                                child: Container(
-                                                  // color: CupertinoColors.black
-                                                  child: Row(
-                                                    children: [
-                                                      FaIcon(
-                                                        Icons.arrow_back_ios,
-                                                        size: 25,
-                                                        color: Colors.white,
+                                      CarouselSlider(
+                                        items: List.generate(maxPages, (index) {
+                                          popular = getShowList(limitMap[index + 1]);
+                                          return FutureBuilder(
+                                              future: popular,
+                                              builder: (context, snapshot) {
+                                                print(limitedShows.length);
+                                                if ( limitedShows != null && limitedShows.length > index){
+                                                  return Container(
+                                                      height: _height,
+                                                      decoration: BoxDecoration(
+                                                          color: bgColor,
+                                                          borderRadius:
+                                                          BorderRadius.only(
+                                                            topLeft: Radius.circular(
+                                                                sliverRadius),
+                                                            topRight: Radius.circular(
+                                                                sliverRadius),
+                                                          )),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 10.0),
+                                                        child: mostPopularList(
+                                                            limitedShows[index]),
+                                                      ));
+                                                }
+                                                else{
+                                                  if (snapshot.hasData) {
+                                                    limitedShows.add(snapshot.data);
+                                                    popularShows = [...limitedShows[index]]; //notice the spread operator
+                                                    return Container(
+                                                        height: _height,
+                                                        decoration: BoxDecoration(
+                                                            color: bgColor,
+                                                            borderRadius:
+                                                            BorderRadius.only(
+                                                              topLeft: Radius.circular(
+                                                                  sliverRadius),
+                                                              topRight: Radius.circular(
+                                                                  sliverRadius),
+                                                            )),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal: 10.0),
+                                                          child: mostPopularList(
+                                                              limitedShows[index]),
+                                                        ));
+                                                  }
+                                                  else {
+                                                    print("fetching data;");
+                                                    return Container(
+                                                      decoration: BoxDecoration(
+                                                          color: bgColor,
+                                                          borderRadius: BorderRadius.only(
+                                                            topLeft: Radius.circular(sliverRadius),
+                                                            topRight: Radius.circular(sliverRadius),
+                                                          )
                                                       ),
-                                                      Text(
-                                                        "Back",
-                                                        style: TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                          color: Colors.white,
-                                                          fontFamily: 'Raleway',
-                                                          fontSize: 20,
+                                                      child: Shimmer.fromColors(
+                                                        highlightColor:
+                                                        Colors.white,
+                                                        baseColor:
+                                                        Colors.grey.shade300,
+                                                        direction:
+                                                        ShimmerDirection.ttb,
+                                                        child: StaggeredGridView
+                                                            .countBuilder(
+                                                          itemCount: 12,
+                                                          mainAxisSpacing: 4.0,
+                                                          crossAxisSpacing: 4.0,
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                          context,
+                                                              int index) {
+                                                            return Padding(
+                                                              padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                  8.0),
+                                                              child: Column(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        8.0),
+                                                                    child:
+                                                                    Container(
+                                                                      height:
+                                                                      _height /
+                                                                          20,
+                                                                      width:
+                                                                      _width,
+                                                                      decoration:
+                                                                      BoxDecoration(
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade300,
+                                                                        borderRadius:
+                                                                        _radius,
+                                                                        boxShadow: [
+                                                                          new BoxShadow(
+                                                                              color: Colors.black.withOpacity(
+                                                                                  .3),
+                                                                              blurRadius:
+                                                                              15.0,
+                                                                              spreadRadius:
+                                                                              -4,
+                                                                              offset:
+                                                                              Offset(0, 5)),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding:
+                                                                    const EdgeInsets
+                                                                        .all(
+                                                                        8.0),
+                                                                    child:
+                                                                    Container(
+                                                                      height:
+                                                                      _height /
+                                                                          3.1,
+                                                                      width:
+                                                                      _width,
+                                                                      // color: Colors.blue,
+                                                                      decoration:
+                                                                      BoxDecoration(
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade300,
+                                                                        borderRadius:
+                                                                        _radius,
+                                                                        boxShadow: [
+                                                                          new BoxShadow(
+                                                                              color: Colors.black.withOpacity(
+                                                                                  .3),
+                                                                              blurRadius:
+                                                                              15.0,
+                                                                              spreadRadius:
+                                                                              -4,
+                                                                              offset:
+                                                                              Offset(0, 5)),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                          crossAxisCount: 4,
+                                                          staggeredTileBuilder:
+                                                              (int index) =>
+                                                          new StaggeredTile
+                                                              .count(
+                                                              2,
+                                                              index.isEven
+                                                                  ? 4
+                                                                  : 4),
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          //TODO: refresh button for fetching new data
-                                        ],
-                                      ),
-                                    ),
+                                                    );
+                                                  }
+                                                }
+
+                                              });
+                                        }),
+                                        options: CarouselOptions(
+                                            height: _height,
+                                            enableInfiniteScroll: false,
+                                            onPageChanged: (val, reason){
+                                              setState(() {
+                                                if ( val == 0){
+                                                  _selectedIndex = val;
+                                                }
+                                                else if( val == maxPages -1 ){
+                                                  _selectedIndex = 2;
+                                                }
+                                                else{
+                                                  _selectedIndex = 1;
+                                                  label = limitMap[val+1][1].toString();
+                                                }
+                                              });
+                                            },
+                                            aspectRatio: 1,
+                                            viewportFraction: 1,
+                                            initialPage: _selectedIndex),
+                                      )
+                                    ],
                                   ),
-                                  SliverFillRemaining(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: bgColor,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft:
-                                                Radius.circular(sliverRadius),
-                                            topRight:
-                                                Radius.circular(sliverRadius),
-                                          )),
-                                      child: Shimmer.fromColors(
-                                        highlightColor: Colors.white,
-                                        baseColor: Colors.grey.shade300,
-                                        direction: ShimmerDirection.ttb,
-                                        child: StaggeredGridView.countBuilder(
-                                          itemCount: 12,
-                                          mainAxisSpacing: 4.0,
-                                          crossAxisSpacing: 4.0,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8.0),
-                                              child: Column(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Container(
-                                                      height: _height / 20,
-                                                      width: _width,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                        borderRadius: _radius,
-                                                        boxShadow: [
-                                                          new BoxShadow(
-                                                              color: Colors
-                                                                  .black
-                                                                  .withOpacity(
-                                                                      .3),
-                                                              blurRadius: 15.0,
-                                                              spreadRadius: -4,
-                                                              offset:
-                                                                  Offset(0, 5)),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: Container(
-                                                      height: _height / 3.1,
-                                                      width: _width,
-                                                      // color: Colors.blue,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors
-                                                            .grey.shade300,
-                                                        borderRadius: _radius,
-                                                        boxShadow: [
-                                                          new BoxShadow(
-                                                              color: Colors
-                                                                  .black
-                                                                  .withOpacity(
-                                                                      .3),
-                                                              blurRadius: 15.0,
-                                                              spreadRadius: -4,
-                                                              offset:
-                                                                  Offset(0, 5)),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                          crossAxisCount: 4,
-                                          staggeredTileBuilder: (int index) =>
-                                              new StaggeredTile.count(
-                                                  2, index.isEven ? 4 : 4),
+                                  Positioned(
+                                    bottom: 20,
+                                    left: _width/2 - 100,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(25.0)
+                                        ),
+                                        child: GNav(
+                                          gap: 8,
+                                          iconSize: 20,
+                                          selectedIndex: _selectedIndex,
+                                          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                          duration: Duration(milliseconds: 500),
+                                          color: Colors.grey[800],
+                                          activeColor: pink,
+                                          backgroundColor: pink,
+                                          tabBackgroundColor: Colors.white,
+                                          tabMargin: EdgeInsets.all(5),
+                                          textStyle: GoogleFonts.roboto(
+                                            fontSize: 15,
+                                            color: pink,
+                                          ),
+                                          tabs: [
+                                            GButton(
+                                              iconColor: Colors.white,
+                                              icon: Icons.queue_play_next_rounded,
+                                              text: '1-10',
+                                            ),
+                                            GButton(
+                                              text: label,
+                                              iconColor: Colors.white,
+                                              icon: Icons.queue_play_next_rounded,
+                                            ),
+                                            GButton(
+                                              text: '91-100',
+                                              iconColor: Colors.white,
+                                              icon: Icons.queue_play_next_rounded,
+                                            ),
+                                          ],
+                                          // onTabChange: (index) {
+                                          //   setState(() {
+                                          //     _selectedIndex = index;
+                                          //   });
+                                          // }),
                                         ),
                                       ),
                                     ),
                                   ),
                                 ],
-                              );
-                            }
-                          });
-                    } else {
+                              ),
+                            ),
+                          ]);
+                    }
+                    else {
                       print("Waiting on IMDB data");
                       return CustomScrollView(
                         // key: UniqueKey(),
@@ -448,7 +767,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                 width: _width,
                                 height: _height * .15,
                                 decoration: BoxDecoration(
-                                    color: const Color(0xFFFF006F),
+                                    color: pink,
                                     borderRadius: BorderRadius.only(
                                       bottomLeft: Radius.circular(25.0),
                                       bottomRight: Radius.circular(25.0),
@@ -470,8 +789,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                 children: [
                                   Container(
                                     child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(left: 25.0),
+                                      padding: const EdgeInsets.only(left: 25.0),
                                       child: InkWell(
                                         onTap: () => Navigator.pop(context),
                                         child: Container(
@@ -487,7 +805,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                 "Back",
                                                 style: TextStyle(
                                                   decoration:
-                                                      TextDecoration.underline,
+                                                  TextDecoration.underline,
                                                   color: Colors.white,
                                                   fontFamily: 'Raleway',
                                                   fontSize: 20,
@@ -519,7 +837,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                     child: Center(
                                       child: CircularProgressIndicator(
                                         valueColor: AlwaysStoppedAnimation(
-                                            const Color(0xFFFF006F)),
+                                            pink),
                                       ),
                                     ))),
                           ),
@@ -527,7 +845,10 @@ class _MostPopularShowsState extends State<MostPopularShows>
                       );
                     }
                   }
-                }),
+
+                }
+        // }
+                ),
           ),
         ),
       ),
@@ -584,9 +905,9 @@ class _MostPopularShowsState extends State<MostPopularShows>
     // print(showLinks[0]);
   }
 
-  getShowList() async {
+  getShowList(List<dynamic> limits) async {
     List<TVShow> data = [];
-    for (String show in showLinks) {
+    for (String show in showLinks.skip(limits[0]).take(10)) {
       TVShow tvshow = await apiService.getShowResults(imdbLink: show);
       // print(tvshow);
       if (tvshow != null) {
@@ -597,65 +918,26 @@ class _MostPopularShowsState extends State<MostPopularShows>
   }
 
   Widget mostPopularList(List<TVShow> data) {
-    print(data.length);
+    // print(data.length);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 100.0),
-      child: NotificationListener<ScrollNotification>(
-        onNotification: (scrollNotification){
-          if(scrollNotification.metrics.pixels == scrollNotification.metrics.maxScrollExtent && nrShows < maxShows ){
-            setState(() {
-              nrShows += 10;
-              threshold += 1;
-            });
-            print(nrShows);
-
-          }
-          return true;
-        },
-        child: ListView.separated(
-                itemCount: 10,
-                separatorBuilder: (context, index){
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFF006F),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Center(
-                      child: AutoSizeText(
-                        "${(index+1)*10} - ${(index+2)*10}",
-                        minFontSize: 15,
-                        maxFontSize: 35,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontFamily: 'Raleway',
-                          fontWeight: FontWeight.w700
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                itemBuilder: (context, outerIndex) {
-                    return StaggeredGridView.countBuilder(
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
-                      itemCount: outerIndex < 9 ? 10  : data.length - outerIndex*10,
-                      mainAxisSpacing: 1.0,
-                      crossAxisSpacing: 2.0,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: PopularCard(show: data[(outerIndex*10) + index]),
-                        );
-                      },
-                      crossAxisCount: 4,
-                      staggeredTileBuilder: (int index) =>
-                      new StaggeredTile.count(2, index.isEven ? 3.6 : 3.6),
-                    );
-                  }
-              ),
-      ),
+      child: StaggeredGridView.countBuilder(
+              shrinkWrap: true,
+              // physics: ClampingScrollPhysics(),
+              itemCount: data.length,
+              mainAxisSpacing: 1.0,
+              crossAxisSpacing: 2.0,
+              itemBuilder: (BuildContext context, int index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: PopularCard(show: data[index]),
+                );
+              },
+              crossAxisCount: 4,
+              staggeredTileBuilder: (int index) =>
+                  new StaggeredTile.count(2, index.isEven ? 3.6 : 3.6),
+            )
     );
   }
 

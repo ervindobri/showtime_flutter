@@ -44,10 +44,10 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
 
-   PanelState _panelState;
+  PanelState _panelState;
   Widget title =
-      Container(color: bgColor, child: Image(image: AssetImage('showTIME.png'), height: 50));
-   Widget _customTitle;
+  Container(color: bgColor, child: Image(image: AssetImage('showTIME.png'), height: 50));
+  Widget _customTitle;
 
 
 
@@ -247,7 +247,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                       fontSize: 20,
                                       color: greyTextColor.withOpacity(.5)
 
-                        ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -342,19 +342,19 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                 width: _width/3.5,
                                 height: 50,
                                 child: CupertinoPicker(
-                                    onSelectedItemChanged: (int value) {
-                                      setState(() {
-                                        age = value+1;
-                                      });
-                                    },
-                                    itemExtent: 50,
-                                    looping: true,
-                                    children: List.generate(128, (index) => Center(child: Text(
-                                        (index+1).toString(),
-                                          style: TextStyle(
-                                            color: greenColor,
-                                            fontWeight: FontWeight.w700
-                                          ),))),
+                                  onSelectedItemChanged: (int value) {
+                                    setState(() {
+                                      age = value+1;
+                                    });
+                                  },
+                                  itemExtent: 50,
+                                  looping: true,
+                                  children: List.generate(128, (index) => Center(child: Text(
+                                    (index+1).toString(),
+                                    style: TextStyle(
+                                        color: greenColor,
+                                        fontWeight: FontWeight.w700
+                                    ),))),
                                 ),
                               ),
                             )
@@ -387,20 +387,20 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                 height: 50,
                                 child: CupertinoPicker(
                                   onSelectedItemChanged: (int value) {
-                                     sex = sexCategories[value];
+                                    sex = sexCategories[value];
                                   },
                                   itemExtent: 50,
                                   looping: true,
                                   children:List.generate(sexCategories.length, (index) =>
                                       Center(
-                                    child: Text(
-                                      sexCategories[index],
-                                      style: TextStyle(
-                                          color: greenColor,
-                                          fontWeight: FontWeight.w700
-                                      ),
-                                    ),
-                                  )),
+                                        child: Text(
+                                          sexCategories[index],
+                                          style: TextStyle(
+                                              color: greenColor,
+                                              fontWeight: FontWeight.w700
+                                          ),
+                                        ),
+                                      )),
                                 ),
                               ),
                             )
@@ -417,27 +417,27 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               Padding(
                 padding: const EdgeInsets.only(right: 10, bottom: 10),
                 child: InkWell(
-                    onTap: () {
-                      //TOOD: SAVE PROFILE DATA TO FIREBASE
-                      if (_formKey.currentState.validate()) {
-                        print("validating");
-                        FirestoreUtils().saveProfile(firstName, lastName, age, sex);
-                        Future.delayed(const Duration(milliseconds: 100), () async{
-                          Navigator.pop(context);
-                        });
-                      }
-                      else{
-                        Fluttertoast.showToast(
-                            msg: "Can't validate!",
-                            toastLength: Toast.LENGTH_LONG,
-                            backgroundColor: orangeColor,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 2
-                        );
-                      }
+                  onTap: () {
+                    //TOOD: SAVE PROFILE DATA TO FIREBASE
+                    if (_formKey.currentState.validate()) {
+                      print("validating");
+                      FirestoreUtils().saveProfile(firstName, lastName, age, sex);
+                      Future.delayed(const Duration(milliseconds: 100), () async{
+                        Navigator.pop(context);
+                      });
+                    }
+                    else{
+                      Fluttertoast.showToast(
+                          msg: "Can't validate!",
+                          toastLength: Toast.LENGTH_LONG,
+                          backgroundColor: orangeColor,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 2
+                      );
+                    }
 
 
-                    },
+                  },
                   child: Text(
                     'Save',
                     style: TextStyle(
@@ -499,6 +499,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       key: _drawerKey,
       appBar: new AppBar(
         backgroundColor: bgColor,
+        brightness: Brightness.light,
         centerTitle: true,
         shadowColor: Colors.grey,
         elevation: 0.0,
@@ -825,10 +826,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       body: Container(
         color: greenColor,
         child: SafeArea(
-          child:
-          // checkInternetConnectivity()
-              // ?
-          homeScreenBody(context, _slidingPanelKey)
+            child:
+            // checkInternetConnectivity()
+            // ?
+            homeScreenBody(context, _slidingPanelKey)
           //     : Container(
           //   width: _width,
           //   height: _height,
@@ -844,415 +845,415 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   }
 
   Widget homeScreenBody(BuildContext context, GlobalKey<ScaffoldState> _slidingPanelKey) {
-      final double _width = MediaQuery.of(context).size.width;
-      final double _height = MediaQuery.of(context).size.height;
-      final _panelHeightOpen = _height * .80;
-      final _panelHeightClosed = _height/10;
-      return Center(
-        child: Stack(
-                children: <Widget>[
-                  Container(
-                    width: _width,
-                    height: _height,
-                    color: bgColor,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Center(
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Shimmer.fromColors(
-                                  highlightColor: greenColor,
-                                  baseColor: blueColor,
-                                  direction: ShimmerDirection.ltr,
-                                  period: const Duration(seconds: 10),
-                                  child: Container(
-                                    height: _height * 0.07,
-                                    width: _width*.8,
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
+    final _panelHeightOpen = _height * .80;
+    final _panelHeightClosed = _height/10;
+    return Center(
+      child: Stack(
+        children: <Widget>[
+          Container(
+            width: _width,
+            height: _height,
+            color: bgColor,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Shimmer.fromColors(
+                          highlightColor: greenColor,
+                          baseColor: blueColor,
+                          direction: ShimmerDirection.ltr,
+                          period: const Duration(seconds: 10),
+                          child: Container(
+                            height: _height * 0.07,
+                            width: _width*.8,
 
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                                      gradient: LinearGradient(
-                                          begin: Alignment.topRight,
-                                          end: Alignment.bottomLeft,
-                                          colors: [
-                                            greenColor,
-                                            blueColor,
-                                          ]),
-                                    ),
-                                  ),
-                                ),
-                                Center(
-                                  child: Text(
-                                    showGreetings(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Raleway',
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w700
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                              gradient: LinearGradient(
+                                  begin: Alignment.topRight,
+                                  end: Alignment.bottomLeft,
+                                  colors: [
+                                    greenColor,
+                                    blueColor,
+                                  ]),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10.0),
-                          child: Container(
-  //                    color: Colors.redAccent,
-                            height: _height * .25,
-                            color: bgColor,
-                            width: _width,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                                  child: Text("Discover",
-                                      style: TextStyle(
-                                        fontSize: _height / 30,
-                                        color: greyTextColor,
-                                        fontFamily: 'Raleway',
-                                        fontWeight: FontWeight.w900,
-                                      )),
-                                ),
-                                Container(
-                                  width: _width,
-                                  height: _height * .21,
-                                  child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: DISCOVER_DATA.length,
-                                      shrinkWrap: true,
-                                      itemBuilder: (context, int index) {
-                                        return createColorfulCard(
-                                            index, DISCOVER_DATA[index]);
-                                      }),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-  //                    color: Colors.redAccent,
-  //                     height: _height * .42,
-                            width: _width,
-                            color: bgColor,
-                            // color: Colors.black,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Schedule",
-                                          style: TextStyle(
-                                            fontSize: _height / 30,
-                                            color: greyTextColor,
-                                            fontFamily: 'Raleway',
-                                            fontWeight: FontWeight.w900,
-                                          )
-                                      ),
-                                      InkWell(
-                                        onTap: () => Navigator.of(context)
-                                            .push(CupertinoPageRoute(builder: (builder) => FullSchedule())),
-                                        child: Container(
-                                          width: 70,
-                                          height: 30,
-                                          child: Center(
-                                            child: Text("All",
-                                                style: TextStyle(
-                                                  fontSize: _height / 35,
-                                                  color: greenColor,
-                                                  fontFamily: 'Raleway',
-                                                  fontWeight: FontWeight.w500,
-                                                )),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                _buildScheduledShowView(),
-                              ],
+                        Center(
+                          child: Text(
+                            showGreetings(),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Raleway',
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700
                             ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                  SlidingUpPanel(
-                    controller: _pc,
-                    maxHeight: _panelHeightOpen,
-                    minHeight: _panelHeightClosed,
-                    key: _slidingPanelKey,
-                    defaultPanelState: _panelState,
-                    boxShadow: [
-                      BoxShadow(
-                        color: greenColor.withOpacity(0.15),
-                        spreadRadius: 10,
-                        blurRadius: 25,
-                        offset: Offset(0, -10), // changes position of shadow
-                      ),
-                    ],
-                    panelSnapping: true,
-                    collapsed: Center(
-                      child: Container(
-                        height: _height * 0.8,
-                        width: _width,
-                        decoration: BoxDecoration(
-                          borderRadius: radius,
-                          color: greenColor,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Container(
+                    //                    color: Colors.redAccent,
+                    height: _height * .25,
+                    color: bgColor,
+                    width: _width,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Text("Discover",
+                              style: TextStyle(
+                                fontSize: _height / 30,
+                                color: greyTextColor,
+                                fontFamily: 'Raleway',
+                                fontWeight: FontWeight.w900,
+                              )),
                         ),
-                        child: Shimmer.fromColors(
-                          period: const Duration(milliseconds: 3500),
-                          baseColor: Colors.white54,
-                          highlightColor: Colors.white,
-                          child: Container(
-                            height: 30,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
+                        Container(
+                          width: _width,
+                          height: _height * .21,
+                          child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: DISCOVER_DATA.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, int index) {
+                                return createColorfulCard(
+                                    index, DISCOVER_DATA[index]);
+                              }),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    //                    color: Colors.redAccent,
+                    //                     height: _height * .42,
+                    width: _width,
+                    color: bgColor,
+                    // color: Colors.black,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Schedule",
+                                  style: TextStyle(
+                                    fontSize: _height / 30,
+                                    color: greyTextColor,
+                                    fontFamily: 'Raleway',
+                                    fontWeight: FontWeight.w900,
+                                  )
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.of(context)
+                                    .push(CupertinoPageRoute(builder: (builder) => FullSchedule())),
+                                child: Container(
+                                  width: 70,
+                                  height: 30,
+                                  child: Center(
+                                    child: Text("All",
+                                        style: TextStyle(
+                                          fontSize: _height / 35,
+                                          color: greenColor,
+                                          fontFamily: 'Raleway',
+                                          fontWeight: FontWeight.w500,
+                                        )),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        _buildScheduledShowView(),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SlidingUpPanel(
+            controller: _pc,
+            maxHeight: _panelHeightOpen,
+            minHeight: _panelHeightClosed,
+            key: _slidingPanelKey,
+            defaultPanelState: _panelState,
+            boxShadow: [
+              BoxShadow(
+                color: greenColor.withOpacity(0.15),
+                spreadRadius: 10,
+                blurRadius: 25,
+                offset: Offset(0, -10), // changes position of shadow
+              ),
+            ],
+            panelSnapping: true,
+            collapsed: Center(
+              child: Container(
+                height: _height * 0.8,
+                width: _width,
+                decoration: BoxDecoration(
+                  borderRadius: radius,
+                  color: greenColor,
+                ),
+                child: Shimmer.fromColors(
+                  period: const Duration(milliseconds: 3500),
+                  baseColor: Colors.white54,
+                  highlightColor: Colors.white,
+                  child: Container(
+                    height: 30,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: _width*.3,
+                          height: 6,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.all(Radius.circular(25.0))
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            panel: Center(
+              child: Container(
+                height: _height * 0.8,
+                width: _width,
+                decoration: BoxDecoration(
+                  borderRadius: radius,
+                  gradient: LinearGradient(
+                      stops: [0.6, 5.0],
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [
+                        greenColor,
+                        blueColor,
+                      ]),
+                ),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 25.0),
+                              child: Center(
+                                  child: Shimmer.fromColors(
+                                    period: const Duration(milliseconds: 3500),
+                                    baseColor: Colors.white54,
+                                    highlightColor: Colors.white,
+                                    child: AnimatedSizeAndFade(
+                                      vsync: this,
+                                      child: Container(
+                                        height: 30,
+                                        child: Text(
+                                            "What are we watching today?",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              shadows: <Shadow>[
+                                                Shadow(
+                                                  offset: Offset(0.0, 3.0),
+                                                  blurRadius: 6.0,
+                                                  color: Colors.black.withOpacity(.2),
+                                                ),
+                                              ],
+                                              color: Colors.white,
+                                              fontSize:
+                                              MediaQuery.of(context).size.width /
+                                                  20,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Raleway',
+                                            )),
+                                      ),
+                                      fadeDuration: const Duration(milliseconds: 100),
+                                      sizeDuration: const Duration(milliseconds: 200),
+                                    ),
+                                  )
+
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: _height / 30,
+                          ),
+                          Container(
+                            width: _width * 0.5,
+                            height: _width * 0.3,
+                            child: Center(
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      _createRouteAllShows(AllTVShows()));
+                                },
+                                child: Container(
+                                    child: SizedBox(
+                                        width: _width * 0.5,
+                                        child: FlareActor(
+                                          'assets/blink.flr',
+                                          animation: 'Blink',
+                                        ))
+                                  // child: FaIcon(
+                                  //   Icons.add_to_queue,
+                                  //   color: greenColor,
+                                  //   size: MediaQuery
+                                  //       .of(context)
+                                  //       .size
+                                  //       .width * 0.2,
+                                  // ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: _width / 10,
+                          ),
+                          Container(
+                            //                          color: Colors.red,
+                            child: Column(
+                              children: <Widget>[
+                                //Label - LAst watched
                                 Container(
-                                  width: _width*.3,
-                                  height: 6,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(Radius.circular(25.0))
+                                  padding:
+                                  EdgeInsets.only(left: 32, right: 32),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Last watched",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              shadows: <Shadow>[
+                                                Shadow(
+                                                  offset: Offset(0.0, 3.0),
+                                                  blurRadius: 6.0,
+                                                  color: Colors.black
+                                                      .withOpacity(.2),
+                                                ),
+                                              ],
+                                              color: Colors.white,
+                                              fontSize: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                                  30,
+                                              fontFamily: "Raleway",
+                                              fontWeight: FontWeight.w900,
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                // Horizontal scrollview container
+                                Container(
+                                  child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: widget.watchedShowsList.length > 0
+                                          ? StreamBuilder(
+                                          stream:  FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData){
+                                              watchedShowList.clear();
+                                              // allWatchedShows.clear();
+                                              snapshot.data.documents
+                                                  .forEach((f) {
+                                                // print(f.data);
+                                                WatchedTVShow show = new WatchedTVShow(
+                                                    id: f.documentID,
+                                                    name:
+                                                    f.data()['name'],
+                                                    startDate: f.data()[
+                                                    'start_date'],
+                                                    runtime: f.data()[
+                                                    'runtime'],
+                                                    imageThumbnailPath: f.data()[
+                                                    'image_thumbnail_path'],
+                                                    totalSeasons: f.data()[
+                                                    'total_seasons'],
+                                                    episodePerSeason: f.data()[
+                                                    'episodesPerSeason'],
+                                                    currentSeason: f.data()[
+                                                    'currentSeason'],
+                                                    currentEpisode: f.data()[
+                                                    'currentEpisode'],
+                                                    firstWatchDate: f.data()[
+                                                    'startedWatching'],
+                                                    rating: f.data()['rating'],
+                                                    lastWatchDate:
+                                                    f.data()['lastWatched'],
+                                                    favorite: f.data()['favorite'] ?? false);
+                                                watchedShowList.add(show);
+                                                // allWatchedShows.add(show);
+                                              });
+                                            }
+                                            return createCarouselSlider(
+                                                watchedShowList.take(5).toList(),
+                                                context);
+                                          }
+                                      )
+                                          : Container(
+                                          height: _height/3,
+                                          child: Center(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(25.0),
+                                                child: Text(
+                                                  "Press the eye above for magic",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'Raleway',
+                                                      fontSize: _height/25
+                                                  ),
+                                                ),
+                                              )
+                                          )
+                                      )
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ),
-                    panel: Center(
-                      child: Container(
-                        height: _height * 0.8,
-                        width: _width,
-                        decoration: BoxDecoration(
-                          borderRadius: radius,
-                          gradient: LinearGradient(
-                              stops: [0.6, 5.0],
-                              begin: Alignment.topRight,
-                              end: Alignment.bottomLeft,
-                              colors: [
-                                greenColor,
-                                blueColor,
-                              ]),
-                        ),
-                        child: Column(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 25.0),
-                                      child: Center(
-                                          child: Shimmer.fromColors(
-                                            period: const Duration(milliseconds: 3500),
-                                            baseColor: Colors.white54,
-                                            highlightColor: Colors.white,
-                                            child: AnimatedSizeAndFade(
-                                              vsync: this,
-                                              child: Container(
-                                                height: 30,
-                                                child: Text(
-                                                    "What are we watching today?",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      shadows: <Shadow>[
-                                                        Shadow(
-                                                          offset: Offset(0.0, 3.0),
-                                                          blurRadius: 6.0,
-                                                          color: Colors.black.withOpacity(.2),
-                                                        ),
-                                                      ],
-                                                      color: Colors.white,
-                                                      fontSize:
-                                                      MediaQuery.of(context).size.width /
-                                                          20,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontFamily: 'Raleway',
-                                                    )),
-                                              ),
-                                              fadeDuration: const Duration(milliseconds: 100),
-                                              sizeDuration: const Duration(milliseconds: 200),
-                                            ),
-                                          )
-
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: _height / 30,
-                                  ),
-                                  Container(
-                                    width: _width * 0.5,
-                                    height: _width * 0.3,
-                                    child: Center(
-                                      child: InkWell(
-                                        onTap: () {
-                                          Navigator.of(context).push(
-                                              _createRouteAllShows(AllTVShows()));
-                                        },
-                                        child: Container(
-                                            child: SizedBox(
-                                                width: _width * 0.5,
-                                                child: FlareActor(
-                                                  'assets/blink.flr',
-                                                  animation: 'Blink',
-                                                ))
-                                          // child: FaIcon(
-                                          //   Icons.add_to_queue,
-                                          //   color: greenColor,
-                                          //   size: MediaQuery
-                                          //       .of(context)
-                                          //       .size
-                                          //       .width * 0.2,
-                                          // ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: _width / 10,
-                                  ),
-                                  Container(
-  //                          color: Colors.red,
-                                    child: Column(
-                                      children: <Widget>[
-                                        //Label - LAst watched
-                                        Container(
-                                          padding:
-                                          EdgeInsets.only(left: 32, right: 32),
-                                          child: Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text("Last watched",
-                                                    textAlign: TextAlign.left,
-                                                    style: TextStyle(
-                                                      shadows: <Shadow>[
-                                                        Shadow(
-                                                          offset: Offset(0.0, 3.0),
-                                                          blurRadius: 6.0,
-                                                          color: Colors.black
-                                                              .withOpacity(.2),
-                                                        ),
-                                                      ],
-                                                      color: Colors.white,
-                                                      fontSize: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                          30,
-                                                      fontFamily: "Raleway",
-                                                      fontWeight: FontWeight.w900,
-                                                    )),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        // Horizontal scrollview container
-                                        Container(
-                                          child: Align(
-                                              alignment: Alignment.bottomCenter,
-                                              child: widget.watchedShowsList.length > 0
-                                                ? StreamBuilder(
-                                                  stream:  FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots(),
-                                                  builder: (context, snapshot) {
-                                                    if (snapshot.hasData){
-                                                      watchedShowList.clear();
-                                                      // allWatchedShows.clear();
-                                                      snapshot.data.documents
-                                                          .forEach((f) {
-                                                        // print(f.data);
-                                                        WatchedTVShow show = new WatchedTVShow(
-                                                            id: f.documentID,
-                                                            name:
-                                                            f.data()['name'],
-                                                            startDate: f.data()[
-                                                            'start_date'],
-                                                            runtime: f.data()[
-                                                            'runtime'],
-                                                            imageThumbnailPath: f.data()[
-                                                            'image_thumbnail_path'],
-                                                            totalSeasons: f.data()[
-                                                            'total_seasons'],
-                                                            episodePerSeason: f.data()[
-                                                            'episodesPerSeason'],
-                                                            currentSeason: f.data()[
-                                                            'currentSeason'],
-                                                            currentEpisode: f.data()[
-                                                            'currentEpisode'],
-                                                            firstWatchDate: f.data()[
-                                                            'startedWatching'],
-                                                            rating: f.data()['rating'],
-                                                            lastWatchDate:
-                                                            f.data()['lastWatched'],
-                                                            favorite: f.data()['favorite'] ?? false);
-                                                        watchedShowList.add(show);
-                                                        // allWatchedShows.add(show);
-                                                      });
-                                                    }
-                                                    return createCarouselSlider(
-                                                        watchedShowList.take(5).toList(),
-                                                      context);
-                                                  }
-                                                )
-                                                : Container(
-                                                  height: _height/3,
-                                                  child: Center(
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(25.0),
-                                                        child: Text(
-                                                          "Press the eye above for magic",
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(
-                                                              color: Colors.white,
-                                                              fontFamily: 'Raleway',
-                                                              fontSize: _height/25
-                                                          ),
-                                                        ),
-                                                      )
-                                                  )
-                                              )
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    borderRadius: radius,
-                  ),
-                ],
+                    )
+                  ],
                 ),
-              );
+              ),
+            ),
+            borderRadius: radius,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget createCarouselSlider(List<WatchedTVShow> data, BuildContext context) {
@@ -1275,16 +1276,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             // Navigator.push(context, _createRouteShowDetail(data, itemIndex)),
 
           },
-          child: Dismissible(
-            key: Key('some key here'),
-            direction: DismissDirection.down,
-            onDismissed: (_) => Navigator.pop(context),
-            child: WatchedCard(show: data[itemIndex],
-            ),
+          child: WatchedCard(show: data[itemIndex],
           ),
         ),
         options: CarouselOptions(
-          height: MediaQuery.of(context).size.width * .65,
+          height: MediaQuery.of(context).size.width * .7,
           enableInfiniteScroll: false,
         ),
       ),
@@ -1349,10 +1345,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         shadows: [new BoxShadow(
-                          color: Colors.black.withOpacity(.15),
-                          spreadRadius: 1.2,
-                          blurRadius: 5,
-                          offset: Offset(0,3.0)
+                            color: Colors.black.withOpacity(.15),
+                            spreadRadius: 1.2,
+                            blurRadius: 5,
+                            offset: Offset(0,3.0)
                         )],
                         color: Colors.white,
                         fontSize: _width / 25,
@@ -1380,31 +1376,31 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
     //TODO: fix false empty schedule
     return Container(
-      width: _width,
-      height: _height * .41,
-      // color: blueColor,
-      color: bgColor,
-      child: widget.notAiredList.length > 0
-              ? ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: widget.notAiredList.length < 5
-                        ? widget.notAiredList.length
-                        : 5,
-                    itemBuilder: (context, int index) {
-                            return Center(
-                                child: ScheduleCard(
-                                    episode: widget.notAiredList[index])
-                            );
-                    }
+        width: _width,
+        height: _height * .41,
+        // color: blueColor,
+        color: bgColor,
+        child: widget.notAiredList.length > 0
+            ? ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: widget.notAiredList.length < 5
+                ? widget.notAiredList.length
+                : 5,
+            itemBuilder: (context, int index) {
+              return Center(
+                  child: ScheduleCard(
+                      episode: widget.notAiredList[index])
+              );
+            }
+        )
+            : Container(
+            child: SizedBox(
+                child: FlareActor(
+                    "assets/empty.flr"
                 )
-                : Container(
-                    child: SizedBox(
-                      child: FlareActor(
-                        "assets/empty.flr"
-                      )
-                    )
-                  )
-      );
+            )
+        )
+    );
   }
 
 
@@ -1416,35 +1412,35 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     return ClipRRect(
       borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
       child: FutureBuilder<Object>(
-              future: episodes,
-              builder: (context, snapshot) {
-                if ( snapshot.hasData){
-                  data[index].episodes = snapshot.data;
-                  return WatchedDetailView(show: data[index]);
-                }
-                else{
-                  return Container(
-                    width: _width,
-                    height: _height*.95,
-                    color: bgColor,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: _width,
-                          // color: Colors.black,
-                          child: Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                              // backgroundColor: greenColor,
-                            ),
-                          ),
+          future: episodes,
+          builder: (context, snapshot) {
+            if ( snapshot.hasData){
+              data[index].episodes = snapshot.data;
+              return WatchedDetailView(show: data[index]);
+            }
+            else{
+              return Container(
+                width: _width,
+                height: _height*.95,
+                color: bgColor,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: _width,
+                      // color: Colors.black,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(greenColor),
+                          // backgroundColor: greenColor,
                         ),
-                      ],
+                      ),
                     ),
-                  );
-                }
-            }),
+                  ],
+                ),
+              );
+            }
+          }),
     );
   }
 
@@ -1461,7 +1457,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         var end = Offset.zero;
         var curve = Curves.fastOutSlowIn;
         var tween =
-            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
         return SlideTransition(
           position: animation.drive(tween),
@@ -1492,9 +1488,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
 
 
-  // String getWelcomeMessage(FirebaseAuth auth) async{
-  //   //get first name
-  //   Stream<DocumentSnapshot> userData = await FirebaseFirestore.instance.collection(auth.currentUser.email).doc("user").snapshots();
-  //   print(userData);
-  // }
+// String getWelcomeMessage(FirebaseAuth auth) async{
+//   //get first name
+//   Stream<DocumentSnapshot> userData = await FirebaseFirestore.instance.collection(auth.currentUser.email).doc("user").snapshots();
+//   print(userData);
+// }
 }

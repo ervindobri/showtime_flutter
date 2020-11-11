@@ -5,6 +5,7 @@ import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/main.dart';
 import 'package:eWoke/models/watched.dart';
+import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:eWoke/ui/watch_card.dart';
@@ -67,10 +68,8 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     controller = AnimateIconController();
     _searchTerm = "";
     criteria = SORT_CATEGORIES[_index];
-    if ( allWatchedShows.isEmpty){
-      _watchedShowsStream = FirebaseFirestore.instance.collection("${auth.currentUser.email}/shows/watched_shows").snapshots();
-    }
-    log(sortedList.length.toString());
+
+    // log(sortedList.length.toString());
     listController.addListener(onListen);
 
 
@@ -148,6 +147,12 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        shadowColor: Colors.transparent,
+        backgroundColor: watchlistBlue,
+        toolbarHeight: 0,
+      ),
       body: Container(
         color:  watchlistBlue,
         child: SafeArea(

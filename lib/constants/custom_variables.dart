@@ -52,6 +52,10 @@ List<WatchedTVShow> list = new List<WatchedTVShow>();
 
 List<WatchedTVShow> allWatchedShows = new List<WatchedTVShow>();
 
+
+List<List<TVShow>>limitedShows = [];
+
+
 const Map<String, Badge> allBadges = {
   "fresh" : Badge(description: "Fresh", icon: FontAwesomeIcons.fire, colors:[fireColor, Colors.orange]),
   "paused" : Badge(description: "Paused watching",icon: FontAwesomeIcons.pause, colors:[Colors.purple, Colors.indigo]),

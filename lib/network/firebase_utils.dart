@@ -206,5 +206,22 @@ class FirestoreUtils{
 
     return user;
   }
+  updateEpisode(WatchedTVShow show) {
+    FirebaseFirestore.instance
+        .collection("${auth.currentUser.email}/shows/watched_shows")
+        .doc(show.id.toString())
+        .update({
+      "name": show.name,
+      "start_date": show.startDate,
+      "poster": show.imageThumbnailPath,
+      "seasons": show.totalSeasons,
+      "episodesPerSeason": show.episodePerSeason,
+      "currentSeason": show.currentSeason,
+      "currentEpisode": show.currentEpisode,
+      "startedWatching": show.firstWatchDate,
+      "lastWatched": show.lastWatchDate,
+      "favorite" : show.favorite
+    });
+  }
 }
 

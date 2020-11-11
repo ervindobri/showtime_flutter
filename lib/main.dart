@@ -1,9 +1,10 @@
-import 'package:eWoke/constants/custom_variables.dart';
+import 'constants/custom_variables.dart';
 import 'package:eWoke/home/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'home/home.dart';
 import 'home/login.dart';
 import 'network/firebase_utils.dart';
 
@@ -77,13 +78,10 @@ Future<void> main() async {
   String email = await _storage.read(key: 'email');
   String password = await _storage.read(key: 'password');
 
-  if ( email != null && password != null){
-    await FirestoreUtils().authUser(email,password);
-    print("${email + password}");
-
-  }
+  await FirestoreUtils().authUser(email,password);
 
   //TODO: check if user data saved and start page accordingly
+
   runApp(
       MaterialApp(
           debugShowCheckedModeBanner: false,

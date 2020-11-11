@@ -219,75 +219,84 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                     ),
                                   ),
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
                                     child: Center(
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Flex(
-                                            direction: Axis.vertical,
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(top: 20.0),
-                                                child: Center(
-                                                  child: Text(
-                                                      "${countdown[0].toString()} : ${countdown[1].toString()} : ${countdown[2].toString()} : ${countdown[3].toString()}",
-                                                      style: countDownStyle
+                                          Padding(
+                                            padding: const EdgeInsets.only(top:8.0),
+                                            child: Flex(
+                                              direction: Axis.vertical,
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(top: 20.0),
+                                                  child: Center(
+                                                    child: Text(
+                                                        "${countdown[0].toString()} : ${countdown[1].toString()} : ${countdown[2].toString()} : ${countdown[3].toString()}",
+                                                        style: countDownStyle
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
-                                                child: new SizedBox(
-                                                  height: 1.5,
-                                                  width: double.infinity,
-                                                  child: Container(
-                                                    color: Colors.white,
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                                                  child: new SizedBox(
+                                                    height: 1.5,
+                                                    width: double.infinity,
+                                                    child: Container(
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 20.0),
+                                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25),
                                             child: Container(
+                                              height: _width/4,
                                               decoration: BoxDecoration(
                                                 borderRadius: _smallRadius,
                                                 color: Colors.white,
                                               ),
                                               child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
+                                                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          "Next up",
-                                                          style: TextStyle(
-                                                              fontSize: _width/25,
-                                                              fontWeight: FontWeight.w500,
-                                                              fontFamily: 'Raleway',
-                                                              color: greyTextColor
+                                                    Padding(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          AutoSizeText(
+                                                            "Next up",
+                                                            minFontSize: 10,
+                                                            maxFontSize: 15,
+                                                            style: GoogleFonts.roboto(
+                                                                fontSize: _width/25,
+                                                                fontWeight: FontWeight.w500,
+                                                                // fontFamily: 'Raleway',
+                                                                color: greyTextColor
+                                                            ),
                                                           ),
-                                                        ),
-                                                        Text(
-                                                          "1/${widget.episodes.length.toString()}",
-                                                          style: TextStyle(
-                                                              fontSize: _width/25,
-                                                              fontWeight: FontWeight.w700,
-                                                              fontFamily: 'Raleway',
-                                                              color: greyTextColor
+                                                          AutoSizeText(
+                                                            "1/${widget.episodes.length.toString()}",
+                                                            style: GoogleFonts.roboto(
+                                                                fontSize: _width/25,
+                                                                fontWeight: FontWeight.w700,
+                                                                // fontFamily: 'Raleway',
+                                                                color: greyTextColor
+                                                            ),
                                                           ),
-                                                        ),
-                                                      ],
+                                                        ],
+                                                      ),
                                                     ),
                                                     Padding(
-                                                      padding: const EdgeInsets.all(5.0),
+                                                      padding: const EdgeInsets.all(3.0),
                                                       child: SizedBox(
                                                         height: .69,
                                                         width: double.infinity,
@@ -298,17 +307,19 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                     ),
                                                     Padding(
                                                       padding: const EdgeInsets.all(8.0),
-                                                      child: AutoSizeText(
-                                                        latestEpisode(),
-                                                        minFontSize: 10,
-                                                        maxLines: 3,
-                                                        maxFontSize: 25,
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: _width/20,
-                                                            fontWeight: FontWeight.w600,
-                                                            fontFamily: 'Raleway',
-                                                            color: greyTextColor
+                                                      child: Center(
+                                                        child: AutoSizeText(
+                                                          latestEpisode(),
+                                                          minFontSize: 8,
+                                                          maxLines: 2,
+                                                          maxFontSize: 20,
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              // fontSize: _width/23,
+                                                              fontWeight: FontWeight.w600,
+                                                              fontFamily: 'Raleway',
+                                                              color: greyTextColor
+                                                          ),
                                                         ),
                                                       ),
                                                     )
@@ -507,7 +518,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                         ),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.only(top: 50.0),
+                                        padding: const EdgeInsets.only(top: 30.0),
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(horizontal:10.0, vertical: 15),
                                           child: Flex(
@@ -517,6 +528,21 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                     countdown[0].toString(),
                                                     maxLines: 1,
                                                     minFontSize: 10,
+                                                    maxFontSize: 18,
+                                                    style: countDownStyle
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(3.0),
+                                                  child: new SizedBox(
+                                                    height: 2,
+                                                    width: 30,
+                                                    child: Container(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                                AutoSizeText(
+                                                    countdown[1].toString(),
                                                     maxFontSize: 20,
                                                     style: countDownStyle
                                                 ),
@@ -530,22 +556,9 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                     ),
                                                   ),
                                                 ),
-                                                Text(
-                                                    countdown[1].toString(),
-                                                    style: countDownStyle
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.all(3.0),
-                                                  child: new SizedBox(
-                                                    height: 2,
-                                                    width: 30,
-                                                    child: Container(
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                                ),
-                                                Text(
+                                                AutoSizeText(
                                                     countdown[2].toString(),
+                                                    maxFontSize: 20,
                                                     style: countDownStyle
                                                 ),
                                                 Padding(
@@ -558,8 +571,9 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                     ),
                                                   ),
                                                 ),
-                                                Text(
+                                                AutoSizeText(
                                                     countdown[3].toString(),
+                                                    maxFontSize: 20,
                                                     style: countDownStyle
                                                 ),
                                               ],

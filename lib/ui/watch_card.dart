@@ -1,12 +1,10 @@
 import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../main.dart';
+import 'package:status_alert/status_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,248 +31,271 @@ class WatchedCard extends StatelessWidget {
 
     return GestureDetector(
       onVerticalDragStart: (details) => cardKey.currentState.toggleCard(),
-      child: Padding(
-        padding: const EdgeInsets.all( 14.0),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(50.0),
-                topRight: Radius.circular(100.0),
-                bottomLeft: Radius.circular(50.0),
-                bottomRight: Radius.circular(50.0),),
-          ),
-          child: Center(
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: .0),
-                    child: Container(
-                      child: FlipCard(
-                        direction: FlipDirection.VERTICAL,
-                        flipOnTouch: false,
-                        key: cardKey,
-                        front: InkWell(
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                // height: ,
-                                height: _width/2,
-                                decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
+      child: Container(
+        padding: const EdgeInsets.only(
+          top: 15,
+          // bottom: 10,
+            right: 15,
+            left: 15
+        ),
+        decoration: BoxDecoration(
+          // color: Colors.black,
+        ),
+        child: Center(
+            child: Stack(
+              children: <Widget>[
+                FlipCard(
+                  direction: FlipDirection.VERTICAL,
+                  flipOnTouch: false,
+                  key: cardKey,
+                  front: InkWell(
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned(
+                          top: 15,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            // height: ,
+                            height: _width/2,
+                            width: _width,
+                            decoration: BoxDecoration(
+                              color:Colors.white,
+                              borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(25.0),
                                 topRight: Radius.circular(85.0),
                                 bottomLeft: Radius.circular(50.0),
-                                bottomRight: Radius.circular(50.0),),
-                                color: Colors.white,
-                                  boxShadow: [
-                                    new BoxShadow(
-                                        color: Colors.black.withOpacity(.2),
-                                        blurRadius: 15.0,
-                                        spreadRadius: -2,
-                                        offset: Offset(2, -2)),
-                                  ],
-                                ),
-                                child: Column(
+                                bottomRight: Radius.circular(50.0),
+                              ),
+                              boxShadow: [
+                                new BoxShadow(
+                                    color: Colors.black.withOpacity(.2),
+                                    blurRadius: 15.0,
+                                    spreadRadius: -2,
+                                    offset: Offset(2, -2)),
+                              ],
+                            ),
+                            child: Column(
+                              children: <Widget>[
+                                Column(
                                   children: <Widget>[
-                                    Column(
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
                                       children: <Widget>[
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: <Widget>[
-                                            Flexible(
-                                                child: Padding(
-                                                  padding: EdgeInsets.only(right:50, left: 12, top: 5),
-                                                    child: AutoSizeText(
-                                                          this.show.name,
-                                                          style: TextStyle(
-                                                            fontWeight: FontWeight.w700,
-                                                            color: greyTextColor,
-                                                            fontSize: MediaQuery.of(context).size.height/30,
-                                                            fontFamily: 'Raleway',
-                                                          ),
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
+                                        Flexible(
+                                            child: Padding(
+                                              padding: EdgeInsets.only(right:50, left: 12, top: 5),
+                                                child: AutoSizeText(
+                                                      this.show.name,
+                                                      minFontSize: 10,
+                                                      maxFontSize: 17,
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.w700,
+                                                        color: greyTextColor,
+                                                        fontSize: MediaQuery.of(context).size.height/30,
+                                                        fontFamily: 'Raleway',
+                                                      ),
+                                                ),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                    Container(
-                                      // height: 300,
-                                      child: Row(
-                                        children: <Widget>[
-                                          Container(
-                                            width: MediaQuery.of(context).size.width * .4,
-                                            padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
-                                            child: Center(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  //Season
-                                                  Container(
-                                                    padding: EdgeInsets.only(left: 10, right: 10),
-                                                    width: 100,
-                                                    height: 40,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(25.0),
-                                                      border:
-                                                          Border.all(color: greenColor),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment.spaceBetween,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          "S",
-                                                          style: TextStyle(
-                                                            color: greenColor,
-                                                            fontSize: MediaQuery.of(context).size.width / 12,
-                                                            fontWeight: FontWeight.w900,
-                                                          ),
-                                                        ),
-                                                        Center(
-                                                          child: Text(
-                                                            "${this.show.currentSeason}/${this.show.totalSeasons}",
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight.w300,
-                                                              fontSize: MediaQuery.of(context).size.width / 15,
-                                                              color: greyTextColor,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  //Episode
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Container(
-                                                    padding: EdgeInsets.only(left: 10, right: 10),
-                                                    width: 100,
-                                                    height: 40,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:BorderRadius.circular(25.0),
-                                                      border:
-                                                          Border.all(color: greenColor),
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: <Widget>[
-                                                        Text(
-                                                          "Ep",
-                                                          style: TextStyle(
-                                                            color: greenColor,
-                                                            fontSize:
-                                                                MediaQuery.of(context)
-                                                                        .size
-                                                                        .width /
-                                                                    12,
-                                                            fontWeight: FontWeight.w900,
-                                                          ),
-                                                        ),
-                                                        Center(
-                                                          child: Text(
-                                                            "${this.show.currentEpisode}",
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight.w300,
-                                                              fontSize:
-                                                                  MediaQuery.of(context)
-                                                                          .size
-                                                                          .width /
-                                                                      15,
-                                                              color: greyTextColor,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 15.0),
-                                            child: VerticalDivider(
-                                              width: 1.5,
-                                              color: greenColor,
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.only(top: 12.0),
-                                              child: Container(
-                                                child: Center(
-                                                  child: new CircularPercentIndicator(
-                                                    radius: 90.0,
-                                                    lineWidth: 15.0,
-                                                    circularStrokeCap:
-                                                        CircularStrokeCap.round,
-                                                    percent: _percentage,
-                                                    center: new Text(
-                                                      "${(_percentage * 100).floor()}",
-                                                      style: TextStyle(
-                                                          fontFamily: 'Raleway',
-                                                          fontSize: MediaQuery.of(context).size.width / 15,
-                                                          fontWeight: FontWeight.w700,
-                                                          color: blueColor),
-                                                    ),
-                                                    progressColor: blueColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
                                   ],
                                 ),
-                              ),
-                              _checkFireDisplay(context, _percentage, show.lastWatchDate),
-                              floatingActions(_percentage),
-
-                            ],
+                                Container(
+                                  // height: 300,
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: _width * .35,
+                                        padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
+                                        child: Center(
+                                          child: Column(
+                                            children: <Widget>[
+                                              //Season
+                                              Container(
+                                                padding: EdgeInsets.only(left: 10, right: 10),
+                                                width: _width/4,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25.0),
+                                                  border:
+                                                      Border.all(color: greenColor),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "S",
+                                                      style: TextStyle(
+                                                        color: greenColor,
+                                                        fontSize: MediaQuery.of(context).size.width / 12,
+                                                        fontWeight: FontWeight.w900,
+                                                      ),
+                                                    ),
+                                                    Center(
+                                                      child: Text(
+                                                        "${this.show.currentSeason}",
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                          fontSize: MediaQuery.of(context).size.width / 15,
+                                                          color: greyTextColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              //Episode
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.only(left: 10, right: 10),
+                                                width:  _width/4,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:BorderRadius.circular(25.0),
+                                                  border:
+                                                      Border.all(color: greenColor),
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      "Ep",
+                                                      style: TextStyle(
+                                                        color: greenColor,
+                                                        fontSize:
+                                                            MediaQuery.of(context)
+                                                                    .size
+                                                                    .width /
+                                                                12,
+                                                        fontWeight: FontWeight.w900,
+                                                      ),
+                                                    ),
+                                                    Center(
+                                                      child: Text(
+                                                        "${this.show.currentEpisode}",
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w300,
+                                                          fontSize:
+                                                              MediaQuery.of(context)
+                                                                      .size
+                                                                      .width /
+                                                                  15,
+                                                          color: greyTextColor,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                                        child: new CircularPercentIndicator(
+                                          radius: 80.0,
+                                          lineWidth: 12.0,
+                                          circularStrokeCap:
+                                              CircularStrokeCap.round,
+                                          percent: _percentage,
+                                          center: new Text(
+                                            "${(_percentage * 100).floor()} %",
+                                            style: TextStyle(
+                                                fontFamily: 'Raleway',
+                                                fontSize: MediaQuery.of(context).size.width / 15,
+                                                fontWeight: FontWeight.w700,
+                                                color: blueColor),
+                                          ),
+                                          progressColor: blueColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                          splashColor: Colors.blue.withAlpha(30),
                         ),
-                        back: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                            color: Colors.white,
-                          ),
-                          child: Center(
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(show.imageThumbnailPath)),
-                                ),
+                        _checkFireDisplay(context, _percentage, show.lastWatchDate),
+                        floatingActions(context, _percentage, _width/2.5),
+
+                      ],
+                    ),
+                    splashColor: Colors.blue.withAlpha(30),
+                  ),
+                  back: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                        color: Colors.white,
+                      ),
+                      child: Center(
+                        child: Stack(
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: show.imageThumbnailPath,
+                              imageBuilder: (context, image){
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(.5),
+                                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                                    image: DecorationImage(
+                                      image: image,
+                                      fit: BoxFit.cover
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                              child: CachedNetworkImage(
+                                imageUrl: show.imageThumbnailPath,
+                                imageBuilder: (context, image){
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: image,
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
+                ),
 
-                ],
-              ),
+              ],
             ),
           ),
-      ),
+        ),
     );
   }
   Widget _checkFireDisplay(BuildContext context, double percentage, String lastWatchDate){
     var lastWatched = DateTime.parse("$lastWatchDate 00:00:00.000");
     var prevMonth = new DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     int diffDays = lastWatched.difference(prevMonth).inDays;
+    // print(percentage);
     if ( diffDays.abs() < 15){
-      return Align(
-        alignment: Alignment.topRight,
+      return Positioned(
+        right: 0,
+        top: 0,
         child: ClipOval(
           child: Container(
             width: MediaQuery.of(context).size.height/10,
@@ -303,17 +324,46 @@ class WatchedCard extends StatelessWidget {
       );
     }
     else{
-      return Container(
-
-      );
+      if ( percentage == 1.0){
+        return Positioned(
+          right: 0,
+          top: 0,
+          child: ClipOval(
+            child: Container(
+              width: MediaQuery.of(context).size.height/10,
+              height: MediaQuery.of(context).size.height/10,
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [
+                      greenColor,
+                      lightGreenColor,
+                    ]),
+                color: greenColor,
+                borderRadius: BorderRadius.all(Radius.circular(50.0)),
+              ),
+              child: Center(
+                child: FaIcon(
+                  FontAwesomeIcons.checkDouble,
+                  size: MediaQuery.of(context).size.height/15,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+      return Container();
     }
   }
 
-  Widget floatingActions( double _percentage) {
+  Widget floatingActions( BuildContext context, double _percentage, double cardWidth) {
     if ( _percentage < 1.0){
-      return Align(
-        // bottom: 5,
-        alignment: Alignment.bottomCenter,
+      return Positioned(
+        bottom: 5,
+        left: cardWidth/2,
         child: Container(
           height: 60,
           width: 100,
@@ -332,7 +382,42 @@ class WatchedCard extends StatelessWidget {
             highlightColor: Colors.black,
             // color: greenColor,
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-            onPressed: () => null,
+            onPressed: (){
+              try {
+                show.incrementEpisodeWatch();
+                show.setLastWatchedDate();
+                FirestoreUtils().updateEpisode(show);
+                StatusAlert.show(context,
+                  duration:
+                  Duration(
+                      seconds:
+                      2),
+                  blurPower: 15.0,
+                  title:
+                  'Episode added',
+                  configuration:
+                  IconConfiguration(
+                      icon: Icons
+                          .done),
+                );
+              } catch (e, s) {
+                // print(s);
+                StatusAlert.show(
+                  context,
+                  duration:
+                  Duration(
+                      seconds:
+                      2),
+                  blurPower: 15.0,
+                  title:
+                  '{$e}:Couldn\'t add episode!',
+                  configuration:
+                  IconConfiguration(
+                      icon: Icons
+                          .error),
+                );
+              }
+            },
             child: FaIcon(
               Icons.add_to_queue,
               color: Colors.white,
@@ -474,22 +559,26 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                   child: new Center(
                                     child: Column(
                                       children: [
-                                        Container(
-                                          child: AutoSizeText(
-                                            widget.show.name,
-                                            minFontSize: 20,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              shadows: [
-                                                new Shadow(
-                                                  color: Colors.black,
-                                                  blurRadius: 15,
-                                                )
-                                              ],
-                                              color: Colors.white,
-                                              fontFamily: 'Raleway',
-                                              fontWeight: FontWeight.w700,
-                                              // fontSize: _width / 15,
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Container(
+                                            child: AutoSizeText(
+                                              widget.show.name,
+                                              minFontSize: 15,
+                                              maxFontSize: 20,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                shadows: [
+                                                  new Shadow(
+                                                    color: Colors.black,
+                                                    blurRadius: 15,
+                                                  )
+                                                ],
+                                                color: Colors.white,
+                                                fontFamily: 'Raleway',
+                                                fontWeight: FontWeight.w700,
+                                                // fontSize: _width / 15,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -581,15 +670,15 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
       return Container(
         child: Center(
           child: CircularPercentIndicator(
-            radius: 100,
-            lineWidth: 20,
+            radius: _width/4,
+            lineWidth: 10,
             progressColor: blueColor,
             animation: true,
             backgroundColor: Colors.white,
             circularStrokeCap: CircularStrokeCap.round,
             percent: _percentage,
             center: new Text(
-              "${(_percentage * 100).floor()}",
+              "${(_percentage * 100).floor()} %",
               style: TextStyle(
                   fontFamily: 'Raleway',
                   fontSize: _width/ 15,

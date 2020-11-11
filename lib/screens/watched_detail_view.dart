@@ -11,6 +11,7 @@ import 'package:eWoke/components/toast.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/watched.dart';
+import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -183,6 +184,12 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 height: _height * .4,
                                 decoration: BoxDecoration(
                                   color: greenColor,
+                                  image: DecorationImage(
+                                    image: NetworkImage(
+                                      widget.show.imageThumbnailPath,
+                                    ),
+                                    fit: BoxFit.cover
+                                  ),
                                   borderRadius: BorderRadius.only(
                                     bottomRight: Radius.circular(25.0),
                                     bottomLeft: Radius.circular(25.0),
@@ -192,35 +199,33 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             ),
                             Positioned(
                               top: 50,
-                              child: Container(
-                                height: _height/3.5,
-                                width: _width*.4,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(.2),
-                                      spreadRadius: 2,
-                                      blurRadius: 15,
-                                      offset: Offset(10, 0), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  // child: Image.network(
-                                  //   widget.show.imageThumbnailPath,
-                                  //   height: 150.0,
-                                  //   width: 100.0,
-                                  // ),
-                                  child: CachedNetworkImage(
-                                    imageUrl: widget.show.imageThumbnailPath,
-                                    progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                        Center(child: CircularProgressIndicator(value: downloadProgress.progress, valueColor: AlwaysStoppedAnimation(Colors.white),)),
-                                    errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.white,)),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaY: 20.0, sigmaX: 20.0),
+                                child: Container(
+                                  height: _height/3.5,
+                                  width: _width*.4,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(.2),
+                                        spreadRadius: 2,
+                                        blurRadius: 15,
+                                        offset: Offset(10, 0), // changes position of shadow
+                                      ),
+                                    ],
                                   ),
-                                )
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.show.imageThumbnailPath,
+                                      progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                          Center(child: CircularProgressIndicator(value: downloadProgress.progress, valueColor: AlwaysStoppedAnimation(Colors.white),)),
+                                      errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.white,)),
+                                    ),
+                                  )
+                                ),
                               ),
                             ),
                             Positioned(
@@ -233,18 +238,19 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                       ),
                     ],
                   ),
-              FadeTransition(
-                opacity: Tween<double>(
-                  begin: 0,
-                  end: 1,
-                ).animate(animation),
-                child: SlideTransition(
-                    position: Tween<Offset>(
-                      begin: Offset(0, 0.1),
-                      end: Offset.zero,
-                    ).animate(animation),
-                    child: displayBadges(_height, _width)),
-              ),
+                  FadeTransition(
+                      opacity: Tween<double>(
+                          begin: 0,
+                          end: 1,
+                      ).animate(animation),
+                      child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: Offset(0, 0.1),
+                            end: Offset.zero,
+                          ).animate(animation),
+                          child: displayBadges(_height, _width)
+                      ),
+                  ),
                   // FadeIn(.35,_checkIfPopular(_percentage, show.lastWatchDate, show.hasMoreEpisodes())),
                   Expanded(
                     child: Align(
@@ -260,50 +266,19 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                               end: Offset.zero,
                             ).animate(animation),
                             child: Padding(
-                              padding: const EdgeInsets.only(bottom: 30.0),
+                              padding: const EdgeInsets.only(bottom: 20.0),
                               child:  displayActions(),
                             ),
                           ),
                         )),
                   ),
-                  // Container(
-                  //   height: 50,
-                  //   child: InkWell(
-                  //     onTap: () async => Navigator.pop(context),
-                  //     child: Container(
-                  //       child: Center(
-                  //         child: Icon(
-                  //           Icons.keyboard_arrow_down,
-                  //           color: greyTextColor,
-                  //           size: 50,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
           );
   }
   //TODO: REFACTOR FIRESTORE
-  updateEpisode(WatchedTVShow show) {
-    FirebaseFirestore.instance
-        .collection("${auth.currentUser.email}/shows/watched_shows")
-        .doc(show.id.toString())
-        .update({
-      "name": show.name,
-      "start_date": show.startDate,
-      "poster": show.imageThumbnailPath,
-      "seasons": show.totalSeasons,
-      "episodesPerSeason": show.episodePerSeason,
-      "currentSeason": show.currentSeason,
-      "currentEpisode": show.currentEpisode,
-      "startedWatching": show.firstWatchDate,
-      "lastWatched": show.lastWatchDate,
-      "favorite" : show.favorite
-    });
-  }
+
 
   Widget _checkIfPopular(double percentage, String lastWatchDate, bool status, double _height, double _width) {
     // print(status);
@@ -473,7 +448,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   Widget _yourProgress(double _percentage, WatchedTVShow show, double _height, double _width) {
     _percentage = show.calculateProgress();
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
       child: AnimatedBuilder(
         animation: _reverseController,
         builder: (context, index) {
@@ -717,19 +692,21 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   }
 
   Widget displayActions() {
+    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
+
     if (_percentage < 1.0) {
       return widget.show.nextEpisodeAired()
-          ? Column(
-        children: [
-          Container(
+          ? Container(
+        // color: Colors.black,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width: 150,
-                    height: 50,
+                    width: _width/2.5,
+                    height: _height/10,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
                         color: lightGreenColor.withOpacity(.3)
@@ -764,7 +741,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width: 150,
+                    width: _width/2.5,
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
@@ -779,7 +756,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             widget.show.incrementEpisodeWatch();
                           });
                           widget.show.setLastWatchedDate();
-                          updateEpisode(widget.show);
+                          FirestoreUtils().updateEpisode(widget.show);
                           StatusAlert.show(
                             context,
                             duration:
@@ -841,9 +818,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                 )
               ],
             ),
-          ),
-        ],
-      )
+          )
           : Column(
             children: [
               Container(

@@ -73,6 +73,7 @@ dependencies:
   snapping_sheet: ^2.0.1
 #  sticky_grouped_list: ^1.2.0
   sticky_and_expandable_list: ^0.2.3
+  google_nav_bar: ^3.1.0
 
 dev_dependencies:
   flutter_test:

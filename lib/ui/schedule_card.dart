@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
@@ -82,13 +83,10 @@ class _ScheduleCardState extends State<ScheduleCard> {
         bottomLeft: Radius.circular(25.0),
         topRight: Radius.circular(25.0),
     );
-    double airHeight = _height/12;
-    double cardHeight = _height / 3.5;
+    double airHeight = _height/13;
+    double cardHeight = _height / 4.2;
     double cardWidth = _height / 3;
-    // if ( color == null){
-    //   print("color was null");
-    //   getDominantColor();
-    // }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
       child: GestureDetector(
@@ -108,156 +106,172 @@ class _ScheduleCardState extends State<ScheduleCard> {
           ),
           child: Stack(
             clipBehavior: Clip.none,
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             children: [
-              Stack(
-                children: [
-                  Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                         Container(
-                           decoration: BoxDecoration(
-                               borderRadius: BorderRadius.only(
-                                 topLeft: Radius.circular(75.0),
-                                 topRight: Radius.circular(25.0),
-                               ),
-                               color: greyTextColor
-                           ),
-                           child: Column(
-                             crossAxisAlignment: CrossAxisAlignment.end,
-                             children: [
+              Positioned(
+                bottom: 30,
+                child: Container(
+                  // color: Colors.black,
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Stack(
+                      children: [
+                        Container(
+                          // color: Colors.black,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
                                Container(
-                                    // color: Colors.black,
-                                    width: cardWidth,
-                                    height: 50,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 50.0, right: 10, top: 10),
-                                      child: AutoSizeText(
-                                          widget.episode.embedded['show']['name'],
-                                          textAlign: TextAlign.right,
-                                          softWrap: true,
-                                          maxFontSize: 25,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: _width / 15,
-                                            fontWeight: FontWeight.w700,
-                                            fontFamily: 'Raleway',
-                                          )
+                                 decoration: BoxDecoration(
+                                     borderRadius: BorderRadius.only(
+                                       topLeft: Radius.circular(75.0),
+                                       topRight: Radius.circular(25.0),
+                                     ),
+                                     color: greyTextColor
+                                 ),
+                                 child: Column(
+                                   crossAxisAlignment: CrossAxisAlignment.end,
+                                   children: [
+                                     Container(
+                                          // color: Colors.black,
+                                          width: cardWidth,
+                                          height: 40,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 50.0, right: 10, top: 10),
+                                            child: AutoSizeText(
+                                                widget.episode.embedded['show']['name'],
+                                                textAlign: TextAlign.right,
+                                                softWrap: true,
+                                                maxFontSize: 25,
+                                                style: GoogleFonts.roboto(
+                                                  color: Colors.white,
+                                                  fontSize: _width / 15,
+                                                  fontWeight: FontWeight.w700,
+                                                  // fontFamily: 'Raleway',
+                                                )
+                                            ),
+                                          ),
                                       ),
-                                    ),
-                                ),
-                               Padding(
-                                 padding: const EdgeInsets.only(bottom: 10.0, right: 20),
-                                 child: AutoSizeText(
-                                     widget.episode.name,
-                                     textAlign: TextAlign.right,
-                                     style: TextStyle(
-                                       fontStyle: FontStyle.italic,
-                                       color: Colors.white,
-                                       fontSize: _width / 23,
-                                       fontFamily: 'Raleway',
-                                     )
+                                     Padding(
+                                       padding: const EdgeInsets.only(bottom: 10.0, right: 20),
+                                       child: AutoSizeText(
+                                           widget.episode.name,
+                                           textAlign: TextAlign.right,
+                                           style: GoogleFonts.roboto(
+                                             color: Colors.white,
+                                             fontStyle: FontStyle.italic,
+                                             fontSize: _width / 23,
+                                             // fontWeight: FontWeight.w700,
+                                             // fontFamily: 'Raleway',
+                                           )
+                                       ),
+                                     ),
+                                   ],
                                  ),
                                ),
-                             ],
-                           ),
-                         ),
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 20.0),
-                            child: Container(
-                                    height: cardHeight/2.8,
-                                    width: cardWidth*.8,
-                                    // color: Colors.black12,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceAround,
-                                      children: [
-                                        Container(
-                                          child: Column(
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 10.0),
+                                  child: Container(
+                                          height: cardHeight/3,
+                                          width: cardWidth*.8,
+                                          // color: Colors.black12,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                                             children: [
-                                              Text(
-                                                widget.episode.season.toString(),
-                                                style: TextStyle(
-                                                    shadows: <Shadow>
-                                                    [Shadow(
-                                                        offset: Offset(0.0, 3.0),
-                                                        blurRadius: 15.0,
-                                                        color: Colors.black
-                                                          .withOpacity(.2),
-                                                      ),
-                                                    ],
-                                                    fontWeight: FontWeight.w700,
+                                              Container(
+                                                child: Column(
+                                                  children: [
+                                                    AutoSizeText(
+                                                      widget.episode.season.toString(),
+                                                      minFontSize: 10,
+                                                      maxFontSize: 25,
+                                                      style: TextStyle(
+                                                          shadows: <Shadow>
+                                                          [Shadow(
+                                                              offset: Offset(0.0, 3.0),
+                                                              blurRadius: 15.0,
+                                                              color: Colors.black
+                                                                .withOpacity(.2),
+                                                            ),
+                                                          ],
+                                                          fontWeight: FontWeight.w700,
 //                                                color: greyTextColor,
 //                                                color: Colors.white,
-                                                    color: episodeLabelColor,
+                                                          color: episodeLabelColor,
 
-                                                    fontSize: _width / 10,
-                                                    fontFamily: 'Raleway'
-                                                ),
-                                              ),
-                                              Text(
-                                                "Season",
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-//                                                color: Colors.white,
-                                                    color: episodeLabelColor,
-                                                    fontSize: _width / 25,
-                                                    fontFamily: 'Raleway'
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                widget.episode.episode.toString(),
-                                                style: TextStyle(
-                                                    shadows: [Shadow(
-                                                      offset: Offset(0.0, 3.0),
-                                                      blurRadius: 15.0,
-                                                      color: Colors.black
-                                                          .withOpacity(.2),
+                                                          fontSize: _width / 10,
+                                                          fontFamily: 'Raleway'
+                                                      ),
                                                     ),
-                                                    ],
-                                                    fontWeight: FontWeight.w700,
+                                                    AutoSizeText(
+                                                      "Season",
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.w300,
+//                                                color: Colors.white,
+                                                          color: episodeLabelColor,
+                                                          fontSize: _width / 25,
+                                                          fontFamily: 'Raleway'
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Column(
+                                                  children: [
+                                                    AutoSizeText(
+                                                      widget.episode.episode.toString(),
+                                                      minFontSize: 15,
+                                                      maxFontSize: 25,
+                                                      style: TextStyle(
+                                                          shadows: [Shadow(
+                                                            offset: Offset(0.0, 3.0),
+                                                            blurRadius: 15.0,
+                                                            color: Colors.black
+                                                                .withOpacity(.2),
+                                                          ),
+                                                          ],
+                                                          fontWeight: FontWeight.w700,
 //                                                color: greyTextColor,
-                                                    color: episodeLabelColor,
+                                                          color: episodeLabelColor,
 //                                                color: Colors.white,
 //                                                fontSize: _width / 10,
-                                                    fontSize: _width / 10,
+                                                          fontSize: _width / 10,
 
-                                                    fontFamily: 'Raleway'
-                                                ),
-                                              ),
-                                              Text(
-                                                "Episode",
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-                                                    color: episodeLabelColor,
+                                                          fontFamily: 'Raleway'
+                                                      ),
+                                                    ),
+                                                    AutoSizeText(
+                                                      "Episode",
+                                                      textAlign: TextAlign.left,
+                                                      minFontSize: 13,
+                                                      maxFontSize: 15,
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.w300,
+                                                          color: episodeLabelColor,
 //                                                color: Colors.white,
-                                                    fontSize: _width / 25,
-                                                    fontFamily: 'Raleway'
+                                                          fontSize: _width / 25,
+                                                          fontFamily: 'Raleway'
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                          ),
-                        ],
-                      )
+                                ),
+                              ],
+                            )
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
               Positioned(
-                bottom: -(airHeight / 2 + 10),
+                bottom: -(airHeight / 2),
                 child: Container(
                   height: airHeight+5,
                   width: _width * .35,
@@ -287,7 +301,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                           )
                       ),
                       Container(
-                        height: (airHeight+5)/2,
+                        height: (airHeight+10)/2,
                         width: _width * .35,
                         child: Center(
                           child: AutoSizeText(
@@ -312,8 +326,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
                         top: 0,
                         left: 0,
                         child: Container(
-                            width: 50,
-                            height: 50,
+                            width: 40,
+                            height: 40,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                   colors: [ blueColor, lightGreenColor]
@@ -340,13 +354,13 @@ class _ScheduleCardState extends State<ScheduleCard> {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             width: 110,
-                            height: 50,
+                            height: 30,
+                            // color: Colors.black,
                             child: Center(
                               child: Text(
                                 _countdownLabel,
-                                style: TextStyle(
-                                    color: greyTextColor.withOpacity(.4),
-                                    fontFamily: 'Raleway',
+                                style: GoogleFonts.roboto(
+                                  color: greyTextColor.withOpacity(.4),
                                   fontSize: _width/20,
                                   fontWeight: FontWeight.w700
                                 ),

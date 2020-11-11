@@ -102,6 +102,14 @@ class _FullScheduleState extends State<FullSchedule> {
     // print(scheduledEpisodes.length);
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        brightness: Brightness.dark,
+        backgroundColor: greenColor,
+        shadowColor: Colors.transparent,
+        toolbarHeight: 0,
+        // leading: null,
+
+      ),
       body: Container(
         color: greenColor,
         child: SafeArea(
@@ -117,7 +125,7 @@ class _FullScheduleState extends State<FullSchedule> {
                   floating: true,
                   delegate: PopularSliverDelegate(
                     // hideTitleWhenExpanded: true,
-                    expandedHeight: _height*.13,
+                    expandedHeight: _height*.15,
                     back: back(context),
                     child: Container(
                       width: _width,

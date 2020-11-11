@@ -61,6 +61,10 @@ class _SplashScreenState extends State<SplashScreen> {
     //       .orderBy('lastWatched', descending: true)
     //       .snapshots();
     // }
+
+    if ( allWatchedShows.isEmpty){
+      _watchedShowsStream = FirestoreUtils().watchedShows.snapshots();
+    }
   }
 
   @override
@@ -91,126 +95,130 @@ class _SplashScreenState extends State<SplashScreen> {
 
     print("splash");
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: bgColor,
+        shadowColor: Colors.transparent,
+        brightness: Brightness.light,
+      ),
       body: Container(
-          color: bgColor,
-          child: Column(
-            children: [
-              //ANIMATE IN LOGO
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 100.0, horizontal: 50),
-                child: Hero(
-                  tag: 'logo',
-                  child: Container(
-                    width: _width / 2,
-                    height: _height / 5.5,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage("assets/showTIMEsmall.png"),
-                            fit: BoxFit.cover)),
-                  ),
+        color: bgColor,
+        child: Column(
+          children: [
+            //ANIMATE IN LOGO
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 50),
+              child: Hero(
+                tag: 'logo',
+                child: Container(
+                  width: _width / 2,
+                  height: _height / 5.5,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage("assets/showTIMEsmall.png"),
+                          fit: BoxFit.cover)),
                 ),
               ),
-              // PROGRESS BAR TO LOAD HOME STUFF
-              FutureBuilder(
+            ),
+            // PROGRESS BAR TO LOAD HOME STUFF
+            FutureBuilder(
                 future: _currentUserObject,
                 builder: (context, uSnapshot) {
-                 if  (uSnapshot.hasData) currentUser = uSnapshot.data;
-                 print("current user: $currentUser");
-                 _watchedShowsStream = FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots();
+                  if  (uSnapshot.hasData) currentUser = uSnapshot.data;
+                  print("current user: $currentUser");
+                  _watchedShowsStream = FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots();
                   return StreamBuilder(
-                    stream: _watchedShowsStream,
-                    builder: (context, snapshot) {
-                      if ( snapshot.hasData){
-                        print("data");
-                        print("done");
-                        watchedShowIdList.clear();
-                        watchedShowList.clear();
-                        // allWatchedShows.clear();
-                        snapshot.data.documents
-                            .forEach((f) {
-                          // print(f.data);
-                          watchedShowIdList.add(int.parse(f.documentID));
-                          WatchedTVShow show = new WatchedTVShow(
-                              id: f.documentID,
-                              name:
-                              f.data()['name'],
-                              startDate: f.data()[
-                              'start_date'],
-                              runtime: f.data()[
-                              'runtime'],
-                              imageThumbnailPath: f.data()[
-                              'image_thumbnail_path'],
-                              totalSeasons: f.data()[
-                              'total_seasons'],
-                              episodePerSeason: f.data()[
-                              'episodesPerSeason'],
-                              currentSeason: f.data()[
-                              'currentSeason'],
-                              currentEpisode: f.data()[
-                              'currentEpisode'],
-                              firstWatchDate: f.data()[
-                              'startedWatching'],
-                              rating: f.data()['rating'],
-                              lastWatchDate:
-                              f.data()['lastWatched'],
-                              favorite: f.data()['favorite'] ?? false);
-                          watchedShowList.add(show);
-                          // allWatchedShows.add(show);
-                        });
-                        _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowIdList);
-                        print(watchedShowList.length);
-                      }
-
-                      return FutureBuilder(
-                        future: _scheduledEpisodes,
-                        builder: (context, snapshot) {
-                          if ( snapshot.hasData){
-                            print("loading scheduled episodes");
-                            for(int index=0 ; index < 5; index++){
-                                scheduledEpisodes.add(snapshot.data[index]);
-                                int notAired = snapshot.data[index].length - 1;
-                                for(int i=0; i< snapshot.data[index].length ; i++){
-                                  if ( !snapshot.data[index][i].aired()){
-                                    notAired = i;
-                                    break;
-                                  }
-                                }
-                                notAiredList.add(snapshot.data[index][notAired]);
-                            }
-                            // print(notAiredList.length);
-                            Timer.run(() {
-                              final home = HomeView(
-                                user: currentUser,
-                                notAiredList: notAiredList,
-                                watchedShowsList: watchedShowList,
-                              );
-                              Navigator.of(context)
-                                  .pushAndRemoveUntil(CupertinoPageRoute(
-                                builder: (context) => home,
-                              ),(route) => false);
-                            });
-                          }
-                          return Center(
-                            child: Container(
-                              width: _width*.5,
-                              height: _height/4,
-                              // color: Colors.black,
-                              child: Center(
-                                child: FlareActor("assets/loadingcouch.flr",
-                                    alignment: Alignment.center,
-                                    fit: BoxFit.contain,
-                                    animation: "load"),
-                              ),
-                            ),
-                          );
+                      stream: _watchedShowsStream,
+                      builder: (context, snapshot) {
+                        if ( snapshot.hasData){
+                          // print("data");
+                          // print("done");
+                          watchedShowIdList.clear();
+                          watchedShowList.clear();
+                          // allWatchedShows.clear();
+                          snapshot.data.documents
+                              .forEach((f) {
+                            // print(f.data);
+                            watchedShowIdList.add(int.parse(f.documentID));
+                            WatchedTVShow show = new WatchedTVShow(
+                                id: f.documentID,
+                                name:
+                                f.data()['name'],
+                                startDate: f.data()[
+                                'start_date'],
+                                runtime: f.data()[
+                                'runtime'],
+                                imageThumbnailPath: f.data()[
+                                'image_thumbnail_path'],
+                                totalSeasons: f.data()[
+                                'total_seasons'],
+                                episodePerSeason: f.data()[
+                                'episodesPerSeason'],
+                                currentSeason: f.data()[
+                                'currentSeason'],
+                                currentEpisode: f.data()[
+                                'currentEpisode'],
+                                firstWatchDate: f.data()[
+                                'startedWatching'],
+                                rating: f.data()['rating'],
+                                lastWatchDate:
+                                f.data()['lastWatched'],
+                                favorite: f.data()['favorite'] ?? false);
+                            watchedShowList.add(show);
+                            // allWatchedShows.add(show);
+                          });
+                          _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowIdList);
+                          print(watchedShowList.length);
                         }
-                      );
-                    }
+                        return FutureBuilder(
+                            future: _scheduledEpisodes,
+                            builder: (context, snapshot) {
+                              if ( snapshot.hasData){
+                                print("loading scheduled episodes");
+                                for(int index=0 ; index < 5; index++){
+                                  scheduledEpisodes.add(snapshot.data[index]);
+                                  int notAired = snapshot.data[index].length - 1;
+                                  for(int i=0; i< snapshot.data[index].length ; i++){
+                                    if ( !snapshot.data[index][i].aired()){
+                                      notAired = i;
+                                      break;
+                                    }
+                                  }
+                                  notAiredList.add(snapshot.data[index][notAired]);
+                                }
+                                // print(notAiredList.length);
+                                Timer.run(() {
+                                  final home = HomeView(
+                                    user: currentUser,
+                                    notAiredList: notAiredList,
+                                    watchedShowsList: watchedShowList,
+                                  );
+                                  Navigator.of(context)
+                                      .pushAndRemoveUntil(CupertinoPageRoute(
+                                    builder: (context) => home,
+                                  ),(route) => false);
+                                });
+                              }
+                              return Center(
+                                child: Container(
+                                  width: _width*.5,
+                                  height: _height/4,
+                                  // color: Colors.black,
+                                  child: Center(
+                                    child: FlareActor("assets/loadingcouch.flr",
+                                        alignment: Alignment.center,
+                                        fit: BoxFit.contain,
+                                        animation: "load"),
+                                  ),
+                                ),
+                              );
+                            }
+                        );
+                      }
                   );
                 }
-              ),
-            ],
-          ),
+            ),
+          ],
+        ),
       ),
     );
   }

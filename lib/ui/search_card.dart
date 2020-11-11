@@ -178,7 +178,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Container(
-                                                  width: _width / 3,
+                                                  width: _width / 4,
                                                   height: _height / 25,
                                                   decoration: BoxDecoration(
                                                     color: greyTextColor,
@@ -214,11 +214,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                           fontFamily: 'Raleway',
                                                           fontWeight:
                                                               FontWeight.w700,
-                                                          fontSize: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              25,
+                                                          fontSize: _width/ 25,
                                                         ),
                                                       ),
                                                       Text(
@@ -228,11 +224,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                           fontFamily: 'Raleway',
                                                           fontWeight:
                                                               FontWeight.w700,
-                                                          fontSize: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              25,
+                                                          fontSize: _width/ 25,
                                                         ),
                                                       ),
                                                     ],
@@ -243,40 +235,26 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                 padding:
                                                     const EdgeInsets.all(8.0),
                                                 child: Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      3,
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height /
-                                                      25,
+                                                  width: _width/4,
+                                                  height: _height/25,
                                                   decoration: BoxDecoration(
                                                     color: fireColor,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(25.0),
-                                                      topRight:
-                                                          Radius.circular(25.0),
-                                                      bottomLeft:
-                                                          Radius.circular(25.0),
-                                                      bottomRight:
-                                                          Radius.circular(25.0),
+                                                    borderRadius: BorderRadius.only(
+                                                      topLeft: Radius.circular(25.0),
+                                                      topRight:Radius.circular(25.0),
+                                                      bottomLeft:Radius.circular(25.0),
+                                                      bottomRight:Radius.circular(25.0),
                                                     ),
                                                     boxShadow: [
                                                       new BoxShadow(
-                                                          color: Colors.black
-                                                              .withOpacity(.1),
+                                                          color: Colors.black.withOpacity(.1),
                                                           blurRadius: 15.0,
                                                           spreadRadius: 3,
                                                           offset: Offset(0, 0)),
                                                     ],
                                                   ),
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                     children: [
                                                       Center(
                                                         child: Text(
@@ -287,11 +265,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                                 'Raleway',
                                                             fontWeight:
                                                                 FontWeight.w700,
-                                                            fontSize: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width /
-                                                                25,
+                                                            fontSize: _width / 25,
                                                           ),
                                                         ),
                                                       ),
@@ -304,11 +278,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                                 'Raleway',
                                                             fontWeight:
                                                                 FontWeight.w700,
-                                                            fontSize: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width /
-                                                                25,
+                                                            fontSize: _width/ 25,
                                                           ),
                                                         ),
                                                       ),
@@ -320,72 +290,51 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.all(12.0),
-                                            child: Container(
-                                              width: _height / 9,
-                                              height: _height / 10,
-                                              decoration: BoxDecoration(
-                                                color: blueColor,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(25)),
-                                                boxShadow: [
-                                                  new BoxShadow(
-                                                      color: blueColor
-                                                          .withOpacity(.1),
-                                                      blurRadius: 12.0,
-                                                      spreadRadius: 2,
-                                                      offset:
-                                                          Offset.fromDirection(
-                                                              5, 0)),
-                                                ],
+                                            child: FlatButton(
+                                              minWidth: _height / 13,
+                                              height: _height/10,
+                                              color: blueColor,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(Radius.circular(20)),
                                               ),
-                                              child: Container(
-                                                child: IconButton(
-                                                  onPressed: () {
-                                                    if (!_added) {
-                                                      FirestoreUtils()
-                                                          .addToWatchedShows(
-                                                              showDetails);
-                                                      setState(() {
-                                                        _added = true;
-                                                      });
-                                                      StatusAlert.show(
-                                                        context,
-                                                        duration: Duration(
-                                                            seconds: 2),
-                                                        blurPower: 5.0,
-                                                        title: 'Show added',
-                                                        configuration:
-                                                            IconConfiguration(
-                                                                icon:
-                                                                    Icons.done),
-                                                      );
-                                                    } else {
-                                                      // print(widget.show.id);
-                                                      //FOR UPDATING SHOWS RATING
-                                                      // _updateRating(showDetails);
-                                                      StatusAlert.show(
-                                                        context,
-                                                        duration: Duration(
-                                                            seconds: 2),
-                                                        blurPower: 5.0,
-                                                        title:
-                                                            " ${widget.show.name} already added!",
-                                                        configuration:
-                                                            IconConfiguration(
-                                                                icon:
-                                                                    Icons.info),
-                                                      );
-                                                    }
-                                                  },
-                                                  icon: FaIcon(
-                                                    FontAwesomeIcons.couch,
-                                                    color: Colors.white,
-                                                    size: MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        10,
-                                                  ),
-                                                ),
+                                              onPressed: () {
+                                                if (!_added) {
+                                                  FirestoreUtils().addToWatchedShows(showDetails);
+                                                  setState(() {
+                                                    _added = true;
+                                                  });
+                                                  StatusAlert.show(
+                                                    context,
+                                                    duration: Duration(
+                                                        seconds: 2),
+                                                    blurPower: 5.0,
+                                                    title: 'Show added',
+                                                    configuration:
+                                                        IconConfiguration(
+                                                            icon:
+                                                                Icons.done),
+                                                  );
+                                                } else {
+                                                  //FOR UPDATING SHOWS RATING
+                                                  // _updateRating(showDetails);
+                                                  StatusAlert.show(
+                                                    context,
+                                                    duration: Duration(
+                                                        seconds: 2),
+                                                    blurPower: 5.0,
+                                                    title:
+                                                        " ${widget.show.name} already added!",
+                                                    configuration:
+                                                        IconConfiguration(
+                                                            icon:
+                                                                Icons.info),
+                                                  );
+                                                }
+                                              },
+                                              child: FaIcon(
+                                                FontAwesomeIcons.couch,
+                                                color: Colors.white,
+                                                size: _height/17,
                                               ),
                                             ),
                                           ),

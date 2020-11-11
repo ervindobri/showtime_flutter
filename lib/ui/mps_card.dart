@@ -165,7 +165,6 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(.56),
                             borderRadius: _radius
-
                           ),
                           child: FadeTransition(
                             opacity: Tween<double>(
@@ -286,7 +285,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                   Padding(
                                     padding: const EdgeInsets.only(
                                       top:8.0,
-                                      bottom:10.0,
+                                      bottom:0.0,
                                       left: 3,
                                       right: 3
                                     ),
@@ -302,100 +301,94 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                             child: FlatButton(
                                               highlightColor: Colors.black,
                                               color: blueColor,
-                                              shape: CircleBorder(),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(25.0)
+                                              ),
                                                 onPressed: () {
-                                                print(widget.show.id);
-                                                _checkIfAdded().then((value) => _added = value);
+                                                    // print(widget.show.id);
+                                                    _checkIfAdded().then((value) => _added = value);
+                                                    if ( !_added){
+                                                      WatchedTVShow show = FirestoreUtils().addToWatchedShows(showDetails);
+                                                      watchedShowList.add(show);
+                                                      StatusAlert.show(
+                                                        context,
+                                                        duration: Duration(seconds: 2),
+                                                        blurPower: 5.0,
+                                                        title: 'Show added',
+                                                        configuration: IconConfiguration(
+                                                            icon: Icons.done),
+                                                      );
+                                                      setState(() => _added = true );
+                                                    }
+                                                    else{
+                                                      setState(() => _tapped = false);
 
-                                                if ( !_added){
-                                                  WatchedTVShow show = FirestoreUtils().addToWatchedShows(showDetails);
-                                                  allWatchedShows.add(show);
-                                                  StatusAlert.show(
-                                                    context,
-                                                    duration: Duration(seconds: 2),
-                                                    blurPower: 5.0,
-                                                    title: 'Show added',
-                                                    configuration: IconConfiguration(
-                                                        icon: Icons.done),
-                                                  );
-                                                  setState(() => _added = true );
-                                                }
-                                                else{
-                                                  setState(() => _tapped = false);
-                                                  showModalBottomSheet<dynamic>(
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius: BorderRadius.only(
-                                                            topLeft: Radius.circular(25.0),
-                                                            topRight: Radius.circular(25.0)),
-                                                      ),
-                                                      context: context,
-                                                      builder: (BuildContext context) {
-                                                        print(list.length);
-                                                        WatchedTVShow show;
-                                                        Future<List<dynamic>> episodes;
-                                                        try{
-                                                          show = allWatchedShows.firstWhere((element) => element.id == widget.show.id);
-                                                          episodes = new Network().getEpisodes(showID: show.id);
-                                                        }
-                                                        catch(e){
-                                                          print("No such show: ${e}");
-                                                          Navigator.pop(context);
-                                                        }
-                                                        return ClipRRect(
-                                                            borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
-                                                          child: FutureBuilder<Object>(
-                                                            future: episodes,
-                                                            builder: (context, snapshot) {
-                                                              if ( snapshot.hasData){
-                                                                show.episodes = snapshot.data;
-                                                                print(show.episodes.length);
-                                                                // print(data[index].episodes.length);
-                                                                return WatchedDetailView(show: show);
-                                                              }
-                                                              else{
-                                                                return Container(
-                                                                  width: _width,
-                                                                  height: _height*.95,
-                                                                  color: bgColor,
-                                                                  child: Column(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: [
-                                                                      Container(
-                                                                        width: _width,
-                                                                        // color: Colors.black,
-                                                                        child: Center(
-                                                                          child: CircularProgressIndicator(
-                                                                            valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                                                                            // backgroundColor: greenColor,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                );
-                                                              }
-                                                            }
+                                                      showModalBottomSheet<dynamic>(
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.only(
+                                                                topLeft: Radius.circular(25.0),
+                                                                topRight: Radius.circular(25.0)),
                                                           ),
-                                                        );
-                                                      },
-                                                      isScrollControlled: true);
-                                                }
-
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                              // print(list.length);
+                                                              WatchedTVShow show;
+                                                              Future<List<dynamic>> episodes;
+                                                              try{
+                                                                  show = watchedShowList.firstWhere((element) => element.id == widget.show.id);
+                                                                  episodes = new Network().getEpisodes(showID: show.id);
+                                                              }
+                                                              catch(e){
+                                                                print("No such show: ${e}");
+                                                                Navigator.pop(context);
+                                                              }
+                                                              return ClipRRect(
+                                                                borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
+                                                              child: FutureBuilder<Object>(
+                                                                future: episodes,
+                                                                builder: (context, snapshot) {
+                                                                  if ( snapshot.hasData){
+                                                                    show.episodes = snapshot.data;
+                                                                    // print(show.episodes.length);
+                                                                    // print(data[index].episodes.length);
+                                                                    return WatchedDetailView(show: show);
+                                                                  }
+                                                                  else{
+                                                                    return Container(
+                                                                      width: _width,
+                                                                      height: _height*.95,
+                                                                      color: bgColor,
+                                                                      child: Column(
+                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                        children: [
+                                                                          Container(
+                                                                            width: _width,
+                                                                            // color: Colors.black,
+                                                                            child: Center(
+                                                                              child: CircularProgressIndicator(
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(greenColor),
+                                                                                // backgroundColor: greenColor,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                }
+                                                              ),
+                                                            );
+                                                          },
+                                                          isScrollControlled: true);
+                                                    }
                                                 },
-                                                child: Container(
-                                                width: 50.0,
-                                                height: 50.0,
-                                                decoration:  BoxDecoration(
-                                                      shape: BoxShape.circle,
-                                                    ),
                                                 child: Center(
-                                                  child: FaIcon(
+                                                  child: Icon(
                                                     FontAwesomeIcons.couch,
-                                                    size: 30.0,
+                                                    size: 20.0,
                                                     color: CupertinoColors.white,
                                                   ),
                                                 ),
-                                            ),
                                               ),
                                           ),
                                           Expanded(
@@ -420,15 +413,15 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                     isScrollControlled: true);
                                               },
                                               child: Container(
-                                                width: 50.0,
-                                                height: 50.0,
+                                                width: _width/8,
+                                                height: _width/8,
                                                 decoration:  BoxDecoration(
                                                   shape: BoxShape.circle,
                                                 ),
                                                 child: Center(
                                                   child: FaIcon(
                                                     FontAwesomeIcons.infoCircle,
-                                                    size: 30.0,
+                                                    size: 25.0,
                                                     color: CupertinoColors.white,
                                                   ),
                                                 ),
