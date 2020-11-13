@@ -373,7 +373,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                 },
                                                 keyboardType:
                                                 TextInputType.visiblePassword,
-                                                controller: passwordController,
+                                                controller: repasswordController,
                                                 obscureText: _showPassword,
                                                 style: new TextStyle(
                                                     fontSize: 15.0,
@@ -514,6 +514,8 @@ class _LoginScreenState extends State<LoginScreen>
                                       else{
                                         Future.delayed(const Duration(milliseconds: 300), () async{
                                           String authenticate = await FirestoreUtils().registerUser(nameController.text,passwordController.text);
+                                          passwordController.clear();
+                                          nameController.clear();
                                           if (authenticate == null){
                                             setState(() {
                                               _state = 2;
@@ -522,7 +524,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                 const Duration(milliseconds: 300), () {
                                               setState(() {
                                                 logging = true;
-                                                _state = 1;
+                                                // _state = 1;
                                               });
                                             });
                                           }

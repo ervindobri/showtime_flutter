@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:animations/animations.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:eWoke/components/route.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/home/login.dart';
 import 'package:eWoke/main.dart';
@@ -25,6 +27,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -68,6 +71,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  var watchedShowsStream;
+
+
 
   @override
   void initState() {
@@ -77,385 +83,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     // watchedShowList.clear();
     _customTitle = title;
     // allWatchedShows.clear();
+    watchedShowsStream = FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots();
 
-
-    print(widget.notAiredList.length);
-    print("init");
-
+    // print(widget.notAiredList.length);
+    // print("init");
 
   }
-
-  void _showDialog(){
-    final double _width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final double _height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    showAnimatedDialog(
-      context: context,
-      animationType: DialogTransitionType.slideFromLeftFade,
-      barrierDismissible: false,
-      duration: Duration(milliseconds: 100),
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false,
-          child: CustomDialogWidget(
-            backgroundColor: Colors.grey.shade100,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(25)),
-            ),
-            title: Center(
-              child: Text(
-                'Profile',
-              ),
-            ),
-            titleTextStyle: TextStyle(
-                fontFamily: 'Raleway',
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
-                color: greyTextColor
-            ),
-            titlePadding: EdgeInsets.only(
-                top: 5.0,
-                // bottom: 10.0,
-                left: 25.0,
-                right: 25.0
-            ),
-            //TODO content add rive animation
-            content: SingleChildScrollView(
-              child: Container(
-                height: _height*.65,
-                width: _width*.85,
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CircleAvatar(
-                          backgroundColor: greyTextColor,
-                          minRadius: 60,
-                          maxRadius: 60,
-                          backgroundImage: AssetImage(
-                              "assets/showtime-avatar.png"
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "First Name",
-                                  style: TextStyle(
-                                      fontFamily: 'Raleway',
-                                      fontSize: 20,
-                                      color: greyTextColor.withOpacity(.5)
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30.0),
-                              child: Container(
-                                width: _width/3.5,
-                                child: TextFormField(
-                                  validator: (text){
-                                    if ( text.isEmpty){
-                                      return "Enter first name";
-                                    }
-                                    else{
-                                      setState(() {
-                                        firstName = text.toString();
-                                      });
-                                      return null;
-                                    }
-                                    return null;
-                                  },
-                                  onFieldSubmitted: (text){
-
-                                  },
-                                  keyboardType: TextInputType.name,
-                                  textCapitalization: TextCapitalization.words,
-                                  autofocus: false,
-                                  style: new TextStyle(
-                                      fontSize: 15.0,
-                                      fontFamily: 'Raleway',
-                                      color: greyTextColor),
-                                  decoration: const InputDecoration(
-                                    errorStyle: TextStyle(
-                                        fontFamily: 'Raleway',
-                                        color: orangeColor
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    hintText: 'John',
-                                    focusColor: greenColor,
-                                    enabledBorder: const OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: blueColor),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0)),
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: blueColor),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0)),
-                                    ),
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: greenColor, width: 2),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0)),
-                                    ),
-                                    errorBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: orangeColor, width: 2),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0)),
-                                    ),
-                                  ),
-
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .end,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "Last Name",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontFamily: 'Raleway',
-                                      fontSize: 20,
-                                      color: greyTextColor.withOpacity(.5)
-
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30.0),
-                              child: Container(
-                                width: _width/3.5,
-                                child: TextFormField(
-                                  validator: (text){
-                                    if ( text.toString().isEmpty){
-                                      return "Enter last name";
-                                    }
-                                    else{
-                                      setState(() {
-                                        lastName = text.toString();
-                                      });
-                                    }
-                                    return null;
-                                  },
-                                  keyboardType: TextInputType.name,
-                                  textCapitalization: TextCapitalization.words,
-                                  autofocus: false,
-                                  style: new TextStyle(
-                                      fontSize: 15.0,
-                                      fontFamily: 'Raleway',
-                                      color: greyTextColor),
-                                  decoration: const InputDecoration(
-                                    errorStyle: TextStyle(
-                                        fontFamily: 'Raleway',
-                                        color: orangeColor
-                                    ),
-                                    contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    hintText: 'Doe',
-                                    focusColor: greenColor,
-                                    enabledBorder: const OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: blueColor),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0)),
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderSide:
-                                      BorderSide(color: blueColor),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0)),
-                                    ),
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: greenColor, width: 2),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0)),
-                                    ),
-                                    errorBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: orangeColor, width: 2),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(50.0)),
-                                    ),
-                                  ),
-
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .end,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "Age",
-                                  textAlign: TextAlign.left,
-
-                                  style: TextStyle(
-                                      fontFamily: 'Raleway',
-                                      fontSize: 20,
-                                      color: greyTextColor.withOpacity(.5)
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30.0),
-                              child: Container(
-                                width: _width/3.5,
-                                height: 50,
-                                child: CupertinoPicker(
-                                  onSelectedItemChanged: (int value) {
-                                    setState(() {
-                                      age = value+1;
-                                    });
-                                  },
-                                  itemExtent: 50,
-                                  looping: true,
-                                  children: List.generate(128, (index) => Center(child: Text(
-                                    (index+1).toString(),
-                                    style: TextStyle(
-                                        color: greenColor,
-                                        fontWeight: FontWeight.w700
-                                    ),))),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment
-                              .end,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "Sex : ",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontFamily: 'Raleway',
-                                      fontSize: 20,
-                                      color: greyTextColor.withOpacity(.5)
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 30.0),
-                              child: Container(
-                                width: _width/3.5,
-                                height: 50,
-                                child: CupertinoPicker(
-                                  onSelectedItemChanged: (int value) {
-                                    sex = sexCategories[value];
-                                  },
-                                  itemExtent: 50,
-                                  looping: true,
-                                  children:List.generate(sexCategories.length, (index) =>
-                                      Center(
-                                        child: Text(
-                                          sexCategories[index],
-                                          style: TextStyle(
-                                              color: greenColor,
-                                              fontWeight: FontWeight.w700
-                                          ),
-                                        ),
-                                      )),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            elevation: 5,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 10, bottom: 10),
-                child: InkWell(
-                  onTap: () {
-                    //TOOD: SAVE PROFILE DATA TO FIREBASE
-                    if (_formKey.currentState.validate()) {
-                      print("validating");
-                      FirestoreUtils().saveProfile(firstName, lastName, age, sex);
-                      Future.delayed(const Duration(milliseconds: 100), () async{
-                        Navigator.pop(context);
-                      });
-                    }
-                    else{
-                      Fluttertoast.showToast(
-                          msg: "Can't validate!",
-                          toastLength: Toast.LENGTH_LONG,
-                          backgroundColor: orangeColor,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 2
-                      );
-                    }
-
-
-                  },
-                  child: Text(
-                    'Save',
-                    style: TextStyle(
-                        color: greenColor,
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-
   @override
   void dispose(){
 
@@ -1112,7 +745,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                               child: InkWell(
                                 onTap: () {
                                   Navigator.of(context).push(
-                                      _createRouteAllShows(AllTVShows()));
+                                      createRouteAllShows(AllTVShows()));
                                 },
                                 child: Container(
                                     child: SizedBox(
@@ -1177,66 +810,109 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                 Container(
                                   child: Align(
                                       alignment: Alignment.bottomCenter,
-                                      child: widget.watchedShowsList.length > 0
-                                          ? StreamBuilder(
+                                      child: StreamBuilder(
                                           stream:  FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots(),
                                           builder: (context, snapshot) {
-                                            if (snapshot.hasData){
-                                              watchedShowList.clear();
-                                              // allWatchedShows.clear();
-                                              snapshot.data.documents
-                                                  .forEach((f) {
-                                                // print(f.data);
-                                                // WatchedTVShow show = new WatchedTVShow(
-                                                //     id: f.documentID,
-                                                //     name:
-                                                //     f.data()['name'],
-                                                //     startDate: f.data()[
-                                                //     'start_date'],
-                                                //     runtime: f.data()[
-                                                //     'runtime'],
-                                                //     imageThumbnailPath: f.data()[
-                                                //     'image_thumbnail_path'],
-                                                //     totalSeasons: f.data()[
-                                                //     'total_seasons'],
-                                                //     episodePerSeason: f.data()[
-                                                //     'episodesPerSeason'],
-                                                //     currentSeason: f.data()[
-                                                //     'currentSeason'],
-                                                //     currentEpisode: f.data()[
-                                                //     'currentEpisode'],
-                                                //     firstWatchDate: f.data()[
-                                                //     'startedWatching'],
-                                                //     rating: f.data()['rating'],
-                                                //     lastWatchDate:
-                                                //     f.data()['lastWatched'],
-                                                //     favorite: f.data()['favorite'] ?? false);
-                                                WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.documentID);
-                                                watchedShowList.add(show);
-                                                // allWatchedShows.add(show);
-                                              });
+                                            // print(snapshot.connectionState);
+                                            if (snapshot.hasData) {
+                                              // print("data");
+                                              if ( snapshot.data.documents.length > 0){
+                                                watchedShowList.clear();
+                                                // allWatchedShows.clear();
+                                                snapshot.data.documents
+                                                    .forEach((f) {
+                                                  // print(f.data);
+                                                  // WatchedTVShow show = new WatchedTVShow(
+                                                  //     id: f.documentID,
+                                                  //     name:
+                                                  //     f.data()['name'],
+                                                  //     startDate: f.data()[
+                                                  //     'start_date'],
+                                                  //     runtime: f.data()[
+                                                  //     'runtime'],
+                                                  //     imageThumbnailPath: f.data()[
+                                                  //     'image_thumbnail_path'],
+                                                  //     totalSeasons: f.data()[
+                                                  //     'total_seasons'],
+                                                  //     episodePerSeason: f.data()[
+                                                  //     'episodesPerSeason'],
+                                                  //     currentSeason: f.data()[
+                                                  //     'currentSeason'],
+                                                  //     currentEpisode: f.data()[
+                                                  //     'currentEpisode'],
+                                                  //     firstWatchDate: f.data()[
+                                                  //     'startedWatching'],
+                                                  //     rating: f.data()['rating'],
+                                                  //     lastWatchDate:
+                                                  //     f.data()['lastWatched'],
+                                                  //     favorite: f.data()['favorite'] ?? false);
+                                                  WatchedTVShow show = new WatchedTVShow
+                                                      .fromFirestore(
+                                                      f.data(), f.documentID);
+                                                  watchedShowList.add(show);
+                                                  // allWatchedShows.add(show);
+                                                });
+                                                return createCarouselSlider(
+                                                    watchedShowList.take(5)
+                                                        .toList(),
+                                                    context);
+                                              }
+                                              else{
+                                                return Container(
+                                                    height: _height/3,
+                                                    child: Center(
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(25.0),
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              AutoSizeText(
+                                                                "Your watchlist is empty",
+                                                                textAlign: TextAlign.center,
+                                                                style: GoogleFonts.roboto(
+                                                                    color: Colors.white,
+                                                                    fontWeight: FontWeight.w700,
+                                                                    fontSize: _height/25
+                                                                ),
+                                                              ),
+                                                              AutoSizeText(
+                                                                "Press the eye above for magic",
+                                                                textAlign: TextAlign.center,
+                                                                style: GoogleFonts.roboto(
+                                                                    color: Colors.white,
+                                                                    fontWeight: FontWeight.w100,
+                                                                    fontSize: _height/25
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                    )
+                                                );
+                                              }
+
                                             }
-                                            return createCarouselSlider(
-                                                watchedShowList.take(5).toList(),
-                                                context);
+                                            else{
+                                              // print("no stream");
+                                              return Container(
+                                                  height: _height/3,
+                                                  child: Center(
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(25.0),
+                                                        child: Text(
+                                                          "Press the eye above for magic",
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontFamily: 'Raleway',
+                                                              fontSize: _height/25
+                                                          ),
+                                                        ),
+                                                      )
+                                                  )
+                                              );
+                                            }
                                           }
-                                      )
-                                          : Container(
-                                          height: _height/3,
-                                          child: Center(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(25.0),
-                                                child: Text(
-                                                  "Press the eye above for magic",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: 'Raleway',
-                                                      fontSize: _height/25
-                                                  ),
-                                                ),
-                                              )
-                                          )
                                       )
                                   ),
                                 ),
@@ -1396,8 +1072,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         )
             : Container(
             child: SizedBox(
+                width: _width*.6,
+                height: _height*.35,
                 child: FlareActor(
-                    "assets/empty.flr"
+                    "assets/empty.flr",
+                  animation: 'Idle',
                 )
             )
         )
@@ -1445,28 +1124,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     );
   }
 
-  Route _createRouteAllShows(Widget child) {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          SharedAxisTransition(
-              animation: animation,
-              transitionType: SharedAxisTransitionType.vertical,
-              secondaryAnimation: secondaryAnimation,
-              child: child),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = Offset(0.0, 1.0);
-        var end = Offset.zero;
-        var curve = Curves.fastOutSlowIn;
-        var tween =
-        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+  //SEARCH FOR SHOWS
 
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
-  }
 
 
 

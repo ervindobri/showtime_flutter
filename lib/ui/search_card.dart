@@ -299,7 +299,8 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                               ),
                                               onPressed: () {
                                                 if (!_added) {
-                                                  FirestoreUtils().addToWatchedShows(showDetails);
+                                                  var show = FirestoreUtils().addToWatchedShows(showDetails);
+                                                  watchedShowList.add(show);
                                                   setState(() {
                                                     _added = true;
                                                   });

@@ -87,12 +87,14 @@ class WatchedCard extends StatelessWidget {
                                               padding: EdgeInsets.only(right:50, left: 12, top: 5),
                                                 child: AutoSizeText(
                                                       this.show.name,
-                                                      minFontSize: 10,
-                                                      maxFontSize: 17,
+                                                      minFontSize: (_width/20).roundToDouble(),
+                                                      maxFontSize: (_width/10).roundToDouble(),
+                                                      stepGranularity: .1,
+                                                      maxLines: 1,
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.w700,
                                                         color: greyTextColor,
-                                                        fontSize: MediaQuery.of(context).size.height/30,
+                                                        // fontSize: MediaQuery.of(context).size.height/30,
                                                         fontFamily: 'Raleway',
                                                       ),
                                                 ),
@@ -204,16 +206,18 @@ class WatchedCard extends StatelessWidget {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
                                         child: new CircularPercentIndicator(
-                                          radius: 80.0,
+                                          radius: _width/4,
                                           lineWidth: 12.0,
                                           circularStrokeCap:
                                               CircularStrokeCap.round,
                                           percent: _percentage,
-                                          center: new Text(
+                                          center: AutoSizeText(
                                             "${(_percentage * 100).floor()} %",
+                                            // maxFontSize: _width / 15,
+                                            // minFontSize: _width / 23,
                                             style: TextStyle(
                                                 fontFamily: 'Raleway',
-                                                fontSize: MediaQuery.of(context).size.width / 15,
+                                                fontSize: _width / 15,
                                                 fontWeight: FontWeight.w700,
                                                 color: blueColor),
                                           ),
@@ -298,8 +302,8 @@ class WatchedCard extends StatelessWidget {
         top: 0,
         child: ClipOval(
           child: Container(
-            width: MediaQuery.of(context).size.height/10,
-            height: MediaQuery.of(context).size.height/10,
+            width: MediaQuery.of(context).size.width/6,
+            height: MediaQuery.of(context).size.width/6,
             padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -315,7 +319,7 @@ class WatchedCard extends StatelessWidget {
             child: Center(
               child: FaIcon(
                 percentage == 1.0 ? FontAwesomeIcons.checkDouble : FontAwesomeIcons.fire,
-                size: MediaQuery.of(context).size.height/15,
+                size: MediaQuery.of(context).size.width/9,
                 color: Colors.white,
               ),
             ),
@@ -362,7 +366,7 @@ class WatchedCard extends StatelessWidget {
   Widget floatingActions( BuildContext context, double _percentage, double cardWidth) {
     if ( _percentage < 1.0){
       return Positioned(
-        bottom: 5,
+        bottom: cardWidth/10,
         left: cardWidth/2,
         child: Container(
           height: 60,
@@ -564,8 +568,8 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                           child: Container(
                                             child: AutoSizeText(
                                               widget.show.name,
-                                              minFontSize: 15,
-                                              maxFontSize: 20,
+                                              minFontSize: _width/15,
+                                              maxFontSize: _width/10,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 shadows: [

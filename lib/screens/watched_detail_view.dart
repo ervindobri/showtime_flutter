@@ -532,8 +532,9 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
                         child: AutoSizeText(
                             show.name,
-                            maxFontSize: _width/10,
-                            minFontSize: _width/20,
+                            maxFontSize: (_width/10).roundToDouble(),
+                            minFontSize: (_width/15).roundToDouble(),
+                            stepGranularity: .1,
                             maxLines: 2,
                             style: TextStyle(
                                 fontFamily: 'Raleway',
@@ -762,7 +763,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     width: _width/2.5,
-                    height: _height/10,
+                    height: _width/7,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
                         color: lightGreenColor.withOpacity(.3)
@@ -798,7 +799,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
                     width: _width/2.5,
-                    height: 50,
+                    height: _width/7,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
                         color: greenColor.withOpacity(1)

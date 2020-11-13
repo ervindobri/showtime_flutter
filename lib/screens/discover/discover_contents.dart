@@ -2,11 +2,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/components/custom_elevation.dart';
+import 'package:eWoke/components/route.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/main.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
+import 'package:eWoke/screens/browse_shows.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:eWoke/ui/watch_card.dart';
 import 'package:flutter/cupertino.dart';
@@ -468,7 +470,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   Widget createListView() {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    // log(_searchTerm);
+    log("Creating watchlistview");
     // log(listController.hasClients.toString());
     if ( watchedShowList.isNotEmpty){
       // log("already fetched");
@@ -548,18 +550,13 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     }
     else{
         if (!_sorting){
-          // log("not sorting");
+          log("not sorting");
           return StreamBuilder(
-              stream: _watchedShowsStream,
+              stream: FirestoreUtils().watchedShows.snapshots(),
               builder: (_, snapshot) {
                 // log("stream");
                 List<Widget> children;
-                // ignore: missing_enum_constant_in_switch
-                switch( snapshot.connectionState){
-                  case ConnectionState.waiting:
-                    return Container();
-                    break;
-                }
+                print(snapshot.connectionState);
                 if (!snapshot.hasData) {
                   //TODO: SHOW PROGRESS LOADING, PlACEHOLDER ANIMATED CARDS
                   return Container();
@@ -585,26 +582,80 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                   //endregion
                     default:
                       list.clear();
-                      allWatchedShows.clear();
+                      // allWatchedShows.clear();
                       // log("cleared watched tv show lists");
-                      snapshot.data.documents.forEach((f) {
-                        WatchedTVShow show = new WatchedTVShow(
-                          id: f.documentID,
-                          name: f.data()['name'],
-                          startDate: f.data()['start_date'],
-                          runtime: f.data()['runtime'] != null ? f.data()['runtime'] : 0,
-                          imageThumbnailPath: f.data()['image_thumbnail_path'],
-                          totalSeasons: f.data()['total_seasons'],
-                          episodePerSeason: f.data()['episodesPerSeason'],
-                          currentSeason: f.data()['currentSeason'],
-                          currentEpisode: f.data()['currentEpisode'],
-                          firstWatchDate: f.data()['startedWatching'],
-                          lastWatchDate: f.data()['lastWatched'],
-                          rating: f.data()['rating'] ?? 0.0, //UPDATED WITH RATING
-                          favorite: f.data()['favorite'] ?? false,);
-                        list.add(show);
-                        allWatchedShows.add(show);
-                      });
+                      if ( snapshot.data.documents.length > 0){
+                        snapshot.data.documents.forEach((f) {
+                          WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.documentID);
+                          list.add(show);
+                          allWatchedShows.add(show);
+                        });
+                      }
+                      else{
+                        return Container(
+                          width: _width,
+                          height: _height,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 40.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 30),
+                                  child: AutoSizeText(
+                                    "No sho'",
+                                    minFontSize: 20,
+                                    maxFontSize: 30,
+                                    maxLines: 3,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.roboto(
+                                        color: watchlistBlue,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w700
+                                    ),
+                                  ),
+                                ),
+                                FlatButton(
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: watchlistBlue
+                                    ),
+                                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                                  ),
+                                  textColor: watchlistBlue,
+                                  color: bgColor,
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        createRouteAllShows(AllTVShows()));
+                                  }, child: Container(
+                                  width: _width/3,
+                                  child: AutoSizeText(
+                                    "Search shows",
+                                    minFontSize: 16,
+                                    maxFontSize: 20,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.roboto(
+                                        fontSize: 25,
+                                        decoration: TextDecoration.underline
+                                    ),
+                                  ),
+                                ),
+                                ),
+                                SizedBox(
+                                  width: _width*.8,
+                                  height: _height/3,
+                                  child: FlareActor("assets/empty-blue.flr",
+                                      alignment: Alignment.center,
+                                      fit: BoxFit.contain,
+                                      animation: "Idle"),
+
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      }
                       break;
                   }
                 }

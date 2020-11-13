@@ -78,7 +78,9 @@ Future<void> main() async {
   String email = await _storage.read(key: 'email');
   String password = await _storage.read(key: 'password');
 
-  await FirestoreUtils().authUser(email,password);
+  if ( email != null){
+    await FirestoreUtils().authUser(email,password);
+  }
 
   //TODO: check if user data saved and start page accordingly
 

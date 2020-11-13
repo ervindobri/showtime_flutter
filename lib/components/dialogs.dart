@@ -68,6 +68,8 @@ Widget unwatchDialog(BuildContext context, String showName, String showID) {
               title: 'Show unwatched!',
               configuration: IconConfiguration(icon: Icons.error),
             );
+            //removed
+            watchedShowList.removeWhere((element) => element.name == showName);
             Navigator.pop(context);
             Navigator.pop(context);
           },
