@@ -1187,30 +1187,31 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                               snapshot.data.documents
                                                   .forEach((f) {
                                                 // print(f.data);
-                                                WatchedTVShow show = new WatchedTVShow(
-                                                    id: f.documentID,
-                                                    name:
-                                                    f.data()['name'],
-                                                    startDate: f.data()[
-                                                    'start_date'],
-                                                    runtime: f.data()[
-                                                    'runtime'],
-                                                    imageThumbnailPath: f.data()[
-                                                    'image_thumbnail_path'],
-                                                    totalSeasons: f.data()[
-                                                    'total_seasons'],
-                                                    episodePerSeason: f.data()[
-                                                    'episodesPerSeason'],
-                                                    currentSeason: f.data()[
-                                                    'currentSeason'],
-                                                    currentEpisode: f.data()[
-                                                    'currentEpisode'],
-                                                    firstWatchDate: f.data()[
-                                                    'startedWatching'],
-                                                    rating: f.data()['rating'],
-                                                    lastWatchDate:
-                                                    f.data()['lastWatched'],
-                                                    favorite: f.data()['favorite'] ?? false);
+                                                // WatchedTVShow show = new WatchedTVShow(
+                                                //     id: f.documentID,
+                                                //     name:
+                                                //     f.data()['name'],
+                                                //     startDate: f.data()[
+                                                //     'start_date'],
+                                                //     runtime: f.data()[
+                                                //     'runtime'],
+                                                //     imageThumbnailPath: f.data()[
+                                                //     'image_thumbnail_path'],
+                                                //     totalSeasons: f.data()[
+                                                //     'total_seasons'],
+                                                //     episodePerSeason: f.data()[
+                                                //     'episodesPerSeason'],
+                                                //     currentSeason: f.data()[
+                                                //     'currentSeason'],
+                                                //     currentEpisode: f.data()[
+                                                //     'currentEpisode'],
+                                                //     firstWatchDate: f.data()[
+                                                //     'startedWatching'],
+                                                //     rating: f.data()['rating'],
+                                                //     lastWatchDate:
+                                                //     f.data()['lastWatched'],
+                                                //     favorite: f.data()['favorite'] ?? false);
+                                                WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.documentID);
                                                 watchedShowList.add(show);
                                                 // allWatchedShows.add(show);
                                               });

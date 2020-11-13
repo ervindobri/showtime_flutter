@@ -64,7 +64,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     super.initState();
     _sorting = false;
     sortedList.clear();
-    sortedList = allWatchedShows.toSet().toList();
+    sortedList = watchedShowList.toSet().toList();
     controller = AnimateIconController();
     _searchTerm = "";
     criteria = SORT_CATEGORIES[_index];
@@ -470,7 +470,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     double _height = MediaQuery.of(context).size.height;
     // log(_searchTerm);
     // log(listController.hasClients.toString());
-    if ( allWatchedShows.isNotEmpty){
+    if ( watchedShowList.isNotEmpty){
       // log("already fetched");
       var temp = sortedList.where((e) => e.name.toLowerCase().contains( _searchTerm.toLowerCase())).toList();
       if ( temp.length > 0){
@@ -511,7 +511,8 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                   ),
                   textColor: watchlistBlue,
-                  color: bgColor, onPressed: () {
+                  color: bgColor,
+                  onPressed: () {
                     setState(() {
                       _searchTerm = "";
                     });
@@ -619,7 +620,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                 }
                 else {
                   return WatchlistView(
-                      list: allWatchedShows,
+                      list: watchedShowList,
                     scrollController: listController,
 
                   );

@@ -207,8 +207,7 @@ class FirestoreUtils{
     return user;
   }
   updateEpisode(WatchedTVShow show) {
-    FirebaseFirestore.instance
-        .collection("${auth.currentUser.email}/shows/watched_shows")
+    watchedShows
         .doc(show.id.toString())
         .update({
       "name": show.name,
@@ -223,5 +222,16 @@ class FirestoreUtils{
       "favorite" : show.favorite
     });
   }
+
+  void incrementWatchedTime(WatchedTVShow show) {
+    watchedShows.doc(show.id.toString()).update(
+      {
+        "watchedTimes" : show.watchedTimes,
+        "currentEpisode" : 0,
+        "currentSeason" : 1,
+      }
+    );
+  }
+
 }
 

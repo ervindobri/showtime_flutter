@@ -1,5 +1,6 @@
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/tvshow_details.dart';
+import 'package:eWoke/network/firebase_utils.dart';
 import 'package:flutter/cupertino.dart';
 
 
@@ -11,7 +12,7 @@ class WatchedTVShow extends TVShowDetails{
   String lastWatchDate;
   bool favorite;
   Map<String, dynamic> criteriaMap ;
-
+  int watchedTimes;
 
   WatchedTVShow({
     id,
@@ -28,7 +29,8 @@ class WatchedTVShow extends TVShowDetails{
   this.firstWatchDate,
   this.lastWatchDate,
   this.criteriaMap,
-  this.favorite}):
+  this.favorite,
+  this.watchedTimes}):
         super(id: id,
         name: name,
           startDate: startDate,
@@ -66,7 +68,14 @@ class WatchedTVShow extends TVShowDetails{
   }
 
   nextEpisodeAirDate(){
-    if ( calculateWatchedEpisodes() > 0){
+    if ( calculateWatchedEpisodes() == 0){
+      if ( this.episodes[0].airDate != ""){
+        var airDate = DateTime.parse("${this.episodes[0]?.airDate} 12:00:00.000");
+        var diff = airDate.difference(DateTime.now());
+        return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
+      }
+    }
+    else if ( calculateWatchedEpisodes() > 0 ){
       if ( this.episodes[calculateWatchedEpisodes() -1 ].airDate != ""){
         var airDate = DateTime.parse("${this.episodes[calculateWatchedEpisodes() - 1]?.airDate} 12:00:00.000");
         var diff = airDate.difference(DateTime.now());
@@ -107,6 +116,10 @@ class WatchedTVShow extends TVShowDetails{
     return (watchedEpisodes / totalEpisodes);
   }
 
+  int getWatchedTimes(){
+    return this.watchedTimes;
+  }
+
    incrementEpisodeWatch() {
      print(currentEpisode);
      if ( currentSeason < totalSeasons){
@@ -142,7 +155,7 @@ class WatchedTVShow extends TVShowDetails{
   factory WatchedTVShow.fromJson(Map <String, dynamic> json){
     // print(json['runtime']);
 
-    return WatchedTVShow(
+    var show = WatchedTVShow(
         name : json['name'],
         startDate : json['start_date'],
         runtime : json['runtime'] ??  0,
@@ -154,12 +167,14 @@ class WatchedTVShow extends TVShowDetails{
         currentEpisode : json['currentEpisode'],
         firstWatchDate : json['startedWatching'],
         lastWatchDate : json['lastWatched'],
-        favorite: json['favorite'] ?? false
+        favorite: json['favorite'] ?? false,
+        watchedTimes : json['watchedTimes'] ?? 0
+
     );
+    return show;
   }
   factory WatchedTVShow.fromFirestore(Map <String, dynamic> json, dynamic collId){
     // print(json['runtime']);
-
     return WatchedTVShow(
         id: collId,
         name : json['name'],
@@ -173,7 +188,8 @@ class WatchedTVShow extends TVShowDetails{
         currentEpisode : json['currentEpisode'],
         firstWatchDate : json['startedWatching'],
         lastWatchDate : json['lastWatched'],
-        favorite: json['favorite'] ?? false
+        favorite: json['favorite'] ?? false,
+        watchedTimes : json['watchedTimes'] ?? 0
     );
   }
 }

@@ -115,7 +115,7 @@ class WatchedCard extends StatelessWidget {
                                               //Season
                                               Container(
                                                 padding: EdgeInsets.only(left: 10, right: 10),
-                                                width: _width/4,
+                                                width: _width/3.5,
                                                 height: 40,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
@@ -155,7 +155,7 @@ class WatchedCard extends StatelessWidget {
                                               ),
                                               Container(
                                                 padding: EdgeInsets.only(left: 10, right: 10),
-                                                width:  _width/4,
+                                                width:  _width/3.5,
                                                 height: 40,
                                                 decoration: BoxDecoration(
                                                   borderRadius:BorderRadius.circular(25.0),

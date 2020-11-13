@@ -4,12 +4,10 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/components/badge.dart';
+import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/components/dialogs.dart';
-import 'package:eWoke/components/fadein.dart';
-import 'package:eWoke/components/itemfader.dart';
 import 'package:eWoke/components/toast.dart';
 import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
@@ -25,7 +23,6 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:supercharged/supercharged.dart';
 
 import '../main.dart';
 
@@ -122,6 +119,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
       countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes() == 0 ? 0: widget.show.calculateWatchedEpisodes()- 1].getDifference();
     });
     startTimer();
+
+    print(this.widget.show.watchedTimes);
   }
 
   @override
@@ -233,6 +232,57 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 child:
                                 _yourProgress(_percentage, widget.show, _height, _width)
                             ),
+                            if ( this.widget.show.watchedTimes > 0) Positioned(
+                              bottom: _height/4.5,
+                              right: _width/10,
+                              child: InkWell(
+                                onTap:(){
+                                  Widget toast = CustomToast
+                                    (
+                                      color: blueColor,
+                                      icon: FontAwesomeIcons.history,
+                                      text: "You rewatched ${widget.show.name} ${widget.show.watchedTimes} time(s)"
+                                  );
+                                  fToast.showToast(
+                                    child: toast,
+                                    gravity: ToastGravity.BOTTOM,
+                                    toastDuration: Duration(seconds: 2),
+                                  );
+                              },
+                                child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        blueColor,
+                                        Colors.lightBlueAccent
+                                      ],
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: blueColor.withOpacity(.3),
+                                        blurRadius: 5,
+                                        spreadRadius: 1
+                                      )
+                                    ]
+                                  ),
+                                  child: Center(
+                                    child: AutoSizeText(
+                                        this.widget.show.watchedTimes.toString(),
+                                      minFontSize: 20,
+                                      maxFontSize: 35,
+                                      style: GoogleFonts.lato(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 30
+                                    )
+                                    ),
+                                  )
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -480,12 +530,17 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: AutoSizeText(show.name,
+                        child: AutoSizeText(
+                            show.name,
+                            maxFontSize: _width/10,
+                            minFontSize: _width/20,
+                            maxLines: 2,
                             style: TextStyle(
                                 fontFamily: 'Raleway',
                                 color: greyTextColor,
                                 fontWeight: FontWeight.w900,
-                                fontSize: _width / 20)),
+                                fontSize: _width / 15)
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
@@ -496,17 +551,17 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                               child: new CircularPercentIndicator(
                                 animation: true,
                                 animationDuration: 500,
+                                curve: Curves.easeOutExpo,
                                 radius: _width / 4.3,
-                                lineWidth: 13,
+                                lineWidth: 12,
                                 circularStrokeCap: CircularStrokeCap.round,
                                 percent: _percentage,
                                 center: new AutoSizeText(
-                                  "${(_percentage * 100).floor()}%",
-                                  style: TextStyle(
-                                    fontSize: _width / 17,
+                                  "${(_percentage * 100).toStringAsFixed(2)}%",
+                                  style: GoogleFonts.roboto(
+                                    fontSize: _width / 23,
                                     color: blueColor,
                                     fontWeight: FontWeight.w700,
-                                    fontFamily: 'Raleway',
                                   ),
                                 ),
                                 progressColor: blueColor,
@@ -518,15 +573,17 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     AutoSizeText(
-                                      "${widget.show.currentSeason.toString()}/${widget.show.totalSeasons.toString()}",
+                                      "${widget.show.currentSeason.toString()}",
+                                      minFontSize: 20,
+                                      maxFontSize: 45,
                                       style: TextStyle(
                                         color: greyTextColor,
-                                        fontSize: 25,
+                                        fontSize: 35,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                     AutoSizeText(
-                                      "Season",
+                                      "Sn",
                                       style: TextStyle(
                                         color: greenColor,
                                         fontFamily: 'Raleway',
@@ -543,15 +600,17 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     AutoSizeText(
-                                      "${widget.show.currentEpisode.toString()}/${widget.show.episodePerSeason[widget.show.currentSeason.toString()]}",
-                                      style: TextStyle(
+                                      "${widget.show.currentEpisode.toString()}",
+                                      minFontSize: 20,
+                                      maxFontSize: 45,
+                                      style: GoogleFonts.roboto(
                                         color: greyTextColor,
-                                        fontSize: 25,
+                                        fontSize: 35,
                                         fontWeight: FontWeight.w700,
                                       ),
                                     ),
                                     AutoSizeText(
-                                      "Episode",
+                                      "Ep",
                                       style: TextStyle(
                                         color: greenColor,
                                         fontFamily: 'Raleway',
@@ -580,10 +639,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
       List<dynamic> list = await new Network().getDetailUpdates(showID: show.id);
       // print(list);
       // print(episodes.length);
-      var snapshots = FirebaseFirestore.instance
-          .collection('${auth.currentUser.email}/shows/watched_shows')
-          .doc(show.id)
-          .snapshots();
+      var snapshots = FirestoreUtils().watchedShows.doc(show.id).snapshots();
       snapshots.first.then((value) {
         show.currentSeason = value.data()['currentSeason'];
         show.totalSeasons = list[0];
@@ -694,8 +750,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   Widget displayActions() {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-
-    if (_percentage < 1.0) {
+    // print(_percentage);
+    if (this.widget.show.calculateProgress() < 1.0) {
       return widget.show.nextEpisodeAired()
           ? Container(
         // color: Colors.black,
@@ -762,7 +818,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             duration:
                             Duration(
                                 seconds:
-                                2),
+                                1),
                             blurPower: 15.0,
                             title:
                             'Episode added',
@@ -777,8 +833,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             context,
                             duration:
                             Duration(
-                                seconds:
-                                2),
+                                seconds: 1),
                             blurPower: 15.0,
                             title:
                             '{$e}:Couldn\'t add episode!',
@@ -828,7 +883,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width: 150,
+                    width: _width/2.5,
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
@@ -868,7 +923,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width: 150,
+                    width: _width/2.5,
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
@@ -893,15 +948,14 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
+                              child: AutoSizeText(
                                 countdown.toString(),
+                                maxFontSize: 16,
+                                minFontSize: 10,
                                 style: GoogleFonts.roboto(
-                                    textStyle: TextStyle(
-                                        fontSize: 19,
-                                        fontFamily: 'Raleway',
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white
-                                    ),
+                                    // fontSize: 19,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white
                                 ),
                               ),
                             ),
@@ -919,7 +973,61 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     }
     else{
      return Container(
-       child: Text("")
+       child: Padding(
+         padding: const EdgeInsets.all(8.0),
+         child: Container(
+           width: _width/2,
+           height: 50,
+           decoration: BoxDecoration(
+               borderRadius: BorderRadius.all(Radius.circular(25.0)),
+               color: greenColor
+           ),
+           child: CustomElevation(
+             color: greenColor.withOpacity(.4),
+             child: FlatButton(
+               splashColor: lightGreenColor,
+               shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
+               clipBehavior: Clip.antiAlias,
+               onPressed: () {
+                 //RESET THE NUMBERS AND INCREMENT
+                 setState(() {
+                     this.widget.show.watchedTimes+=1;
+                     this.widget.show.currentSeason = 1;
+                     this.widget.show.currentEpisode = 0;
+                 });
+                 widget.show.setLastWatchedDate();
+
+                 this.widget.show.calculateWatchedEpisodes();
+                  //Reset episode counters;
+                  FirestoreUtils().incrementWatchedTime(this.widget.show);
+               },
+               child: Center(
+                 child: Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                   children: [
+                     FaIcon(
+                       FontAwesomeIcons.rev,
+                       color: Colors.white,
+                       size: 25,
+                     ),
+                     AutoSizeText(
+                       "Rewatch",
+                       style: GoogleFonts.roboto(
+                         textStyle: TextStyle(
+                             fontSize: 22,
+                             fontFamily: 'Raleway',
+                             fontWeight: FontWeight.w500,
+                             color: Colors.white
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
+             ),
+           ),
+         ),
+       ),
      );
     }
   }
