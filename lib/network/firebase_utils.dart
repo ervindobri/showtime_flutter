@@ -166,7 +166,7 @@ class FirestoreUtils{
     List<List<Episode>> list = [];
 
     watchedShowIdList.forEach((id) {
-      List<Episode> current = new List<Episode>();
+      List<Episode> current = [];
       episodes.episodes.forEach((episode) {
         if (episode.embedded['show']['id'] == id) {
           current.add(episode);
@@ -184,16 +184,13 @@ class FirestoreUtils{
   }
 
   Future<SessionUser> getUserData() async {
-    String currID = auth.currentUser.email;
     // print(currID);
     SessionUser user = SessionUser();
-    var snapshots = FirebaseFirestore.instance
-        .doc("$currID/user")
-        .snapshots();
-    snapshots.forEach((element) {
+
+    userProfile.snapshots().forEach((element) {
       if ( element.exists){
         user.id = auth.currentUser.uid;
-        user.emailAddress = currID;
+        user.emailAddress = auth.currentUser.email;
         user.firstName = element.data()['firstName'];
         user.lastName = element.data()['lastName'];
         user.sex = element.data()['sex'];
@@ -231,6 +228,16 @@ class FirestoreUtils{
         "currentSeason" : 1,
       }
     );
+  }
+
+  void updateUserInfo(SessionUser currentUser) {
+    userProfile.set({
+      'age' : currentUser.age,
+      'sex' : currentUser.sex,
+      'id' :currentUser.id,
+      'lastName' : currentUser.lastName,
+      'firstName' : currentUser.firstName
+    });
   }
 
 }

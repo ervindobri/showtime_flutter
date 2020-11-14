@@ -185,7 +185,7 @@ class _FullScheduleState extends State<FullSchedule> {
                                         "Oh no!",
                                         style: TextStyle(
                                           color: greyTextColor,
-                                          fontSize: 35,
+                                          fontSize: 32,
                                           fontWeight: FontWeight.w700,
                                           fontFamily: 'Raleway'
                                         ),
@@ -198,7 +198,7 @@ class _FullScheduleState extends State<FullSchedule> {
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color: greyTextColor,
-                                            fontSize: 30,
+                                            fontSize: 27,
                                             fontWeight: FontWeight.w300,
                                             fontFamily: 'Raleway'
                                         ),

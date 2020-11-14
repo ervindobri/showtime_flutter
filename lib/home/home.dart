@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:animations/animations.dart';
@@ -52,6 +53,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Container(color: bgColor, child: Image(image: AssetImage('showTIME.png'), height: 50));
   Widget _customTitle;
 
+  List<Episode> displayScheduledList = [];
 
 
   PanelController _pc = new PanelController();
@@ -73,6 +75,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   var watchedShowsStream;
 
+  Future<List<List<Episode>>> _scheduledEpisodes;
+
 
 
   @override
@@ -87,6 +91,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
     // print(widget.notAiredList.length);
     // print("init");
+    _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowList.map((e) => int.parse(e.id)).toList());
 
   }
   @override
@@ -754,14 +759,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                           'assets/blink.flr',
                                           animation: 'Blink',
                                         ))
-                                  // child: FaIcon(
-                                  //   Icons.add_to_queue,
-                                  //   color: greenColor,
-                                  //   size: MediaQuery
-                                  //       .of(context)
-                                  //       .size
-                                  //       .width * 0.2,
-                                  // ),
                                 ),
                               ),
                             ),
@@ -1050,36 +1047,87 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     //     .collection("${auth.currentUser.email}/shows/watched_shows")
     //     .orderBy('lastWatched', descending: true)
     //     .snapshots();
-
     //TODO: fix false empty schedule
     return Container(
-        width: _width,
-        height: _height * .41,
-        // color: blueColor,
-        color: bgColor,
-        child: widget.notAiredList.length > 0
-            ? ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: widget.notAiredList.length < 5
-                ? widget.notAiredList.length
-                : 5,
-            itemBuilder: (context, int index) {
-              return Center(
-                  child: ScheduleCard(
-                      episode: widget.notAiredList[index])
+      width: _width,
+      height: _height * .41,
+      // color: blueColor,
+      color: bgColor,
+      child: FutureBuilder(
+        future: _scheduledEpisodes,
+        builder: (context, snapshot) {
+          // print(snapshot.connectionState);
+          if ( snapshot.hasData){
+            // print("data");
+            if ( snapshot.data.length > 0){
+              displayScheduledList.clear();
+              for(int index=0 ; index < min(snapshot.data.length, 5); index++){
+                scheduledEpisodes.add(snapshot.data[index]);
+                //Calculate episode which is not aired yet to display it
+                int notAired = snapshot.data[index].length - 1;
+                for(int i=0; i< snapshot.data[index].length ; i++){
+                  if ( !snapshot.data[index][i].aired()){
+                    notAired = i;
+                    break;
+                  }
+                }
+                displayScheduledList.add(snapshot.data[index][notAired]);
+              }
+              displayScheduledList.sort( (a,b) => a.airDate.compareTo(b.airDate));
+
+              return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: min(5,displayScheduledList.length),
+                  itemBuilder: (context, int index) {
+                    return Center(
+                        child: ScheduleCard(
+                            episode: displayScheduledList[index])
+                    );
+                  }
               );
             }
-        )
-            : Container(
-            child: SizedBox(
-                width: _width*.6,
-                height: _height*.35,
-                child: FlareActor(
-                    "assets/empty.flr",
-                  animation: 'Idle',
-                )
-            )
-        )
+            else{
+              return Container(
+                  child: SizedBox(
+                      width: _width*.6,
+                      height: _height*.35,
+                      child: FlareActor(
+                        "assets/empty.flr",
+                        animation: 'Idle',
+                      )
+                  )
+              );
+            }
+            // print(notAiredList.length);
+          }
+          else{
+            // print("no data");
+            if ( widget.notAiredList.length > 0){
+              return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 5,
+                  itemBuilder: (context, int index) {
+                    return Center(
+                        child: ScheduleCard(
+                            episode: widget.notAiredList[index])
+                    );
+                  }
+              );
+            }
+            else{
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation(greenColor),
+                  ),
+                ),
+              );
+            }
+
+          }
+
+        }
+      ),
     );
   }
 

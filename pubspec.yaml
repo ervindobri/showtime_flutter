@@ -74,6 +74,7 @@ dependencies:
 #  sticky_grouped_list: ^1.2.0
   sticky_and_expandable_list: ^0.2.3
   google_nav_bar: ^3.1.0
+  progress_state_button: ^1.0.1
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +103,7 @@ flutter:
      - empty-blue.flr
      - ohno.flr
      - loadingcouch.flr
+     - flowingbg.flr
      - showtime-avatar.png
   #   - images/a_dot_ham.jpeg
 

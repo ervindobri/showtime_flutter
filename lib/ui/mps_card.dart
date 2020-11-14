@@ -141,9 +141,9 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                         borderRadius: _radius,
                         boxShadow: [ new BoxShadow(
                             color: Colors.black.withOpacity(.2),
-                            blurRadius: 15.0,
-                            spreadRadius:-2,
-                            offset: Offset(2, 2)),
+                            blurRadius: 10.0,
+                            spreadRadius:2,
+                            offset: Offset(0, 0)),
                         ],
                       ),
                     );
