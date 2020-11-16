@@ -144,6 +144,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                                 textAlign: TextAlign.right,
                                                 softWrap: true,
                                                 maxFontSize: 25,
+                                                maxLines: 2,
                                                 style: GoogleFonts.roboto(
                                                   color: Colors.white,
                                                   fontSize: _width / 15,
@@ -323,7 +324,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
               ),
               widget.episode.getDiffDays() >= 0
                     ? Positioned(
-                        top: 0,
+                        top: -(cardHeight/10),
                         left: 0,
                         child: Container(
                             width: 40,
@@ -343,7 +344,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                               child: FaIcon(
                                 FontAwesomeIcons.eye,
                                 color: Colors.white,
-                                size: 35,
+                                size: 26,
                               ),
                             )
                         ))

@@ -127,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
       // ),
       body: SingleChildScrollView(
         child: Container(
-          color: !notCompleted ? bgColor : blueColor,
+          color: blueColor,
           child: Stack(
             children: [
               Container(
@@ -240,7 +240,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                             // color: Colors.black,
                                             child: SizedBox(
                                               child: Center(
-                                                child: FlareActor("assets/loadingcouch.flr",
+                                                child: FlareActor("assets/loadingcouch-white.flr",
                                                     alignment: Alignment.bottomCenter,
                                                     fit: BoxFit.contain,
                                                     animation: "load"),
@@ -536,19 +536,19 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                 child: CupertinoPicker(
                                                                   looping: true,
                                                                   backgroundColor: Colors.transparent,
-                                                                  selectionOverlay: Container(
-                                                                      child: Padding(
-                                                                        padding: const EdgeInsets.only(left: 10.0),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            FaIcon(
-                                                                              FontAwesomeIcons.sort,
-                                                                              color: blueColor,
-                                                                            )
-                                                                          ],
-                                                                        ),
-                                                                      )
-                                                                  ),
+                                                                  // selectionOverlay: Container(
+                                                                  //     child: Padding(
+                                                                  //       padding: const EdgeInsets.only(left: 10.0),
+                                                                  //       child: Row(
+                                                                  //         children: [
+                                                                  //           FaIcon(
+                                                                  //             FontAwesomeIcons.sort,
+                                                                  //             color: blueColor,
+                                                                  //           )
+                                                                  //         ],
+                                                                  //       ),
+                                                                  //     )
+                                                                  // ),
                                                                   itemExtent: 50, onSelectedItemChanged: (int value) {
                                                                   ageController.text = (value+1).toString();
                                                                 },
@@ -602,19 +602,19 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                               child: CupertinoPicker(
                                                                 // controller: sexController,
                                                                 looping: true,
-                                                                selectionOverlay: Container(
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.only(left: 10.0),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        FaIcon(
-                                                                          FontAwesomeIcons.sort,
-                                                                          color: blueColor,
-                                                                        )
-                                                                      ],
-                                                                    ),
-                                                                  )
-                                                                ),
+                                                                // selectionOverlay: Container(
+                                                                //   child: Padding(
+                                                                //     padding: const EdgeInsets.only(left: 10.0),
+                                                                //     child: Row(
+                                                                //       children: [
+                                                                //         FaIcon(
+                                                                //           FontAwesomeIcons.sort,
+                                                                //           color: blueColor,
+                                                                //         )
+                                                                //       ],
+                                                                //     ),
+                                                                //   )
+                                                                // ),
                                                                 itemExtent: 50, onSelectedItemChanged: (int value) {
                                                                   sexController.text = sexCategories[value];
                                                               },

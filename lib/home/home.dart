@@ -425,10 +425,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             popularShows.clear();
                             await FirebaseAuth.instance.signOut();
                             final login = LoginScreen();
-                            Navigator.of(context).pushReplacement(
+                            Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                   builder: (context) => login,
-                                )
+                                ),(route) => false
                             );
                           },
                           child: Text(
@@ -726,8 +726,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                               ],
                                               color: Colors.white,
                                               fontSize:
-                                              MediaQuery.of(context).size.width /
-                                                  20,
+                                              _width/ 17,
                                               fontWeight: FontWeight.bold,
                                               fontFamily: 'Raleway',
                                             )),
@@ -988,7 +987,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                 new BoxShadow(
                     color: new Color(data[1]).withOpacity(.3),
                     blurRadius: 5.0,
-                    spreadRadius: 1,
+                    spreadRadius: -1,
                     offset: Offset(0, 3)),
               ],
             ),

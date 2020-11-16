@@ -136,6 +136,9 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     _refreshController.requestLoading();
   }
 
+  String removeDecimalZeroFormat(double n) {
+    return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 1);
+  }
 
   void _updateSize(double width, double height) {
     setState(() {
@@ -316,7 +319,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                               end: Offset.zero,
                             ).animate(animation),
                             child: Padding(
-                              padding: const EdgeInsets.only(bottom: 20.0),
+                              padding: const EdgeInsets.only(bottom: 10.0),
                               child:  displayActions(),
                             ),
                           ),
@@ -327,7 +330,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
             ),
           );
   }
-  //TODO: REFACTOR FIRESTORE
 
 
   Widget _checkIfPopular(double percentage, String lastWatchDate, bool status, double _height, double _width) {
@@ -558,7 +560,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 circularStrokeCap: CircularStrokeCap.round,
                                 percent: _percentage,
                                 center: new AutoSizeText(
-                                  "${(_percentage * 100).toStringAsFixed(2)}%",
+                                  "${removeDecimalZeroFormat((_percentage * 100))}%",
                                   style: GoogleFonts.roboto(
                                     fontSize: _width / 23,
                                     color: blueColor,
@@ -1037,7 +1039,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     _timer = new Timer.periodic(
         oneSec,
             (Timer timer) {
-          setState(() => countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes() == 0 ? 0: widget.show.calculateWatchedEpisodes()- 1].getDifference());
+          setState(() => countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes()].getDifference());
         }
     );
   }

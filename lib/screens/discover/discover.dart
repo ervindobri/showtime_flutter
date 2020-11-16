@@ -1,5 +1,6 @@
 import 'package:eWoke/screens/discover/most_popular_shows.dart';
 import 'package:eWoke/screens/discover/discover_contents.dart';
+import 'package:eWoke/screens/discover/progress.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,7 @@ class SecondPageRoute extends CupertinoPageRoute {
 
 
 final Map<String, dynamic> discoverMap = {
-  "Overall Progress": MostPopularShows(),
+  "Overall Progress": OverallProgress(),
   "Most popular shows": MostPopularShows(),
   "Watchlist": DiscoverWatchList(),
   "Favorites": MostPopularShows()

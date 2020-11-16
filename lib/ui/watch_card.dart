@@ -366,11 +366,11 @@ class WatchedCard extends StatelessWidget {
   Widget floatingActions( BuildContext context, double _percentage, double cardWidth) {
     if ( _percentage < 1.0){
       return Positioned(
-        bottom: cardWidth/10,
+        bottom: cardWidth/13,
         left: cardWidth/2,
         child: Container(
           height: 60,
-          width: 100,
+          width: cardWidth*.7,
           decoration: BoxDecoration(
             color: pinkColor,
             borderRadius: BorderRadius.all(Radius.circular(50.0)),
@@ -568,8 +568,10 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                           child: Container(
                                             child: AutoSizeText(
                                               widget.show.name,
-                                              minFontSize: _width/15,
-                                              maxFontSize: _width/10,
+                                              minFontSize: (_width/20).roundToDouble(),
+                                              maxFontSize: (_width/10).roundToDouble(),
+                                              stepGranularity: .1,
+                                              maxLines: 2,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 shadows: [
@@ -775,7 +777,9 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
             width: _height/10,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
-                color: goldColor
+                gradient: LinearGradient(
+                  colors: [goldColor, lightGoldColor]
+                ),
             ),
             child:
             Center(

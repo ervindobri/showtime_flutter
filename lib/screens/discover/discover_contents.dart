@@ -470,7 +470,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   Widget createListView() {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    log("Creating watchlistview");
+    // log("Creating watchlistview");
     // log(listController.hasClients.toString());
     if ( watchedShowList.isNotEmpty){
       // log("already fetched");
@@ -823,7 +823,7 @@ class _WatchlistViewState extends State<WatchlistView> {
 
  _createRouteShowDetail(List<WatchedTVShow> data, int index, double _width, double _height) {
   Future<List<dynamic>> episodes = new Network().getEpisodes(showID: data[index].id);
-  print("creating route to details");
+  // print("creating route to details");
   return ClipRRect(
     borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
     child: FutureBuilder<Object>(

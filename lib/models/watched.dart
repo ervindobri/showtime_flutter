@@ -76,8 +76,8 @@ class WatchedTVShow extends TVShowDetails{
       }
     }
     else if ( calculateWatchedEpisodes() > 0 ){
-      if ( this.episodes[calculateWatchedEpisodes() -1 ].airDate != ""){
-        var airDate = DateTime.parse("${this.episodes[calculateWatchedEpisodes() - 1]?.airDate} 12:00:00.000");
+      if ( this.episodes[calculateWatchedEpisodes()].airDate != ""){
+        var airDate = DateTime.parse("${this.episodes[calculateWatchedEpisodes()]?.airDate} 12:00:00.000");
         var diff = airDate.difference(DateTime.now());
         return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
       }
