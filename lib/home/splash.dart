@@ -116,7 +116,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     _watchedShowsStream = null;
     subscription = null;
     _currentUserObject = null;
-    completed.cancel();
+    completed?.cancel();
     super.dispose();
 
   }

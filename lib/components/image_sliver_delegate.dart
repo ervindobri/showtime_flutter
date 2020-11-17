@@ -110,9 +110,10 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                           ),
                           Positioned.fill(
                             bottom: 0,
-                            left: appBarSize < minExtent*.6 ? _width/5 : _width * .3 + 20,
+                            left: appBarSize < _width * .3 + 20 ? appBarSize : _width * .3 + 20,
+                            // left: appBarSize,
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 SizedBox(
                                   height: _height * .15,

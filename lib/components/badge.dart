@@ -76,13 +76,20 @@ class DetailBadge extends StatelessWidget {
                 colors[1],
               ]),
           borderRadius: BorderRadius.all(Radius.circular(50.0)),
+          boxShadow: [new BoxShadow(
+              color: colors[0].withOpacity(.3),
+            blurRadius: 5,
+            spreadRadius: 1,
+          )],
         ),
         child: ClipOval(
           child: Container(
-            width: MediaQuery.of(context).size.height/10,
-            height: MediaQuery.of(context).size.height/10,
-            padding: EdgeInsets.all(5),
-
+            width: MediaQuery.of(context).size.height/11,
+            height: MediaQuery.of(context).size.height/11,
+            padding: EdgeInsets.all(7),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+            ),
             child: Center(
               child: AutoSizeText(
                 text,

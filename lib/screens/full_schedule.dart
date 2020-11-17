@@ -125,7 +125,7 @@ class _FullScheduleState extends State<FullSchedule> {
                   floating: true,
                   delegate: PopularSliverDelegate(
                     // hideTitleWhenExpanded: true,
-                    expandedHeight: _height*.15,
+                    expandedHeight: _height*.13,
                     back: back(context),
                     child: Container(
                       width: _width,
@@ -140,7 +140,7 @@ class _FullScheduleState extends State<FullSchedule> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
+                            padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15),
                             child: _textField(),
                           ),
                           ],

@@ -84,12 +84,13 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                         height: _height*.05,
                         width: _width*.8,
                         decoration: BoxDecoration(
-                          color: greyTextColor,
-                          border: Border.all(
-                            color: Colors.white.withOpacity(.2),
-                            width: 1
+                          // color: greyTextColor,
+                          gradient: LinearGradient(
+                            colors: [
+                              grey.withOpacity(.2),  Colors.grey.withOpacity(.2)
+                            ]
                           ),
-                          borderRadius: BorderRadius.circular(25.0)
+                          borderRadius: BorderRadius.circular(100.0)
                         ),
                         child: TabBar(
                           controller: _controller,

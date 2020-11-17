@@ -1,25 +1,17 @@
 import 'dart:ui';
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/components/badge.dart';
 import 'package:eWoke/components/expandable_text.dart';
-import 'package:eWoke/components/fadein.dart';
 import 'package:eWoke/components/image_sliver_delegate.dart';
 import 'package:eWoke/components/latest_ep_carousel.dart';
 
 import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/models/tvshow_details.dart';
-import 'package:eWoke/models/watched.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:html/parser.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:status_alert/status_alert.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:expandable/expandable.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class DetailView extends StatefulWidget {
@@ -40,6 +32,11 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
 
   Animation<double> animation;
   AnimationController _controller;
+  List<Widget> badges = [];
+
+  String moreLabel = "Show More";
+
+  bool _tapped = false;
 
   @override
   void initState() {
@@ -60,6 +57,8 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
     _controller.reset();
     _controller.duration = Duration(milliseconds: 500);
     _controller.forward();
+
+    badges = getBadges();
 
   }
 
@@ -156,50 +155,34 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                             position: index,
                                             child:
                                             FadeInAnimation(
-                                              delay: Duration(
-                                                  milliseconds:
-                                                  50 * index),
-                                              child:
-                                              SlideTransition(
-                                                position: Tween<
-                                                    Offset>(
-                                                  begin: Offset(
-                                                      0, 0.1),
-                                                  end:
-                                                  Offset.zero,
+                                              delay: Duration(milliseconds: 250 * index+1),
+                                              child: SlideTransition(
+                                                position: Tween<Offset>(
+                                                  begin: Offset(0, 0.1),
+                                                  end: Offset.zero,
                                                 ).animate(animation),
                                                 child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal:
-                                                      5.0),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
                                                   child:
                                                   Container(
-                                                    height:
-                                                    _height /
-                                                        20,
-                                                    decoration:
-                                                    BoxDecoration(
-                                                      color:
-                                                      greenColor,
-                                                      borderRadius:
-                                                      _radius,
+                                                    height: _height / 20,
+                                                    decoration: BoxDecoration(
+                                                      color: blueColor,
+                                                      borderRadius: _radius,
                                                     ),
-                                                    child:
-                                                    Padding(
-                                                      padding:
-                                                      const EdgeInsets.all(
-                                                          5.0),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(5.0),
                                                       child:
                                                       Center(
                                                         child:
                                                         Text(
                                                           widget.show
                                                               .genres[index],
-                                                          style: TextStyle(
-                                                              color:
-                                                              Colors.white,
-                                                              fontFamily: 'Raleway'),
+                                                          style: GoogleFonts.roboto(
+                                                              color: Colors.white,
+                                                            fontWeight: FontWeight.w700,
+                                                            fontSize: _width/20
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -239,11 +222,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                               .start,
                                           children: [
                                             Padding(
-                                              padding:
-                                              const EdgeInsets
-                                                  .only(
-                                                  bottom:
-                                                  5.0),
+                                              padding: const EdgeInsets.only(bottom: 15.0),
                                               child: Text(
                                                 "Summary",
                                                 style: TextStyle(
@@ -259,21 +238,56 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                 ),
                                               ),
                                             ),
-                                            ExpandableText(
-                                                text: widget.show
-                                                    .parseHtmlString(),
-                                                textLabel:
-                                                isExpanded
-                                                    ? Text(
-                                                  "Show more",
-                                                  style:
-                                                  TextStyle(color: greenColor),
+                                            AnimatedSizeAndFade(
+                                                vsync: this,
+                                                child: _tapped
+                                                    ? Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      widget.show.parseHtmlString().substring(0, 100) + "...",
+                                                    ),
+                                                    FlatButton(
+                                                      onPressed: (){
+                                                        setState(() {
+                                                          _tapped = !_tapped;
+                                                        });
+                                                      },
+                                                      textColor: greenColor,
+                                                      child: Center(
+                                                        child: Text(
+                                                          "Show More"
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
                                                 )
-                                                    : Text(
-                                                  "...",
-                                                  style:
-                                                  TextStyle(color: greyTextColor),
-                                                )),
+                                                    :Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      widget.show.parseHtmlString(),
+                                                      style: GoogleFonts.roboto(
+                                                        fontSize: _width/26,
+                                                        color: greyTextColor
+                                                      ),
+                                                    ),
+                                                    FlatButton(
+                                                      onPressed: (){
+                                                        setState(() {
+                                                          _tapped = !_tapped;
+                                                        });
+                                                      },
+                                                      textColor: greenColor,
+                                                      child: Center(
+                                                        child: Text(
+                                                            "Show Less"
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -332,7 +346,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
     List<DetailBadge> badges = [];
 
     badges.add(new DetailBadge(
-      text: widget.show.rating.toString(),
+      text: widget.show.rating != 0 ? widget.show.rating.toString() : r"N\A",
       colors: [pinkColor, lightPinkColor],
     ));
     badges.add(new DetailBadge(
@@ -351,7 +365,6 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
   }
 
   Widget displayBadges(double _height, double _width) {
-    List<Widget> badges = getBadges();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
       child: Container(
@@ -374,7 +387,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: AutoSizeText(
@@ -389,7 +402,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10),
                       child: AutoSizeText(
                         "About",
                         style: TextStyle(
@@ -409,22 +422,26 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                   width: _width,
                   height: _height / 9,
                   child: AnimationLimiter(
-                    child: ListView.builder(
-                      itemCount: badges.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return AnimationConfiguration.staggeredList(
-                          position: index,
-                          duration: const Duration(milliseconds: 375),
-                          child: FadeInAnimation(
-                            duration: Duration(milliseconds: 350),
-                            child: SlideAnimation(
-                              horizontalOffset: 20.0,
-                              child: badges[index],
+                    child: Center(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: badges.length,
+                        scrollDirection: Axis.horizontal,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (BuildContext context, int index) {
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 375),
+                            child: FadeInAnimation(
+                              duration: Duration(milliseconds: 350),
+                              child: SlideAnimation(
+                                horizontalOffset: 30.0,
+                                child: badges[index],
+                              ),
                             ),
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),

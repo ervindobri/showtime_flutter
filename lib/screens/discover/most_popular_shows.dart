@@ -197,14 +197,16 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                       ),
                                     CarouselSlider.builder(
                                       itemBuilder: (BuildContext context, int index) {
+                                        // print(limitMap[index + 1]);
                                         popular = getShowList(limitMap[index + 1]);
                                         return FutureBuilder(
-                                            future: popular,
+                                            future: getShowList(limitMap[index + 1]),
                                             builder: (context, snapshot) {
-                                              // print(limitedShows.length);
+                                              print(snapshot.data);
                                               if ( limitedShows != null && limitedShows.length > index){
+                                                print("already got this batch ! - ${limitedShows.length} / $index");
                                                 return Container(
-                                                    height: _height,
+                                                    // height: _height,
                                                     decoration: BoxDecoration(
                                                         color: bgColor,
                                                         borderRadius:
@@ -224,23 +226,21 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               }
                                               else{
                                                 if (snapshot.hasData) {
+                                                  print(snapshot.connectionState);
+                                                  print("has data ${snapshot.data.length}");
                                                   limitedShows.add(snapshot.data);
                                                   popularShows = [...limitedShows[index]]; //notice the spread operator
                                                   return Container(
-                                                      height: _height,
+                                                      // height: _height,
                                                       decoration: BoxDecoration(
                                                           color: bgColor,
                                                           borderRadius:
                                                           BorderRadius.only(
-                                                            topLeft: Radius.circular(
-                                                                sliverRadius),
-                                                            topRight: Radius.circular(
-                                                                sliverRadius),
+                                                            topLeft: Radius.circular(sliverRadius),
+                                                            topRight: Radius.circular(sliverRadius),
                                                           )),
                                                       child: Padding(
-                                                        padding: const EdgeInsets
-                                                            .symmetric(
-                                                            horizontal: 10.0),
+                                                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                                         child: mostPopularList(
                                                             limitedShows[index]),
                                                       ));
@@ -514,7 +514,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                 print(limitedShows.length);
                                                 if ( limitedShows != null && limitedShows.length > index){
                                                   return Container(
-                                                      height: _height,
+                                                      // height: _height,
                                                       decoration: BoxDecoration(
                                                           color: bgColor,
                                                           borderRadius:
@@ -537,7 +537,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                     limitedShows.add(snapshot.data);
                                                     popularShows = [...limitedShows[index]]; //notice the spread operator
                                                     return Container(
-                                                        height: _height,
+                                                        // height: _height,
                                                         decoration: BoxDecoration(
                                                             color: bgColor,
                                                             borderRadius:
@@ -921,9 +921,9 @@ class _MostPopularShowsState extends State<MostPopularShows>
     // print(data.length);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 100.0),
+      padding: const EdgeInsets.only(bottom: 170.0),
       child: StaggeredGridView.countBuilder(
-              shrinkWrap: true,
+              shrinkWrap: false,
               // physics: ClampingScrollPhysics(),
               itemCount: data.length,
               mainAxisSpacing: 1.0,
@@ -937,7 +937,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
               crossAxisCount: 4,
               staggeredTileBuilder: (int index) =>
                   new StaggeredTile.count(2, index.isEven ? 3.6 : 3.6),
-            )
+            ),
     );
   }
 

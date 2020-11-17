@@ -423,6 +423,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           onTap: () async {
                             //TODO: handle clearing and destroying stored data
                             popularShows.clear();
+                            limitedShows.clear();
+
                             await FirebaseAuth.instance.signOut();
                             final login = LoginScreen();
                             Navigator.of(context).pushAndRemoveUntil(

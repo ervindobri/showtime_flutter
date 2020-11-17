@@ -53,8 +53,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
   Animation<double> animation;
   AnimationController _controller;
 
-  double _animatedWidth = 50.0;
-  double _animatedHeight = 240.0;
+
 
   bool _tapped;
 
@@ -133,7 +132,12 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
 
     final Future<List<dynamic>> episodesObject = new Network().getEpisodes(showID: widget.episodes[0].embedded['show']['id'].toString());
 
+    final _cardHeight = _height*.45;
+    final _cardWidth = _width * .65;
     // startTimer();
+
+    double _animatedWidth = 50.0;
+    double _animatedHeight = _cardHeight*.65;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Center(
@@ -173,8 +177,8 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                           imageUrl: widget.episodes[0]
                               .embedded['show']['image']['medium'],
                           imageBuilder: (context, imageProvider) =>Container(
-                            width: _width * .65,
-                            height: _height*.45,
+                            width: _cardWidth,
+                            height: _cardHeight,
                             decoration: BoxDecoration(
                               color: blueColor,
                               image: DecorationImage(
@@ -184,8 +188,8 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                               boxShadow: [
                                 new BoxShadow(
                                     color: int.parse(countdown[0]) <= 3
-                                        ? fireColor
-                                        : greenColor,
+                                        ? fireColor.withOpacity(.3)
+                                        : greenColor.withOpacity(.3),
                                     blurRadius: 15.0,
                                     spreadRadius: -4,
                                     offset: Offset(0, 5)),
