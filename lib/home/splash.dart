@@ -57,8 +57,10 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   Animation<double> animation;
   AnimationController _controller;
 
-  var notCompleted = true;
+  // var notCompleted = true;
 
+  bool allCompleted = false;
+  Timer completed;
   @override
   void initState() {
     super.initState();
@@ -89,6 +91,23 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     }
     sexController.text = sexCategories[0];
     ageController.text = 1.toString();
+
+    Timer.periodic(Duration(seconds: 1), (completed) {
+        if (allCompleted) {
+            final home = HomeView(
+              user: currentUser,
+              notAiredList: notAiredList,
+              watchedShowsList: watchedShowList,
+            );
+
+            Navigator.of(context)
+                .pushAndRemoveUntil(CupertinoPageRoute(
+                builder: (context) => home,
+            ), (route) => false);
+
+            completed.cancel();
+        }
+    });
   }
 
   @override
@@ -97,6 +116,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     _watchedShowsStream = null;
     subscription = null;
     _currentUserObject = null;
+    completed.cancel();
     super.dispose();
 
   }
@@ -177,10 +197,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                       builder: (context, uSnapshot) {
                         if  (uSnapshot.hasData && uSnapshot.data.firstName != null) {
                             currentUser = uSnapshot.data;
-                            // setState(() {
-                              notCompleted = false;
-                            // });
-                            print("current user: $currentUser");
+                            // print("current user: $currentUser");
                             _watchedShowsStream = FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots();
                             return StreamBuilder(
                                 stream: _watchedShowsStream,
@@ -197,7 +214,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                       // allWatchedShows.add(show);
                                     });
                                     _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowIdList);
-                                    print(watchedShowList.length);
+                                    // print(watchedShowList.length);
                                   }
                                   return FutureBuilder(
                                       future: _scheduledEpisodes,
@@ -222,16 +239,11 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
                                           // print(notAiredList.length);
                                           Timer.run(() {
-                                            final home = HomeView(
-                                              user: currentUser,
-                                              notAiredList: notAiredList,
-                                              watchedShowsList: watchedShowList,
-                                            );
-                                            Navigator.of(context)
-                                                .pushAndRemoveUntil(CupertinoPageRoute(
-                                              builder: (context) => home,
-                                            ),(route) => false);
+                                            setState(() {
+                                              allCompleted = true;
+                                            });
                                           });
+                                          return Container();
                                         }
                                         return Center(
                                           child: Container(
