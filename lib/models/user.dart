@@ -1,3 +1,8 @@
+import 'package:eWoke/models/user.dart';
+import 'package:eWoke/network/firebase_utils.dart';
+
+import '../main.dart';
+
 class SessionUser{
    dynamic id;
    String emailAddress;

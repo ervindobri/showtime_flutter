@@ -937,7 +937,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
             },
             crossAxisCount: 4,
             staggeredTileBuilder: (int index) =>
-                new StaggeredTile.count(2, index.isEven ? 3.4 : 3.4),
+                new StaggeredTile.count(2, index.isEven ? 3.5 : 3.5),
           );
   }
 

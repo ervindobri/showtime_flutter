@@ -58,6 +58,15 @@ class GlobalVariables{
   static List<String> showLinks = [];
 
 
+  static void clearAll() {
+    limitedShows.clear();
+    popularShows.clear();
+    allWatchedShows.clear();
+    list.clear();
+    showDetailList.clear();
+    favorites.clear();
+  }
+
   static const Map<String, Badge> allBadges = {
     "fresh" : Badge(description: "Fresh", icon: FontAwesomeIcons.fire, colors:[GlobalColors.fireColor, Colors.orange]),
     "paused" : Badge(description: "Paused watching",icon: FontAwesomeIcons.pause, colors:[Colors.purple, Colors.indigo]),
@@ -266,6 +275,8 @@ class GlobalVariables{
     {"code":"yo","name":"Yoruba","nativeName":"Yorùbá"},
     {"code":"za","name":"Zhuang, Chuang","nativeName":"Saɯ cueŋƅ, Saw cuengh"}
   ];
+
+
 }
 
 

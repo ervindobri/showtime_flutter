@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 import '../main.dart';
@@ -61,6 +62,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
   bool allCompleted = false;
   Timer completed;
+
+  QuerySnapshot watchedShowsSnapshot;
   @override
   void initState() {
     super.initState();
@@ -84,7 +87,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
       });
     });
 
-    _currentUserObject = FirestoreUtils().getUserData();
+    // _currentUserObject = FirestoreUtils().getUserData();
 
     if ( GlobalVariables.allWatchedShows.isEmpty){
       _watchedShowsStream = FirestoreUtils().watchedShows.snapshots();
@@ -108,6 +111,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
             completed.cancel();
         }
     });
+
   }
 
   @override
@@ -135,8 +139,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
     checkInternetConnectivity();
-
-
+    currentUser = Provider.of<SessionUser>(context);
+    watchedShowsSnapshot = Provider.of<QuerySnapshot>(context);
     print("splash");
     return Scaffold(
       // appBar: AppBar(
@@ -192,561 +196,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                     ),
                   ),
                   // PROGRESS BAR TO LOAD HOME STUFF
-                  FutureBuilder(
-                      future: _currentUserObject,
-                      builder: (context, uSnapshot) {
-                        if  (uSnapshot.hasData && uSnapshot.data.firstName != null) {
-                            currentUser = uSnapshot.data;
-                            // print("current user: $currentUser");
-                            _watchedShowsStream = FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots();
-                            return StreamBuilder(
-                                stream: _watchedShowsStream,
-                                builder: (context, snapshot) {
-                                  if ( snapshot.hasData){
-                                    watchedShowIdList.clear();
-                                    GlobalVariables.watchedShowList.clear();
-                                    // GlobalVariables.allWatchedShows.clear();
-                                    snapshot.data.documents
-                                        .forEach((f) {
-                                      watchedShowIdList.add(int.parse(f.documentID));
-                                      WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.documentID);
-                                      GlobalVariables.watchedShowList.add(show);
-                                      // GlobalVariables.allWatchedShows.add(show);
-                                    });
-                                    _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowIdList);
-                                    // print(GlobalVariables.watchedShowList.length);
-                                  }
-                                  return FutureBuilder(
-                                      future: _scheduledEpisodes,
-                                      builder: (context, snapshot) {
-                                        if ( snapshot.hasData){
-                                          print("loading scheduled episodes");
-                                          // print(snapshot.data);
-                                          if ( snapshot.data.length > 0){
-                                            for(int index=0 ; index < 5; index++){
-                                              GlobalVariables.scheduledEpisodes.add(snapshot.data[index]);
-                                              int notAired = snapshot.data[index].length - 1;
-                                              for(int i=0; i< snapshot.data[index].length ; i++){
-                                                if ( !snapshot.data[index][i].aired()){
-                                                  notAired = i;
-                                                  break;
-                                                }
-                                              }
-                                              notAiredList.add(snapshot.data[index][notAired]);
-                                            }
-                                          }
-                                          notAiredList.sort( (a,b) => a.airDate.compareTo(b.airDate));
-
-                                          // print(notAiredList.length);
-                                          Timer.run(() {
-                                            setState(() {
-                                              allCompleted = true;
-                                            });
-                                          });
-                                          return Container();
-                                        }
-                                        return Center(
-                                          child: Container(
-                                            width: _width*.5,
-                                            height: _height*.75,
-                                            // color: Colors.black,
-                                            child: SizedBox(
-                                              child: Center(
-                                                child: FlareActor("assets/loadingcouch-white.flr",
-                                                    alignment: Alignment.bottomCenter,
-                                                    fit: BoxFit.contain,
-                                                    animation: "load"),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                  );
-                                }
-                            );
-                        }
-                        else{
-                          //TODO: create your profile
-                          final node = FocusScope.of(context);
-
-                          return SlideTransition(
-                            position: Tween<Offset>(
-                              begin: Offset(0, 1),
-                              end: Offset.zero,
-                            ).animate(animation),
-                            child: Center(
-                              child: Container(
-                                width: _width*.81,
-                                height: _height*.7,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: GlobalColors.greyTextColor.withOpacity(0.3),
-                                      spreadRadius: 10,
-                                      blurRadius: 25,
-                                      offset: Offset(0, 5), // changes position of shadow
-                                    ),
-                                  ],
-                                ),
-                                child: FadeTransition(
-                                  opacity: Tween<double>(
-                                    begin: 0,
-                                    end: 1,
-                                  ).animate(animation),
-                                  child: SlideTransition(
-                                    position: Tween<Offset>(
-                                      begin: Offset(0, 0.1),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: Center(
-                                      child: Column(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: AutoSizeText(
-                                              "Complete your profile",
-                                              maxLines: 2,
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 30.0),
-                                            child: Container(
-                                              // height: _height*.7,
-                                              // width: _width,
-                                              child: Form(
-                                                key: _formKey,
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    //TODO: ADD AVATARS FOR USERS
-                                                    // Padding(
-                                                    //   padding: const EdgeInsets.all(8.0),
-                                                    //   child: CircleAvatar(
-                                                    //     backgroundColor: GlobalColors.greyTextColor,
-                                                    //     minRadius: 40,
-                                                    //     maxRadius: 40,
-                                                    //     backgroundImage: AssetImage(
-                                                    //         "assets/showtime-avatar.png"
-                                                    //     ),
-                                                    //   ),
-                                                    // ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Text(
-                                                            "first Name",
-                                                            style: GoogleFonts.roboto(
-                                                                color: GlobalColors.greyTextColor,
-                                                                fontSize: _width/20,
-                                                                fontWeight: FontWeight.w300
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                                                            child: Container(
-                                                              width: _width/3,
-                                                              height: _width/6,
-                                                              child: TextFormField(
-                                                                controller: firstNameController,
-                                                                keyboardType: TextInputType.name,
-                                                                textCapitalization: TextCapitalization.words,
-
-                                                                autofocus: false,
-                                                                validator: (val){
-                                                                  if ( val == ""){
-                                                                    return "Your first name!";
-                                                                  }
-                                                                  else{
-                                                                    return null;
-                                                                  }
-                                                                },
-                                                                decoration: const InputDecoration(
-                                                                  errorStyle: TextStyle(
-                                                                      fontFamily: 'Raleway',
-                                                                      color: GlobalColors.orangeColor
-                                                                  ),
-                                                                  hintStyle: TextStyle(
-                                                                      fontFamily: 'Raleway',
-                                                                      color: GlobalColors.greyTextColor,
-                                                                      fontWeight: FontWeight.w300
-                                                                  ),
-                                                                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                  filled: true,
-                                                                  fillColor: Colors.white,
-                                                                  hintText: 'John',
-                                                                  focusColor: GlobalColors.greenColor,
-                                                                  enabledBorder: const OutlineInputBorder(
-                                                                    borderSide:
-                                                                    BorderSide(color: GlobalColors.blueColor),
-                                                                    borderRadius: BorderRadius.all(
-                                                                        Radius.circular(50.0)),
-                                                                  ),
-                                                                  border: const OutlineInputBorder(
-                                                                    borderSide:
-                                                                    BorderSide(color: GlobalColors.blueColor),
-                                                                    borderRadius: BorderRadius.all(
-                                                                        Radius.circular(50.0)),
-                                                                  ),
-                                                                  focusedBorder: const OutlineInputBorder(
-                                                                    borderSide: BorderSide(
-                                                                        color: GlobalColors.greenColor, width: 2),
-                                                                    borderRadius: BorderRadius.all(
-                                                                        Radius.circular(50.0)),
-                                                                  ),
-                                                                  errorBorder: const OutlineInputBorder(
-                                                                    borderSide: BorderSide(
-                                                                        color: GlobalColors.orangeColor, width: 2),
-                                                                    borderRadius: BorderRadius.all(
-                                                                        Radius.circular(50.0)),
-                                                                  ),
-                                                                ),
-                                                                style: GoogleFonts.roboto(
-                                                                    color: GlobalColors.greyTextColor,
-                                                                    fontSize: _width/20,
-                                                                    fontWeight: FontWeight.w500
-                                                                ),
-                                                                onEditingComplete: () => node.nextFocus(), // Move focus to next
-
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment
-                                                            .end,
-                                                        children: [
-                                                          Text(
-                                                            "last Name",
-                                                            style: GoogleFonts.roboto(
-                                                                color: GlobalColors.greyTextColor,
-                                                                fontSize: _width/20,
-                                                                fontWeight: FontWeight.w300
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                                                            child: Container(
-                                                              width: _width/3,
-                                                              height: _width/6,
-                                                              child: TextFormField(
-                                                                controller: lastNameController,
-                                                                autofocus: false,
-                                                                textCapitalization: TextCapitalization.words,
-                                                                validator: (val) {
-                                                                  if ( val == ""){
-                                                                    return "Your last name!";
-                                                                  }
-                                                                  else{
-                                                                    return null;
-                                                                  }
-                                                                },
-                                                                decoration: const InputDecoration(
-                                                                  errorStyle: TextStyle(
-                                                                      fontFamily: 'Raleway',
-                                                                      color: GlobalColors.orangeColor
-                                                                  ),
-                                                                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                  filled: true,
-                                                                  fillColor: Colors.white,
-                                                                  hintText: 'Doe',
-                                                                  hintStyle: TextStyle(
-                                                                      fontFamily: 'Raleway',
-                                                                      color: GlobalColors.greyTextColor,
-                                                                      fontWeight: FontWeight.w300
-                                                                  ),
-                                                                  focusColor: GlobalColors.greenColor,
-                                                                  enabledBorder: const OutlineInputBorder(
-                                                                    borderSide:
-                                                                    BorderSide(color: GlobalColors.blueColor),
-                                                                    borderRadius: BorderRadius.all(
-                                                                        Radius.circular(50.0)),
-                                                                  ),
-                                                                  border: const OutlineInputBorder(
-                                                                    borderSide:
-                                                                    BorderSide(color: GlobalColors.blueColor),
-                                                                    borderRadius: BorderRadius.all(
-                                                                        Radius.circular(50.0)),
-                                                                  ),
-                                                                  focusedBorder: const OutlineInputBorder(
-                                                                    borderSide: BorderSide(
-                                                                        color: GlobalColors.greenColor, width: 2),
-                                                                    borderRadius: BorderRadius.all(
-                                                                        Radius.circular(50.0)),
-                                                                  ),
-                                                                  errorBorder: const OutlineInputBorder(
-                                                                    borderSide: BorderSide(
-                                                                        color: GlobalColors.orangeColor, width: 2),
-                                                                    borderRadius: BorderRadius.all(
-                                                                        Radius.circular(50.0)),
-                                                                  ),
-                                                                ),
-                                                                  style: GoogleFonts.roboto(
-                                                                    color: GlobalColors.greyTextColor,
-                                                                    fontSize: _width/20,
-                                                                    fontWeight: FontWeight.w500
-                                                                  ),
-
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment
-                                                            .end,
-
-                                                        children: [
-                                                          Text(
-                                                            "age",
-                                                            style: GoogleFonts.roboto(
-                                                                color: GlobalColors.greyTextColor,
-                                                                fontSize: _width/20,
-                                                                fontWeight: FontWeight.w300
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                                                            child: Container(
-                                                              width: _width/3,
-                                                              height: _width/10,
-                                                              decoration: BoxDecoration(
-                                                                color: Colors.white,
-                                                                borderRadius: BorderRadius.all(
-                                                                    Radius.circular(50.0)),
-                                                                border:  Border.all(
-                                                                    color: GlobalColors.blueColor
-                                                                ),
-                                                              ),
-                                                              child: CupertinoTheme(
-                                                                data: CupertinoThemeData(
-                                                                  scaffoldBackgroundColor: Colors.transparent,
-                                                                  primaryColor: Colors.transparent,
-                                                                  primaryContrastingColor: Colors.transparent,
-                                                                  barBackgroundColor: Colors.transparent,
-                                                                  textTheme: CupertinoTextThemeData(
-
-                                                                    pickerTextStyle: GoogleFonts.roboto(
-                                                                      color: GlobalColors.greyTextColor,
-                                                                      fontSize: 25
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                child: CupertinoPicker(
-                                                                  looping: true,
-                                                                  backgroundColor: Colors.transparent,
-                                                                  // selectionOverlay: Container(
-                                                                  //     child: Padding(
-                                                                  //       padding: const EdgeInsets.only(left: 10.0),
-                                                                  //       child: Row(
-                                                                  //         children: [
-                                                                  //           FaIcon(
-                                                                  //             FontAwesomeIcons.sort,
-                                                                  //             color: GlobalColors.blueColor,
-                                                                  //           )
-                                                                  //         ],
-                                                                  //       ),
-                                                                  //     )
-                                                                  // ),
-                                                                  itemExtent: 50, onSelectedItemChanged: (int value) {
-                                                                  ageController.text = (value+1).toString();
-                                                                },
-                                                                  children: List.generate(100, (index) =>
-                                                                      Center(
-                                                                        child: Text(
-                                                                            (index+1).toString(),
-                                                                            style: GoogleFonts.roboto(
-                                                                                color: GlobalColors.greyTextColor,
-                                                                                fontSize: _width/20,
-                                                                                fontWeight: FontWeight.w500
-                                                                            ),
-                                                                        ),
-                                                                      )
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(8.0),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment
-                                                            .end,
-                                                        children: [
-                                                          Text(
-                                                            "sex",
-                                                            style: GoogleFonts.roboto(
-                                                                fontSize: _width/20,
-                                                                fontWeight: FontWeight.w300,
-                                                                color: GlobalColors.greyTextColor
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                                                            child: Container(
-                                                              width: _width/3,
-                                                              height: _width/10,
-
-                                                              decoration: BoxDecoration(
-                                                                color: Colors.white,
-                                                                borderRadius: BorderRadius.all(
-                                                                    Radius.circular(50.0)),
-                                                                border:  Border.all(
-                                                                    color: GlobalColors.blueColor
-                                                                ),
-                                                              ),
-                                                              child: CupertinoPicker(
-                                                                // controller: sexController,
-                                                                looping: true,
-                                                                // selectionOverlay: Container(
-                                                                //   child: Padding(
-                                                                //     padding: const EdgeInsets.only(left: 10.0),
-                                                                //     child: Row(
-                                                                //       children: [
-                                                                //         FaIcon(
-                                                                //           FontAwesomeIcons.sort,
-                                                                //           color: GlobalColors.blueColor,
-                                                                //         )
-                                                                //       ],
-                                                                //     ),
-                                                                //   )
-                                                                // ),
-                                                                itemExtent: 50, onSelectedItemChanged: (int value) {
-                                                                  sexController.text = GlobalVariables.sexCategories[value];
-                                                              },
-                                                                children: List.generate(GlobalVariables.sexCategories.length, (index) =>
-                                                                    Align(
-                                                                      alignment: Alignment.centerRight,
-                                                                        child: Padding(
-                                                                          padding: const EdgeInsets.only(right: 15.0),
-                                                                          child: Text(
-                                                                              GlobalVariables.sexCategories[index],
-                                                                            style: GoogleFonts.roboto(
-                                                                                color: GlobalColors.greyTextColor,
-                                                                                fontSize: _width/20,
-                                                                                fontWeight: FontWeight.w500
-                                                                            ),
-                                                                          ),
-                                                                        )
-                                                                    )
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding: const EdgeInsets.all(15.0),
-                                                      child: Container(
-                                                        child: ProgressButton(
-                                                          maxWidth: _width/3,
-                                                          minWidth: _width/3,
-                                                          state: buttonState,
-                                                          onPressed: (){
-                                                              setState(() {
-                                                                buttonState = ButtonState.loading;
-                                                              });
-                                                              Future.delayed(Duration(seconds: 2), () {
-                                                                setState(() {
-                                                                  if ( _formKey.currentState.validate()){
-                                                                    print("validated");
-                                                                    currentUser.id = auth.currentUser.uid;
-                                                                    currentUser.emailAddress = auth.currentUser.email;
-                                                                    currentUser.firstName = firstNameController.text;
-                                                                    currentUser.lastName = lastNameController.text;
-                                                                    currentUser.age = int.parse(ageController.text);
-                                                                    currentUser.sex= sexController.text;
-                                                                    print(currentUser);
-                                                                    FirestoreUtils().updateUserInfo(currentUser);
-                                                                    buttonState = ButtonState.success;
-                                                                    if ( buttonState == ButtonState.success){
-                                                                      Future.delayed(Duration(seconds: 2),(){
-                                                                        final home = HomeView(
-                                                                          user: currentUser,
-                                                                          notAiredList: notAiredList,
-                                                                          watchedShowsList: GlobalVariables.watchedShowList,
-                                                                        );
-                                                                        Navigator.of(context)
-                                                                            .pushAndRemoveUntil(CupertinoPageRoute(
-                                                                          builder: (context) => home,
-                                                                        ),(route) => false);
-                                                                      });
-                                                                    }
-                                                                  }
-                                                                  else{
-                                                                    buttonState = ButtonState.fail;
-                                                                  }
-                                                                });
-                                                              });
-
-
-                                                          },
-                                                          padding: const EdgeInsets.all(8.0),
-                                                          progressIndicatorAligment: MainAxisAlignment.center,
-                                                          radius: 25.0,
-                                                          stateWidgets: {
-                                                            ButtonState.idle: Text(
-                                                              "Save",
-                                                              style: GoogleFonts.roboto(
-                                                                  color: Colors.white,
-                                                                  fontWeight: FontWeight.w500,
-                                                                fontSize: _width/20
-                                                              ),
-                                                            ),
-                                                            ButtonState.loading: Container(),
-                                                            ButtonState.fail: Text(
-                                                              "Submit Failed",
-                                                              style: GoogleFonts.roboto(color: Colors.white, fontWeight: FontWeight.w500),
-                                                            ),
-                                                            ButtonState.success: FaIcon(
-                                                              FontAwesomeIcons.check,
-                                                              color: Colors.white,
-                                                            )
-                                                          },
-                                                          stateColors: {
-                                                            ButtonState.idle: GlobalColors.blueColor,
-                                                            ButtonState.loading: GlobalColors.blueColor,
-                                                            ButtonState.fail: GlobalColors.fireColor,
-                                                            ButtonState.success: GlobalColors.greenColor,
-                                                          },
-
-                                                        )
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-
-                      }
-                  ),
+                    splashBody(_width, _height),
                 ],
               ),
             ],
@@ -754,5 +204,565 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
         ),
       ),
     );
+  }
+
+  createProfile(double _width, double _height) {
+    final node = FocusScope.of(context);
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: Offset(0, 1),
+        end: Offset.zero,
+      ).animate(animation),
+      child: Center(
+        child: Container(
+          width: _width*.81,
+          height: _height*.7,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25.0),
+            boxShadow: [
+              BoxShadow(
+                color: GlobalColors.greyTextColor.withOpacity(0.3),
+                spreadRadius: 10,
+                blurRadius: 25,
+                offset: Offset(0, 5), // changes position of shadow
+              ),
+            ],
+          ),
+          child: FadeTransition(
+            opacity: Tween<double>(
+              begin: 0,
+              end: 1,
+            ).animate(animation),
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: Offset(0, 0.1),
+                end: Offset.zero,
+              ).animate(animation),
+              child: Center(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AutoSizeText(
+                        "Complete your profile",
+                        maxLines: 2,
+                        style: GoogleFonts.roboto(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 30.0),
+                      child: Container(
+                        // height: _height*.7,
+                        // width: _width,
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              //TODO: ADD AVATARS FOR USERS
+                              // Padding(
+                              //   padding: const EdgeInsets.all(8.0),
+                              //   child: CircleAvatar(
+                              //     backgroundColor: GlobalColors.greyTextColor,
+                              //     minRadius: 40,
+                              //     maxRadius: 40,
+                              //     backgroundImage: AssetImage(
+                              //         "assets/showtime-avatar.png"
+                              //     ),
+                              //   ),
+                              // ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "first Name",
+                                      style: GoogleFonts.roboto(
+                                          color: GlobalColors.greyTextColor,
+                                          fontSize: _width/20,
+                                          fontWeight: FontWeight.w300
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      child: Container(
+                                        width: _width/3,
+                                        height: _width/6,
+                                        child: TextFormField(
+                                          controller: firstNameController,
+                                          keyboardType: TextInputType.name,
+                                          textCapitalization: TextCapitalization.words,
+
+                                          autofocus: false,
+                                          validator: (val){
+                                            if ( val == ""){
+                                              return "Your first name!";
+                                            }
+                                            else{
+                                              return null;
+                                            }
+                                          },
+                                          decoration: const InputDecoration(
+                                            errorStyle: TextStyle(
+                                                fontFamily: 'Raleway',
+                                                color: GlobalColors.orangeColor
+                                            ),
+                                            hintStyle: TextStyle(
+                                                fontFamily: 'Raleway',
+                                                color: GlobalColors.greyTextColor,
+                                                fontWeight: FontWeight.w300
+                                            ),
+                                            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            hintText: 'John',
+                                            focusColor: GlobalColors.greenColor,
+                                            enabledBorder: const OutlineInputBorder(
+                                              borderSide:
+                                              BorderSide(color: GlobalColors.blueColor),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(50.0)),
+                                            ),
+                                            border: const OutlineInputBorder(
+                                              borderSide:
+                                              BorderSide(color: GlobalColors.blueColor),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(50.0)),
+                                            ),
+                                            focusedBorder: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: GlobalColors.greenColor, width: 2),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(50.0)),
+                                            ),
+                                            errorBorder: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: GlobalColors.orangeColor, width: 2),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(50.0)),
+                                            ),
+                                          ),
+                                          style: GoogleFonts.roboto(
+                                              color: GlobalColors.greyTextColor,
+                                              fontSize: _width/20,
+                                              fontWeight: FontWeight.w500
+                                          ),
+                                          onEditingComplete: () => node.nextFocus(), // Move focus to next
+
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .end,
+                                  children: [
+                                    Text(
+                                      "last Name",
+                                      style: GoogleFonts.roboto(
+                                          color: GlobalColors.greyTextColor,
+                                          fontSize: _width/20,
+                                          fontWeight: FontWeight.w300
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      child: Container(
+                                        width: _width/3,
+                                        height: _width/6,
+                                        child: TextFormField(
+                                          controller: lastNameController,
+                                          autofocus: false,
+                                          textCapitalization: TextCapitalization.words,
+                                          validator: (val) {
+                                            if ( val == ""){
+                                              return "Your last name!";
+                                            }
+                                            else{
+                                              return null;
+                                            }
+                                          },
+                                          decoration: const InputDecoration(
+                                            errorStyle: TextStyle(
+                                                fontFamily: 'Raleway',
+                                                color: GlobalColors.orangeColor
+                                            ),
+                                            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                            filled: true,
+                                            fillColor: Colors.white,
+                                            hintText: 'Doe',
+                                            hintStyle: TextStyle(
+                                                fontFamily: 'Raleway',
+                                                color: GlobalColors.greyTextColor,
+                                                fontWeight: FontWeight.w300
+                                            ),
+                                            focusColor: GlobalColors.greenColor,
+                                            enabledBorder: const OutlineInputBorder(
+                                              borderSide:
+                                              BorderSide(color: GlobalColors.blueColor),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(50.0)),
+                                            ),
+                                            border: const OutlineInputBorder(
+                                              borderSide:
+                                              BorderSide(color: GlobalColors.blueColor),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(50.0)),
+                                            ),
+                                            focusedBorder: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: GlobalColors.greenColor, width: 2),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(50.0)),
+                                            ),
+                                            errorBorder: const OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: GlobalColors.orangeColor, width: 2),
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(50.0)),
+                                            ),
+                                          ),
+                                          style: GoogleFonts.roboto(
+                                              color: GlobalColors.greyTextColor,
+                                              fontSize: _width/20,
+                                              fontWeight: FontWeight.w500
+                                          ),
+
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .end,
+
+                                  children: [
+                                    Text(
+                                      "age",
+                                      style: GoogleFonts.roboto(
+                                          color: GlobalColors.greyTextColor,
+                                          fontSize: _width/20,
+                                          fontWeight: FontWeight.w300
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      child: Container(
+                                        width: _width/3,
+                                        height: _width/10,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(50.0)),
+                                          border:  Border.all(
+                                              color: GlobalColors.blueColor
+                                          ),
+                                        ),
+                                        child: CupertinoTheme(
+                                          data: CupertinoThemeData(
+                                            scaffoldBackgroundColor: Colors.transparent,
+                                            primaryColor: Colors.transparent,
+                                            primaryContrastingColor: Colors.transparent,
+                                            barBackgroundColor: Colors.transparent,
+                                            textTheme: CupertinoTextThemeData(
+
+                                              pickerTextStyle: GoogleFonts.roboto(
+                                                  color: GlobalColors.greyTextColor,
+                                                  fontSize: 25
+                                              ),
+                                            ),
+                                          ),
+                                          child: CupertinoPicker(
+                                            looping: true,
+                                            backgroundColor: Colors.transparent,
+                                            // selectionOverlay: Container(
+                                            //     child: Padding(
+                                            //       padding: const EdgeInsets.only(left: 10.0),
+                                            //       child: Row(
+                                            //         children: [
+                                            //           FaIcon(
+                                            //             FontAwesomeIcons.sort,
+                                            //             color: GlobalColors.blueColor,
+                                            //           )
+                                            //         ],
+                                            //       ),
+                                            //     )
+                                            // ),
+                                            itemExtent: 50, onSelectedItemChanged: (int value) {
+                                            ageController.text = (value+1).toString();
+                                          },
+                                            children: List.generate(100, (index) =>
+                                                Center(
+                                                  child: Text(
+                                                    (index+1).toString(),
+                                                    style: GoogleFonts.roboto(
+                                                        color: GlobalColors.greyTextColor,
+                                                        fontSize: _width/20,
+                                                        fontWeight: FontWeight.w500
+                                                    ),
+                                                  ),
+                                                )
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .end,
+                                  children: [
+                                    Text(
+                                      "sex",
+                                      style: GoogleFonts.roboto(
+                                          fontSize: _width/20,
+                                          fontWeight: FontWeight.w300,
+                                          color: GlobalColors.greyTextColor
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      child: Container(
+                                        width: _width/3,
+                                        height: _width/10,
+
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(50.0)),
+                                          border:  Border.all(
+                                              color: GlobalColors.blueColor
+                                          ),
+                                        ),
+                                        child: CupertinoPicker(
+                                          // controller: sexController,
+                                          looping: true,
+                                          // selectionOverlay: Container(
+                                          //   child: Padding(
+                                          //     padding: const EdgeInsets.only(left: 10.0),
+                                          //     child: Row(
+                                          //       children: [
+                                          //         FaIcon(
+                                          //           FontAwesomeIcons.sort,
+                                          //           color: GlobalColors.blueColor,
+                                          //         )
+                                          //       ],
+                                          //     ),
+                                          //   )
+                                          // ),
+                                          itemExtent: 50, onSelectedItemChanged: (int value) {
+                                          sexController.text = GlobalVariables.sexCategories[value];
+                                        },
+                                          children: List.generate(GlobalVariables.sexCategories.length, (index) =>
+                                              Align(
+                                                  alignment: Alignment.centerRight,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(right: 15.0),
+                                                    child: Text(
+                                                      GlobalVariables.sexCategories[index],
+                                                      style: GoogleFonts.roboto(
+                                                          color: GlobalColors.greyTextColor,
+                                                          fontSize: _width/20,
+                                                          fontWeight: FontWeight.w500
+                                                      ),
+                                                    ),
+                                                  )
+                                              )
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Container(
+                                    child: ProgressButton(
+                                      maxWidth: _width/3,
+                                      minWidth: _width/3,
+                                      state: buttonState,
+                                      onPressed: (){
+                                        setState(() {
+                                          buttonState = ButtonState.loading;
+                                        });
+                                        Future.delayed(Duration(seconds: 2), () {
+                                          setState(() {
+                                            if ( _formKey.currentState.validate()){
+                                              print("validated");
+                                              currentUser.id = auth.currentUser.uid;
+                                              currentUser.emailAddress = auth.currentUser.email;
+                                              currentUser.firstName = firstNameController.text;
+                                              currentUser.lastName = lastNameController.text;
+                                              currentUser.age = int.parse(ageController.text);
+                                              currentUser.sex= sexController.text;
+                                              print(currentUser);
+                                              FirestoreUtils().updateUserInfo(currentUser);
+                                              buttonState = ButtonState.success;
+                                              if ( buttonState == ButtonState.success){
+                                                Future.delayed(Duration(seconds: 2),(){
+                                                  final home = HomeView(
+                                                    user: currentUser,
+                                                    notAiredList: notAiredList,
+                                                    watchedShowsList: GlobalVariables.watchedShowList,
+                                                  );
+                                                  Navigator.of(context)
+                                                      .pushAndRemoveUntil(CupertinoPageRoute(
+                                                    builder: (context) => home,
+                                                  ),(route) => false);
+                                                });
+                                              }
+                                            }
+                                            else{
+                                              buttonState = ButtonState.fail;
+                                            }
+                                          });
+                                        });
+
+
+                                      },
+                                      padding: const EdgeInsets.all(8.0),
+                                      progressIndicatorAligment: MainAxisAlignment.center,
+                                      radius: 25.0,
+                                      stateWidgets: {
+                                        ButtonState.idle: Text(
+                                          "Save",
+                                          style: GoogleFonts.roboto(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: _width/20
+                                          ),
+                                        ),
+                                        ButtonState.loading: Container(),
+                                        ButtonState.fail: Text(
+                                          "Submit Failed",
+                                          style: GoogleFonts.roboto(color: Colors.white, fontWeight: FontWeight.w500),
+                                        ),
+                                        ButtonState.success: FaIcon(
+                                          FontAwesomeIcons.check,
+                                          color: Colors.white,
+                                        )
+                                      },
+                                      stateColors: {
+                                        ButtonState.idle: GlobalColors.blueColor,
+                                        ButtonState.loading: GlobalColors.blueColor,
+                                        ButtonState.fail: GlobalColors.fireColor,
+                                        ButtonState.success: GlobalColors.greenColor,
+                                      },
+
+                                    )
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget splashBody(double _width, double _height) {
+    if ( currentUser != null){
+      if ( watchedShowsSnapshot != null){
+          watchedShowIdList.clear();
+          GlobalVariables.watchedShowList.clear();
+          watchedShowsSnapshot.docs.forEach((f) {
+            watchedShowIdList.add(int.parse(f.id));
+            WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.id);
+            GlobalVariables.watchedShowList.add(show);
+          });
+          _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowIdList);
+          return FutureBuilder(
+              future: _scheduledEpisodes,
+              builder: (context, snapshot) {
+                if ( snapshot.hasData){
+                  // print("loading scheduled episodes");
+                  // print(snapshot.data);
+                  if ( snapshot.data.length > 0){
+                    for(int index=0 ; index < 5; index++){
+                      GlobalVariables.scheduledEpisodes.add(snapshot.data[index]);
+                      int notAired = snapshot.data[index].length - 1;
+                      for(int i=0; i< snapshot.data[index].length ; i++){
+                        if ( !snapshot.data[index][i].aired()){
+                          notAired = i;
+                          break;
+                        }
+                      }
+                      notAiredList.add(snapshot.data[index][notAired]);
+                    }
+                  }
+                  notAiredList.sort( (a,b) => a.airDate.compareTo(b.airDate));
+
+                  // print(notAiredList.length);
+                  Timer.run(() {
+                    setState(() {
+                      allCompleted = true;
+                    });
+                  });
+                  return Container();
+                }
+                return Center(
+                  child: Container(
+                    width: _width*.5,
+                    height: _height*.75,
+                    // color: Colors.black,
+                    child: SizedBox(
+                      child: Center(
+                        child: FlareActor("assets/loadingcouch-white.flr",
+                            alignment: Alignment.bottomCenter,
+                            fit: BoxFit.contain,
+                            animation: "load"),
+                      ),
+                    ),
+                  ),
+                );
+              }
+          );
+      }
+      else{
+        return Center(
+          child: Container(
+            width: _width*.5,
+            height: _height*.75,
+            // color: Colors.black,
+            child: SizedBox(
+              child: Center(
+                child: FlareActor("assets/loadingcouch-white.flr",
+                    alignment: Alignment.bottomCenter,
+                    fit: BoxFit.contain,
+                    animation: "load"),
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    else{
+      //TODO: create your profile
+      return createProfile(_width, _height);
+    }
   }
 }

@@ -78,6 +78,7 @@ dependencies:
   tab_indicator_styler: ^1.0.0
   fl_chart: ^0.12.0
   intl: ^0.16.1
+  provider: ^4.3.2+2
 
 dev_dependencies:
   flutter_test:

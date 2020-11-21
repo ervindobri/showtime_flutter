@@ -125,7 +125,7 @@ class _FullScheduleState extends State<FullSchedule> {
                   floating: true,
                   delegate: PopularSliverDelegate(
                     // hideTitleWhenExpanded: true,
-                    expandedHeight: _height*.13,
+                    expandedHeight: _height*.15,
                     back: back(context),
                     child: Container(
                       width: _width,

@@ -114,53 +114,9 @@ class FirestoreUtils{
     return searchHistory.orderBy('date',descending: true).limit(6).snapshots();
   }
 
-  void saveProfile(String firstName, String lastName, int age, String sex) {
-    userProfile.set({
-      'age' : age,
-      'firstName' : firstName,
-      'lastName' : lastName,
-      'sex' : sex
-    });
-  }
-  Future<String> authUser(String userName, String password) {
-    print('Name: ${userName}, Password: ${password}');
 
-    return Future.delayed(loginTime).then((_) async {
-      try {
-        UserCredential userCredential = await auth.signInWithEmailAndPassword(
-            email: userName, password: password);
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          return 'Username does not exist';
-        } else if (e.code == 'wrong-password') {
-          return 'Wrong password!';
-        } else {
-          return e.code;
-        }
-      }
-      return null;
-    });
-  }
-  Future<String> registerUser(String userName, String password) {
-    // print('Name: ${data.name}, Password: ${data.password}');
 
-    return Future.delayed(loginTime).then((_) async {
-      try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-            email: userName, password: password);
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'weak-password') {
-          return 'The password provided is too weak.';
-        } else if (e.code == 'email-already-in-use') {
-          return 'The account already exists for that email.';
-        }
-      } catch (e) {
-        return e.toString();
-      }
-      return null;
-    });
-  }
+
   Future<List<List<Episode>>> getEpisodeList(List<int> watchedShowIdList) async {
     EpisodeList episodes = await Network().getScheduledEpisodes();
     List<List<Episode>> list = [];
@@ -183,26 +139,7 @@ class FirestoreUtils{
     return list;
   }
 
-  Future<SessionUser> getUserData() async {
-    // print(currID);
-    SessionUser user = SessionUser();
 
-    userProfile.snapshots().forEach((element) {
-      if ( element.exists){
-        user.id = auth.currentUser.uid;
-        user.emailAddress = auth.currentUser.email;
-        user.firstName = element.data()['firstName'];
-        user.lastName = element.data()['lastName'];
-        user.sex = element.data()['sex'];
-        user.age = element.data()['age'];
-        // var sessionUser = user = SessionUser.fromSnapshot(element.data());
-        // user = SessionUser(emailAddress: auth.currentUser.email,firstName: element.data()['firstName'],lastName: element.data()['lastName'], sex: element.data()['sex'] ,age: element.data()['age']);
-        return user;
-      }
-    });
-
-    return user;
-  }
   updateEpisode(WatchedTVShow show) {
     watchedShows
         .doc(show.id.toString())

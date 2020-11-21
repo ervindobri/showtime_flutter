@@ -1,3 +1,7 @@
+import 'package:eWoke/providers/show_provider.dart';
+import 'package:eWoke/providers/user_provider.dart';
+import 'package:provider/provider.dart';
+
 import 'constants/custom_variables.dart';
 import 'package:eWoke/home/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -73,29 +77,37 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  final _storage = FlutterSecureStorage();
-
-  String email = await _storage.read(key: 'email');
-  String password = await _storage.read(key: 'password');
-
-  if ( email != null){
-    await FirestoreUtils().authUser(email,password);
-  }
-
-  //TODO: check if user data saved and start page accordingly
-
+  UserProvider.instance().initUserProvider();
+  print("starting");
+  
   runApp(
       MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData.light(),
           title: 'showTIME',
-          home: email == null ? LoginScreen()
-                              : SplashScreen()
+          home: MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => UserProvider.instance(),),
+              FutureProvider(create:(_) async => UserProvider.instance().getUserData()),
+              StreamProvider(create: (_) => ShowProvider().getWatchedShows()),
+            ],
+            child: Router()
+          )
       )
   );
 }
 
-//void main() => runApp(new MaterialApp(
-//  theme: _appTheme,
-//  home: HomeView(),
-//));
+class Router extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<UserProvider>(
+      
+    );
+      switch(context.watch<UserProvider>().status) {
+        case Status.Authenticated:
+          return SplashScreen();
+        default:
+          return LoginScreen();
+      };
+  }
+}

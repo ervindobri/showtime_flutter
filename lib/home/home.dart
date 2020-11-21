@@ -11,23 +11,25 @@ import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
+import 'package:eWoke/providers/user_provider.dart';
 import 'package:eWoke/screens/browse_shows.dart';
 import 'package:eWoke/screens/full_schedule.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:eWoke/screens/discover/discover.dart';
 import 'package:eWoke/ui/schedule_card.dart';
 import 'package:eWoke/ui/watch_card.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+
 
 class HomeView extends StatefulWidget {
   final SessionUser user;
@@ -415,12 +417,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         padding: const EdgeInsets.only(right: 25.0, bottom: 10),
                         child: InkWell(
                           onTap: () async {
-                            //TODO: handle clearing and destroying stored data
-                            GlobalVariables.popularShows.clear();
-                            GlobalVariables.limitedShows.clear();
-
-                            await FirebaseAuth.instance.signOut();
+                            GlobalVariables.clearAll();
+                            final authProvider = Provider.of<UserProvider>(context, listen: false);
+                            authProvider.signOut();
+                            print(authProvider.status);
                             final login = LoginScreen();
+                            Navigator.pop(context);
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
                                   builder: (context) => login,

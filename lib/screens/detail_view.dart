@@ -134,17 +134,16 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                   Padding(
                                     padding: const EdgeInsets
                                         .symmetric(
-                                        horizontal: 25.0,
+                                        horizontal: 0.0,
                                         vertical: 10.0),
                                     child: Container(
                                       height: _height / 20,
                                       width: _width,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.end,
+                                      child: ListView(
+                                        scrollDirection: Axis.horizontal,
                                         children: List.generate(
-                                            widget.show.genres
-                                                .length, (index) {
+                                            widget.show.genres.length,
+                                                (index) {
                                           return AnimationConfiguration
                                               .staggeredList(
                                             duration: Duration(

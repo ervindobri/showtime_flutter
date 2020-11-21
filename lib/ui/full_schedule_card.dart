@@ -137,7 +137,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
     // startTimer();
 
     double _animatedWidth = 50.0;
-    double _animatedHeight = _cardHeight*.65;
+    double _animatedHeight = _cardHeight*.75;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Center(

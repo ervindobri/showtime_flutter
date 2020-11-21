@@ -2,8 +2,7 @@ import 'dart:ui';
 import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/home/splash.dart';
-import 'package:eWoke/main.dart';
-import 'package:eWoke/network/firebase_utils.dart';
+import 'package:eWoke/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -13,6 +12,7 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -70,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen>
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
     final textFieldHeight = 45.0;
+    // final authProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -471,8 +472,6 @@ class _LoginScreenState extends State<LoginScreen>
                                 fadeDuration: const Duration(milliseconds: 300),
                                 sizeDuration: const Duration(milliseconds: 600),
                               ),
-
-
                             ],
                           ),
                         ),
@@ -504,15 +503,15 @@ class _LoginScreenState extends State<LoginScreen>
                             shape:  RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25.0)
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState.validate()) {
                                 setState(() {
                                   _state = 1;
                                 });
                                 if (logging) {
                                   Future.delayed(const Duration(milliseconds: 300), () async{
-                                    print(auth.currentUser);
-                                    String authenticate = await FirestoreUtils().authUser(nameController.text, passwordController.text);
+                                    print(nameController.text);
+                                    String authenticate = await context.read<UserProvider>().login(nameController.text, passwordController.text);
                                     if (authenticate == null){
                                       setState(() {
                                         _state = 2;
@@ -553,7 +552,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   }
                                   else{
                                     Future.delayed(const Duration(milliseconds: 300), () async{
-                                      String authenticate = await FirestoreUtils().registerUser(nameController.text,passwordController.text);
+                                      String authenticate = await Provider.of<UserProvider>(context).register(nameController.text, passwordController.text);
                                       passwordController.clear();
                                       nameController.clear();
                                       if (authenticate == null){
