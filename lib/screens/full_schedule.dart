@@ -36,7 +36,7 @@ class _FullScheduleState extends State<FullSchedule> {
     // TODO: implement initState
     super.initState();
     _searchTerm = "";
-    list = scheduledEpisodes;
+    list = GlobalVariables.scheduledEpisodes;
 //    print(sortedList.length);
   }
 
@@ -47,7 +47,7 @@ class _FullScheduleState extends State<FullSchedule> {
         setState(() {
           //TODO: SEARCH IN WATCHLIST
           _searchTerm = value;
-          list = scheduledEpisodes
+          list = GlobalVariables.scheduledEpisodes
               .where((e) => e[0]
               .embedded['show']['name']
               .toLowerCase()
@@ -61,14 +61,14 @@ class _FullScheduleState extends State<FullSchedule> {
       // keyboardType: TextInputType.text,
       placeholder: "Search",
       placeholderStyle: TextStyle(
-        color: greyTextColor.withOpacity(.4),
+        color: GlobalColors.greyTextColor.withOpacity(.4),
         fontSize: 20.0,
         fontFamily: 'Raleway',
       ),
-      cursorColor: greyTextColor,
+      cursorColor: GlobalColors.greyTextColor,
       cursorWidth: 3,
       style: TextStyle(
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
         fontSize: 20.0,
         fontFamily: 'Raleway',
       ),
@@ -76,7 +76,7 @@ class _FullScheduleState extends State<FullSchedule> {
         padding: const EdgeInsets.only(left: 8.0),
         child: Icon(
           Icons.search,
-          color: greyTextColor,
+          color: GlobalColors.greyTextColor,
         ),
       ),
       decoration: BoxDecoration(
@@ -104,17 +104,17 @@ class _FullScheduleState extends State<FullSchedule> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         brightness: Brightness.dark,
-        backgroundColor: greenColor,
+        backgroundColor: GlobalColors.greenColor,
         shadowColor: Colors.transparent,
         toolbarHeight: 0,
         // leading: null,
 
       ),
       body: Container(
-        color: greenColor,
+        color: GlobalColors.greenColor,
         child: SafeArea(
           child: Container(
-            color: greenColor,
+            color: GlobalColors.greenColor,
             child: CustomScrollView(
               scrollDirection: Axis.vertical,
               physics: NeverScrollableScrollPhysics(),
@@ -130,10 +130,10 @@ class _FullScheduleState extends State<FullSchedule> {
                     child: Container(
                       width: _width,
                       decoration: BoxDecoration(
-                          color: greenColor,
+                          color: GlobalColors.greenColor,
                           borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(sliverRadius),
-                            bottomRight: Radius.circular(sliverRadius),
+                            bottomLeft: Radius.circular(GlobalVariables.sliverRadius),
+                            bottomRight: Radius.circular(GlobalVariables.sliverRadius),
                           )
                       ),
                       child: Column(
@@ -150,16 +150,16 @@ class _FullScheduleState extends State<FullSchedule> {
                   ),
                 SliverFillRemaining(
                   // fillOverscroll: true,
-                  child: scheduledEpisodes.length > 0
+                  child: GlobalVariables.scheduledEpisodes.length > 0
                       ? Center(
                           child: Container(
                               height: _height,
                               width: _width,
                               decoration: BoxDecoration(
-                                color: bgColor,
+                                color: GlobalColors.bgColor,
                                 borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(sliverRadius),
-                                  topRight: Radius.circular(sliverRadius),
+                                  topLeft: Radius.circular(GlobalVariables.sliverRadius),
+                                  topRight: Radius.circular(GlobalVariables.sliverRadius),
                                 )
                               ),
                               child: buildCarousel(list),
@@ -168,10 +168,10 @@ class _FullScheduleState extends State<FullSchedule> {
                       : Container(
                           height: _height,
                           decoration: BoxDecoration(
-                              color: bgColor,
+                              color: GlobalColors.bgColor,
                               borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(sliverRadius),
-                                topRight: Radius.circular(sliverRadius),
+                                topLeft: Radius.circular(GlobalVariables.sliverRadius),
+                                topRight: Radius.circular(GlobalVariables.sliverRadius),
                               )
                           ),
                           child: Center(
@@ -184,7 +184,7 @@ class _FullScheduleState extends State<FullSchedule> {
                                     child: Text(
                                         "Oh no!",
                                         style: TextStyle(
-                                          color: greyTextColor,
+                                          color: GlobalColors.greyTextColor,
                                           fontSize: 32,
                                           fontWeight: FontWeight.w700,
                                           fontFamily: 'Raleway'
@@ -197,7 +197,7 @@ class _FullScheduleState extends State<FullSchedule> {
                                       "There are no scheduled shows for you!",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            color: greyTextColor,
+                                            color: GlobalColors.greyTextColor,
                                             fontSize: 27,
                                             fontWeight: FontWeight.w300,
                                             fontFamily: 'Raleway'
@@ -237,7 +237,7 @@ class _FullScheduleState extends State<FullSchedule> {
             ? Text(
            "Showing ${list.length} result for \"$_searchTerm\"",
           style: TextStyle(
-            color: greenColor,
+            color: GlobalColors.greenColor,
             fontFamily: 'Raleway',
             fontSize: 20
           ),
@@ -245,7 +245,7 @@ class _FullScheduleState extends State<FullSchedule> {
             : Text(
       "Showing ${list.length} results for \"$_searchTerm\"",
         style: TextStyle(
-            color: greenColor,
+            color: GlobalColors.greenColor,
             fontFamily: 'Raleway',
             fontSize: 20
         ),

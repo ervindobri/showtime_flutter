@@ -32,7 +32,7 @@ class _ExpandableTextState extends State<ExpandableText>
               child: new Text(
                 widget.text,
                 style: GoogleFonts.roboto(
-                    color: greyTextColor,
+                    color: GlobalColors.greyTextColor,
                 ),
                 softWrap: true,
                 overflow: TextOverflow.fade,

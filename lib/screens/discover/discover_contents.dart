@@ -66,10 +66,10 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     super.initState();
     _sorting = false;
     sortedList.clear();
-    sortedList = watchedShowList.toSet().toList();
+    sortedList = GlobalVariables.watchedShowList.toSet().toList();
     controller = AnimateIconController();
     _searchTerm = "";
-    criteria = SORT_CATEGORIES[_index];
+    criteria = GlobalVariables.SORT_CATEGORIES[_index];
 
     // log(sortedList.length.toString());
     listController.addListener(onListen);
@@ -109,14 +109,14 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
         keyboardType: TextInputType.text,
         placeholder: "Search watchlist",
         placeholderStyle: TextStyle(
-          color: greyTextColor.withOpacity(.5),
+          color: GlobalColors.greyTextColor.withOpacity(.5),
           fontSize: 20.0,
           fontFamily: 'Raleway',
         ),
-      cursorColor: greyTextColor,
+      cursorColor: GlobalColors.greyTextColor,
       cursorWidth: 3,
         style: TextStyle(
-          color: greyTextColor,
+          color: GlobalColors.greyTextColor,
           fontSize: 20.0,
           fontFamily: 'Raleway',
         ),
@@ -124,7 +124,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
           padding: const EdgeInsets.only(left: 8.0),
           child: Icon(
             Icons.search,
-            color: greyTextColor,
+            color: GlobalColors.greyTextColor,
           ),
         ),
         decoration: BoxDecoration(
@@ -243,7 +243,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                       child: Container(
                         height: _height * .8,
                         decoration: BoxDecoration(
-                            color: bgColor,
+                            color: GlobalColors.bgColor,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(25.0),
                               topRight: Radius.circular(25.0),
@@ -409,7 +409,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                       child: Text(
                           "Confirm",
                           style: TextStyle(
-                            color: greyTextColor,
+                            color: GlobalColors.greyTextColor,
                             decoration: TextDecoration.underline,
                             fontSize: 20,
                             fontFamily: 'Raleway',
@@ -425,7 +425,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                           fontFamily: 'Raleway',
                           fontWeight: FontWeight.w700,
                           fontSize: 30,
-                          color: greyTextColor),
+                          color: GlobalColors.greyTextColor),
                     ) // Your desired title
                 ),
               ],
@@ -442,17 +442,17 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                 setState(() {
                   // _sorting = true;
                   _index = value;
-                  criteria = SORT_CATEGORIES[_index];
+                  criteria = GlobalVariables.SORT_CATEGORIES[_index];
                 });
               }, children:
-              new List<Widget>.generate(SORT_CATEGORIES.length, (index){
+              new List<Widget>.generate(GlobalVariables.SORT_CATEGORIES.length, (index){
                 return Container(
                   width: _width,
                   child: Center(
                       child: Text(
-                        SORT_CATEGORIES[index],
+                        GlobalVariables.SORT_CATEGORIES[index],
                         style: TextStyle(
-                          color: greyTextColor,
+                          color: GlobalColors.greyTextColor,
                           fontSize: 25,
                           fontFamily: 'Raleway',
                         ),
@@ -472,7 +472,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     double _height = MediaQuery.of(context).size.height;
     // log("Creating watchlistview");
     // log(listController.hasClients.toString());
-    if ( watchedShowList.isNotEmpty){
+    if ( GlobalVariables.watchedShowList.isNotEmpty){
       // log("already fetched");
       var temp = sortedList.where((e) => e.name.toLowerCase().contains( _searchTerm.toLowerCase())).toList();
       if ( temp.length > 0){
@@ -513,7 +513,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                   ),
                   textColor: watchlistBlue,
-                  color: bgColor,
+                  color: GlobalColors.bgColor,
                   onPressed: () {
                     setState(() {
                       _searchTerm = "";
@@ -581,14 +581,14 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                       break;
                   //endregion
                     default:
-                      list.clear();
+                      GlobalVariables.list.clear();
                       // allWatchedShows.clear();
                       // log("cleared watched tv show lists");
                       if ( snapshot.data.documents.length > 0){
                         snapshot.data.documents.forEach((f) {
                           WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.documentID);
-                          list.add(show);
-                          allWatchedShows.add(show);
+                          GlobalVariables.list.add(show);
+                          GlobalVariables.allWatchedShows.add(show);
                         });
                       }
                       else{
@@ -623,7 +623,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                                     borderRadius: BorderRadius.all(Radius.circular(15)),
                                   ),
                                   textColor: watchlistBlue,
-                                  color: bgColor,
+                                  color: GlobalColors.bgColor,
                                   onPressed: () {
                                     Navigator.of(context).push(
                                         createRouteAllShows(AllTVShows()));
@@ -671,7 +671,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                 }
                 else {
                   return WatchlistView(
-                      list: watchedShowList,
+                      list: GlobalVariables.watchedShowList,
                     scrollController: listController,
 
                   );
@@ -838,7 +838,7 @@ class _WatchlistViewState extends State<WatchlistView> {
             return Container(
               width: _width,
               height: _height*.95,
-              color: bgColor,
+              color: GlobalColors.bgColor,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -847,7 +847,7 @@ class _WatchlistViewState extends State<WatchlistView> {
                     // color: Colors.black,
                     child: Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(greenColor),
+                        valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
                         // backgroundColor: greenColor,
                       ),
                     ),

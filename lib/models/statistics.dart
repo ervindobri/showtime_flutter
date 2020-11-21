@@ -173,10 +173,10 @@ class Statistics{
 
   double getOverallPercent() {
     double progress = 0.0;
-    watchedShowList.forEach((element) {
+    GlobalVariables.watchedShowList.forEach((element) {
       progress += element.calculateProgress();
     });
-    progress /= watchedShowList.length;
+    progress /= GlobalVariables.watchedShowList.length;
     return progress;
   }
 

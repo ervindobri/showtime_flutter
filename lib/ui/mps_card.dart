@@ -113,7 +113,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
               style: TextStyle(
                   fontFamily: 'Raleway',
                   fontSize: _width/20,
-                  color: greyTextColor,
+                  color: GlobalColors.greyTextColor,
                   fontWeight: FontWeight.w700
               ),
             ),
@@ -205,12 +205,12 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                       decoration: BoxDecoration(
                                                           borderRadius: BorderRadius.all(Radius.circular(10)),
                                                           boxShadow: [ new BoxShadow(
-                                                              color: goldColor.withOpacity(.3),
+                                                              color: GlobalColors.goldColor.withOpacity(.3),
                                                               blurRadius: 15.0,
                                                               spreadRadius:-2,
                                                               offset: Offset(2, 2)),
                                                           ],
-                                                        color: goldColor
+                                                        color: GlobalColors.goldColor
                                                       ),
                                                       child: Center(
                                                         child: AutoSizeText(
@@ -253,13 +253,13 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                       decoration: BoxDecoration(
                                                         borderRadius: BorderRadius.all(Radius.circular(10)),
                                                           boxShadow: [ new BoxShadow(
-                                                              color: pinkColor.withOpacity(.3),
+                                                              color: GlobalColors.pinkColor.withOpacity(.3),
                                                               blurRadius: 15.0,
                                                               spreadRadius:-2,
                                                               offset: Offset(0, 3)),
                                                           ],
                                                           shape: BoxShape.rectangle,
-                                                          color: pinkColor
+                                                          color: GlobalColors.pinkColor
                                                       ),
                                                       child: Center(
                                                         child: AutoSizeText(
@@ -300,7 +300,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                           Expanded(
                                             child: FlatButton(
                                               highlightColor: Colors.black,
-                                              color: blueColor,
+                                              color: GlobalColors.blueColor,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(25.0)
                                               ),
@@ -309,7 +309,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                     _checkIfAdded().then((value) => _added = value);
                                                     if ( !_added){
                                                       WatchedTVShow show = FirestoreUtils().addToWatchedShows(showDetails);
-                                                      watchedShowList.add(show);
+                                                      GlobalVariables.watchedShowList.add(show);
                                                       StatusAlert.show(
                                                         context,
                                                         duration: Duration(seconds: 2),
@@ -335,7 +335,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                               WatchedTVShow show;
                                                               Future<List<dynamic>> episodes;
                                                               try{
-                                                                  show = watchedShowList.firstWhere((element) => element.id == widget.show.id);
+                                                                  show = GlobalVariables.watchedShowList.firstWhere((element) => element.id == widget.show.id);
                                                                   episodes = new Network().getEpisodes(showID: show.id);
                                                               }
                                                               catch(e){
@@ -357,7 +357,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                                     return Container(
                                                                       width: _width,
                                                                       height: _height*.95,
-                                                                      color: bgColor,
+                                                                      color: GlobalColors.bgColor,
                                                                       child: Column(
                                                                         mainAxisAlignment: MainAxisAlignment.center,
                                                                         children: [
@@ -366,8 +366,8 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                                             // color: Colors.black,
                                                                             child: Center(
                                                                               child: CircularProgressIndicator(
-                                                                                valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                                                                                // backgroundColor: greenColor,
+                                                                                valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
+                                                                                // backgroundColor: GlobalColors.greenColor,
                                                                               ),
                                                                             ),
                                                                           ),
@@ -394,7 +394,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                           Expanded(
                                             child: FlatButton(
                                               highlightColor: Colors.black,
-                                              color: greenColor,
+                                              color: GlobalColors.greenColor,
                                               shape: CircleBorder(),
                                               onPressed: (){
                                                 setState(() {
@@ -471,7 +471,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
               return Container(
                 width: _width,
                 height: _height*.95,
-                color: bgColor,
+                color: GlobalColors.bgColor,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -480,8 +480,8 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                       // color: Colors.black,
                       child: Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                          // backgroundColor: greenColor,
+                          valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
+                          // backgroundColor: GlobalColors.greenColor,
                         ),
                       ),
                     ),

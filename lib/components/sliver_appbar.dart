@@ -78,7 +78,7 @@ class CustomSliverDelegate extends SliverPersistentHeaderDelegate {
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(_radius),
                         bottomRight: Radius.circular(_radius))),
-              backgroundColor: greenColor,
+              backgroundColor: GlobalColors.greenColor,
               elevation: 0.0,
               centerTitle: true,
               title: Opacity(

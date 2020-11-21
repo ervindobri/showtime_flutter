@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen>
 
   bool _showPassword = true;
 
-  FaIcon eye = FaIcon(FontAwesomeIcons.eye, color: greenColor);
+  FaIcon eye = FaIcon(FontAwesomeIcons.eye, color: GlobalColors.greenColor);
   int _state = 0;
 
 
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen>
             Container(
                 width: _width,
                 height: _height,
-                color: blueColor,
+                color: GlobalColors.blueColor,
                 child: SizedBox(
                     width: _width * 0.5,
                     child: FlareActor(
@@ -155,38 +155,38 @@ class _LoginScreenState extends State<LoginScreen>
                                         style: new TextStyle(
                                             fontSize: 15.0,
                                             fontFamily: 'Raleway',
-                                            color: greyTextColor),
+                                            color: GlobalColors.greyTextColor),
                                         decoration: const InputDecoration(
                                             errorStyle: TextStyle(
                                                 fontFamily: 'Raleway',
-                                                color: orangeColor
+                                                color: GlobalColors.orangeColor
                                             ),
                                             contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                                             filled: true,
                                             fillColor: Colors.white,
                                             hintText: 'johndoe@example.com',
-                                            focusColor: greenColor,
+                                            focusColor: GlobalColors.greenColor,
                                             enabledBorder: const OutlineInputBorder(
                                               borderSide:
-                                                  BorderSide(color: blueColor),
+                                                  BorderSide(color: GlobalColors.blueColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             border: const OutlineInputBorder(
                                               borderSide:
-                                                  BorderSide(color: blueColor),
+                                                  BorderSide(color: GlobalColors.blueColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             focusedBorder: const OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: greenColor, width: 2),
+                                                  color: GlobalColors.greenColor, width: 2),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             errorBorder: const OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: orangeColor, width: 2),
+                                                  color: GlobalColors.orangeColor, width: 2),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
@@ -234,30 +234,30 @@ class _LoginScreenState extends State<LoginScreen>
                                             style: new TextStyle(
                                                 fontSize: 15.0,
                                                 fontFamily: 'Raleway',
-                                                color: greyTextColor),
+                                                color: GlobalColors.greyTextColor),
                                             decoration: const InputDecoration(
                                                 contentPadding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 10.0),
                                                 errorStyle: TextStyle(
                                                   fontFamily: 'Raleway',
-                                                  color: orangeColor
+                                                  color: GlobalColors.orangeColor
                                                 ),
                                                 errorText: null,
                                                 errorMaxLines: 1,
                                                 filled: true,
                                                 fillColor: Colors.white,
                                                 hintText: 'password1234',
-                                                focusColor: greenColor,
+                                                focusColor: GlobalColors.greenColor,
                                                 enabledBorder:
                                                     const OutlineInputBorder(
                                                   borderSide: const BorderSide(
-                                                      color: greenColor),
+                                                      color: GlobalColors.greenColor),
                                                   borderRadius:
                                                       const BorderRadius.all(
                                                           Radius.circular(50.0)),
                                                 ),
                                                 border: const OutlineInputBorder(
                                                   borderSide: const BorderSide(
-                                                      color: greenColor),
+                                                      color: GlobalColors.greenColor),
                                                   borderRadius:
                                                       const BorderRadius.all(
                                                           Radius.circular(50.0)),
@@ -265,14 +265,14 @@ class _LoginScreenState extends State<LoginScreen>
                                                 focusedBorder:
                                                     const OutlineInputBorder(
                                                   borderSide: const BorderSide(
-                                                      color: greenColor, width: 1.5),
+                                                      color: GlobalColors.greenColor, width: 1.5),
                                                   borderRadius:
                                                       const BorderRadius.all(
                                                           Radius.circular(50.0)),
                                                 ),
                                                 errorBorder: const OutlineInputBorder(
                                                   borderSide: const BorderSide(
-                                                      color: orangeColor, width: 1.5),
+                                                      color: GlobalColors.orangeColor, width: 1.5),
                                                   borderRadius:
                                                       const BorderRadius.all(
                                                           Radius.circular(50.0)),
@@ -294,12 +294,12 @@ class _LoginScreenState extends State<LoginScreen>
                                                         eye = _showPassword
                                                             ? FaIcon(
                                                                 FontAwesomeIcons.eye,
-                                                                color: greenColor,
+                                                                color: GlobalColors.greenColor,
                                                               )
                                                             : FaIcon(
                                                                 FontAwesomeIcons
                                                                     .eyeSlash,
-                                                                color: greenColor,
+                                                                color: GlobalColors.greenColor,
                                                               );
                                                       });
                                                     },
@@ -341,7 +341,7 @@ class _LoginScreenState extends State<LoginScreen>
                                                 horizontal: 25.0),
                                             child: CircularCheckBox(
                                               value: this.selected,
-                                              activeColor: greenColor,
+                                              activeColor: GlobalColors.greenColor,
                                               inactiveColor: Colors.white,
                                               hoverColor: Colors.white,
                                               checkColor: Colors.white,
@@ -391,30 +391,30 @@ class _LoginScreenState extends State<LoginScreen>
                                                     style: new TextStyle(
                                                         fontSize: 15.0,
                                                         fontFamily: 'Raleway',
-                                                        color: greyTextColor),
+                                                        color: GlobalColors.greyTextColor),
                                                     decoration: const InputDecoration(
                                                         contentPadding: EdgeInsets.symmetric(vertical: 1.0, horizontal: 10.0),
                                                         errorStyle: TextStyle(
                                                             fontFamily: 'Raleway',
-                                                            color: orangeColor
+                                                            color: GlobalColors.orangeColor
                                                         ),
                                                         errorText: null,
                                                         errorMaxLines: 1,
                                                         filled: true,
                                                         fillColor: Colors.white,
                                                         hintText: 'password1234',
-                                                        focusColor: greenColor,
+                                                        focusColor: GlobalColors.greenColor,
                                                         enabledBorder:
                                                         const OutlineInputBorder(
                                                           borderSide: const BorderSide(
-                                                              color: greenColor),
+                                                              color: GlobalColors.greenColor),
                                                           borderRadius:
                                                           const BorderRadius.all(
                                                               Radius.circular(50.0)),
                                                         ),
                                                         border: const OutlineInputBorder(
                                                           borderSide: const BorderSide(
-                                                              color: greenColor),
+                                                              color: GlobalColors.greenColor),
                                                           borderRadius:
                                                           const BorderRadius.all(
                                                               Radius.circular(50.0)),
@@ -422,14 +422,14 @@ class _LoginScreenState extends State<LoginScreen>
                                                         focusedBorder:
                                                         const OutlineInputBorder(
                                                           borderSide: const BorderSide(
-                                                              color: greenColor, width: 1.5),
+                                                              color: GlobalColors.greenColor, width: 1.5),
                                                           borderRadius:
                                                           const BorderRadius.all(
                                                               Radius.circular(50.0)),
                                                         ),
                                                         errorBorder: const OutlineInputBorder(
                                                           borderSide: const BorderSide(
-                                                              color: orangeColor, width: 1.5),
+                                                              color: GlobalColors.orangeColor, width: 1.5),
                                                           borderRadius:
                                                           const BorderRadius.all(
                                                               Radius.circular(50.0)),
@@ -451,12 +451,12 @@ class _LoginScreenState extends State<LoginScreen>
                                                                 eye = _showPassword
                                                                     ? FaIcon(
                                                                   FontAwesomeIcons.eye,
-                                                                  color: greenColor,
+                                                                  color: GlobalColors.greenColor,
                                                                 )
                                                                     : FaIcon(
                                                                   FontAwesomeIcons
                                                                       .eyeSlash,
-                                                                  color: greenColor,
+                                                                  color: GlobalColors.greenColor,
                                                                 );
                                                               });
                                                             },
@@ -500,7 +500,7 @@ class _LoginScreenState extends State<LoginScreen>
                           color: CupertinoColors.black.withOpacity(.15),
                           child: FlatButton(
                             minWidth: _width/2,
-                            color: greenColor,
+                            color: GlobalColors.greenColor,
                             shape:  RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(25.0)
                             ),
@@ -540,7 +540,7 @@ class _LoginScreenState extends State<LoginScreen>
                                       Fluttertoast.showToast(
                                           msg: "$authenticate",
                                           toastLength: Toast.LENGTH_LONG,
-                                          backgroundColor: orangeColor,
+                                          backgroundColor: GlobalColors.orangeColor,
                                           gravity: ToastGravity.BOTTOM,
                                           timeInSecForIosWeb: 2
                                       );
@@ -576,7 +576,7 @@ class _LoginScreenState extends State<LoginScreen>
                                         Fluttertoast.showToast(
                                             msg: "$authenticate",
                                             toastLength: Toast.LENGTH_LONG,
-                                            backgroundColor: orangeColor,
+                                            backgroundColor: GlobalColors.orangeColor,
                                             gravity: ToastGravity.BOTTOM,
                                             timeInSecForIosWeb: 2
                                         );
@@ -603,8 +603,8 @@ class _LoginScreenState extends State<LoginScreen>
                           color: CupertinoColors.black.withOpacity(.05),
                           child: FlatButton(
                               minWidth: _width/2,
-                              color: lightGreenColor,
-                              highlightColor: greenColor.withOpacity(.77),
+                              color: GlobalColors.lightGreenColor,
+                              highlightColor: GlobalColors.greenColor.withOpacity(.77),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(
                                     Radius.circular(25.0)),
@@ -628,7 +628,7 @@ class _LoginScreenState extends State<LoginScreen>
                                     style: TextStyle(
                                         fontSize: 15,
                                         fontFamily: 'Raleway',
-                                        color: greenColor,
+                                        color: GlobalColors.greenColor,
                                         fontWeight: FontWeight.w600),
                                   ),
                                 ),

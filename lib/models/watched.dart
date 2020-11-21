@@ -43,7 +43,7 @@ class WatchedTVShow extends TVShowDetails{
 
   bool hasMoreEpisodes(){
     bool flag = false;
-    scheduledEpisodes.forEach((show) {
+    GlobalVariables.scheduledEpisodes.forEach((show) {
       // print("${show[0].embedded['show']['id']} == ${this.id}");
         if ( show[0].embedded['show']['id'].toString() == this.id){
           flag = true;

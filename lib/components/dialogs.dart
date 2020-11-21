@@ -23,13 +23,13 @@ Widget unwatchDialog(BuildContext context, String showName, String showID) {
         fontFamily: 'Raleway',
         fontSize: 15,
         fontWeight: FontWeight.w200,
-        color: greyTextColor),
+        color: GlobalColors.greyTextColor),
     contentPadding: EdgeInsets.only(top: 5.0, bottom: 1.0, left: 25.0, right: 25.0),
     titleTextStyle: TextStyle(
         fontFamily: 'Raleway',
         fontSize: 17,
         fontWeight: FontWeight.w700,
-        color: greyTextColor),
+        color: GlobalColors.greyTextColor),
     titlePadding:
         EdgeInsets.only(top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
     //TODO content add rive animation
@@ -47,7 +47,7 @@ Widget unwatchDialog(BuildContext context, String showName, String showID) {
               child: Text(
                 'Close',
                 style: TextStyle(
-                    color: greenColor, fontSize: 20, fontWeight: FontWeight.w300),
+                    color: GlobalColors.greenColor, fontSize: 20, fontWeight: FontWeight.w300),
               ),
             ),
           ),
@@ -69,7 +69,7 @@ Widget unwatchDialog(BuildContext context, String showName, String showID) {
               configuration: IconConfiguration(icon: Icons.error),
             );
             //removed
-            watchedShowList.removeWhere((element) => element.name == showName);
+            GlobalVariables.watchedShowList.removeWhere((element) => element.name == showName);
             Navigator.pop(context);
             Navigator.pop(context);
           },
@@ -81,7 +81,7 @@ Widget unwatchDialog(BuildContext context, String showName, String showID) {
               child: Text(
                 'Unwatch',
                 style: TextStyle(
-                    color: greenColor, fontSize: 20, fontWeight: FontWeight.w900),
+                    color: GlobalColors.greenColor, fontSize: 20, fontWeight: FontWeight.w900),
               ),
             ),
           ),

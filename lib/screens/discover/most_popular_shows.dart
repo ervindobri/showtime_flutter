@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eWoke/components/back.dart';
-import 'package:eWoke/components/example_section.dart';
 import 'package:eWoke/components/popular_appbar.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/tvshow.dart';
@@ -27,10 +26,9 @@ class _MostPopularShowsState extends State<MostPopularShows>
     with AnimationMixin {
   String _searchTerm;
   APIService apiService = APIService();
-  List<String> showLinks = [];
   // You future
   Future future;
-  Future<dynamic> popular;
+  // Future<dynamic> popular;
 
   ScrollController _controller;
 
@@ -70,13 +68,13 @@ class _MostPopularShowsState extends State<MostPopularShows>
   String label = "";
   var pink = const Color(0xFFFF006F);
 
+  static const  mostPopularEndpoint = '/title/get-most-popular-tv-shows';
+
   
   @override
   void initState() {
     // TODO: implement initState
     nrShows += threshold;
-    // maxShows = nrShows*10 + threshold;
-
     animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -91,10 +89,8 @@ class _MostPopularShowsState extends State<MostPopularShows>
     );
     
     super.initState();
-    print("mps");
-    //in the initState() or use it how you want...
     future = apiService.get(
-        endpoint: '/title/get-most-popular-tv-shows',
+        endpoint: mostPopularEndpoint,
         query: {
           "purchaseCountry": "US",
           "currentCountry": "US",
@@ -138,7 +134,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
             child: FutureBuilder(
                 future: future,
                 builder: (context, snapshot) {
-                  if ( limitedShows.isNotEmpty){
+                  if ( GlobalVariables.limitedShows.isNotEmpty){
                     return CustomScrollView(
                       // key: UniqueKey(),
                         physics: NeverScrollableScrollPhysics(),
@@ -189,70 +185,74 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               color: pink,
                                               borderRadius: BorderRadius.only(
                                                 topLeft:
-                                                Radius.circular(sliverRadius),
+                                                Radius.circular(GlobalVariables.sliverRadius),
                                                 topRight:
-                                                Radius.circular(sliverRadius),
+                                                Radius.circular(GlobalVariables.sliverRadius),
                                               )),
                                         ),
                                       ),
                                     CarouselSlider.builder(
                                       itemBuilder: (BuildContext context, int index) {
                                         // print(limitMap[index + 1]);
-                                        popular = getShowList(limitMap[index + 1]);
                                         return FutureBuilder(
                                             future: getShowList(limitMap[index + 1]),
                                             builder: (context, snapshot) {
-                                              print(snapshot.data);
-                                              if ( limitedShows != null && limitedShows.length > index){
-                                                print("already got this batch ! - ${limitedShows.length} / $index");
+                                              print(snapshot.connectionState);
+                                              // print(snapshot.hasData);
+
+                                              if ( GlobalVariables.limitedShows != null && GlobalVariables.limitedShows.length > index){
+                                                print("already got this batch ! - ${GlobalVariables.limitedShows.length} / ${index}");
                                                 return Container(
                                                     // height: _height,
                                                     decoration: BoxDecoration(
-                                                        color: bgColor,
+                                                        color: GlobalColors.bgColor,
                                                         borderRadius:
                                                         BorderRadius.only(
                                                           topLeft: Radius.circular(
-                                                              sliverRadius),
+                                                              GlobalVariables.sliverRadius),
                                                           topRight: Radius.circular(
-                                                              sliverRadius),
+                                                              GlobalVariables.sliverRadius),
                                                         )),
                                                     child: Padding(
                                                       padding: const EdgeInsets
                                                           .symmetric(
                                                           horizontal: 10.0),
                                                       child: mostPopularList(
-                                                          limitedShows[index]),
+                                                          GlobalVariables.limitedShows[index]),
                                                     ));
                                               }
                                               else{
                                                 if (snapshot.hasData) {
-                                                  print(snapshot.connectionState);
-                                                  print("has data ${snapshot.data.length}");
-                                                  limitedShows.add(snapshot.data);
-                                                  popularShows = [...limitedShows[index]]; //notice the spread operator
-                                                  return Container(
+                                                  // print("has data ${snapshot.data}");
+                                                  if ( snapshot.data.length > 0){
+                                                    GlobalVariables.limitedShows.add(snapshot.data);
+                                                    return Container(
                                                       // height: _height,
-                                                      decoration: BoxDecoration(
-                                                          color: bgColor,
-                                                          borderRadius:
-                                                          BorderRadius.only(
-                                                            topLeft: Radius.circular(sliverRadius),
-                                                            topRight: Radius.circular(sliverRadius),
-                                                          )),
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                                        child: mostPopularList(
-                                                            limitedShows[index]),
-                                                      ));
+                                                        decoration: BoxDecoration(
+                                                            color: GlobalColors.bgColor,
+                                                            borderRadius:
+                                                            BorderRadius.only(
+                                                              topLeft: Radius.circular(GlobalVariables.sliverRadius),
+                                                              topRight: Radius.circular(GlobalVariables.sliverRadius),
+                                                            )),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                                          child: mostPopularList(
+                                                              GlobalVariables.limitedShows[index]),
+                                                        ));
+                                                  }
+                                                  // popularShows = [...GlobalVariables.limitedShows[index]]; //notice the spread operator
+                                                  // print("empty list?");
+                                                  return Container();
                                                 }
                                                 else {
                                                   print("fetching data;");
                                                   return Container(
                                                     decoration: BoxDecoration(
-                                                        color: bgColor,
+                                                        color: GlobalColors.bgColor,
                                                         borderRadius: BorderRadius.only(
-                                                          topLeft: Radius.circular(sliverRadius),
-                                                          topRight: Radius.circular(sliverRadius),
+                                                          topLeft: Radius.circular(GlobalVariables.sliverRadius),
+                                                          topRight: Radius.circular(GlobalVariables.sliverRadius),
                                                         )
                                                     ),
                                                     child: Shimmer.fromColors(
@@ -449,6 +449,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                   else{
                     if (snapshot.hasData) {
                       getShowLinks(snapshot.data.take(maxShows));
+                      // print(showLinks.length);
                       // popularShows.clear();
                       return CustomScrollView(
                         // key: UniqueKey(),
@@ -499,70 +500,70 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                 color: pink,
                                                 borderRadius: BorderRadius.only(
                                                   topLeft:
-                                                  Radius.circular(sliverRadius),
+                                                  Radius.circular(GlobalVariables.sliverRadius),
                                                   topRight:
-                                                  Radius.circular(sliverRadius),
+                                                  Radius.circular(GlobalVariables.sliverRadius),
                                                 )),
                                           ),
                                         ),
                                       CarouselSlider(
                                         items: List.generate(maxPages, (index) {
-                                          popular = getShowList(limitMap[index + 1]);
+                                          // Future<dynamic> popular = getShowList(limitMap[index + 1]);
                                           return FutureBuilder(
-                                              future: popular,
+                                              future: getShowList(limitMap[index + 1]),
                                               builder: (context, snapshot) {
-                                                print(limitedShows.length);
-                                                if ( limitedShows != null && limitedShows.length > index){
+                                                // print(GlobalVariables.limitedShows.length);
+                                                if ( GlobalVariables.limitedShows != null && GlobalVariables.limitedShows.length > index){
                                                   return Container(
                                                       // height: _height,
                                                       decoration: BoxDecoration(
-                                                          color: bgColor,
+                                                          color: GlobalColors.bgColor,
                                                           borderRadius:
                                                           BorderRadius.only(
                                                             topLeft: Radius.circular(
-                                                                sliverRadius),
+                                                                GlobalVariables.sliverRadius),
                                                             topRight: Radius.circular(
-                                                                sliverRadius),
+                                                                GlobalVariables.sliverRadius),
                                                           )),
                                                       child: Padding(
                                                         padding: const EdgeInsets
                                                             .symmetric(
                                                             horizontal: 10.0),
                                                         child: mostPopularList(
-                                                            limitedShows[index]),
+                                                            GlobalVariables.limitedShows[index]),
                                                       ));
                                                 }
                                                 else{
                                                   if (snapshot.hasData) {
-                                                    limitedShows.add(snapshot.data);
-                                                    popularShows = [...limitedShows[index]]; //notice the spread operator
+                                                    GlobalVariables.limitedShows.add(snapshot.data);
+                                                    // popularShows = [...GlobalVariables.limitedShows[index]]; //notice the spread operator
                                                     return Container(
                                                         // height: _height,
                                                         decoration: BoxDecoration(
-                                                            color: bgColor,
+                                                            color: GlobalColors.bgColor,
                                                             borderRadius:
                                                             BorderRadius.only(
                                                               topLeft: Radius.circular(
-                                                                  sliverRadius),
+                                                                  GlobalVariables.sliverRadius),
                                                               topRight: Radius.circular(
-                                                                  sliverRadius),
+                                                                  GlobalVariables.sliverRadius),
                                                             )),
                                                         child: Padding(
                                                           padding: const EdgeInsets
                                                               .symmetric(
                                                               horizontal: 10.0),
                                                           child: mostPopularList(
-                                                              limitedShows[index]),
+                                                              GlobalVariables.limitedShows[index]),
                                                         ));
                                                   }
                                                   else {
                                                     print("fetching data;");
                                                     return Container(
                                                       decoration: BoxDecoration(
-                                                          color: bgColor,
+                                                          color: GlobalColors.bgColor,
                                                           borderRadius: BorderRadius.only(
-                                                            topLeft: Radius.circular(sliverRadius),
-                                                            topRight: Radius.circular(sliverRadius),
+                                                            topLeft: Radius.circular(GlobalVariables.sliverRadius),
+                                                            topRight: Radius.circular(GlobalVariables.sliverRadius),
                                                           )
                                                       ),
                                                       child: Shimmer.fromColors(
@@ -826,10 +827,10 @@ class _MostPopularShowsState extends State<MostPopularShows>
                           SliverFillRemaining(
                             child: Container(
                                 decoration: BoxDecoration(
-                                    color: bgColor,
+                                    color: GlobalColors.bgColor,
                                     borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(sliverRadius),
-                                      topRight: Radius.circular(sliverRadius),
+                                      topLeft: Radius.circular(GlobalVariables.sliverRadius),
+                                      topRight: Radius.circular(GlobalVariables.sliverRadius),
                                     )),
                                 child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -845,7 +846,6 @@ class _MostPopularShowsState extends State<MostPopularShows>
                       );
                     }
                   }
-
                 }
         // }
                 ),
@@ -867,14 +867,14 @@ class _MostPopularShowsState extends State<MostPopularShows>
       keyboardType: TextInputType.text,
       placeholder: "Search..",
       placeholderStyle: TextStyle(
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
         fontSize: 20.0,
         fontFamily: 'Raleway',
       ),
-      cursorColor: greyTextColor,
+      cursorColor: GlobalColors.greyTextColor,
       cursorWidth: 3,
       style: TextStyle(
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
         fontSize: 20.0,
         fontFamily: 'Raleway',
       ),
@@ -882,7 +882,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
         padding: const EdgeInsets.only(left: 8.0),
         child: Icon(
           Icons.search,
-          color: greyTextColor,
+          color: GlobalColors.greyTextColor,
         ),
       ),
       decoration: BoxDecoration(
@@ -900,14 +900,15 @@ class _MostPopularShowsState extends State<MostPopularShows>
 
   void getShowLinks(dynamic list) {
     list.forEach((element) {
-      showLinks.add(element.split('/')[2]);
+      GlobalVariables.showLinks.add(element.split('/')[2]);
     });
     // print(showLinks[0]);
   }
 
   getShowList(List<dynamic> limits) async {
     List<TVShow> data = [];
-    for (String show in showLinks.skip(limits[0]).take(10)) {
+    // print(showLinks.length);
+    for (String show in GlobalVariables.showLinks.skip(limits[0]).take(10)) {
       TVShow tvshow = await apiService.getShowResults(imdbLink: show);
       // print(tvshow);
       if (tvshow != null) {
@@ -920,25 +921,24 @@ class _MostPopularShowsState extends State<MostPopularShows>
   Widget mostPopularList(List<TVShow> data) {
     // print(data.length);
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 170.0),
-      child: StaggeredGridView.countBuilder(
-              shrinkWrap: false,
-              // physics: ClampingScrollPhysics(),
-              itemCount: data.length,
-              mainAxisSpacing: 1.0,
-              crossAxisSpacing: 2.0,
-              itemBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: PopularCard(show: data[index]),
-                );
-              },
-              crossAxisCount: 4,
-              staggeredTileBuilder: (int index) =>
-                  new StaggeredTile.count(2, index.isEven ? 3.6 : 3.6),
-            ),
-    );
+    return StaggeredGridView.countBuilder(
+            shrinkWrap: false,
+            // physics: ClampingScrollPhysics(),
+            itemCount: data.length,
+            mainAxisSpacing: 1.0,
+            crossAxisSpacing: 2.0,
+            padding: const EdgeInsets.only(bottom: 140.0),
+            itemBuilder: (BuildContext context, int index) {
+              // print(index);
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: PopularCard(show: data[index]),
+              );
+            },
+            crossAxisCount: 4,
+            staggeredTileBuilder: (int index) =>
+                new StaggeredTile.count(2, index.isEven ? 3.4 : 3.4),
+          );
   }
 
   displayLabel(double _width) {
@@ -957,7 +957,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                 mostPopularLabel,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: greyTextColor,
+                    color: GlobalColors.greyTextColor,
                     fontFamily: 'Raleway',
                     fontSize: _width / 15,
                     fontWeight: FontWeight.w700),
@@ -966,7 +966,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                 padding: const EdgeInsets.all(8.0),
                 child: Divider(
                   height: 1.2,
-                  color: pinkColor,
+                  color: GlobalColors.pinkColor,
                 ),
               )
             ],

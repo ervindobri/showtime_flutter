@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/tvshow.dart';
-import 'package:eWoke/models/tvshow_details.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -36,7 +35,7 @@ class APIService {
   }
   Future<TVShow> getShowResults({String imdbLink}) async{
     try{
-      var searchURL = IMDBSHOW_URL + imdbLink;
+      var searchURL = GlobalVariables.IMDBSHOW_URL + imdbLink;
       // print(searchURL);
       final response = await http.get(Uri.encodeFull(searchURL));
 
@@ -49,6 +48,6 @@ class APIService {
     }catch(e){
       print(e);
     }
-
+    return null;
   }
 }

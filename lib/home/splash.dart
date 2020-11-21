@@ -26,7 +26,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   Stream<QuerySnapshot> _watchedShowsStream;
-  // Stream<QuerySnapshot> _allWatchedShowsStream;
+  // Stream<QuerySnapshot> _GlobalVariables.allWatchedShowsStream;
 
 
 
@@ -86,10 +86,10 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
     _currentUserObject = FirestoreUtils().getUserData();
 
-    if ( allWatchedShows.isEmpty){
+    if ( GlobalVariables.allWatchedShows.isEmpty){
       _watchedShowsStream = FirestoreUtils().watchedShows.snapshots();
     }
-    sexController.text = sexCategories[0];
+    sexController.text = GlobalVariables.sexCategories[0];
     ageController.text = 1.toString();
 
     Timer.periodic(Duration(seconds: 1), (completed) {
@@ -97,7 +97,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
             final home = HomeView(
               user: currentUser,
               notAiredList: notAiredList,
-              watchedShowsList: watchedShowList,
+              watchedShowsList: GlobalVariables.watchedShowList,
             );
 
             Navigator.of(context)
@@ -112,7 +112,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
   @override
   void dispose() {
-    // _allWatchedShowsStream = null;
+    // _GlobalVariables.allWatchedShowsStream = null;
     _watchedShowsStream = null;
     subscription = null;
     _currentUserObject = null;
@@ -147,7 +147,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
       // ),
       body: SingleChildScrollView(
         child: Container(
-          color: blueColor,
+          color: GlobalColors.blueColor,
           child: Stack(
             children: [
               Container(
@@ -204,17 +204,17 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                 builder: (context, snapshot) {
                                   if ( snapshot.hasData){
                                     watchedShowIdList.clear();
-                                    watchedShowList.clear();
-                                    // allWatchedShows.clear();
+                                    GlobalVariables.watchedShowList.clear();
+                                    // GlobalVariables.allWatchedShows.clear();
                                     snapshot.data.documents
                                         .forEach((f) {
                                       watchedShowIdList.add(int.parse(f.documentID));
                                       WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.documentID);
-                                      watchedShowList.add(show);
-                                      // allWatchedShows.add(show);
+                                      GlobalVariables.watchedShowList.add(show);
+                                      // GlobalVariables.allWatchedShows.add(show);
                                     });
                                     _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowIdList);
-                                    // print(watchedShowList.length);
+                                    // print(GlobalVariables.watchedShowList.length);
                                   }
                                   return FutureBuilder(
                                       future: _scheduledEpisodes,
@@ -224,7 +224,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                           // print(snapshot.data);
                                           if ( snapshot.data.length > 0){
                                             for(int index=0 ; index < 5; index++){
-                                              scheduledEpisodes.add(snapshot.data[index]);
+                                              GlobalVariables.scheduledEpisodes.add(snapshot.data[index]);
                                               int notAired = snapshot.data[index].length - 1;
                                               for(int i=0; i< snapshot.data[index].length ; i++){
                                                 if ( !snapshot.data[index][i].aired()){
@@ -283,7 +283,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                   borderRadius: BorderRadius.circular(25.0),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: greyTextColor.withOpacity(0.3),
+                                      color: GlobalColors.greyTextColor.withOpacity(0.3),
                                       spreadRadius: 10,
                                       blurRadius: 25,
                                       offset: Offset(0, 5), // changes position of shadow
@@ -327,7 +327,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                     // Padding(
                                                     //   padding: const EdgeInsets.all(8.0),
                                                     //   child: CircleAvatar(
-                                                    //     backgroundColor: greyTextColor,
+                                                    //     backgroundColor: GlobalColors.greyTextColor,
                                                     //     minRadius: 40,
                                                     //     maxRadius: 40,
                                                     //     backgroundImage: AssetImage(
@@ -343,7 +343,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                           Text(
                                                             "first Name",
                                                             style: GoogleFonts.roboto(
-                                                                color: greyTextColor,
+                                                                color: GlobalColors.greyTextColor,
                                                                 fontSize: _width/20,
                                                                 fontWeight: FontWeight.w300
                                                             ),
@@ -370,45 +370,45 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                 decoration: const InputDecoration(
                                                                   errorStyle: TextStyle(
                                                                       fontFamily: 'Raleway',
-                                                                      color: orangeColor
+                                                                      color: GlobalColors.orangeColor
                                                                   ),
                                                                   hintStyle: TextStyle(
                                                                       fontFamily: 'Raleway',
-                                                                      color: greyTextColor,
+                                                                      color: GlobalColors.greyTextColor,
                                                                       fontWeight: FontWeight.w300
                                                                   ),
                                                                   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                                                                   filled: true,
                                                                   fillColor: Colors.white,
                                                                   hintText: 'John',
-                                                                  focusColor: greenColor,
+                                                                  focusColor: GlobalColors.greenColor,
                                                                   enabledBorder: const OutlineInputBorder(
                                                                     borderSide:
-                                                                    BorderSide(color: blueColor),
+                                                                    BorderSide(color: GlobalColors.blueColor),
                                                                     borderRadius: BorderRadius.all(
                                                                         Radius.circular(50.0)),
                                                                   ),
                                                                   border: const OutlineInputBorder(
                                                                     borderSide:
-                                                                    BorderSide(color: blueColor),
+                                                                    BorderSide(color: GlobalColors.blueColor),
                                                                     borderRadius: BorderRadius.all(
                                                                         Radius.circular(50.0)),
                                                                   ),
                                                                   focusedBorder: const OutlineInputBorder(
                                                                     borderSide: BorderSide(
-                                                                        color: greenColor, width: 2),
+                                                                        color: GlobalColors.greenColor, width: 2),
                                                                     borderRadius: BorderRadius.all(
                                                                         Radius.circular(50.0)),
                                                                   ),
                                                                   errorBorder: const OutlineInputBorder(
                                                                     borderSide: BorderSide(
-                                                                        color: orangeColor, width: 2),
+                                                                        color: GlobalColors.orangeColor, width: 2),
                                                                     borderRadius: BorderRadius.all(
                                                                         Radius.circular(50.0)),
                                                                   ),
                                                                 ),
                                                                 style: GoogleFonts.roboto(
-                                                                    color: greyTextColor,
+                                                                    color: GlobalColors.greyTextColor,
                                                                     fontSize: _width/20,
                                                                     fontWeight: FontWeight.w500
                                                                 ),
@@ -429,7 +429,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                           Text(
                                                             "last Name",
                                                             style: GoogleFonts.roboto(
-                                                                color: greyTextColor,
+                                                                color: GlobalColors.greyTextColor,
                                                                 fontSize: _width/20,
                                                                 fontWeight: FontWeight.w300
                                                             ),
@@ -454,7 +454,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                 decoration: const InputDecoration(
                                                                   errorStyle: TextStyle(
                                                                       fontFamily: 'Raleway',
-                                                                      color: orangeColor
+                                                                      color: GlobalColors.orangeColor
                                                                   ),
                                                                   contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                                                                   filled: true,
@@ -462,37 +462,37 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                   hintText: 'Doe',
                                                                   hintStyle: TextStyle(
                                                                       fontFamily: 'Raleway',
-                                                                      color: greyTextColor,
+                                                                      color: GlobalColors.greyTextColor,
                                                                       fontWeight: FontWeight.w300
                                                                   ),
-                                                                  focusColor: greenColor,
+                                                                  focusColor: GlobalColors.greenColor,
                                                                   enabledBorder: const OutlineInputBorder(
                                                                     borderSide:
-                                                                    BorderSide(color: blueColor),
+                                                                    BorderSide(color: GlobalColors.blueColor),
                                                                     borderRadius: BorderRadius.all(
                                                                         Radius.circular(50.0)),
                                                                   ),
                                                                   border: const OutlineInputBorder(
                                                                     borderSide:
-                                                                    BorderSide(color: blueColor),
+                                                                    BorderSide(color: GlobalColors.blueColor),
                                                                     borderRadius: BorderRadius.all(
                                                                         Radius.circular(50.0)),
                                                                   ),
                                                                   focusedBorder: const OutlineInputBorder(
                                                                     borderSide: BorderSide(
-                                                                        color: greenColor, width: 2),
+                                                                        color: GlobalColors.greenColor, width: 2),
                                                                     borderRadius: BorderRadius.all(
                                                                         Radius.circular(50.0)),
                                                                   ),
                                                                   errorBorder: const OutlineInputBorder(
                                                                     borderSide: BorderSide(
-                                                                        color: orangeColor, width: 2),
+                                                                        color: GlobalColors.orangeColor, width: 2),
                                                                     borderRadius: BorderRadius.all(
                                                                         Radius.circular(50.0)),
                                                                   ),
                                                                 ),
                                                                   style: GoogleFonts.roboto(
-                                                                    color: greyTextColor,
+                                                                    color: GlobalColors.greyTextColor,
                                                                     fontSize: _width/20,
                                                                     fontWeight: FontWeight.w500
                                                                   ),
@@ -513,7 +513,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                           Text(
                                                             "age",
                                                             style: GoogleFonts.roboto(
-                                                                color: greyTextColor,
+                                                                color: GlobalColors.greyTextColor,
                                                                 fontSize: _width/20,
                                                                 fontWeight: FontWeight.w300
                                                             ),
@@ -528,7 +528,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                 borderRadius: BorderRadius.all(
                                                                     Radius.circular(50.0)),
                                                                 border:  Border.all(
-                                                                    color: blueColor
+                                                                    color: GlobalColors.blueColor
                                                                 ),
                                                               ),
                                                               child: CupertinoTheme(
@@ -540,7 +540,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                   textTheme: CupertinoTextThemeData(
 
                                                                     pickerTextStyle: GoogleFonts.roboto(
-                                                                      color: greyTextColor,
+                                                                      color: GlobalColors.greyTextColor,
                                                                       fontSize: 25
                                                                     ),
                                                                   ),
@@ -555,7 +555,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                   //         children: [
                                                                   //           FaIcon(
                                                                   //             FontAwesomeIcons.sort,
-                                                                  //             color: blueColor,
+                                                                  //             color: GlobalColors.blueColor,
                                                                   //           )
                                                                   //         ],
                                                                   //       ),
@@ -569,7 +569,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                         child: Text(
                                                                             (index+1).toString(),
                                                                             style: GoogleFonts.roboto(
-                                                                                color: greyTextColor,
+                                                                                color: GlobalColors.greyTextColor,
                                                                                 fontSize: _width/20,
                                                                                 fontWeight: FontWeight.w500
                                                                             ),
@@ -594,7 +594,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                             style: GoogleFonts.roboto(
                                                                 fontSize: _width/20,
                                                                 fontWeight: FontWeight.w300,
-                                                                color: greyTextColor
+                                                                color: GlobalColors.greyTextColor
                                                             ),
                                                           ),
                                                           Padding(
@@ -608,7 +608,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                 borderRadius: BorderRadius.all(
                                                                     Radius.circular(50.0)),
                                                                 border:  Border.all(
-                                                                    color: blueColor
+                                                                    color: GlobalColors.blueColor
                                                                 ),
                                                               ),
                                                               child: CupertinoPicker(
@@ -621,24 +621,24 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                 //       children: [
                                                                 //         FaIcon(
                                                                 //           FontAwesomeIcons.sort,
-                                                                //           color: blueColor,
+                                                                //           color: GlobalColors.blueColor,
                                                                 //         )
                                                                 //       ],
                                                                 //     ),
                                                                 //   )
                                                                 // ),
                                                                 itemExtent: 50, onSelectedItemChanged: (int value) {
-                                                                  sexController.text = sexCategories[value];
+                                                                  sexController.text = GlobalVariables.sexCategories[value];
                                                               },
-                                                                children: List.generate(sexCategories.length, (index) =>
+                                                                children: List.generate(GlobalVariables.sexCategories.length, (index) =>
                                                                     Align(
                                                                       alignment: Alignment.centerRight,
                                                                         child: Padding(
                                                                           padding: const EdgeInsets.only(right: 15.0),
                                                                           child: Text(
-                                                                              sexCategories[index],
+                                                                              GlobalVariables.sexCategories[index],
                                                                             style: GoogleFonts.roboto(
-                                                                                color: greyTextColor,
+                                                                                color: GlobalColors.greyTextColor,
                                                                                 fontSize: _width/20,
                                                                                 fontWeight: FontWeight.w500
                                                                             ),
@@ -681,7 +681,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                                         final home = HomeView(
                                                                           user: currentUser,
                                                                           notAiredList: notAiredList,
-                                                                          watchedShowsList: watchedShowList,
+                                                                          watchedShowsList: GlobalVariables.watchedShowList,
                                                                         );
                                                                         Navigator.of(context)
                                                                             .pushAndRemoveUntil(CupertinoPageRoute(
@@ -721,10 +721,10 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                             )
                                                           },
                                                           stateColors: {
-                                                            ButtonState.idle: blueColor,
-                                                            ButtonState.loading: blueColor,
-                                                            ButtonState.fail: fireColor,
-                                                            ButtonState.success: greenColor,
+                                                            ButtonState.idle: GlobalColors.blueColor,
+                                                            ButtonState.loading: GlobalColors.blueColor,
+                                                            ButtonState.fail: GlobalColors.fireColor,
+                                                            ButtonState.success: GlobalColors.greenColor,
                                                           },
 
                                                         )

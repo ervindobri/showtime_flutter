@@ -2,10 +2,8 @@ import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eWoke/components/badge.dart';
-import 'package:eWoke/components/expandable_text.dart';
 import 'package:eWoke/components/image_sliver_delegate.dart';
 import 'package:eWoke/components/latest_ep_carousel.dart';
-
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/tvshow_details.dart';
 import 'package:flutter/cupertino.dart';
@@ -112,7 +110,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                     width: _width,
                     height: _height * .95,
                     decoration: BoxDecoration(
-                      color: bgColor,
+                      color: GlobalColors.bgColor,
                       //              borderRadius: BorderRadius.all(Radius.circular(50.0)),
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(25.0),
@@ -167,7 +165,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                   Container(
                                                     height: _height / 20,
                                                     decoration: BoxDecoration(
-                                                      color: blueColor,
+                                                      color: GlobalColors.blueColor,
                                                       borderRadius: _radius,
                                                     ),
                                                     child: Padding(
@@ -232,7 +230,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                   FontWeight
                                                       .w700,
                                                   color:
-                                                  greyTextColor,
+                                                  GlobalColors.greyTextColor,
                                                   fontFamily:
                                                   'Raleway',
                                                 ),
@@ -253,7 +251,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                           _tapped = !_tapped;
                                                         });
                                                       },
-                                                      textColor: greenColor,
+                                                      textColor: GlobalColors.greenColor,
                                                       child: Center(
                                                         child: Text(
                                                           "Show More"
@@ -269,7 +267,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                       widget.show.parseHtmlString(),
                                                       style: GoogleFonts.roboto(
                                                         fontSize: _width/26,
-                                                        color: greyTextColor
+                                                        color: GlobalColors.greyTextColor
                                                       ),
                                                     ),
                                                     FlatButton(
@@ -278,7 +276,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                           _tapped = !_tapped;
                                                         });
                                                       },
-                                                      textColor: greenColor,
+                                                      textColor: GlobalColors.greenColor,
                                                       child: Center(
                                                         child: Text(
                                                             "Show Less"
@@ -323,7 +321,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                 FontWeight
                                                     .w700,
                                                 color:
-                                                greyTextColor,
+                                                GlobalColors.greyTextColor,
                                                 fontFamily:
                                                 'Raleway',
                                               ),
@@ -347,19 +345,19 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
 
     badges.add(new DetailBadge(
       text: widget.show.rating != 0 ? widget.show.rating.toString() : r"N\A",
-      colors: [pinkColor, lightPinkColor],
+      colors: [GlobalColors.pinkColor, GlobalColors.lightPinkColor],
     ));
     badges.add(new DetailBadge(
       text: widget.show.runtime != 0 ? widget.show.runtime.toString() : r"N\A",
-      colors: [goldColor, lightGoldColor],
+      colors: [GlobalColors.goldColor, GlobalColors.lightGoldColor],
     ));
     badges.add(new DetailBadge(
-      text: statusCodes[widget.show.status.toString()].toString(),
-      colors: [blueColor, Colors.lightBlue],
+      text: GlobalVariables.statusCodes[widget.show.status.toString()].toString(),
+      colors: [GlobalColors.blueColor, Colors.lightBlue],
     ));
     badges.add(new DetailBadge(
       text: widget.show.countryCode(),
-      colors: [orangeColor, Colors.orangeAccent],
+      colors: [GlobalColors.orangeColor, Colors.orangeAccent],
     ));
     return badges;
   }
@@ -393,7 +391,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                         child: AutoSizeText(
                           "Details",
                           style: TextStyle(
-                            color: greyTextColor,
+                            color: GlobalColors.greyTextColor,
                             fontFamily: 'Raleway',
                             fontWeight: FontWeight.w700,
                             fontSize: _width / 20,
@@ -406,7 +404,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                       child: AutoSizeText(
                         "About",
                         style: TextStyle(
-                          color: greenColor,
+                          color: GlobalColors.greenColor,
                           fontFamily: 'Raleway',
                           fontSize: _width / 20,
                         ),

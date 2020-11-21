@@ -93,7 +93,7 @@ class WatchedCard extends StatelessWidget {
                                                       maxLines: 1,
                                                       style: TextStyle(
                                                         fontWeight: FontWeight.w700,
-                                                        color: greyTextColor,
+                                                        color: GlobalColors.greyTextColor,
                                                         // fontSize: MediaQuery.of(context).size.height/30,
                                                         fontFamily: 'Raleway',
                                                       ),
@@ -123,7 +123,7 @@ class WatchedCard extends StatelessWidget {
                                                   borderRadius:
                                                       BorderRadius.circular(25.0),
                                                   border:
-                                                      Border.all(color: greenColor),
+                                                      Border.all(color: GlobalColors.greenColor),
                                                 ),
                                                 child: Row(
                                                   mainAxisAlignment:
@@ -132,7 +132,7 @@ class WatchedCard extends StatelessWidget {
                                                     Text(
                                                       "S",
                                                       style: TextStyle(
-                                                        color: greenColor,
+                                                        color: GlobalColors.greenColor,
                                                         fontSize: MediaQuery.of(context).size.width / 12,
                                                         fontWeight: FontWeight.w900,
                                                       ),
@@ -144,7 +144,7 @@ class WatchedCard extends StatelessWidget {
                                                           fontWeight:
                                                               FontWeight.w300,
                                                           fontSize: MediaQuery.of(context).size.width / 15,
-                                                          color: greyTextColor,
+                                                          color: GlobalColors.greyTextColor,
                                                         ),
                                                       ),
                                                     ),
@@ -162,7 +162,7 @@ class WatchedCard extends StatelessWidget {
                                                 decoration: BoxDecoration(
                                                   borderRadius:BorderRadius.circular(25.0),
                                                   border:
-                                                      Border.all(color: greenColor),
+                                                      Border.all(color: GlobalColors.greenColor),
                                                 ),
                                                 child: Row(
                                                   mainAxisAlignment:
@@ -172,7 +172,7 @@ class WatchedCard extends StatelessWidget {
                                                     Text(
                                                       "Ep",
                                                       style: TextStyle(
-                                                        color: greenColor,
+                                                        color: GlobalColors.greenColor,
                                                         fontSize:
                                                             MediaQuery.of(context)
                                                                     .size
@@ -192,7 +192,7 @@ class WatchedCard extends StatelessWidget {
                                                                       .size
                                                                       .width /
                                                                   15,
-                                                          color: greyTextColor,
+                                                          color: GlobalColors.greyTextColor,
                                                         ),
                                                       ),
                                                     ),
@@ -219,9 +219,9 @@ class WatchedCard extends StatelessWidget {
                                                 fontFamily: 'Raleway',
                                                 fontSize: _width / 15,
                                                 fontWeight: FontWeight.w700,
-                                                color: blueColor),
+                                                color: GlobalColors.blueColor),
                                           ),
-                                          progressColor: blueColor,
+                                          progressColor: GlobalColors.blueColor,
                                         ),
                                       ),
                                     ],
@@ -310,10 +310,10 @@ class WatchedCard extends StatelessWidget {
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                   colors: [
-                    percentage == 1.0 ? greenColor : fireColor,
-                    percentage == 1.0 ? lightGreenColor : Colors.orange,
+                    percentage == 1.0 ? GlobalColors.greenColor : GlobalColors.fireColor,
+                    percentage == 1.0 ? GlobalColors.lightGreenColor : Colors.orange,
                   ]),
-              color: percentage == 1.0 ? greenColor : fireColor,
+              color: percentage == 1.0 ? GlobalColors.greenColor : GlobalColors.fireColor,
               borderRadius: BorderRadius.all(Radius.circular(50.0)),
             ),
             child: Center(
@@ -342,10 +342,10 @@ class WatchedCard extends StatelessWidget {
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                     colors: [
-                      greenColor,
-                      lightGreenColor,
+                      GlobalColors.greenColor,
+                      GlobalColors.lightGreenColor,
                     ]),
-                color: greenColor,
+                color: GlobalColors.greenColor,
                 borderRadius: BorderRadius.all(Radius.circular(50.0)),
               ),
               child: Center(
@@ -372,11 +372,11 @@ class WatchedCard extends StatelessWidget {
           height: 60,
           width: cardWidth*.7,
           decoration: BoxDecoration(
-            color: pinkColor,
+            color: GlobalColors.pinkColor,
             borderRadius: BorderRadius.all(Radius.circular(50.0)),
             boxShadow: [
               new BoxShadow(
-                  color: pinkColor.withOpacity(.3),
+                  color: GlobalColors.pinkColor.withOpacity(.3),
                   blurRadius: 15.0,
                   spreadRadius: -2,
                   offset: Offset(2, 0)),
@@ -384,7 +384,7 @@ class WatchedCard extends StatelessWidget {
           ),
           child: FlatButton(
             highlightColor: Colors.black,
-            // color: greenColor,
+            // color: GlobalColors.greenColor,
             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
             onPressed: (){
               try {
@@ -611,7 +611,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                             _addToFavorites(context, widget.show),
                             _percentage == 1.0
                                 ? Container(
-                                    child: allBadges['finished'],
+                                    child: GlobalVariables.allBadges['finished'],
                                 )
                                 : Container(
                                     height: 1,
@@ -678,7 +678,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
           child: CircularPercentIndicator(
             radius: _width/4,
             lineWidth: 10,
-            progressColor: blueColor,
+            progressColor: GlobalColors.blueColor,
             animation: true,
             backgroundColor: Colors.white,
             circularStrokeCap: CircularStrokeCap.round,
@@ -689,7 +689,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                   fontFamily: 'Raleway',
                   fontSize: _width/ 15,
                   fontWeight: FontWeight.w700,
-                  color: blueColor),
+                  color: GlobalColors.blueColor),
             ),
           ),
         ),
@@ -711,7 +711,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
           if (!_added) {
             FirestoreUtils().favoriteShow(show, true);
             FirestoreUtils().addToFavorites(show);
-            favorites.add(show);
+            GlobalVariables.favorites.add(show);
             setState(() {
               _icon = FontAwesomeIcons.solidHeart;
               _added = true;
@@ -719,7 +719,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
             Fluttertoast.showToast(
                 msg: "${widget.show.name} added to favorites!",
                 toastLength: Toast.LENGTH_LONG,
-                backgroundColor: greenColor,
+                backgroundColor: GlobalColors.greenColor,
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 2
             );
@@ -734,7 +734,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
             Fluttertoast.showToast(
                 msg: "${widget.show.name} removed from favorites!",
                 toastLength: Toast.LENGTH_LONG,
-                backgroundColor: greenColor,
+                backgroundColor: GlobalColors.greenColor,
                 gravity: ToastGravity.BOTTOM,
                 timeInSecForIosWeb: 2
             );
@@ -748,7 +748,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
             width: _height/10,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(25)),
-              color: pinkColor
+              color: GlobalColors.pinkColor
             ),
               child:
                   Center(
@@ -778,7 +778,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(25)),
                 gradient: LinearGradient(
-                  colors: [goldColor, lightGoldColor]
+                  colors: [GlobalColors.goldColor, GlobalColors.lightGoldColor]
                 ),
             ),
             child:

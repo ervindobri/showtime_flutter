@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/constants/custom_variables.dart';
@@ -20,7 +19,7 @@ class OverallProgress extends StatefulWidget {
 }
 
 class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
-  var grey = Color(DISCOVER_DATA[0][1]);
+  var grey = Color(GlobalVariables.DISCOVER_DATA[0][1]);
   Animation<double> sizeAnimation;
   AnimationController animationController;
 
@@ -84,7 +83,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                         height: _height*.05,
                         width: _width*.8,
                         decoration: BoxDecoration(
-                          // color: greyTextColor,
+                          // color: GlobalColors.greyTextColor,
                           gradient: LinearGradient(
                             colors: [
                               grey.withOpacity(.2),  Colors.grey.withOpacity(.2)
@@ -150,10 +149,10 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                 child: Container(
                   height: _height*.81,
                   decoration: BoxDecoration(
-                      color: bgColor,
+                      color: GlobalColors.bgColor,
                       borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(sliverRadius),
-                          topRight: Radius.circular(sliverRadius),
+                          topLeft: Radius.circular(GlobalVariables.sliverRadius),
+                          topRight: Radius.circular(GlobalVariables.sliverRadius),
                           )
                       ),
                   child: Column(
@@ -174,7 +173,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                           gradient: LinearGradient(
                                             begin: Alignment.bottomLeft,
                                             end: Alignment.topRight,
-                                            colors: [greyTextColor, Colors.grey.shade500]
+                                            colors: [GlobalColors.greyTextColor, Colors.grey.shade500]
                                           ),
                                       ),
                                       height: _height/3.5,
@@ -231,7 +230,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                         gradient: LinearGradient(
                                             begin: Alignment.bottomLeft,
                                             end: Alignment.topRight,
-                                            colors: [greyTextColor, Colors.grey.shade500]
+                                            colors: [GlobalColors.greyTextColor, Colors.grey.shade500]
                                         ),
                                       ),
                                       height: _height/3.5,
@@ -284,7 +283,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                         gradient: LinearGradient(
                                             begin: Alignment.bottomLeft,
                                             end: Alignment.topRight,
-                                            colors: [greyTextColor, Colors.grey.shade500]
+                                            colors: [GlobalColors.greyTextColor, Colors.grey.shade500]
                                         ),
                                         boxShadow: [
                                           new BoxShadow(
@@ -354,11 +353,11 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                     gradient: LinearGradient(
                                         begin: Alignment.bottomLeft,
                                         end: Alignment.topRight,
-                                        colors: [blueColor, Colors.lightBlue]
+                                        colors: [GlobalColors.blueColor, Colors.lightBlue]
                                     ),
                                     boxShadow: [
                                       new BoxShadow(
-                                          color: blueColor.withOpacity(.3),
+                                          color: GlobalColors.blueColor.withOpacity(.3),
                                           blurRadius: 10.0,
                                           spreadRadius: 2,
                                           offset: Offset(0, 3)),
@@ -401,13 +400,12 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                   "Watch some shows first!",
                                                   style: GoogleFonts.roboto(
                                                       fontSize: _width/12,
-                                                      color: fireColor,
+                                                      color: GlobalColors.fireColor,
                                                       fontWeight: FontWeight.w700
                                                   ),
                                                 ),
                                               );
                                             }
-
                                           }
                                           else{
                                             return Center(
@@ -452,8 +450,8 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                           child: CircularPercentIndicator(
                                             radius: _width*.4,
                                             lineWidth: 25,
-                                            progressColor: fireColor,
-                                            backgroundColor: lightFireColor.withOpacity(.3),
+                                            progressColor: GlobalColors.fireColor,
+                                            backgroundColor: GlobalColors.lightFireColor.withOpacity(.3),
                                             circularStrokeCap: CircularStrokeCap.round,
                                             percent: Statistics().getOverallPercent(),
                                             animation: true,
@@ -461,7 +459,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                               "${(Statistics().getOverallPercent()*100).toInt().toString()} %",
                                               style: GoogleFonts.roboto(
                                                 fontSize: _width/12,
-                                                color: fireColor,
+                                                color: GlobalColors.fireColor,
                                                 fontWeight: FontWeight.w700
                                               ),
                                             ),
@@ -476,7 +474,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                   "O",
                                                 style: GoogleFonts.roboto(
                                                   fontSize: _width/10,
-                                                  color: fireColor,
+                                                  color: GlobalColors.fireColor,
                                                   fontWeight: FontWeight.w900
                                                 ),
                                               ),
@@ -484,7 +482,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                 "V",
                                                 style: GoogleFonts.roboto(
                                                     fontSize: _width/10,
-                                                    color: fireColor,
+                                                    color: GlobalColors.fireColor,
                                                     fontWeight: FontWeight.w900
                                                 ),
                                               ),
@@ -492,7 +490,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                 "R",
                                                 style: GoogleFonts.roboto(
                                                     fontSize: _width/10,
-                                                    color: fireColor,
+                                                    color: GlobalColors.fireColor,
                                                     fontWeight: FontWeight.w900
                                                 ),
                                               ),
@@ -537,11 +535,11 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
       barRods: [
         BarChartRodData(
           y: isTouched ? y + 1 : y,
-          colors: isTouched ? [greenColor] : [barColor],
+          colors: isTouched ? [GlobalColors.greenColor] : [barColor],
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: (watchedShowList.length/4).toDouble(),
+            y: (GlobalVariables.watchedShowList.length/4).toDouble(),
             colors: [Colors.white60],
           ),
         ),
@@ -555,7 +553,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
       alignment: BarChartAlignment.spaceEvenly,
       barTouchData: BarTouchData(
         touchTooltipData: BarTouchTooltipData(
-            tooltipBgColor: blueColor,
+            tooltipBgColor: GlobalColors.blueColor,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               String weekDay;
               switch (group.x.toInt()) {
@@ -736,7 +734,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
       spots: spotList,
       isCurved: true,
       colors: [
-        greenColor
+        GlobalColors.greenColor
       ],
       barWidth: 8,
       isStrokeCapRound: true,

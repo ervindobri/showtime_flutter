@@ -30,7 +30,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
 
   Color color = Colors.white;
 
-  Color episodeLabelColor = greyTextColor;
+  Color episodeLabelColor = GlobalColors.greyTextColor;
 
   @override
   void initState() {
@@ -110,7 +110,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                      topLeft: Radius.circular(75.0),
                                      topRight: Radius.circular(25.0),
                                    ),
-                                   color: greyTextColor
+                                   color: GlobalColors.greyTextColor
                                ),
                                child: Column(
                                  crossAxisAlignment: CrossAxisAlignment.end,
@@ -179,7 +179,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                                           ),
                                                         ],
                                                         fontWeight: FontWeight.w700,
-//                                                color: greyTextColor,
+//                                                color: GlobalColors.greyTextColor,
 //                                                color: Colors.white,
                                                         color: episodeLabelColor,
 
@@ -216,7 +216,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                                         ),
                                                         ],
                                                         fontWeight: FontWeight.w700,
-//                                                color: greyTextColor,
+//                                                color: GlobalColors.greyTextColor,
                                                         color: episodeLabelColor,
 //                                                color: Colors.white,
 //                                                fontSize: _width / 10,
@@ -258,10 +258,10 @@ class _ScheduleCardState extends State<ScheduleCard> {
                   height: airHeight+5,
                   width: _width * .35,
                   decoration: BoxDecoration(
-                      color:  widget.episode.getDiffDays().abs() > 3 ? lightGreenColor : orangeColor,
+                      color:  widget.episode.getDiffDays().abs() > 3 ? GlobalColors.lightGreenColor : GlobalColors.orangeColor,
                       borderRadius: BorderRadius.all(Radius.circular(50.0)),
                       boxShadow: [new BoxShadow(
-                          color:widget.episode.getDiffDays().abs() > 3 ? lightGreenColor.withOpacity(.5) : fireColor.withOpacity(1),
+                          color:widget.episode.getDiffDays().abs() > 3 ? GlobalColors.lightGreenColor.withOpacity(.5) : GlobalColors.fireColor.withOpacity(1),
                           blurRadius: 5.0,
                           spreadRadius: -2,
                           offset: Offset(0, 2)
@@ -312,7 +312,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                             height: 40,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
-                                  colors: [ blueColor, lightGreenColor]
+                                  colors: [ GlobalColors.blueColor, GlobalColors.lightGreenColor]
                               ),
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(25.0),
@@ -342,7 +342,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                               child: Text(
                                 _countdownLabel,
                                 style: GoogleFonts.roboto(
-                                  color: greyTextColor.withOpacity(.4),
+                                  color: GlobalColors.greyTextColor.withOpacity(.4),
                                   fontSize: _width/20,
                                   fontWeight: FontWeight.w700
                                 ),

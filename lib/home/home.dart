@@ -2,19 +2,15 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
-import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/components/route.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/home/login.dart';
-import 'package:eWoke/main.dart';
 import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
-import 'package:eWoke/placeholders/schedule_card_placeholder.dart';
 import 'package:eWoke/screens/browse_shows.dart';
 import 'package:eWoke/screens/full_schedule.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
@@ -26,11 +22,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -50,7 +44,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   PanelState _panelState;
   Widget title =
-  Container(color: bgColor, child: Image(image: AssetImage('showTIME.png'), height: 50));
+  Container(color: GlobalColors.bgColor, child: Image(image: AssetImage('showTIME.png'), height: 50));
   Widget _customTitle;
 
   List<Episode> displayScheduledList = [];
@@ -91,7 +85,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
     // print(widget.notAiredList.length);
     // print("init");
-    _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowList.map((e) => int.parse(e.id)).toList());
+    _scheduledEpisodes = FirestoreUtils().getEpisodeList(GlobalVariables.watchedShowList.map((e) => int.parse(e.id)).toList());
 
   }
   @override
@@ -136,7 +130,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       //new line
       key: _drawerKey,
       appBar: new AppBar(
-        backgroundColor: bgColor,
+        backgroundColor: GlobalColors.bgColor,
         brightness: Brightness.light,
         centerTitle: true,
         shadowColor: Colors.grey,
@@ -168,7 +162,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           fontFamily: 'Raleway',
                           fontSize: 25,
                           fontWeight: FontWeight.w700,
-                          color: greyTextColor
+                          color: GlobalColors.greyTextColor
                       ),
                       titlePadding: EdgeInsets.only(
                           top: 5.0,
@@ -185,7 +179,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CircleAvatar(
-                                backgroundColor: greyTextColor,
+                                backgroundColor: GlobalColors.greyTextColor,
                                 minRadius: 40,
                                 maxRadius: 40,
                                 backgroundImage: AssetImage(
@@ -206,7 +200,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
-                                        color: greyTextColor
+                                        color: GlobalColors.greyTextColor
                                     ),
                                   ),
                                   Text(
@@ -215,7 +209,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w100,
-                                        color: greyTextColor
+                                        color: GlobalColors.greyTextColor
                                     ),
                                   ),
                                 ],
@@ -233,7 +227,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
-                                        color: greyTextColor
+                                        color: GlobalColors.greyTextColor
                                     ),
                                   ),
                                   Text(
@@ -242,7 +236,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w100,
-                                        color: greyTextColor
+                                        color: GlobalColors.greyTextColor
                                     ),
                                   ),
                                 ],
@@ -261,7 +255,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
-                                        color: greyTextColor
+                                        color: GlobalColors.greyTextColor
                                     ),
                                   ),
                                   Text(
@@ -270,7 +264,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w100,
-                                        color: greyTextColor
+                                        color: GlobalColors.greyTextColor
                                     ),
                                   ),
                                 ],
@@ -288,7 +282,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w500,
-                                        color: greyTextColor
+                                        color: GlobalColors.greyTextColor
                                     ),
                                   ),
                                   Text(
@@ -297,7 +291,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                         fontWeight: FontWeight.w100,
-                                        color: greyTextColor
+                                        color: GlobalColors.greyTextColor
                                     ),
                                   ),
                                 ],
@@ -318,7 +312,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                 child: Text(
                                   'Edit',
                                   style: TextStyle(
-                                      color: greenColor,
+                                      color: GlobalColors.greenColor,
                                       fontSize: 20,
                                       fontWeight: FontWeight.w600
                                   ),
@@ -332,7 +326,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                 child: Text(
                                   'Close',
                                   style: TextStyle(
-                                      color: greenColor,
+                                      color: GlobalColors.greenColor,
                                       fontSize: 20,
                                       fontWeight: FontWeight.w300
                                   ),
@@ -352,7 +346,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                 child: Center(
                   child: FaIcon(
                     FontAwesomeIcons.userCircle,
-                    color: greenColor,
+                    color: GlobalColors.greenColor,
                     // size: 40,
                   ),
                 ),
@@ -383,7 +377,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         fontFamily: 'Raleway',
                         fontSize: 25,
                         fontWeight: FontWeight.w700,
-                        color: greyTextColor
+                        color: GlobalColors.greyTextColor
                     ),
                     titlePadding: EdgeInsets.only(
                         top: 5.0,
@@ -398,7 +392,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           fontFamily: 'Raleway',
                           fontSize: 15,
                           fontWeight: FontWeight.w100,
-                          color: greyTextColor
+                          color: GlobalColors.greyTextColor
                       ),
                     ),
                     elevation: 5,
@@ -410,7 +404,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           child: Text(
                             'Close',
                             style: TextStyle(
-                                color: greenColor,
+                                color: GlobalColors.greenColor,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w300
                             ),
@@ -422,8 +416,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         child: InkWell(
                           onTap: () async {
                             //TODO: handle clearing and destroying stored data
-                            popularShows.clear();
-                            limitedShows.clear();
+                            GlobalVariables.popularShows.clear();
+                            GlobalVariables.limitedShows.clear();
 
                             await FirebaseAuth.instance.signOut();
                             final login = LoginScreen();
@@ -436,7 +430,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           child: Text(
                             'Sign Out',
                             style: TextStyle(
-                                color: greenColor,
+                                color: GlobalColors.greenColor,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w900
                             ),
@@ -454,7 +448,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               child: Center(
                 child: FaIcon(
                   FontAwesomeIcons.signOutAlt,
-                  color: greenColor,
+                  color: GlobalColors.greenColor,
                 ),
               ),
             ),
@@ -462,9 +456,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
         ],
       ),
-      backgroundColor: bgColor,
+      backgroundColor: GlobalColors.bgColor,
       body: Container(
-        color: greenColor,
+        color: GlobalColors.greenColor,
         child: SafeArea(
             child:
             // checkInternetConnectivity()
@@ -495,7 +489,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           Container(
             width: _width,
             height: _height,
-            color: bgColor,
+            color: GlobalColors.bgColor,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -507,8 +501,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       alignment: Alignment.center,
                       children: [
                         Shimmer.fromColors(
-                          highlightColor: greenColor,
-                          baseColor: blueColor,
+                          highlightColor: GlobalColors.greenColor,
+                          baseColor: GlobalColors.blueColor,
                           direction: ShimmerDirection.ltr,
                           period: const Duration(seconds: 10),
                           child: Container(
@@ -521,8 +515,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                   begin: Alignment.topRight,
                                   end: Alignment.bottomLeft,
                                   colors: [
-                                    greenColor,
-                                    blueColor,
+                                    GlobalColors.greenColor,
+                                    GlobalColors.blueColor,
                                   ]),
                             ),
                           ),
@@ -547,7 +541,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   child: Container(
                     //                    color: Colors.redAccent,
                     height: _height * .25,
-                    color: bgColor,
+                    color: GlobalColors.bgColor,
                     width: _width,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -558,7 +552,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           child: Text("Discover",
                               style: TextStyle(
                                 fontSize: _height / 30,
-                                color: greyTextColor,
+                                color: GlobalColors.greyTextColor,
                                 fontFamily: 'Raleway',
                                 fontWeight: FontWeight.w900,
                               )),
@@ -568,11 +562,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           height: _height * .21,
                           child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount: DISCOVER_DATA.length,
+                              itemCount: GlobalVariables.DISCOVER_DATA.length,
                               shrinkWrap: true,
                               itemBuilder: (context, int index) {
                                 return createColorfulCard(
-                                    index, DISCOVER_DATA[index]);
+                                    index, GlobalVariables.DISCOVER_DATA[index]);
                               }),
                         )
                       ],
@@ -585,7 +579,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                     //                    color: Colors.redAccent,
                     //                     height: _height * .42,
                     width: _width,
-                    color: bgColor,
+                    color: GlobalColors.bgColor,
                     // color: Colors.black,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -599,7 +593,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                               Text("Schedule",
                                   style: TextStyle(
                                     fontSize: _height / 30,
-                                    color: greyTextColor,
+                                    color: GlobalColors.greyTextColor,
                                     fontFamily: 'Raleway',
                                     fontWeight: FontWeight.w900,
                                   )
@@ -614,7 +608,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     child: Text("All",
                                         style: TextStyle(
                                           fontSize: _height / 35,
-                                          color: greenColor,
+                                          color: GlobalColors.greenColor,
                                           fontFamily: 'Raleway',
                                           fontWeight: FontWeight.w500,
                                         )),
@@ -640,7 +634,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             defaultPanelState: _panelState,
             boxShadow: [
               BoxShadow(
-                color: greenColor.withOpacity(0.15),
+                color: GlobalColors.greenColor.withOpacity(0.15),
                 spreadRadius: 10,
                 blurRadius: 25,
                 offset: Offset(0, -10), // changes position of shadow
@@ -653,7 +647,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                 width: _width,
                 decoration: BoxDecoration(
                   borderRadius: radius,
-                  color: greenColor,
+                  color: GlobalColors.greenColor,
                 ),
                 child: Shimmer.fromColors(
                   period: const Duration(milliseconds: 3500),
@@ -690,8 +684,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
                       colors: [
-                        greenColor,
-                        blueColor,
+                        GlobalColors.greenColor,
+                        GlobalColors.blueColor,
                       ]),
                 ),
                 child: Column(
@@ -815,7 +809,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                             if (snapshot.hasData) {
                                               // print("data");
                                               if ( snapshot.data.documents.length > 0){
-                                                watchedShowList.clear();
+                                                GlobalVariables.watchedShowList.clear();
                                                 // allWatchedShows.clear();
                                                 snapshot.data.documents
                                                     .forEach((f) {
@@ -847,11 +841,11 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                   WatchedTVShow show = new WatchedTVShow
                                                       .fromFirestore(
                                                       f.data(), f.documentID);
-                                                  watchedShowList.add(show);
+                                                  GlobalVariables.watchedShowList.add(show);
                                                   // allWatchedShows.add(show);
                                                 });
                                                 return createCarouselSlider(
-                                                    watchedShowList.take(5)
+                                                    GlobalVariables.watchedShowList.take(5)
                                                         .toList(),
                                                     context);
                                               }
@@ -966,7 +960,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     return Padding(
-      padding: index != DISCOVER_DATA.length - 1
+      padding: index != GlobalVariables.DISCOVER_DATA.length - 1
           ? const EdgeInsets.only(left: 25.0)
           : const EdgeInsets.symmetric(horizontal: 25.0),
       child: InkWell(
@@ -1052,8 +1046,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     return Container(
       width: _width,
       height: _height * .41,
-      // color: blueColor,
-      color: bgColor,
+      // color: GlobalColors.blueColor,
+      color: GlobalColors.bgColor,
       child: FutureBuilder(
         future: _scheduledEpisodes,
         builder: (context, snapshot) {
@@ -1063,7 +1057,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             if ( snapshot.data.length > 0){
               displayScheduledList.clear();
               for(int index=0 ; index < min(snapshot.data.length, 5); index++){
-                scheduledEpisodes.add(snapshot.data[index]);
+                GlobalVariables.scheduledEpisodes.add(snapshot.data[index]);
                 //Calculate episode which is not aired yet to display it
                 int notAired = snapshot.data[index].length - 1;
                 for(int i=0; i< snapshot.data[index].length ; i++){
@@ -1119,7 +1113,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               return Container(
                 child: Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(greenColor),
+                    valueColor: AlwaysStoppedAnimation(GlobalColors.greenColor),
                   ),
                 ),
               );
@@ -1151,7 +1145,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               return Container(
                 width: _width,
                 height: _height*.95,
-                color: bgColor,
+                color: GlobalColors.bgColor,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -1160,8 +1154,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       // color: Colors.black,
                       child: Center(
                         child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                          // backgroundColor: greenColor,
+                          valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
+                          // backgroundColor: GlobalColors.greenColor,
                         ),
                       ),
                     ),

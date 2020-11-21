@@ -180,7 +180,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                             width: _cardWidth,
                             height: _cardHeight,
                             decoration: BoxDecoration(
-                              color: blueColor,
+                              color: GlobalColors.blueColor,
                               image: DecorationImage(
                                   image: imageProvider,
                                   fit: BoxFit.fill),
@@ -188,8 +188,8 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                               boxShadow: [
                                 new BoxShadow(
                                     color: int.parse(countdown[0]) <= 3
-                                        ? fireColor.withOpacity(.3)
-                                        : greenColor.withOpacity(.3),
+                                        ? GlobalColors.fireColor.withOpacity(.3)
+                                        : GlobalColors.greenColor.withOpacity(.3),
                                     blurRadius: 15.0,
                                     spreadRadius: -4,
                                     offset: Offset(0, 5)),
@@ -284,7 +284,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                                 fontSize: _width/25,
                                                                 fontWeight: FontWeight.w500,
                                                                 // fontFamily: 'Raleway',
-                                                                color: greyTextColor
+                                                                color: GlobalColors.greyTextColor
                                                             ),
                                                           ),
                                                           AutoSizeText(
@@ -293,7 +293,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                                 fontSize: _width/25,
                                                                 fontWeight: FontWeight.w700,
                                                                 // fontFamily: 'Raleway',
-                                                                color: greyTextColor
+                                                                color: GlobalColors.greyTextColor
                                                             ),
                                                           ),
                                                         ],
@@ -305,7 +305,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                         height: .69,
                                                         width: double.infinity,
                                                         child: Container(
-                                                          color: greyTextColor,
+                                                          color: GlobalColors.greyTextColor,
                                                         ),
                                                       ),
                                                     ),
@@ -322,7 +322,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                               // fontSize: _width/23,
                                                               fontWeight: FontWeight.w600,
                                                               fontFamily: 'Raleway',
-                                                              color: greyTextColor
+                                                              color: GlobalColors.greyTextColor
                                                           ),
                                                         ),
                                                       ),
@@ -350,7 +350,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                   Expanded(
                                                     child: FlatButton(
                                                       highlightColor: Colors.black,
-                                                      color: blueColor,
+                                                      color: GlobalColors.blueColor,
                                                       shape: CircleBorder(),
                                                       onPressed: () {
                                                           // setState(() => _tapped = !_tapped);
@@ -372,7 +372,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                                         return Container(
                                                                           width: _width,
                                                                           height: _height*.95,
-                                                                          color: bgColor,
+                                                                          color: GlobalColors.bgColor,
                                                                           child: Column(
                                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                                             children: [
@@ -381,8 +381,8 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                                                 // color: Colors.black,
                                                                                 child: Center(
                                                                                   child: CircularProgressIndicator(
-                                                                                    valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                                                                                    // backgroundColor: greenColor,
+                                                                                    valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
+                                                                                    // backgroundColor: GlobalColors.greenColor,
                                                                                   ),
                                                                                 ),
                                                                               ),
@@ -405,7 +405,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                                                 return Container(
                                                                                   width: _width,
                                                                                   height: _height*.95,
-                                                                                  color: bgColor,
+                                                                                  color: GlobalColors.bgColor,
                                                                                   child: Column(
                                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                                     children: [
@@ -414,8 +414,8 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                                                         // color: Colors.black,
                                                                                         child: Center(
                                                                                           child: CircularProgressIndicator(
-                                                                                            valueColor: AlwaysStoppedAnimation<Color>(greenColor),
-                                                                                            // backgroundColor: greenColor,
+                                                                                            valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
+                                                                                            // backgroundColor: GlobalColors.greenColor,
                                                                                           ),
                                                                                         ),
                                                                                       ),
@@ -452,7 +452,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                   Expanded(
                                                     child: FlatButton(
                                                       highlightColor: Colors.black,
-                                                      color: greenColor,
+                                                      color: GlobalColors.greenColor,
                                                       shape: CircleBorder(),
                                                       onPressed: (){
                                                         // print(showDetails.toString());
@@ -602,8 +602,8 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                           borderRadius: _radius,
                           gradient: LinearGradient(
                             colors: int.parse(countdown[0]) <= 3
-                                ? [Colors.orange, orangeColor]
-                                : [greenColor, lightGreenColor],
+                                ? [Colors.orange, GlobalColors.orangeColor]
+                                : [GlobalColors.greenColor, GlobalColors.lightGreenColor],
                             stops: [.01, 20],
                           )),
                       child: Center(

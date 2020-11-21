@@ -131,7 +131,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                 constraints: BoxConstraints(
                     maxWidth: _width * 0.7, maxHeight: _height / 1.7),
                 decoration: BoxDecoration(
-                  color: bgColor,
+                  color: GlobalColors.bgColor,
                   image: DecorationImage(
                       image: NetworkImage(widget.show.imageThumbnailPath),
                       fit: BoxFit.fill),
@@ -181,7 +181,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                   width: _width / 4,
                                                   height: _height / 25,
                                                   decoration: BoxDecoration(
-                                                    color: greyTextColor,
+                                                    color: GlobalColors.greyTextColor,
                                                     borderRadius:
                                                         BorderRadius.only(
                                                       topLeft:
@@ -238,7 +238,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                   width: _width/4,
                                                   height: _height/25,
                                                   decoration: BoxDecoration(
-                                                    color: fireColor,
+                                                    color: GlobalColors.fireColor,
                                                     borderRadius: BorderRadius.only(
                                                       topLeft: Radius.circular(25.0),
                                                       topRight:Radius.circular(25.0),
@@ -293,14 +293,14 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                             child: FlatButton(
                                               minWidth: _height / 13,
                                               height: _height/10,
-                                              color: blueColor,
+                                              color: GlobalColors.blueColor,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.all(Radius.circular(20)),
                                               ),
                                               onPressed: () {
                                                 if (!_added) {
                                                   var show = FirestoreUtils().addToWatchedShows(showDetails);
-                                                  watchedShowList.add(show);
+                                                  GlobalVariables.watchedShowList.add(show);
                                                   setState(() {
                                                     _added = true;
                                                   });

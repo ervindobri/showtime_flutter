@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eWoke/components/badge.dart';
 import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/components/dialogs.dart';
 import 'package:eWoke/components/toast.dart';
@@ -24,7 +22,6 @@ import 'package:status_alert/status_alert.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
-import '../main.dart';
 
 class WatchedDetailView extends StatefulWidget {
   final WatchedTVShow show;
@@ -162,7 +159,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
             width: _width,
             height: _height*.95,
             decoration: BoxDecoration(
-              color: bgColor,
+              color: GlobalColors.bgColor,
             ),
             child: Container(
               height: _height*.95,
@@ -174,7 +171,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                     children: <Widget>[
                       Container(
                         height: _height * .55,
-                        // color: blueColor,
+                        // color: GlobalColors.blueColor,
                         child: Stack(
                           alignment: Alignment.topCenter,
                           children: <Widget>[
@@ -185,7 +182,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                               child: Container(
                                 height: _height * .4,
                                 decoration: BoxDecoration(
-                                  color: greenColor,
+                                  color: GlobalColors.greenColor,
                                   image: DecorationImage(
                                     image: NetworkImage(
                                       widget.show.imageThumbnailPath,
@@ -242,7 +239,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 onTap:(){
                                   Widget toast = CustomToast
                                     (
-                                      color: blueColor,
+                                      color: GlobalColors.blueColor,
                                       icon: FontAwesomeIcons.history,
                                       text: "You rewatched ${widget.show.name} ${widget.show.watchedTimes} time(s)"
                                   );
@@ -259,13 +256,13 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                     shape: BoxShape.circle,
                                     gradient: LinearGradient(
                                       colors: [
-                                        blueColor,
+                                        GlobalColors.blueColor,
                                         Colors.lightBlueAccent
                                       ],
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: blueColor.withOpacity(.3),
+                                        color: GlobalColors.blueColor.withOpacity(.3),
                                         blurRadius: 5,
                                         spreadRadius: 1
                                       )
@@ -349,10 +346,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                   colors: [
-                    greenColor,
-                    lightGreenColor,
+                    GlobalColors.greenColor,
+                    GlobalColors.lightGreenColor,
                   ]),
-              color: fireColor,
+              color: GlobalColors.fireColor,
               borderRadius: BorderRadius.all(Radius.circular(50.0)),
             ),
             child: Row(
@@ -391,12 +388,12 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                       children: [
                         FaIcon(
                           FontAwesomeIcons.binoculars,
-                          color: greyTextColor,
+                          color: GlobalColors.greyTextColor,
                           size: 30,
                         ),
                         Text("More episodes coming soon",
                             style: TextStyle(
-                              color: greyTextColor,
+                              color: GlobalColors.greyTextColor,
                               fontWeight: FontWeight.w500,
                               fontFamily: 'Raleway',
                               fontSize: MediaQuery.of(context).size.width / 25,
@@ -407,12 +404,12 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                       children: [
                         FaIcon(
                           FontAwesomeIcons.questionCircle,
-                          color: greyTextColor,
+                          color: GlobalColors.greyTextColor,
                           size: 30,
                         ),
                         Text("This show has ENDED",
                             style: TextStyle(
-                              color: greyTextColor,
+                              color: GlobalColors.greyTextColor,
                               fontWeight: FontWeight.w500,
                               fontFamily: 'Raleway',
                               fontSize: MediaQuery.of(context).size.width / 25,
@@ -434,10 +431,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 colors: [
-                  fireColor,
+                  GlobalColors.fireColor,
                   Colors.orange,
                 ]),
-            color: fireColor,
+            color: GlobalColors.fireColor,
             borderRadius: BorderRadius.all(Radius.circular(50.0)),
           ),
           child: Row(
@@ -485,7 +482,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
         //               fontSize: MediaQuery.of(context).size.width/25,
         //               fontFamily: 'Raleway',
         //               fontWeight: FontWeight.w500,
-        //               color: greyTextColor,
+        //               color: GlobalColors.greyTextColor,
         //             )
         //         ),
         //       ],
@@ -540,7 +537,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             maxLines: 2,
                             style: TextStyle(
                                 fontFamily: 'Raleway',
-                                color: greyTextColor,
+                                color: GlobalColors.greyTextColor,
                                 fontWeight: FontWeight.w900,
                                 fontSize: _width / 15)
                         ),
@@ -563,11 +560,11 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                   "${removeDecimalZeroFormat((_percentage * 100))}%",
                                   style: GoogleFonts.roboto(
                                     fontSize: _width / 23,
-                                    color: blueColor,
+                                    color: GlobalColors.blueColor,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                progressColor: blueColor,
+                                progressColor: GlobalColors.blueColor,
                               ),
                             ),
                             Expanded(
@@ -580,7 +577,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                       minFontSize: 20,
                                       maxFontSize: 45,
                                       style: TextStyle(
-                                        color: greyTextColor,
+                                        color: GlobalColors.greyTextColor,
                                         fontSize: 35,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -588,7 +585,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                     AutoSizeText(
                                       "Sn",
                                       style: TextStyle(
-                                        color: greenColor,
+                                        color: GlobalColors.greenColor,
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                       ),
@@ -607,7 +604,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                       minFontSize: 20,
                                       maxFontSize: 45,
                                       style: GoogleFonts.roboto(
-                                        color: greyTextColor,
+                                        color: GlobalColors.greyTextColor,
                                         fontSize: 35,
                                         fontWeight: FontWeight.w700,
                                       ),
@@ -615,7 +612,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                     AutoSizeText(
                                       "Ep",
                                       style: TextStyle(
-                                        color: greenColor,
+                                        color: GlobalColors.greenColor,
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
                                       ),
@@ -676,7 +673,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                   child: AutoSizeText(
                     "Badges",
                     style: TextStyle(
-                      color: greyTextColor,
+                      color: GlobalColors.greyTextColor,
                       fontFamily: 'Raleway',
                       fontWeight: FontWeight.w700,
                       fontSize: _width / 20,
@@ -686,7 +683,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                 AutoSizeText(
                   "About",
                   style: TextStyle(
-                    color: greenColor,
+                    color: GlobalColors.greenColor,
                     fontFamily: 'Raleway',
                     fontSize: _width / 20,
                   ),
@@ -726,26 +723,26 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     List<Widget> badges = [];
 
     if (widget.show.hasMoreEpisodes()) {
-      badges.add(allBadges['waiting']);
+      badges.add(GlobalVariables.allBadges['waiting']);
     }
     if (_lastWatchedDay < 15) {
       //Display fire badge
       // print("fire");
-      badges.add(allBadges['fresh']);
+      badges.add(GlobalVariables.allBadges['fresh']);
     }
     else{
       //  Haven't watched in last two weeks
-      badges.add(allBadges['paused']);
+      badges.add(GlobalVariables.allBadges['paused']);
     }
     if ( _percentage < 1.0){
-      badges.add(allBadges['watching']);
+      badges.add(GlobalVariables.allBadges['watching']);
 
     }
     else{
-      badges.add(allBadges['finished']);
+      badges.add(GlobalVariables.allBadges['finished']);
     }
     if ( widget.show.favorite){
-      badges.add(allBadges['favorite']);
+      badges.add(GlobalVariables.allBadges['favorite']);
     }
     return badges;
   }
@@ -768,7 +765,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                     height: _width/7,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        color: lightGreenColor.withOpacity(.3)
+                        color: GlobalColors.lightGreenColor.withOpacity(.3)
                     ),
                     child: FlatButton(
                       splashColor: Colors.white,
@@ -789,7 +786,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                         child: Text(
                           "Unwatch",
                           style: TextStyle(
-                            color: greenColor,
+                            color: GlobalColors.greenColor,
                             fontSize: 20,
                           ),
                         ),
@@ -804,7 +801,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                     height: _width/7,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        color: greenColor.withOpacity(1)
+                        color: GlobalColors.greenColor.withOpacity(1)
                     ),
                     child: FlatButton(
                       splashColor: Colors.white,
@@ -890,7 +887,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        color: lightGreenColor.withOpacity(.3)
+                        color: GlobalColors.lightGreenColor.withOpacity(.3)
                     ),
                     child: FlatButton(
                       splashColor: Colors.white,
@@ -915,7 +912,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             fontSize: 22,
                             fontFamily: 'Raleway',
                             fontWeight: FontWeight.w500,
-                            color: greenColor
+                            color: GlobalColors.greenColor
                             ),
                           ),
                         ),
@@ -930,7 +927,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        color: fireColor
+                        color: GlobalColors.fireColor
                     ),
                     child: FlatButton(
                       splashColor: Colors.transparent,
@@ -938,7 +935,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                       shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                       onPressed: () {
                         print("ep not aired");
-                        Widget toast = CustomToast(color: fireColor,icon: Icons.timer, text: "Episode air date: ${widget.show.nextEpisodeAirDate()[1]}");
+                        Widget toast = CustomToast(color: GlobalColors.fireColor,icon: Icons.timer, text: "Episode air date: ${widget.show.nextEpisodeAirDate()[1]}");
                         fToast.showToast(
                           child: toast,
                           gravity: ToastGravity.TOP,
@@ -983,12 +980,12 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
            height: 50,
            decoration: BoxDecoration(
                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-               color: greenColor
+               color: GlobalColors.greenColor
            ),
            child: CustomElevation(
-             color: greenColor.withOpacity(.4),
+             color: GlobalColors.greenColor.withOpacity(.4),
              child: FlatButton(
-               splashColor: lightGreenColor,
+               splashColor: GlobalColors.lightGreenColor,
                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                clipBehavior: Clip.antiAlias,
                onPressed: () {

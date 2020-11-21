@@ -70,7 +70,7 @@ class TVShow{
         rating : json['rating']['average'] == null ? 0.0 : json['rating']['average'] ,
         updated: json['updated'].toString(),
         status : json['status'],
-        imageThumbnailPath : json['image'] != null ? json['image']['medium']: PLACEHOLDER_IMAGE, // MEDIUM IMAGE
+        imageThumbnailPath : json['image'] != null ? json['image']['medium']: GlobalVariables.PLACEHOLDER_IMAGE, // MEDIUM IMAGE
       );
     }
 

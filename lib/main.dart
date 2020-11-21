@@ -17,32 +17,32 @@ TextTheme buildAppTextTheme( TextTheme base){
   return base.copyWith(
       headline1: base.headline1.copyWith(
         fontWeight: FontWeight.w500,
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
 
       ),
       headline6: base.headline6.copyWith(
         fontSize: 18,
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
 
       ),
       caption: base.caption.copyWith(
         fontWeight: FontWeight.w400,
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
 
       ),
       bodyText1: base.bodyText1.copyWith(
         fontSize: 17,
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
 
 
       ),
       button: base.button.copyWith(
         letterSpacing: 3.0,
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
 
       ),
       bodyText2: base.bodyText2.copyWith(
-        color: greyTextColor,
+        color: GlobalColors.greyTextColor,
 
       )
   ).apply(
@@ -61,8 +61,8 @@ ThemeData buildAppTheme(){
 
   return base.copyWith(
     brightness: Brightness.light,
-    accentColor: greenColor,
-    primaryColor: greenColor,
+    accentColor: GlobalColors.greenColor,
+    primaryColor: GlobalColors.greenColor,
     scaffoldBackgroundColor: Colors.blueGrey.shade300,
     backgroundColor: Colors.white70,
     textTheme: buildAppTextTheme(base.textTheme),

@@ -70,7 +70,7 @@ class TVShowDetails extends TVShow{
 
   String countryCode(){
     // print(countryCodes[0]["name"]);
-    var x  = countryCodes.firstWhere((element) => element["name"] == this.language);
+    var x  = GlobalVariables.countryCodes.firstWhere((element) => element["name"] == this.language);
     return x["code"].toString().toUpperCase() ?? r"N\A";
   }
 

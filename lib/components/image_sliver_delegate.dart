@@ -48,7 +48,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                           Container(
                               height: _height * .25,
                               decoration: BoxDecoration(
-                                  color: greenColor,
+                                  color: GlobalColors.greenColor,
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(percentage > 0.0 ? 25.0 : 0.0),
                                     bottomRight: Radius.circular(percentage > 0.0 ? 25.0 : 0.0)

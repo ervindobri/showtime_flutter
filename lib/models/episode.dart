@@ -42,7 +42,7 @@ class Episode{
       airDate : json['airdate'] == "" ? (DateTime.now().year+1).toString() + "-" + (DateTime.now().month).toString() + (DateTime.now().day).toString() : json['airdate'],
       airTime : json['airtime'] == "" ? "12:00" : json['airtime'],
       runtime : json['runtime'] ?? 0,
-      image : json['image'] != null ? json['image']['medium'] : PLACEHOLDER_IMAGE, //MEDIUM IMAGE
+      image : json['image'] != null ? json['image']['medium'] : GlobalVariables.PLACEHOLDER_IMAGE, //MEDIUM IMAGE
       summary : json['summary'] ?? "",
       embedded : json['_embedded'] ?? null
     );

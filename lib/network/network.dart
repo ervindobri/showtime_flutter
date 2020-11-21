@@ -8,7 +8,7 @@ import 'package:http/http.dart';
 class Network{
 
   Future<AllTVShowList> getShowResults({String showName}) async{
-    var searchURL = SEARCH_URL + showName;
+    var searchURL = GlobalVariables.SEARCH_URL + showName;
     final response = await get(Uri.encodeFull(searchURL));
 
     if (response.statusCode == 200) {
@@ -20,7 +20,7 @@ class Network{
   }
 
   Future<TVShowDetails> getDetailResults({TVShow show}) async{
-    var searchURL = EPISODES_URL + show.id + '/episodes';
+    var searchURL = GlobalVariables.EPISODES_URL + show.id + '/episodes';
     final response = await get(Uri.encodeFull(searchURL));
 
     if (response.statusCode == 200) {
@@ -32,7 +32,7 @@ class Network{
   }
 
   Future<TVShow> getShowInfo({String showID}) async{
-    var searchURL = SHOW_URL + showID;
+    var searchURL = GlobalVariables.SHOW_URL + showID;
     final response = await get(Uri.encodeFull(searchURL));
 
     if (response.statusCode == 200) {
@@ -44,7 +44,7 @@ class Network{
   }
 
   Future<List<dynamic>> getEpisodes({String showID}) async{
-    var searchURL = EPISODES_URL + showID + '/episodes';
+    var searchURL = GlobalVariables.EPISODES_URL + showID + '/episodes';
     final response = await get(Uri.encodeFull(searchURL));
 
     if (response.statusCode == 200) {
@@ -57,7 +57,7 @@ class Network{
   }
   Future<List<dynamic>> getDetailUpdates({String showID}) async{
     // print(showID);
-    var searchURL = EPISODES_URL+ showID + "/episodes";
+    var searchURL = GlobalVariables.EPISODES_URL+ showID + "/episodes";
     final response = await get(Uri.encodeFull(searchURL));
 
     if (response.statusCode == 200) {
@@ -92,7 +92,7 @@ class Network{
   }
 
   Future<EpisodeList> getScheduledEpisodes() async{
-    var searchURL = FULL_SCHEDULE_URL;
+    var searchURL = GlobalVariables.FULL_SCHEDULE_URL;
     final response = await get(Uri.encodeFull(searchURL));
 
     if (response.statusCode == 200) {
