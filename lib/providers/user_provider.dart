@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -16,6 +17,8 @@ class UserProvider  with ChangeNotifier {
 
   User _user;
   User get user => _user;
+
+  bool _disposed = false;
 
   UserProvider.instance() : _auth = FirebaseAuth.instance {
     _auth.authStateChanges().listen(_onAuthStateChanged);
@@ -39,7 +42,7 @@ class UserProvider  with ChangeNotifier {
 
   Future<SessionUser> getUserData() async {
     SessionUser user = SessionUser();
-    FirestoreUtils().userProfile.snapshots().first.then((element) {
+    FirebaseFirestore.instance.doc("${_auth.currentUser?.email}/user").snapshots().first.then((element) {
       if ( element.exists){
         user.id = _auth.currentUser.uid;
         user.emailAddress = _auth.currentUser.email;
@@ -88,9 +91,7 @@ class UserProvider  with ChangeNotifier {
 
     return Future.delayed(_loginTime).then((_) async {
       try {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-            email: userName, password: password);
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: userName, password: password);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           return 'The password provided is too weak.';
@@ -120,5 +121,18 @@ class UserProvider  with ChangeNotifier {
       _status = Status.Authenticated;
     }
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
   }
 }

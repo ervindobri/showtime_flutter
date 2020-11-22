@@ -13,7 +13,6 @@ class Badge extends StatelessWidget {
   const Badge({Key key, this.icon, this.colors, this.description}) : super(key: key);
 
 
-  //TODO: show toast if pressed, with color
   @override
   Widget build(BuildContext context) {
     return Padding(

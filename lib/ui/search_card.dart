@@ -1,16 +1,5 @@
 import 'dart:ui';
-import 'package:animations/animations.dart';
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eWoke/components/badge.dart';
-import 'package:eWoke/components/expandable_text.dart';
-import 'package:eWoke/components/image_sliver_delegate.dart';
-import 'package:eWoke/components/latest_ep_carousel.dart';
-import 'package:eWoke/components/snap_sheet.dart';
 import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/main.dart';
 import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/models/tvshow_details.dart';
 import 'package:eWoke/network/network.dart';
@@ -18,20 +7,17 @@ import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/screens/detail_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
-import 'package:html/parser.dart';
-import 'package:snapping_sheet/snapping_sheet.dart';
 
 class ShowCard extends StatefulWidget {
   final TVShow show;
 
-  final BorderRadiusGeometry _leftRadius = const BorderRadius.only(
-    bottomRight: Radius.circular(25.0),
-    topRight: Radius.circular(50.0),
-  );
+  // final BorderRadiusGeometry _leftRadius = const BorderRadius.only(
+  //   bottomRight: Radius.circular(25.0),
+  //   topRight: Radius.circular(50.0),
+  // );
 
   const ShowCard({Key key, this.show}) : super(key: key);
 
@@ -44,7 +30,6 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
 
   bool _added = false;
 
-  bool _done = false;
 
   // double radius = 25.0;
   //
@@ -64,10 +49,6 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
-    setState(() {
-      _done = false;
-    });
     super.initState();
     _checkIfAdded();
     _getShowDetails();
@@ -89,7 +70,6 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
 
   @override
   void didUpdateWidget(ShowCard oldWidget) {
-    // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
 //    print("updated");
     _getShowDetails();
@@ -110,7 +90,6 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
         padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 25),
         child: InkWell(
           onTap: () {
-            //TODO: add snapping sheet
             showModalBottomSheet(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(

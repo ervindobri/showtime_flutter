@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/components/popular_appbar.dart';
@@ -24,11 +23,10 @@ class MostPopularShows extends StatefulWidget {
 
 class _MostPopularShowsState extends State<MostPopularShows>
     with AnimationMixin {
-  String _searchTerm;
+  // String _searchTerm;
   APIService apiService = APIService();
   // You future
   Future future;
-  // Future<dynamic> popular;
 
   ScrollController _controller;
 
@@ -73,7 +71,6 @@ class _MostPopularShowsState extends State<MostPopularShows>
   
   @override
   void initState() {
-    // TODO: implement initState
     nrShows += threshold;
     animationController = AnimationController(
       duration: const Duration(milliseconds: 300),
@@ -101,7 +98,6 @@ class _MostPopularShowsState extends State<MostPopularShows>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     // _controller.removeListener(() {});
     // _controller.dispose();
     // popularShows.clear();
@@ -818,7 +814,6 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                       ),
                                     ),
                                   ),
-                                  //TODO: refresh button for fetching new data
                                 ],
                               ),
                             ),
@@ -858,9 +853,10 @@ class _MostPopularShowsState extends State<MostPopularShows>
   Widget _textField() {
     return CupertinoTextField(
       onSubmitted: (value) {
-        setState(() {
-          _searchTerm = value;
-        });
+        //TODO: implement SEARCH in MPS
+        // setState(() {
+        //   _searchTerm = value;
+        // });
       },
       // controller: _filter,
       clearButtonMode: OverlayVisibilityMode.editing,

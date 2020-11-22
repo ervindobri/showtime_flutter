@@ -2,15 +2,11 @@ import 'dart:ui';
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/components/popular_appbar.dart';
 import 'package:eWoke/models/episode.dart';
-import 'package:flip_panel/flip_panel.dart';
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:auto_search/auto_search.dart';
 import 'package:cupertino_stepper/cupertino_stepper.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:eWoke/ui/full_schedule_card.dart';
@@ -21,19 +17,18 @@ class FullSchedule extends StatefulWidget {
 }
 
 class _FullScheduleState extends State<FullSchedule> {
-  BorderRadius _bottomRadius = const BorderRadius.only(
-    bottomLeft: Radius.circular(50.0),
-    bottomRight: Radius.circular(50.0),
-  );
+  // BorderRadius _bottomRadius = const BorderRadius.only(
+  //   bottomLeft: Radius.circular(50.0),
+  //   bottomRight: Radius.circular(50.0),
+  // );
 
-  final TextEditingController _filter = new TextEditingController();
+  // final TextEditingController _filter = new TextEditingController();
   String _searchTerm;
-  int _currentStep = 0;
+  // int _currentStep = 0;
   List<List<Episode>> list = [];
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _searchTerm = "";
     list = GlobalVariables.scheduledEpisodes;
@@ -96,9 +91,9 @@ class _FullScheduleState extends State<FullSchedule> {
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
-    const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
-    final canCancel = _currentStep > 0;
-    final canContinue = _currentStep < list.length-1;
+    // const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
+    // final canCancel = _currentStep > 0;
+    // final canContinue = _currentStep < list.length-1;
     // print(scheduledEpisodes.length);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -255,7 +250,7 @@ class _FullScheduleState extends State<FullSchedule> {
   }
   Widget buildCarousel(List<List<Episode>> list) {
     double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    // double _width = MediaQuery.of(context).size.width;
 
     return CarouselSlider.builder(
       itemCount: list.length,

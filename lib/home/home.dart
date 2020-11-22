@@ -36,6 +36,7 @@ class HomeView extends StatefulWidget {
   final List<WatchedTVShow> watchedShowsList;
   final List<Episode> notAiredList;
 
+
   const HomeView({Key key, this.user, this.watchedShowsList, this.notAiredList}) : super(key: key);
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -67,7 +68,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   int age = 0;
   String sex = "";
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   var watchedShowsStream;
 
@@ -104,8 +105,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     topRight: Radius.circular(50.0),
   );
 
-  final double _initFabHeight = 120.0;
-  double _panelHeightOpen;
+  // final double _initFabHeight = 120.0;
+  // double _panelHeightOpen;
 
 
   @override
@@ -113,20 +114,19 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
     final GlobalKey<ScaffoldState> _slidingPanelKey =
     new GlobalKey<ScaffoldState>();
-    double _width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    // double _width = MediaQuery
+    //     .of(context)
+    //     .size
+    //     .width;
     double _height = MediaQuery
         .of(context)
         .size
         .height;
-    _panelHeightOpen = MediaQuery
-        .of(context)
-        .size
-        .height * .80;
+    // _panelHeightOpen = MediaQuery
+    //     .of(context)
+    //     .size
+    //     .height * .80;
 
-    final double _panelHeightClosed = _height/10;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       //new line
@@ -418,9 +418,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                         child: InkWell(
                           onTap: () async {
                             GlobalVariables.clearAll();
-                            final authProvider = Provider.of<UserProvider>(context, listen: false);
-                            authProvider.signOut();
-                            print(authProvider.status);
+                            // await authService.signOut();
+                            await context.read<UserProvider>().signOut();
                             final login = LoginScreen();
                             Navigator.pop(context);
                             Navigator.of(context).pushAndRemoveUntil(
@@ -737,9 +736,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: _height / 30,
-                          ),
                           Container(
                             width: _width * 0.5,
                             height: _width * 0.3,
@@ -815,36 +811,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                 // allWatchedShows.clear();
                                                 snapshot.data.documents
                                                     .forEach((f) {
-                                                  // print(f.data);
-                                                  // WatchedTVShow show = new WatchedTVShow(
-                                                  //     id: f.documentID,
-                                                  //     name:
-                                                  //     f.data()['name'],
-                                                  //     startDate: f.data()[
-                                                  //     'start_date'],
-                                                  //     runtime: f.data()[
-                                                  //     'runtime'],
-                                                  //     imageThumbnailPath: f.data()[
-                                                  //     'image_thumbnail_path'],
-                                                  //     totalSeasons: f.data()[
-                                                  //     'total_seasons'],
-                                                  //     episodePerSeason: f.data()[
-                                                  //     'episodesPerSeason'],
-                                                  //     currentSeason: f.data()[
-                                                  //     'currentSeason'],
-                                                  //     currentEpisode: f.data()[
-                                                  //     'currentEpisode'],
-                                                  //     firstWatchDate: f.data()[
-                                                  //     'startedWatching'],
-                                                  //     rating: f.data()['rating'],
-                                                  //     lastWatchDate:
-                                                  //     f.data()['lastWatched'],
-                                                  //     favorite: f.data()['favorite'] ?? false);
                                                   WatchedTVShow show = new WatchedTVShow
                                                       .fromFirestore(
                                                       f.data(), f.documentID);
                                                   GlobalVariables.watchedShowList.add(show);
-                                                  // allWatchedShows.add(show);
                                                 });
                                                 return createCarouselSlider(
                                                     GlobalVariables.watchedShowList.take(5)

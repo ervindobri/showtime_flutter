@@ -26,7 +26,7 @@ class WatchedCard extends StatelessWidget {
   Widget buildWatchedCard(BuildContext context) {
     GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
     double _percentage = show.calculateProgress();
-    double _height = MediaQuery.of(context).size.height;
+    // double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
 
     return GestureDetector(
@@ -57,7 +57,7 @@ class WatchedCard extends StatelessWidget {
                           right: 0,
                           child: Container(
                             // height: ,
-                            height: _width/2,
+                            height: _width/2.1,
                             width: _width,
                             decoration: BoxDecoration(
                               color:Colors.white,
@@ -366,7 +366,7 @@ class WatchedCard extends StatelessWidget {
   Widget floatingActions( BuildContext context, double _percentage, double cardWidth) {
     if ( _percentage < 1.0){
       return Positioned(
-        bottom: cardWidth/13,
+        bottom: cardWidth/5,
         left: cardWidth/2,
         child: Container(
           height: 60,
@@ -404,8 +404,7 @@ class WatchedCard extends StatelessWidget {
                       icon: Icons
                           .done),
                 );
-              } catch (e, s) {
-                // print(s);
+              } catch (e) {
                 StatusAlert.show(
                   context,
                   duration:
@@ -454,7 +453,6 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
 
 @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _icon = widget.show.favorite ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart;
   }
@@ -631,7 +629,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
 
   Widget _checkFinishedShow(BuildContext context, double _percentage) {
     double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    // double _height = MediaQuery.of(context).size.height;
     if ( _percentage == 1.0){
       return Container(
         child: Padding(

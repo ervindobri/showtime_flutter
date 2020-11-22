@@ -32,7 +32,6 @@ Widget unwatchDialog(BuildContext context, String showName, String showID) {
         color: GlobalColors.greyTextColor),
     titlePadding:
         EdgeInsets.only(top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
-    //TODO content add rive animation
     elevation: 5,
     actions: [
       Padding(

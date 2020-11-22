@@ -20,7 +20,6 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flare_flutter/flare_actor.dart';
 
 
 class WatchedDetailView extends StatefulWidget {
@@ -54,6 +53,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
 
   String countdown = "";
+
   Timer _timer;
 
   @override
@@ -65,7 +65,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   @override
   void initState() {
-    // TODO: implement initState
     fToast = FToast();
     fToast.init(context);
 
@@ -122,7 +121,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _refreshController.dispose();
     _controller.dispose();
     _reverseController.dispose();
@@ -137,21 +135,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 1);
   }
 
-  void _updateSize(double width, double height) {
-    setState(() {
-      containerWidth = width;
-      containerHeight = height;
-    });
-  }
   
   @override
   Widget build(BuildContext context) {
-    // WatchedTVShow show = widget.show;
-    DragStartDetails startVerticalDragDetails;
-    DragUpdateDetails updateVerticalDragDetails;
 
-    // print("AIRED ${show.nextEpisodeAired()}");
-    // _getEpisodes();
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
 
@@ -326,172 +313,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
               ),
             ),
           );
-  }
-
-
-  Widget _checkIfPopular(double percentage, String lastWatchDate, bool status, double _height, double _width) {
-    // print(status);
-    if (percentage == 1.0) {
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            height: _height / 6.5,
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * .7,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  stops: [.5, 50],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                  colors: [
-                    GlobalColors.greenColor,
-                    GlobalColors.lightGreenColor,
-                  ]),
-              color: GlobalColors.fireColor,
-              borderRadius: BorderRadius.all(Radius.circular(50.0)),
-            ),
-            child: Row(
-              children: <Widget>[
-                ClipOval(
-                  child: Container(
-                    width: _height / 10,
-                    height: _height / 10,
-                    padding: EdgeInsets.all(5),
-                    child: Center(
-                      child: FaIcon(
-                        FontAwesomeIcons.checkDouble,
-                        size: _height / 15,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                Flexible(
-                  child: Text("You finished this show",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        fontFamily: 'Raleway',
-                        fontSize: MediaQuery.of(context).size.width / 25,
-                      )),
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 25),
-            child: Container(
-              child: status
-                  ? Row(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.binoculars,
-                          color: GlobalColors.greyTextColor,
-                          size: 30,
-                        ),
-                        Text("More episodes coming soon",
-                            style: TextStyle(
-                              color: GlobalColors.greyTextColor,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Raleway',
-                              fontSize: MediaQuery.of(context).size.width / 25,
-                            )),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        FaIcon(
-                          FontAwesomeIcons.questionCircle,
-                          color: GlobalColors.greyTextColor,
-                          size: 30,
-                        ),
-                        Text("This show has ENDED",
-                            style: TextStyle(
-                              color: GlobalColors.greyTextColor,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Raleway',
-                              fontSize: MediaQuery.of(context).size.width / 25,
-                            )),
-                      ],
-                    ),
-            ),
-          )
-        ],
-      );
-    }
-    else {
-      if (widget.show.diffDays().abs() < 15) {
-        return Container(
-          width: _width * .7,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                stops: [.5, 50],
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: [
-                  GlobalColors.fireColor,
-                  Colors.orange,
-                ]),
-            color: GlobalColors.fireColor,
-            borderRadius: BorderRadius.all(Radius.circular(50.0)),
-          ),
-          child: Row(
-            children: <Widget>[
-              ClipOval(
-                child: Container(
-                  width: _height / 10,
-                  height: _height / 10,
-                  padding: EdgeInsets.all(5),
-                  child: Center(
-                    child: FaIcon(
-                      FontAwesomeIcons.fire,
-                      size: _height / 15,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
-              Flexible(
-                child: Text("You seem to like this show",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontFamily: 'Raleway',
-                      fontSize: _width / 30,
-                    )),
-              )
-            ],
-          ),
-        );
-      } else {
-        // return Positioned(
-        //   child: Container(
-        //     width: MediaQuery.of(context).size.width,
-        //     child: Row(
-        //       children: [
-        //         Container(
-        //             width: 100,
-        //             height: 100,
-        //             child: FlareActor("assets/waiting.flr", alignment:Alignment.center, fit:BoxFit.fitWidth, animation:"swing")
-        //         ),
-        //         Text(
-        //             "Episode airing soon!",
-        //             style: TextStyle(
-        //               fontSize: MediaQuery.of(context).size.width/25,
-        //               fontFamily: 'Raleway',
-        //               fontWeight: FontWeight.w500,
-        //               color: GlobalColors.greyTextColor,
-        //             )
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // );
-      }
-      return Container();
-    }
   }
 
   Widget _yourProgress(double _percentage, WatchedTVShow show, double _height, double _width) {
@@ -749,8 +570,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   Widget displayActions() {
     final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
-    // print(_percentage);
+    // final _height = MediaQuery.of(context).size.height;
     if (this.widget.show.calculateProgress() < 1.0) {
       return widget.show.nextEpisodeAired()
           ? Container(

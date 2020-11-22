@@ -23,7 +23,6 @@ class ScheduleCard extends StatefulWidget {
 class _ScheduleCardState extends State<ScheduleCard> {
   String _countdownLabel = "";
   Timer _timer;
-  int _start = 0;
   PaletteGenerator paletteGenerator;
 
   Rect region;
@@ -34,7 +33,6 @@ class _ScheduleCardState extends State<ScheduleCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     //Initialize the label text
     _countdownLabel = widget.episode.getDifference();
@@ -43,7 +41,6 @@ class _ScheduleCardState extends State<ScheduleCard> {
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     _timer?.cancel();
     super.dispose();
   }
@@ -60,7 +57,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
+    // const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
     const BorderRadius _leftRadius = BorderRadius.only(
         topLeft:  Radius.circular(75.0),
         bottomRight: Radius.circular(25.0),

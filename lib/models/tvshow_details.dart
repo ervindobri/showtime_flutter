@@ -74,7 +74,6 @@ class TVShowDetails extends TVShow{
     return x["code"].toString().toUpperCase() ?? r"N\A";
   }
 
-  //TODO: refactor
   String parseHtmlString() {
     try {
       var document = parse(this.summary);

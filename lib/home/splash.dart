@@ -17,16 +17,18 @@ import 'package:simple_animations/simple_animations.dart';
 
 import '../main.dart';
 import 'home.dart';
-import 'package:progress_state_button/iconed_button.dart';
 import 'package:progress_state_button/progress_button.dart';
 
 class SplashScreen extends StatefulWidget {
+
+  SplashScreen();
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
-  Stream<QuerySnapshot> _watchedShowsStream;
+  // Stream<QuerySnapshot> _watchedShowsStream;
   // Stream<QuerySnapshot> _GlobalVariables.allWatchedShowsStream;
 
 
@@ -40,7 +42,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   SessionUser currentUser = SessionUser();
 
   bool allDone = false;
-  Future<SessionUser> _currentUserObject;
 
   List<Episode> notAiredList = [];
 
@@ -79,22 +80,24 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     );
 
     //Listen to actve/inactive connection
-    subscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      setState(() {
-        connectionStatus = result;
-      });
-    });
+    // subscription = Connectivity()
+    //     .onConnectivityChanged
+    //     .listen((ConnectivityResult result) {
+    //   setState(() {
+    //     connectionStatus = result;
+    //   });
+    // });
+    //TODO: CHECK ACTIVE CONNECTION WITH PROVIDER
 
     // _currentUserObject = FirestoreUtils().getUserData();
 
-    if ( GlobalVariables.allWatchedShows.isEmpty){
-      _watchedShowsStream = FirestoreUtils().watchedShows.snapshots();
-    }
+    // if ( GlobalVariables.allWatchedShows.isEmpty){
+    //   _watchedShowsStream = FirestoreUtils().watchedShows.snapshots();
+    // }
     sexController.text = GlobalVariables.sexCategories[0];
     ageController.text = 1.toString();
 
+    //Call timer to check if all tasks finished
     Timer.periodic(Duration(seconds: 1), (completed) {
         if (allCompleted) {
             final home = HomeView(
@@ -117,9 +120,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   @override
   void dispose() {
     // _GlobalVariables.allWatchedShowsStream = null;
-    _watchedShowsStream = null;
+    // _watchedShowsStream = null;
     subscription = null;
-    _currentUserObject = null;
     completed?.cancel();
     super.dispose();
 
@@ -138,17 +140,18 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-    checkInternetConnectivity();
+    // checkInternetConnectivity();
+
     currentUser = Provider.of<SessionUser>(context);
     watchedShowsSnapshot = Provider.of<QuerySnapshot>(context);
-    print("splash");
+    // print("splash");
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: bgColor,
-      //   shadowColor: Colors.transparent,
-      //   brightness: Brightness.light,
-      //   toolbarHeight: 0,
-      // ),
+      appBar: AppBar(
+        backgroundColor: GlobalColors.bgColor,
+        shadowColor: Colors.transparent,
+        brightness: Brightness.light,
+        toolbarHeight: 0,
+      ),
       body: SingleChildScrollView(
         child: Container(
           color: GlobalColors.blueColor,
@@ -163,7 +166,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                         'assets/flowingbg.flr',
                         shouldClip: false,
                         callback: (boom){
-                          print(boom);
+                          // print(boom);
                           setState(() {
                             animationName = 'Flow';
                           });
@@ -605,14 +608,14 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                         Future.delayed(Duration(seconds: 2), () {
                                           setState(() {
                                             if ( _formKey.currentState.validate()){
-                                              print("validated");
+                                              // print("validated");
                                               currentUser.id = auth.currentUser.uid;
                                               currentUser.emailAddress = auth.currentUser.email;
                                               currentUser.firstName = firstNameController.text;
                                               currentUser.lastName = lastNameController.text;
                                               currentUser.age = int.parse(ageController.text);
                                               currentUser.sex= sexController.text;
-                                              print(currentUser);
+                                              // print(currentUser);
                                               FirestoreUtils().updateUserInfo(currentUser);
                                               buttonState = ButtonState.success;
                                               if ( buttonState == ButtonState.success){
@@ -685,7 +688,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   }
 
   Widget splashBody(double _width, double _height) {
-    if ( currentUser != null){
+    // print(currentUser);
+    if ( currentUser.firstName != null){
       if ( watchedShowsSnapshot != null){
           watchedShowIdList.clear();
           GlobalVariables.watchedShowList.clear();

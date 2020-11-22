@@ -7,14 +7,11 @@ import 'package:eWoke/home/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'home/home.dart';
 import 'home/login.dart';
-import 'network/firebase_utils.dart';
 
 
 
-final ThemeData _appTheme = buildAppTheme();
+// final ThemeData _appTheme = buildAppTheme();
 
 
 TextTheme buildAppTextTheme( TextTheme base){
@@ -79,20 +76,25 @@ Future<void> main() async {
 
   UserProvider.instance().initUserProvider();
   print("starting");
-  
+  //TODO: integrate PROVIDER to EVERY screen/page
   runApp(
-      MaterialApp(
+      MultiProvider(
+        providers: [
+            ChangeNotifierProvider<UserProvider>(
+                create: (_) => UserProvider.instance(),
+                builder: (context,child){
+                  return child;
+                }
+            ),
+            FutureProvider(create:(context) async => UserProvider.instance().getUserData()),
+            StreamProvider(create: (context) => ShowProvider().getWatchedShows()),
+          ],
+        child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData.light(),
           title: 'showTIME',
-          home: MultiProvider(
-            providers: [
-              ChangeNotifierProvider(create: (_) => UserProvider.instance(),),
-              FutureProvider(create:(_) async => UserProvider.instance().getUserData()),
-              StreamProvider(create: (_) => ShowProvider().getWatchedShows()),
-            ],
-            child: Router()
-          )
+          home: Router(),
+        ),
       )
   );
 }
@@ -100,14 +102,18 @@ Future<void> main() async {
 class Router extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserProvider>(
-      
-    );
-      switch(context.watch<UserProvider>().status) {
-        case Status.Authenticated:
-          return SplashScreen();
-        default:
-          return LoginScreen();
-      };
+      return Builder(
+        builder: (newContext) {
+          switch (newContext
+              .watch<UserProvider>()
+              .status) {
+            case Status.Authenticated:
+              return SplashScreen();
+            default:
+              return LoginScreen();
+          }
+        }
+      );
+
   }
 }

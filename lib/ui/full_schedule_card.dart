@@ -1,11 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
-
-import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eWoke/components/animated_cliprrect.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/tvshow.dart';
@@ -15,16 +11,12 @@ import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
 import 'package:eWoke/screens/detail_view.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
-import 'package:flip_panel/flip_panel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:slide_countdown_clock/slide_countdown_clock.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../main.dart';
 
 class FullScheduleCard extends StatefulWidget {
   final List<Episode> episodes;
@@ -57,7 +49,6 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
 
   bool _tapped;
 
-  BorderRadius _animatedRadius;
   WatchedTVShow show;
   Future<List<dynamic>> episodesObject;
 
@@ -76,10 +67,6 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
     _getShowDetails();
 
     _tapped = false;
-    _animatedRadius = BorderRadius.only(
-      bottomLeft: Radius.circular(25.0),
-      topRight: Radius.circular(25.0),
-    );
     super.initState();
     _controller = AnimationController(
       duration: const Duration(milliseconds: 250),
@@ -118,7 +105,6 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _timer.cancel();
     super.dispose();
   }

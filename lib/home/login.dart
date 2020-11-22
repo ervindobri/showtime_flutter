@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:eWoke/components/custom_elevation.dart';
+import 'package:eWoke/components/toast.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/home/splash.dart';
 import 'package:eWoke/providers/user_provider.dart';
@@ -15,6 +16,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -33,13 +35,9 @@ class _LoginScreenState extends State<LoginScreen>
 
   FaIcon eye = FaIcon(FontAwesomeIcons.eye, color: GlobalColors.greenColor);
   int _state = 0;
-
-
   final _storage = FlutterSecureStorage();
-
   var animationName = 'Shrink';
-
-
+  FToast fToast;
 
 
   // /password validator possible structure
@@ -56,17 +54,18 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getSavedData();
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = BorderRadius.vertical(
-      bottom: Radius.circular(10.0),
-      top: Radius.circular(20.0),
-    );
+    // final inputBorder = BorderRadius.vertical(
+    //   bottom: Radius.circular(10.0),
+    //   top: Radius.circular(20.0),
+    // );
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
     final textFieldHeight = 45.0;
@@ -343,6 +342,7 @@ class _LoginScreenState extends State<LoginScreen>
                                             child: CircularCheckBox(
                                               value: this.selected,
                                               activeColor: GlobalColors.greenColor,
+                                              materialTapTargetSize: MaterialTapTargetSize.padded,
                                               inactiveColor: Colors.white,
                                               hoverColor: Colors.white,
                                               checkColor: Colors.white,
@@ -524,6 +524,10 @@ class _LoginScreenState extends State<LoginScreen>
                                           _storage.write(key: 'password', value: passwordController.text);
                                           // print("saved");
                                         }
+                                        else{
+                                          _storage.delete(key: 'email');
+                                          _storage.delete(key: 'password');
+                                        }
                                         final home = SplashScreen();
                                         Navigator.of(context)
                                             .pushAndRemoveUntil(CupertinoPageRoute(
@@ -532,27 +536,25 @@ class _LoginScreenState extends State<LoginScreen>
                                       });
                                     }
                                     else{
-                                      // print(auth);
                                       setState(() {
                                         _state = 0;
                                       });
-                                      Fluttertoast.showToast(
-                                          msg: "$authenticate",
-                                          toastLength: Toast.LENGTH_LONG,
-                                          backgroundColor: GlobalColors.orangeColor,
-                                          gravity: ToastGravity.BOTTOM,
-                                          timeInSecForIosWeb: 2
+                                      Widget toast = CustomToast(
+                                          color: GlobalColors.fireColor,
+                                          icon: FontAwesomeIcons.exclamationCircle,
+                                          text: "$authenticate"
+                                      );
+                                      fToast.showToast(
+                                        child: toast,
+                                        gravity: ToastGravity.BOTTOM,
+                                        toastDuration: Duration(seconds: 3),
                                       );
                                     }
                                   });
                                 }
                                 else {
-                                  if ( passwordController.text != repasswordController.text){
-                                    Fluttertoast.showToast(msg: "Passwords do not match!");
-                                  }
-                                  else{
                                     Future.delayed(const Duration(milliseconds: 300), () async{
-                                      String authenticate = await Provider.of<UserProvider>(context).register(nameController.text, passwordController.text);
+                                      String authenticate = await Provider.of<UserProvider>(context, listen: false).register(nameController.text, passwordController.text);
                                       passwordController.clear();
                                       nameController.clear();
                                       if (authenticate == null){
@@ -563,7 +565,7 @@ class _LoginScreenState extends State<LoginScreen>
                                             const Duration(milliseconds: 300), () {
                                           setState(() {
                                             logging = true;
-                                            // _state = 1;
+                                            _state = 1;
                                           });
                                         });
                                       }
@@ -582,9 +584,6 @@ class _LoginScreenState extends State<LoginScreen>
                                       }
 
                                     });
-                                  }
-
-
                                 }
                               }
                             },
@@ -677,5 +676,10 @@ class _LoginScreenState extends State<LoginScreen>
     catch(e){
       //
     }
+  }
+  @override
+  void dispose() {
+    _state = null;
+    super.dispose();
   }
 }

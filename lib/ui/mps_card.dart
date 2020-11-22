@@ -13,7 +13,6 @@ import 'package:eWoke/screens/detail_view.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
@@ -45,7 +44,6 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
 
   @override
   void initState() {
-    // TODO: implement initState
     _tapped = false;
     super.initState();
     _controller = AnimationController(
@@ -447,49 +445,6 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
 
         ],
       ),
-    );
-  }
-
-
-
-
-  Widget _createRouteShowDetail(List<WatchedTVShow> data, int index) {
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
-
-    Future<List<dynamic>> episodes = new Network().getEpisodes(showID: data[index].id);
-    return ClipRRect(
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
-      child: FutureBuilder<Object>(
-          future: episodes,
-          builder: (context, snapshot) {
-            if ( snapshot.hasData){
-              data[index].episodes = snapshot.data;
-              return WatchedDetailView(show: data[index]);
-            }
-            else{
-              return Container(
-                width: _width,
-                height: _height*.95,
-                color: GlobalColors.bgColor,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: _width,
-                      // color: Colors.black,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
-                          // backgroundColor: GlobalColors.greenColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-          }),
     );
   }
 }

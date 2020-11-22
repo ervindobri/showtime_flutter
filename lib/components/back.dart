@@ -35,7 +35,6 @@ Widget back(BuildContext context){
               ),
             ),
           ),
-          //TODO: refresh button for fetching new data
         ],
       ),
     ),

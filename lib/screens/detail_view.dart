@@ -80,8 +80,6 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
     const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
     const double height = .66;
 
-    //TODO: REDESIGN detail view, with episode carousel, and pinned sliver with back button and show title
-    //TODO: change details gridview, to BADGES like avatars
     return ClipRRect(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(radius),
@@ -104,7 +102,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
               expand: false,
               initialChildSize: height,
               minChildSize: height,
-              maxChildSize: .95, //TODO: calculate safe height
+              maxChildSize: .95,
               builder: (context, scrollController) {
                 return Container(
                     width: _width,
@@ -338,7 +336,6 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
               }),
         ));
   }
-  //TODO: DONE add more detail badges - status, language
   getBadges() {
     List<DetailBadge> badges = [];
 

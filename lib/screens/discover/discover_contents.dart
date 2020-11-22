@@ -1,10 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/components/route.dart';
 import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/main.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
@@ -36,7 +34,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     with SingleTickerProviderStateMixin {
   List<WatchedTVShow> sortedList = [];
 
-  Stream<QuerySnapshot> _watchedShowsStream;
+  // Stream<QuerySnapshot> _watchedShowsStream;
 
   bool _sorting;
   String criteria = "Criteria";
@@ -62,7 +60,6 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _sorting = false;
     sortedList.clear();
@@ -78,7 +75,6 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     listController.removeListener(onListen);
     super.dispose();
   }
@@ -721,7 +717,6 @@ class _WatchlistViewState extends State<WatchlistView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     scrollController = widget.scrollController;
     scrollController.addListener(onListen);
@@ -731,7 +726,6 @@ class _WatchlistViewState extends State<WatchlistView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     scrollController.removeListener(onListen);
     super.dispose();
   }

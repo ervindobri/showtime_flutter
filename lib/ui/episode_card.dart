@@ -21,7 +21,6 @@ class _EpisodeCardState extends State<EpisodeCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _tapped = true;
     super.initState();
   }

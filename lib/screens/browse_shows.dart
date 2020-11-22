@@ -27,12 +27,8 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
   Future<AllTVShowList> showSearchObject;
 
   bool _searched;
-  int _results = 0;
 
   var _icon = Icon(Icons.search, color: Colors.white,);
-  Icon _searchIcon = Icon(
-    Icons.search,
-  );
   bool isSearchClicked = false;
   final TextEditingController _filter = new TextEditingController();
 
@@ -95,7 +91,6 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     showSearchObject = getSearchResults(showName: _showName);
 
@@ -373,11 +368,8 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
   Widget displaySearchHistory(BuildContext context){
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    int _selectedIndex;
-    // print(GlobalVariables.searchHistory);
     return Container(
         width: _width,
-//        color: Colors.black12,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,

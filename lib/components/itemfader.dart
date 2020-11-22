@@ -15,7 +15,6 @@ class _ItemFaderState extends State<ItemFader> with SingleTickerProviderStateMix
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _animationController = AnimationController(
       vsync: this,
