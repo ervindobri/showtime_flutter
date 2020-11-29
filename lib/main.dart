@@ -1,3 +1,4 @@
+import 'package:eWoke/providers/connectivity_service.dart';
 import 'package:eWoke/providers/show_provider.dart';
 import 'package:eWoke/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -86,9 +87,11 @@ Future<void> main() async {
                   return child;
                 }
             ),
-            FutureProvider(create:(context) async => UserProvider.instance().getUserData()),
-            StreamProvider(create: (context) => ShowProvider().getWatchedShows()),
-          ],
+            FutureProvider(create:(_) async => UserProvider.instance().getUserData()),
+            StreamProvider(create: (_) => ShowProvider().getWatchedShows()),
+            ChangeNotifierProvider(create: (_) => ShowProvider()),
+            StreamProvider(create: (_) => ConnectivityService().connectionStatusController.stream),
+        ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData.light(),

@@ -302,11 +302,11 @@ class _ScheduleCardState extends State<ScheduleCard> {
               ),
               widget.episode.getDiffDays() >= 0
                     ? Positioned(
-                        top: -(cardHeight/10),
+                        top: 0,
                         left: 0,
                         child: Container(
-                            width: 40,
-                            height: 40,
+                            width: cardWidth/5,
+                            height: cardWidth/5,
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                   colors: [ GlobalColors.blueColor, GlobalColors.lightGreenColor]

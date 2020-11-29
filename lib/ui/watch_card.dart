@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/constants/theme_utils.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -91,12 +92,7 @@ class WatchedCard extends StatelessWidget {
                                                       maxFontSize: (_width/10).roundToDouble(),
                                                       stepGranularity: .1,
                                                       maxLines: 1,
-                                                      style: TextStyle(
-                                                        fontWeight: FontWeight.w700,
-                                                        color: GlobalColors.greyTextColor,
-                                                        // fontSize: MediaQuery.of(context).size.height/30,
-                                                        fontFamily: 'Raleway',
-                                                      ),
+                                                      style: ShowTheme.watchCardTitleStyle,
                                                 ),
                                           ),
                                         ),
@@ -548,11 +544,11 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                   bottomRight: Radius.circular(25.0)
                               ),
                               child:  BackdropFilter(
-                                filter:  ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
+                                filter:  ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                                 child:  Container(
                                 width: _width*.55,
                                   decoration:  BoxDecoration(
-                                      color: Colors.black.withOpacity(0.66),
+                                      color: Colors.black.withOpacity(.33),
                                       borderRadius: BorderRadius.only(
                                         // topRight: Radius.circular(25.0),
                                         // bottomRight: Radius.circular(25.0),
@@ -571,18 +567,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                               stepGranularity: .1,
                                               maxLines: 2,
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                shadows: [
-                                                  new Shadow(
-                                                    color: Colors.black,
-                                                    blurRadius: 15,
-                                                  )
-                                                ],
-                                                color: Colors.white,
-                                                fontFamily: 'Raleway',
-                                                fontWeight: FontWeight.w700,
-                                                // fontSize: _width / 15,
-                                              ),
+                                              style: ShowTheme.listWatchCardTitleStyle,
                                             ),
                                           ),
                                         ),
@@ -612,9 +597,9 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                     child: GlobalVariables.allBadges['finished'],
                                 )
                                 : Container(
-                                    height: 1,
-                                    width: 1,
-                                ),
+                              height: 1,
+                              width: 1,
+                            ),
                             _ratingBadge(),
                           ],
                         ),
@@ -632,41 +617,17 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
     // double _height = MediaQuery.of(context).size.height;
     if ( _percentage == 1.0){
       return Container(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 30.0),
-          child: Column(
-            children: [
-              Text(
-                widget.show.stopWatch().toString(),
-                style: TextStyle(
-                  shadows: [
-                    new Shadow(
-                      color: Colors.black,
-                      blurRadius: 15,
-                    )
-                  ],
-                  color: Colors.white,
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.w700,
-                  fontSize: _width / 10,
-                ),
-              ),
-              AutoSizeText(
-                "Days to finish",
-                style: TextStyle(
-                  shadows: [
-                    new Shadow(
-                      color: Colors.black,
-                      blurRadius: 15,
-                    )
-                  ],
-                  color: Colors.white,
-                  fontFamily: 'Raleway',
-                  fontSize: _width / 20,
-                ),
-              ),
-            ],
-          ),
+        child: Column(
+          children: [
+            Text(
+              widget.show.stopWatch().toString(), //days
+              style: ShowTheme.listWatchCardDaysStyle,
+            ),
+            AutoSizeText(
+              "Days to finish",
+              style: ShowTheme.listWatchCardSubStyle,
+            ),
+          ],
         ),
       );
     }
@@ -683,11 +644,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
             percent: _percentage,
             center: new Text(
               "${(_percentage * 100).floor()} %",
-              style: TextStyle(
-                  fontFamily: 'Raleway',
-                  fontSize: _width/ 15,
-                  fontWeight: FontWeight.w700,
-                  color: GlobalColors.blueColor),
+              style: ShowTheme.listWatchCardPercentStyle
             ),
           ),
         ),
@@ -699,8 +656,6 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
   Widget _addToFavorites(BuildContext context, WatchedTVShow show) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal:5.0),
       child: InkWell(
@@ -783,12 +738,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
             Center(
               child: Text(
                 widget.show.rating.toString() ?? "0.0",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.w700,
-                  fontSize: _width / 15,
-                ),
+                style: ShowTheme.listWatchCardBadgeStyle
               )
             )
         ),

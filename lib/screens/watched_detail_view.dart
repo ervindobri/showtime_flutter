@@ -573,126 +573,138 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     // final _height = MediaQuery.of(context).size.height;
     if (this.widget.show.calculateProgress() < 1.0) {
       return widget.show.nextEpisodeAired()
-          ? Container(
-        // color: Colors.black,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: _width/2.5,
-                    height: _width/7,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        color: GlobalColors.lightGreenColor.withOpacity(.3)
-                    ),
-                    child: FlatButton(
-                      splashColor: Colors.white,
-                      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-                      clipBehavior: Clip.antiAlias,
-                      onPressed: () {
-                        showAnimatedDialog(
-                          context: context,
-                          animationType: DialogTransitionType.slideFromBottomFade,
-                          barrierDismissible: false,
-                          duration: Duration(milliseconds: 100),
-                          builder: (BuildContext context) {
-                            return unwatchDialog(context, widget.show.name, widget.show.id);
-                          },
-                        );
-                      },
-                      child: Center(
-                        child: Text(
-                          "Unwatch",
-                          style: TextStyle(
-                            color: GlobalColors.greenColor,
-                            fontSize: 20,
-                          ),
+          ? Column(
+            children: [
+                Container(
+                // color: Colors.black,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: _width/2.5,
+                        height: _width/7,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                            color: GlobalColors.lightGreenColor.withOpacity(.3)
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: _width/2.5,
-                    height: _width/7,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        color: GlobalColors.greenColor.withOpacity(1)
-                    ),
-                    child: FlatButton(
-                      splashColor: Colors.white,
-                      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-                      onPressed: () {
-                        try {
-                          setState(() {
-                            widget.show.incrementEpisodeWatch();
-                          });
-                          widget.show.setLastWatchedDate();
-                          FirestoreUtils().updateEpisode(widget.show);
-                          StatusAlert.show(
-                            context,
-                            duration:
-                            Duration(
-                                seconds:
-                                1),
-                            blurPower: 15.0,
-                            title:
-                            'Episode added',
-                            configuration:
-                            IconConfiguration(
-                                icon: Icons
-                                    .done),
-                          );
-                        } catch (e, s) {
-                          print(s);
-                          StatusAlert.show(
-                            context,
-                            duration:
-                            Duration(
-                                seconds: 1),
-                            blurPower: 15.0,
-                            title:
-                            '{$e}:Couldn\'t add episode!',
-                            configuration:
-                            IconConfiguration(
-                                icon: Icons
-                                    .error),
-                          );
-                        }
-
-                      },
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
+                        child: CustomElevation(
+                          color: GlobalColors.greenColor.withOpacity(.3),
+                          child: FlatButton(
+                            splashColor: Colors.white,
+                            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
+                            clipBehavior: Clip.antiAlias,
+                            onPressed: () {
+                              showAnimatedDialog(
+                                context: context,
+                                animationType: DialogTransitionType.slideFromBottomFade,
+                                barrierDismissible: false,
+                                duration: Duration(milliseconds: 100),
+                                builder: (BuildContext context) {
+                                  return unwatchDialog(context, widget.show.name, widget.show.id);
+                                },
+                              );
+                            },
+                            child: Center(
                               child: Text(
-                                "Next",
+                                "Unwatch",
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: GlobalColors.greenColor,
                                   fontSize: 20,
                                 ),
                               ),
                             ),
-                            Container(
-                              child: FaIcon(
-                                Icons.add_to_queue,
-                                color: Colors.white,
-                              ),
-                            )
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
-            ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: _width/2.5,
+                        height: _width/7,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                            color: GlobalColors.greenColor.withOpacity(1)
+                        ),
+                        child: CustomElevation(
+                          color: GlobalColors.greenColor.withOpacity(.3),
+                          spreadRadius: 2,
+                          blurRadius: 15,
+                          child: FlatButton(
+                            splashColor: Colors.white,
+                            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
+                            onPressed: () {
+                              try {
+                                setState(() {
+                                  widget.show.incrementEpisodeWatch();
+                                });
+                                widget.show.setLastWatchedDate();
+                                FirestoreUtils().updateEpisode(widget.show);
+                                StatusAlert.show(
+                                  context,
+                                  duration:
+                                  Duration(
+                                      seconds:
+                                      1),
+                                  blurPower: 15.0,
+                                  title:
+                                  'Episode added',
+                                  configuration:
+                                  IconConfiguration(
+                                      icon: Icons
+                                          .done),
+                                );
+                              } catch (e, s) {
+                                print(s);
+                                StatusAlert.show(
+                                  context,
+                                  duration:
+                                  Duration(
+                                      seconds: 1),
+                                  blurPower: 15.0,
+                                  title:
+                                  '{$e}:Couldn\'t add episode!',
+                                  configuration:
+                                  IconConfiguration(
+                                      icon: Icons
+                                          .error),
+                                );
+                              }
+
+                            },
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "Next",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    child: FaIcon(
+                                      Icons.add_to_queue,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
           )
           : Column(
             children: [
@@ -709,30 +721,35 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
                         color: GlobalColors.lightGreenColor.withOpacity(.3)
                     ),
-                    child: FlatButton(
-                      splashColor: Colors.white,
-                      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-                      clipBehavior: Clip.antiAlias,
-                      onPressed: () {
-                        showAnimatedDialog(
-                          context: context,
-                          animationType: DialogTransitionType.slideFromBottomFade,
-                          barrierDismissible: false,
-                          duration: Duration(milliseconds: 100),
-                          builder: (BuildContext context) {
-                            return unwatchDialog(context, widget.show.name, widget.show.id);
-                          },
-                        );
-                      },
-                      child: Center(
-                        child: Text(
-                          "Unwatch",
-                            style: GoogleFonts.roboto(
-                            textStyle: TextStyle(
-                            fontSize: 22,
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.w500,
-                            color: GlobalColors.greenColor
+                    child: CustomElevation(
+                      color: GlobalColors.greenColor.withOpacity(.2),
+                      spreadRadius: -2,
+                      blurRadius: 10,
+                      child: FlatButton(
+                        splashColor: Colors.white,
+                        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
+                        clipBehavior: Clip.antiAlias,
+                        onPressed: () {
+                          showAnimatedDialog(
+                            context: context,
+                            animationType: DialogTransitionType.slideFromBottomFade,
+                            barrierDismissible: false,
+                            duration: Duration(milliseconds: 100),
+                            builder: (BuildContext context) {
+                              return unwatchDialog(context, widget.show.name, widget.show.id);
+                            },
+                          );
+                        },
+                        child: Center(
+                          child: Text(
+                            "Unwatch",
+                              style: GoogleFonts.roboto(
+                              textStyle: TextStyle(
+                              fontSize: 22,
+                              fontFamily: 'Raleway',
+                              fontWeight: FontWeight.w500,
+                              color: GlobalColors.greenColor
+                              ),
                             ),
                           ),
                         ),
@@ -749,37 +766,42 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
                         color: GlobalColors.fireColor
                     ),
-                    child: FlatButton(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.redAccent,
-                      shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-                      onPressed: () {
-                        print("ep not aired");
-                        Widget toast = CustomToast(color: GlobalColors.fireColor,icon: Icons.timer, text: "Episode air date: ${widget.show.nextEpisodeAirDate()[1]}");
-                        fToast.showToast(
-                          child: toast,
-                          gravity: ToastGravity.TOP,
-                          toastDuration: Duration(seconds: 2),
-                        );
-                      },
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: AutoSizeText(
-                                countdown.toString(),
-                                maxFontSize: 16,
-                                minFontSize: 10,
-                                style: GoogleFonts.roboto(
-                                    // fontSize: 19,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white
+                    child: CustomElevation(
+                      color: GlobalColors.fireColor.withOpacity(.3),
+                      spreadRadius: 2,
+                      blurRadius: 15,
+                      child: FlatButton(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.redAccent,
+                        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
+                        onPressed: () {
+                          print("ep not aired");
+                          Widget toast = CustomToast(color: GlobalColors.fireColor,icon: Icons.timer, text: "Episode air date: ${widget.show.nextEpisodeAirDate()[1]}");
+                          fToast.showToast(
+                            child: toast,
+                            gravity: ToastGravity.TOP,
+                            toastDuration: Duration(seconds: 2),
+                          );
+                        },
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: AutoSizeText(
+                                  countdown.toString(),
+                                  maxFontSize: 16,
+                                  minFontSize: 10,
+                                  style: GoogleFonts.roboto(
+                                      // fontSize: 19,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

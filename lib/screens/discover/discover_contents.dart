@@ -6,6 +6,7 @@ import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
+import 'package:eWoke/providers/show_provider.dart';
 import 'package:eWoke/screens/browse_shows.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:eWoke/ui/watch_card.dart';
@@ -19,7 +20,7 @@ import 'dart:developer';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flare_flutter/flare_actor.dart';
-
+import 'package:provider/provider.dart';
 
 
 class DiscoverWatchList extends StatefulWidget {
@@ -137,10 +138,11 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   }
   Widget build(BuildContext context) {
     //TODO: set scrolloffset to 0 after sorting
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
 
-    // if (listController.hasClients) debugPrint(listController.position.toString());
+    var shows = (context).watch<ShowProvider>().watchedShowList;
+    sortedList = shows;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -246,7 +248,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                             )
                         ),
                         // ignore: missing_required_param
-                        child: createListView(),
+                        child: createListView(shows),
                       ),
                     ), //pass title, and get content
                   ],
@@ -463,7 +465,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     );
   }
 
-  Widget createListView() {
+  Widget createListView(List<WatchedTVShow> shows) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     // log("Creating watchlistview");
@@ -547,132 +549,9 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     else{
         if (!_sorting){
           log("not sorting");
-          return StreamBuilder(
-              stream: FirestoreUtils().watchedShows.snapshots(),
-              builder: (_, snapshot) {
-                // log("stream");
-                List<Widget> children;
-                print(snapshot.connectionState);
-                if (!snapshot.hasData) {
-                  //TODO: SHOW PROGRESS LOADING, PlACEHOLDER ANIMATED CARDS
-                  return Container();
-                } else {
-                  //region BUILD_LIST
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.waiting:
-                      children = <Widget>[
-                        Container(
-                          height: _height,
-                          child: Center(
-                            child: Theme(
-                              data: Theme.of(context)
-                                  .copyWith(accentColor: Colors.white),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 6.5,
-                              ),
-                            ),
-                          ),
-                        )
-                      ];
-                      break;
-                  //endregion
-                    default:
-                      GlobalVariables.list.clear();
-                      // allWatchedShows.clear();
-                      // log("cleared watched tv show lists");
-                      if ( snapshot.data.documents.length > 0){
-                        snapshot.data.documents.forEach((f) {
-                          WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.documentID);
-                          GlobalVariables.list.add(show);
-                          GlobalVariables.allWatchedShows.add(show);
-                        });
-                      }
-                      else{
-                        return Container(
-                          width: _width,
-                          height: _height,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 40.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 30),
-                                  child: AutoSizeText(
-                                    "No sho'",
-                                    minFontSize: 20,
-                                    maxFontSize: 30,
-                                    maxLines: 3,
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.roboto(
-                                        color: watchlistBlue,
-                                        fontSize: 25,
-                                        fontWeight: FontWeight.w700
-                                    ),
-                                  ),
-                                ),
-                                FlatButton(
-                                  shape: RoundedRectangleBorder(
-                                    side: BorderSide(
-                                        color: watchlistBlue
-                                    ),
-                                    borderRadius: BorderRadius.all(Radius.circular(15)),
-                                  ),
-                                  textColor: watchlistBlue,
-                                  color: GlobalColors.bgColor,
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        createRouteAllShows(AllTVShows()));
-                                  }, child: Container(
-                                  width: _width/3,
-                                  child: AutoSizeText(
-                                    "Search shows",
-                                    minFontSize: 16,
-                                    maxFontSize: 20,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.roboto(
-                                        fontSize: 25,
-                                        decoration: TextDecoration.underline
-                                    ),
-                                  ),
-                                ),
-                                ),
-                                SizedBox(
-                                  width: _width*.8,
-                                  height: _height/3,
-                                  child: FlareActor("assets/empty-blue.flr",
-                                      alignment: Alignment.center,
-                                      fit: BoxFit.contain,
-                                      animation: "Idle"),
-
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                      break;
-                  }
-                }
-                List filteredList = sortedList.where((e) => e.name.toLowerCase().contains( _searchTerm.toLowerCase())).toList();
-                if ( _searchTerm != ""){
-                  if (filteredList.length > 0 ){
-                    return WatchlistView(list: filteredList,              scrollController: listController,
-                    );
-                  }
-                  else{
-                    return Text("No data");
-                  }
-                }
-                else {
-                  return WatchlistView(
-                      list: GlobalVariables.watchedShowList,
+          return WatchlistView(
+                      list: shows,
                     scrollController: listController,
-
-                  );
-                }
-              }
           );
         }
         else{

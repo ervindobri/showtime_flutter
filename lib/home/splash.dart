@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
@@ -7,6 +8,8 @@ import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
+import 'package:eWoke/providers/connectivity_service.dart';
+import 'package:eWoke/providers/show_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -37,7 +40,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   var connectionStatus;
 
   Future<List<List<Episode>>> _scheduledEpisodes;
-  List<int> watchedShowIdList = [];
 
   SessionUser currentUser = SessionUser();
 
@@ -65,7 +67,12 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   Timer completed;
 
   QuerySnapshot watchedShowsSnapshot;
+  List<WatchedTVShow> watchedShowsList = [];
+
+  ShowProvider showProvider;
+
   @override
+
   void initState() {
     super.initState();
 
@@ -76,7 +83,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
     animation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeInCubic,
+      curve: Curves.easeOut,
     );
 
     //Listen to actve/inactive connection
@@ -102,13 +109,16 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
         if (allCompleted) {
             final home = HomeView(
               user: currentUser,
-              notAiredList: notAiredList,
-              watchedShowsList: GlobalVariables.watchedShowList,
+              watchedShowsList: watchedShowsList,
             );
 
             Navigator.of(context)
-                .pushAndRemoveUntil(CupertinoPageRoute(
-                builder: (context) => home,
+                .pushAndRemoveUntil(
+                MaterialPageRoute(
+                builder: (context) => ListenableProvider<ShowProvider>.value(
+                    value: showProvider,
+                    child: home
+                ),
             ), (route) => false);
 
             completed.cancel();
@@ -142,9 +152,12 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     final _height = MediaQuery.of(context).size.height;
     // checkInternetConnectivity();
 
+    connectionStatus = Provider.of<ConnectivityStatus>(context);
     currentUser = Provider.of<SessionUser>(context);
-    watchedShowsSnapshot = Provider.of<QuerySnapshot>(context);
-    // print("splash");
+    showProvider = Provider.of<ShowProvider>(context);
+    watchedShowsList = Provider.of<List<WatchedTVShow>>(context) ?? [];
+    // print(connectionStatus);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: GlobalColors.bgColor,
@@ -180,7 +193,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                   //ANIMATE IN LOGO
                     SlideTransition(
                         position: Tween<Offset>(
-                            begin: Offset(1, 0),
+                            begin: Offset(0, -1),
                             end: Offset.zero,
                     ).animate(animation),
                     child: Padding(
@@ -622,7 +635,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                 Future.delayed(Duration(seconds: 2),(){
                                                   final home = HomeView(
                                                     user: currentUser,
-                                                    notAiredList: notAiredList,
+                                                    // notAiredList: notAiredList,
                                                     watchedShowsList: GlobalVariables.watchedShowList,
                                                   );
                                                   Navigator.of(context)
@@ -689,24 +702,60 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
   Widget splashBody(double _width, double _height) {
     // print(currentUser);
-    if ( currentUser.firstName != null){
-      if ( watchedShowsSnapshot != null){
-          watchedShowIdList.clear();
-          GlobalVariables.watchedShowList.clear();
-          watchedShowsSnapshot.docs.forEach((f) {
-            watchedShowIdList.add(int.parse(f.id));
-            WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data(), f.id);
-            GlobalVariables.watchedShowList.add(show);
-          });
-          _scheduledEpisodes = FirestoreUtils().getEpisodeList(watchedShowIdList);
+    if ( connectionStatus == ConnectivityStatus.Offline){
+      return Container(
+        width: _width,
+        height: _height*.6,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FaIcon(
+                      FontAwesomeIcons.exclamationCircle,
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "No internet connection",
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    if ( currentUser?.firstName != null){
+      if ( watchedShowsList != null){
+          // log(GlobalVariables.watchedShowIdList.length.toString());
+          (context).watch<ShowProvider>().setList(watchedShowsList);
+
+          // log("WATCHLIST - "  + shows.length.toString());
+          _scheduledEpisodes = FirestoreUtils().getEpisodeList(GlobalVariables.watchedShowIdList);
           return FutureBuilder(
               future: _scheduledEpisodes,
               builder: (context, snapshot) {
                 if ( snapshot.hasData){
                   // print("loading scheduled episodes");
                   // print(snapshot.data);
+                  notAiredList.clear();
                   if ( snapshot.data.length > 0){
-                    for(int index=0 ; index < 5; index++){
+                    // print(snapshot.data.length);
+                    for(int index=0 ; index < snapshot.data.length; index++){
                       GlobalVariables.scheduledEpisodes.add(snapshot.data[index]);
                       int notAired = snapshot.data[index].length - 1;
                       for(int i=0; i< snapshot.data[index].length ; i++){
@@ -715,10 +764,13 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                           break;
                         }
                       }
+                      // print(snapshot.data[index][notAired].name);
                       notAiredList.add(snapshot.data[index][notAired]);
                     }
                   }
                   notAiredList.sort( (a,b) => a.airDate.compareTo(b.airDate));
+
+                  (context).watch<ShowProvider>().setScheduledList(notAiredList);
 
                   // print(notAiredList.length);
                   Timer.run(() {

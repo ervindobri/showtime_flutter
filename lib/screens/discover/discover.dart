@@ -1,3 +1,4 @@
+import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/screens/discover/most_popular_shows.dart';
 import 'package:eWoke/screens/discover/discover_contents.dart';
 import 'package:eWoke/screens/discover/progress.dart';
@@ -18,21 +19,14 @@ class SecondPageRoute extends CupertinoPageRoute {
 }
 
 
-final Map<String, dynamic> discoverMap = {
-  "Overall Progress": OverallProgress(),
-  "Most popular shows": MostPopularShows(),
-  "Watchlist": DiscoverWatchList(),
-  "Favorites": MostPopularShows()
-};
-
 class DiscoverRoute extends StatelessWidget {
   final List data;
 
   const DiscoverRoute({Key key, this.data}) : super(key: key);
 
   _selectDiscoverContent(data) {
-    print(data);
-    return discoverMap[data];
+    // print(data);
+    return GlobalVariables.discoverMap[data];
   }
 
   @override

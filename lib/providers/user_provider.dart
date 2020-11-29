@@ -27,9 +27,8 @@ class UserProvider  with ChangeNotifier {
   initUserProvider() async {
     String email = await FlutterSecureStorage().read(key: 'email');
     String password = await FlutterSecureStorage().read(key: 'password');
-    print(email + password);
-
     if ( email != null && password != null){
+      print(email + password);
      _status = Status.Authenticated;
     }
     else{

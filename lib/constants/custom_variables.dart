@@ -3,6 +3,9 @@ import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/models/tvshow_details.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/models/episode.dart';
+import 'package:eWoke/screens/discover/discover_contents.dart';
+import 'package:eWoke/screens/discover/most_popular_shows.dart';
+import 'package:eWoke/screens/discover/progress.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -22,6 +25,11 @@ class GlobalColors{
 
   static const orangeColor = const Color(0xFFff2819);
   static const bgColor = const Color(0xFFF9F9F9);
+
+
+  static const Color watchCardFontColor = Colors.white;
+  static const Color watchCardShadowColor = Colors.black;
+
 
 }
 
@@ -52,10 +60,19 @@ class GlobalVariables{
   static List<WatchedTVShow> list = new List<WatchedTVShow>();
 
   static List<WatchedTVShow> allWatchedShows = new List<WatchedTVShow>();
+  static List<int> watchedShowIdList = [];
 
 
   static List<List<TVShow>>limitedShows = [];
   static List<String> showLinks = [];
+
+
+  static final Map<String, dynamic> discoverMap = {
+    "Overall Progress": OverallProgress(),
+    "Most popular shows": MostPopularShows(),
+    "Watchlist": DiscoverWatchList(),
+    "Favorites": MostPopularShows()
+  };
 
 
   static void clearAll() {

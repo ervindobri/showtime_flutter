@@ -49,6 +49,11 @@ class Episode{
   }
 
 
+  @override
+  String toString() {
+    return 'Episode{id: $id, season: $season, episode: $episode, name: $name, airDate: $airDate, airTime: $airTime, runtime: $runtime, image: $image, summary: $summary, embedded: $embedded}';
+  }
+
   bool aired(){
     if ( this.airDate != null ) {
       var airDate = DateTime.parse("${this.airDate} ${this.airTime}:00.000");
