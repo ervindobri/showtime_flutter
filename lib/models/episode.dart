@@ -55,14 +55,20 @@ class Episode{
   }
 
   bool aired(){
-    if ( this.airDate != null ) {
-      var airDate = DateTime.parse("${this.airDate} ${this.airTime}:00.000");
-      // print(airDate);
-      var diff = airDate.difference(DateTime.now());
-      // print(diff);
-      return diff < Duration(seconds: 0);
+    try{
+      if ( this.airDate != null ) {
+        var airDate = DateTime.parse("${this.airDate} ${this.airTime}:00.000");
+        // print(airDate);
+        var diff = airDate.difference(DateTime.now());
+        // print(diff);
+        return diff < Duration(seconds: 0);
+      }
+      return false;
     }
-    return false;
+    catch(e){
+      return false;
+    }
+
   }
 
   String getDifference() {

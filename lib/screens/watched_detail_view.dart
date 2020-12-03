@@ -112,7 +112,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     _reverseController.forward();
 
     setState(() {
-      countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes() == 0 ? 0: widget.show.calculateWatchedEpisodes()- 1].getDifference();
+      countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes() == 0 ? 0: widget.show.calculateWatchedEpisodes()].getDifference();
     });
     startTimer();
 
@@ -591,8 +591,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                         ),
                         child: CustomElevation(
                           color: GlobalColors.greenColor.withOpacity(.3),
+                          blurRadius: 5,
+                          spreadRadius: 3,
                           child: FlatButton(
-                            splashColor: Colors.white,
+                            splashColor: GlobalColors.greenColor,
                             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                             clipBehavior: Clip.antiAlias,
                             onPressed: () {
@@ -633,7 +635,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                           spreadRadius: 2,
                           blurRadius: 15,
                           child: FlatButton(
-                            splashColor: Colors.white,
+                            splashColor: GlobalColors.darkGreenColor,
                             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                             onPressed: () {
                               try {
@@ -791,10 +793,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 padding: const EdgeInsets.all(8.0),
                                 child: AutoSizeText(
                                   countdown.toString(),
-                                  maxFontSize: 16,
-                                  minFontSize: 10,
-                                  style: GoogleFonts.roboto(
-                                      // fontSize: 19,
+                                  maxFontSize: 20,
+                                  minFontSize: 13,
+                                  style: GoogleFonts.lato(
+                                      fontSize: _width/22,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white
                                   ),
@@ -873,13 +875,13 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
      );
     }
   }
-  void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
-        oneSec,
-            (Timer timer) {
-          setState(() => countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes()].getDifference());
-        }
-    );
-  }
+  // void startTimer() {
+  //   const oneSec = const Duration(seconds: 1);
+  //   _timer = new Timer.periodic(
+  //       oneSec,
+  //           (Timer timer) {
+  //         setState(() => countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes()].getDifference());
+  //       }
+  //   );
+  // }
 }

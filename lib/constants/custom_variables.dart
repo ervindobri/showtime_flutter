@@ -12,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class GlobalColors{
   static const greenColor = const Color(0xFF00C797);
   static const lightGreenColor = const Color(0xFF80E6CE);
+  static const darkGreenColor = const Color(0xFF029c78);
   static const blueColor = const Color(0xFF8196FF);
   static const greyTextColor = const Color(0xFF565656);
 

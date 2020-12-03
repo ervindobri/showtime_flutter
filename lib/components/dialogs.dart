@@ -22,7 +22,7 @@ Widget unwatchDialog(BuildContext context, String showName, String showID) {
     contentTextStyle: TextStyle(
         fontFamily: 'Raleway',
         fontSize: 15,
-        fontWeight: FontWeight.w200,
+        fontWeight: FontWeight.w300,
         color: GlobalColors.greyTextColor),
     contentPadding: EdgeInsets.only(top: 5.0, bottom: 1.0, left: 25.0, right: 25.0),
     titleTextStyle: TextStyle(

@@ -132,7 +132,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                   Padding(
                                     padding: const EdgeInsets
                                         .symmetric(
-                                        horizontal: 0.0,
+                                        horizontal: 25.0,
                                         vertical: 10.0),
                                     child: Container(
                                       height: _height / 20,
@@ -170,13 +170,15 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                       child:
                                                       Center(
                                                         child:
-                                                        Text(
-                                                          widget.show
-                                                              .genres[index],
+                                                        AutoSizeText(
+                                                          widget.show.genres[index],
+                                                          maxFontSize: 16,
+                                                          minFontSize: 13,
+                                                          maxLines: 1,
                                                           style: GoogleFonts.roboto(
-                                                              color: Colors.white,
-                                                            fontWeight: FontWeight.w700,
-                                                            fontSize: _width/20
+                                                                color: Colors.white,
+                                                                fontWeight: FontWeight.w700,
+                                                                fontSize: _width/20
                                                           ),
                                                         ),
                                                       ),

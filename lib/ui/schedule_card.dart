@@ -332,7 +332,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
-                            width: 110,
+                            width: 120,
                             height: 30,
                             // color: Colors.black,
                             child: Center(

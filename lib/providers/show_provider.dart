@@ -8,9 +8,11 @@ import 'package:flutter/cupertino.dart';
 class ShowProvider extends ChangeNotifier{
   List<WatchedTVShow> _watchedShowList = [];
   List<Episode> _scheduledList = [];
+  WatchedTVShow _currentShow;
 
   List<WatchedTVShow> get watchedShowList => _watchedShowList;
   List<Episode> get scheduledList => _scheduledList;
+  WatchedTVShow get currentShow => _currentShow;
 
   var _watchedShowsStream = FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots();
 
@@ -29,8 +31,15 @@ class ShowProvider extends ChangeNotifier{
     return x;
   }
 
+  setCurrentShow(WatchedTVShow show){
+     _currentShow = show;
+     notifyListeners();
+  }
 
-
+  nextAirDate(){
+    notifyListeners();
+    return currentShow.episodes[currentShow.calculateWatchedEpisodes()].getDifference();
+  }
 
   void setList(List<WatchedTVShow> watchedShowsList) {
      _watchedShowList = watchedShowsList;
