@@ -31,44 +31,27 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
-  // Stream<QuerySnapshot> _watchedShowsStream;
-  // Stream<QuerySnapshot> _GlobalVariables.allWatchedShowsStream;
-
-
 
   StreamSubscription<ConnectivityResult> subscription;
   var connectionStatus;
-
   Future<List<List<Episode>>> _scheduledEpisodes;
-
   SessionUser currentUser = SessionUser();
-
   bool allDone = false;
-
   List<Episode> notAiredList = [];
-
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
   TextEditingController ageController = new TextEditingController();
   TextEditingController sexController = new TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
   ButtonState buttonState = ButtonState.idle;
-
   var animationName = 'Shrink';
-
   Animation<double> animation;
   AnimationController _controller;
-
-  // var notCompleted = true;
-
   bool allCompleted = false;
   Timer completed;
-
   QuerySnapshot watchedShowsSnapshot;
   List<WatchedTVShow> watchedShowsList = [];
-
   ShowProvider showProvider;
 
   @override
@@ -96,11 +79,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     // });
     //TODO: CHECK ACTIVE CONNECTION WITH PROVIDER
 
-    // _currentUserObject = FirestoreUtils().getUserData();
-
-    // if ( GlobalVariables.allWatchedShows.isEmpty){
-    //   _watchedShowsStream = FirestoreUtils().watchedShows.snapshots();
-    // }
     sexController.text = GlobalVariables.sexCategories[0];
     ageController.text = 1.toString();
 
@@ -129,7 +107,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
   @override
   void dispose() {
-    // _GlobalVariables.allWatchedShowsStream = null;
     // _watchedShowsStream = null;
     subscription = null;
     completed?.cancel();

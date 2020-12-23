@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/episode.dart';
@@ -10,12 +12,12 @@ class ShowProvider extends ChangeNotifier{
   List<Episode> _scheduledList = [];
   WatchedTVShow _currentShow;
 
+
   List<WatchedTVShow> get watchedShowList => _watchedShowList;
   List<Episode> get scheduledList => _scheduledList;
   WatchedTVShow get currentShow => _currentShow;
 
   var _watchedShowsStream = FirestoreUtils().watchedShows.orderBy('lastWatched', descending: true).snapshots();
-
 
    Stream<List<WatchedTVShow>> getWatchedShows(){
     GlobalVariables.watchedShowIdList.clear();
@@ -51,4 +53,5 @@ class ShowProvider extends ChangeNotifier{
      _scheduledList = notAiredList;
      // notifyListeners();
   }
+
 }

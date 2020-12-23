@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:eWoke/constants/theme_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:eWoke/models/episode.dart';
@@ -65,38 +66,36 @@ class _ScheduleCardState extends State<ScheduleCard> {
         topRight: Radius.circular(25.0),
     );
     double airHeight = _height/13;
-    double cardHeight = _height / 4.2;
+    double cardHeight = _height / 4;
     double cardWidth = _height / 3;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),
-      child: GestureDetector(
-        onTap: () => print("scheduled show"),
-        child: Container(
-          width: cardWidth,
-          height: cardHeight,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: _leftRadius,
-            boxShadow: [ new BoxShadow(
-                color: Colors.black.withOpacity(.3),
-                blurRadius: 15.0,
-                spreadRadius:-5,
-                offset: Offset(0, 5)),
-            ],
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.topCenter,
-            children: [
-              Container(
-                // color: Colors.black,
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Stack(
-                    children: [
-                      Container(
-                        // color: Colors.black,
+      child: Container(
+        width: cardWidth,
+        height: cardHeight,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: _leftRadius,
+          boxShadow: [ BoxShadow(
+              color:  Colors.grey,
+              blurRadius: 15.0,
+              spreadRadius:-5,
+              offset: Offset(0, 5)),
+          ],
+        ),
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.topCenter,
+          children: [
+            Container(
+              // color: Colors.black,
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Stack(
+                  children: [
+                    Container(
+                        child: SingleChildScrollView(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -243,112 +242,112 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                       ),
                               ),
                             ],
-                          )
-                      ),
-                    ],
-                  ),
+                          ),
+                        )
+                    ),
+                  ],
                 ),
               ),
-              Positioned(
-                bottom: -(airHeight / 2),
-                child: Container(
-                  height: airHeight+5,
-                  width: _width * .35,
-                  decoration: BoxDecoration(
-                      color:  widget.episode.getDiffDays().abs() > 3 ? GlobalColors.lightGreenColor : GlobalColors.orangeColor,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                      boxShadow: [new BoxShadow(
-                          color:widget.episode.getDiffDays().abs() > 3 ? GlobalColors.lightGreenColor.withOpacity(.5) : GlobalColors.fireColor.withOpacity(1),
-                          blurRadius: 5.0,
-                          spreadRadius: -2,
-                          offset: Offset(0, 2)
-                      )
-                      ]
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                          widget.episode.getAirDateLabel(),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            color: Colors.white,
-                            fontSize: _width / 25,
-                            fontFamily: 'Raleway',
-                          )
+            ),
+            Positioned(
+              bottom: -(airHeight / 2),
+              child: Container(
+                height: airHeight+5,
+                width: _width * .35,
+                decoration: BoxDecoration(
+                    color:  widget.episode.getDiffDays().abs() > 3 ? GlobalColors.lightGreenColor : GlobalColors.orangeColor,
+                    borderRadius: ShowTheme.radius50,
+                    boxShadow: [BoxShadow(
+                        color:widget.episode.getDiffDays().abs() > 3 ? GlobalColors.lightGreenColor.withOpacity(.5) : GlobalColors.fireColor.withOpacity(1),
+                        blurRadius: 5.0,
+                        spreadRadius: -2,
+                        offset: const Offset(0, 2)
+                    )
+                    ]
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                        widget.episode.getAirDateLabel(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          fontSize: _width / 25,
+                          fontFamily: 'Raleway',
+                        )
+                    ),
+                    Container(
+                      height: (airHeight+10)/2,
+                      width: _width * .35,
+                      child: Center(
+                        child: AutoSizeText(
+                            widget.episode.getDiffDays() >= 0 ? "Available": widget.episode.airTime,
+                            // textAlign: TextAlign.center,
+                            minFontSize: 25,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              // fontSize: _width / 15,
+                              fontFamily: 'Raleway',
+                            )
+                        ),
                       ),
-                      Container(
-                        height: (airHeight+10)/2,
-                        width: _width * .35,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            widget.episode.getDiffDays() >= 0
+                ? Positioned(
+                    top: 0,
+                    left: 0,
+                    child: Container(
+                        width: cardWidth/5,
+                        height: cardWidth/5,
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [ GlobalColors.blueColor, GlobalColors.lightGreenColor]
+                          ),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25.0),
+                            topRight: Radius.circular(25.0),
+                            bottomRight: Radius.circular(25.0),
+                            bottomLeft: Radius.circular(25.0),
+                          ),
+                        ),
+                        child: const Center(
+                          child: FaIcon(
+                            FontAwesomeIcons.eye,
+                            color: Colors.white,
+                            size: 26,
+                          ),
+                        )
+                    ))
+                : Positioned(
+                    top: -50,
+                    left: 50,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: 120,
+                        height: 30,
+                        // color: Colors.black,
                         child: Center(
-                          child: AutoSizeText(
-                              widget.episode.getDiffDays() >= 0 ? "Available": widget.episode.airTime,
-                              // textAlign: TextAlign.center,
-                              minFontSize: 25,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                                // fontSize: _width / 15,
-                                fontFamily: 'Raleway',
-                              )
+                          child: Text(
+                            _countdownLabel,
+                            style: GoogleFonts.roboto(
+                              color: GlobalColors.greyTextColor.withOpacity(.4),
+                              fontSize: _width/20,
+                              fontWeight: FontWeight.w700
+                            ),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-              widget.episode.getDiffDays() >= 0
-                    ? Positioned(
-                        top: 0,
-                        left: 0,
-                        child: Container(
-                            width: cardWidth/5,
-                            height: cardWidth/5,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [ GlobalColors.blueColor, GlobalColors.lightGreenColor]
-                              ),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.0),
-                                topRight: Radius.circular(25.0),
-                                bottomRight: Radius.circular(25.0),
-                                bottomLeft: Radius.circular(25.0),
-                              ),
-                            ),
-                            child: Center(
-                              child: FaIcon(
-                                FontAwesomeIcons.eye,
-                                color: Colors.white,
-                                size: 26,
-                              ),
-                            )
-                        ))
-                    : Positioned(
-                        top: -50,
-                        left: 50,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            width: 120,
-                            height: 30,
-                            // color: Colors.black,
-                            child: Center(
-                              child: Text(
-                                _countdownLabel,
-                                style: GoogleFonts.roboto(
-                                  color: GlobalColors.greyTextColor.withOpacity(.4),
-                                  fontSize: _width/20,
-                                  fontWeight: FontWeight.w700
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),),
-            ],
-          ),
+                    ),),
+          ],
         ),
       ),
     );

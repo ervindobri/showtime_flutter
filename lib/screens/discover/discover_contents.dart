@@ -1,13 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/components/custom_elevation.dart';
-import 'package:eWoke/components/route.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
 import 'package:eWoke/providers/show_provider.dart';
-import 'package:eWoke/screens/browse_shows.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:eWoke/ui/watch_card.dart';
 import 'package:flutter/cupertino.dart';
@@ -588,9 +585,6 @@ class WatchlistView extends StatefulWidget {
 }
 
 class _WatchlistViewState extends State<WatchlistView> {
-  // ScrollController scrollController = ScrollController(
-  //   initialScrollOffset: 0.0,
-  // );
   ScrollController scrollController;
 
 
@@ -641,9 +635,6 @@ class _WatchlistViewState extends State<WatchlistView> {
     // print("watchlist");
     return AnimationLimiter(
       child: ListView.builder(
-          // options: options,
-          // key: UniqueKey(),
-          // physics: ,
           controller: widget.scrollController,
           itemCount: widget.list.length,
           itemBuilder: (_, index) {

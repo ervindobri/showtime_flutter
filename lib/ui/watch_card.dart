@@ -362,7 +362,7 @@ class WatchedCard extends StatelessWidget {
   Widget floatingActions( BuildContext context, double _percentage, double cardWidth) {
     if ( _percentage < 1.0){
       return Positioned(
-        bottom: cardWidth/5,
+        bottom: 60/5,
         left: cardWidth/2,
         child: Container(
           height: 60,
@@ -728,8 +728,8 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
         child: Container(
             height: _height/10,
             width: _height/10,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
+            decoration: const BoxDecoration(
+                borderRadius: ShowTheme.radius25,
                 gradient: LinearGradient(
                   colors: [GlobalColors.goldColor, GlobalColors.lightGoldColor]
                 ),

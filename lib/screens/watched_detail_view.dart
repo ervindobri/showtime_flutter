@@ -9,6 +9,8 @@ import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
+import 'package:eWoke/providers/show_provider.dart';
+import 'package:eWoke/providers/timer_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -17,6 +19,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -55,6 +58,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   String countdown = "";
 
   Timer _timer;
+  ShowProvider showProvider;
 
   @override
   void setState(fn) {
@@ -70,36 +74,28 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
     controller.duration = Duration(milliseconds: 250);
 // <-- start the animation playback
+    (context).read<TimerService>().init(widget.show);
 
     super.initState();
-    // print("NR of episodes: ${widget.show.episodes.length}");
-
     _refreshController = RefreshController(initialRefresh: false);
+
     //Fetch updated data
     _getShowData(widget.show);
-
-    //UPDATE IF NECCESSARY
-    // updateEpisode(widget.show);
-
     _percentage = widget.show.calculateProgress();
     _lastWatchedDay = widget.show.diffDays().abs();
-
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 550),
       vsync: this,
     )..forward();
-
     _reverseController = AnimationController(
       duration: const Duration(milliseconds: 550),
       vsync: this,
     );
-
     sizeAnimation = CurvedAnimation(
       parent: _controller,
       curve: Curves.fastOutSlowIn,
     );
-
     animation = CurvedAnimation(
       parent: _controller,
       curve: Curves.easeInCubic,
@@ -112,11 +108,9 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     _reverseController.forward();
 
     setState(() {
-      countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes() == 0 ? 0: widget.show.calculateWatchedEpisodes()].getDifference();
+      countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes() -1].getDifference();
     });
-    startTimer();
-
-    print(this.widget.show.watchedTimes);
+    // startTimer();
   }
 
   @override
@@ -124,6 +118,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     _refreshController.dispose();
     _controller.dispose();
     _reverseController.dispose();
+    _containerSizeAnimation = null;
+    sizeAnimation = null;
+    animation = null;
+    fToast = null;
     super.dispose();
   }
 
@@ -570,6 +568,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   Widget displayActions() {
     final _width = MediaQuery.of(context).size.width;
+    // var timerService = Provider.of<TimerService>(context);
+
     // final _height = MediaQuery.of(context).size.height;
     if (this.widget.show.calculateProgress() < 1.0) {
       return widget.show.nextEpisodeAired()
@@ -659,7 +659,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                           .done),
                                 );
                               } catch (e, s) {
-                                print(s);
+                                // print(s);
                                 StatusAlert.show(
                                   context,
                                   duration:
@@ -792,7 +792,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: AutoSizeText(
-                                  countdown.toString(),
+                                  (context).watch<TimerService>().countDown,
                                   maxFontSize: 20,
                                   minFontSize: 13,
                                   style: GoogleFonts.lato(

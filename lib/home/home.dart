@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
+import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eWoke/components/route.dart';
 import 'package:eWoke/constants/custom_variables.dart';
@@ -51,8 +52,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _panelState = PanelState.CLOSED;
+    _panelState = PanelState.OPEN;
     _customTitle = title;
+    print("homeinit!");
   }
 
   @override
@@ -659,24 +661,29 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                   )),
                             ),
                           ),
-                          Container(
-                            width: _width * 0.5,
-                            height: _width * 0.3,
-                            child: Center(
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .push(createRouteAllShows(AllTVShows()));
-                                },
-                                child: Container(
-                                    child: SizedBox(
-                                        width: _width * 0.5,
-                                        child: FlareActor(
-                                          'assets/blink.flr',
-                                          animation: 'Blink',
-                                        ))),
-                              ),
-                            ),
+                          OpenContainer(
+                            closedElevation: 0,
+                            closedColor: Colors.transparent,
+                            closedShape: CircleBorder(),
+                            closedBuilder: (BuildContext context, void Function() action) {
+                              return Container(
+                                width: _width * 0.5,
+                                height: _width * 0.3,
+                                child: Center(
+                                  child: Container(
+                                      child: SizedBox(
+                                          width: _width * 0.5,
+                                          child: FlareActor(
+                                            'assets/blink.flr',
+                                            animation: 'Blink',
+                                          ))),
+                                ),
+                              );
+                            },
+                            openBuilder: (BuildContext context, void Function({Object returnValue}) action) {
+                              return AllTVShows(context);
+                            },
+
                           ),
                           SizedBox(
                             height: _width / 10,
@@ -892,7 +899,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           ? const EdgeInsets.only(left: 25.0)
           : const EdgeInsets.symmetric(horizontal: 25.0),
       child: InkWell(
-        onTap: () => Navigator.of(context).push(SecondPageRoute(list: data)),
+        onTap: () => Navigator.of(context).push(
+            SecondPageRoute(list: data),
+        ),
         child: Align(
           alignment: Alignment.center,
           child: Container(

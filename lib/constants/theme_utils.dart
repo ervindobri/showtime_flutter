@@ -40,6 +40,8 @@ abstract class ShowTheme{
     fontSize: width / 15,
   );
 
+  static const radius25 = const BorderRadius.all(Radius.circular(25));
+
     Size displaySize(BuildContext context) {
       debugPrint('Size = ' + MediaQuery.of(context).size.toString());
       return MediaQuery.of(context).size;
@@ -70,4 +72,6 @@ abstract class ShowTheme{
     fontWeight: FontWeight.w700,
     fontSize: width / 10,
   );
+
+    static const radius50 = BorderRadius.all(Radius.circular(50.0));
 }

@@ -60,13 +60,13 @@ class TVShow{
     // print(json['name']);
     return TVShow(
         id : json['id'].toString(),
-        name : json['name'],
-        type: json['type'],
-        language: json['language'],
+        name : json['name'] ?? "",
+        type: json['type'] ?? "",
+        language: json['language'] ?? "",
       runtime: json['runtime']!= null  ? json['runtime'] : 0,
-      summary: json['summary'],
+      summary: json['summary'] ?? "",
         genres: json['genres'].length > 0 ? json['genres'] : ['N/A'],
-        startDate : json['premiered'],
+        startDate : json['premiered'] ?? "",
         rating : json['rating']['average'] == null ? 0.0 : json['rating']['average'] ,
         updated: json['updated'].toString(),
         status : json['status'],

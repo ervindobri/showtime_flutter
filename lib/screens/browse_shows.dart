@@ -18,6 +18,10 @@ import 'package:flare_flutter/flare_actor.dart';
 
 
 class AllTVShows extends StatefulWidget {
+  BuildContext context;
+
+  AllTVShows(this.context);
+
   @override
   _AllTVShowsState createState() => _AllTVShowsState();
 }
@@ -31,8 +35,6 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
   var _icon = Icon(Icons.search, color: Colors.white,);
   bool isSearchClicked = false;
   final TextEditingController _filter = new TextEditingController();
-
-
 
   Widget _textField(){
     return CupertinoTextField(
@@ -107,7 +109,13 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
     double _height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false,   //new line
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        toolbarHeight: 0,
+        backgroundColor: GlobalColors.greenColor,
+        shadowColor: Colors.transparent,
+        brightness: Brightness.dark,
+      ),
       body: Container(
         color: GlobalColors.greenColor,
         child: SafeArea(
@@ -364,7 +372,6 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
   Future<AllTVShowList> getSearchResults({String showName})  =>
        new Network().getShowResults(showName:showName);
 
-
   Widget displaySearchHistory(BuildContext context){
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
@@ -469,6 +476,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
         )
     );
   }
+
   Widget createSearchResultView(BuildContext context){
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
@@ -556,7 +564,6 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
     }
   }
 
-
   _searchShows(String text)  {
     setState(() {
       _showName = text;
@@ -565,7 +572,6 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
     });
     showSearchObject = getSearchResults(showName: _showName);
   }
-
 
   Widget searchAllTVShowField(BuildContext context) {
     var _controller = TextEditingController();
@@ -634,7 +640,6 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
       ),
     );
   }
-
 
 }
 

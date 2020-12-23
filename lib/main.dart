@@ -1,5 +1,6 @@
 import 'package:eWoke/providers/connectivity_service.dart';
 import 'package:eWoke/providers/show_provider.dart';
+import 'package:eWoke/providers/timer_service.dart';
 import 'package:eWoke/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -91,6 +92,7 @@ Future<void> main() async {
             StreamProvider(create: (_) => ShowProvider().getWatchedShows()),
             ChangeNotifierProvider(create: (_) => ShowProvider()),
             StreamProvider(create: (_) => ConnectivityService().connectionStatusController.stream),
+            ChangeNotifierProvider<TimerService>(create: (_) => TimerService())
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -117,6 +119,5 @@ class Router extends StatelessWidget {
           }
         }
       );
-
   }
 }

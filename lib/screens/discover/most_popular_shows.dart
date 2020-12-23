@@ -193,11 +193,11 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                         return FutureBuilder(
                                             future: getShowList(limitMap[index + 1]),
                                             builder: (context, snapshot) {
-                                              print(snapshot.connectionState);
+                                              // print(snapshot.connectionState);
                                               // print(snapshot.hasData);
 
                                               if ( GlobalVariables.limitedShows != null && GlobalVariables.limitedShows.length > index){
-                                                print("already got this batch ! - ${GlobalVariables.limitedShows.length} / ${index}");
+                                                // print("already got this batch ! - ${GlobalVariables.limitedShows.length} / ${index}");
                                                 return Container(
                                                     // height: _height,
                                                     decoration: BoxDecoration(
@@ -219,7 +219,6 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               }
                                               else{
                                                 if (snapshot.hasData) {
-                                                  // print("has data ${snapshot.data}");
                                                   if ( snapshot.data.length > 0){
                                                     GlobalVariables.limitedShows.add(snapshot.data);
                                                     return Container(
@@ -238,11 +237,9 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                         ));
                                                   }
                                                   // popularShows = [...GlobalVariables.limitedShows[index]]; //notice the spread operator
-                                                  // print("empty list?");
                                                   return Container();
                                                 }
                                                 else {
-                                                  print("fetching data;");
                                                   return Container(
                                                     decoration: BoxDecoration(
                                                         color: GlobalColors.bgColor,
