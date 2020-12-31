@@ -2,10 +2,12 @@ import 'dart:ui';
 import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/components/toast.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/database/user_data_dao.dart';
 import 'package:eWoke/home/splash.dart';
 import 'package:eWoke/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:circular_check_box/circular_check_box.dart';
@@ -13,9 +15,15 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:local_auth/local_auth.dart';
 
 class LoginScreen extends StatefulWidget {
+  final UserDao dao;
+
+  const LoginScreen({Key key, this.dao}) : super(key: key);
+
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -39,6 +47,72 @@ class _LoginScreenState extends State<LoginScreen>
   var animationName = 'Shrink';
   FToast fToast;
 
+
+  final LocalAuthentication auth = LocalAuthentication();
+  bool _canCheckBiometrics;
+  List<BiometricType> _availableBiometrics;
+  String _authorized = 'Not Authorized';
+  bool _isAuthenticating = false;
+
+
+
+  Future<void> _checkBiometrics() async {
+    bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _canCheckBiometrics = canCheckBiometrics;
+    });
+  }
+
+  Future<void> _getAvailableBiometrics() async {
+    List<BiometricType> availableBiometrics;
+    try {
+      availableBiometrics = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _availableBiometrics = availableBiometrics;
+    });
+  }
+
+  Future<void> _authenticate() async {
+    bool authenticated = false;
+    try {
+      setState(() {
+        _isAuthenticating = true;
+        _authorized = 'Authenticating';
+      });
+      authenticated = await auth.authenticateWithBiometrics(
+          localizedReason: 'Scan your fingerprint to authenticate',
+          useErrorDialogs: true,
+          stickyAuth: true);
+      setState(() {
+        _isAuthenticating = false;
+        _authorized = 'Authenticating';
+      });
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    final String message = authenticated ? 'Authorized' : 'Not Authorized';
+    setState(() {
+      _authorized = message;
+    });
+  }
+
+  void _cancelAuthentication() {
+    auth.stopAuthentication();
+  }
 
   // /password validator possible structure
   passwordValidator(String password) {
@@ -483,7 +557,7 @@ class _LoginScreenState extends State<LoginScreen>
               ),
             ),
             Positioned(
-              bottom: _height/10,
+              bottom: _height/18,
               left: _width/10,
               child: Align(
                 alignment: Alignment.bottomCenter,
@@ -632,7 +706,72 @@ class _LoginScreenState extends State<LoginScreen>
                                 ),
                               )),
                         ),
-                      )
+                      ),
+                      TextButton(
+                        onPressed: () {
+                            showModalBottomSheet<dynamic>(
+                                isScrollControlled: true,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(25.0),
+                                    topRight: Radius.circular(25.0),
+                                  )
+                                ),
+                                context: context, builder: (context){
+                                return StatefulBuilder(
+                                  builder: (BuildContext context, StateSetter setState) {
+                                    return ClipRRect(
+                                      borderRadius:BorderRadius.only(
+                                        topLeft: Radius.circular(25.0),
+                                        topRight: Radius.circular(25.0),
+                                      ),
+                                      child: BackdropFilter(
+                                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                                        child: Container(
+                                          height: _height*.8,
+                                          color: GlobalColors.greenColor.withOpacity(.4),
+                                          child: Center(
+                                            child: ConstrainedBox(
+                                                constraints: const BoxConstraints.expand(),
+                                                child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                    children: <Widget>[
+                                                      Text('Can check biometrics: $_canCheckBiometrics\n'),
+                                                      RaisedButton(
+                                                        child: const Text('Check biometrics'),
+                                                        onPressed: _checkBiometrics,
+                                                      ),
+                                                      Text('Available biometrics: $_availableBiometrics\n'),
+                                                      RaisedButton(
+                                                        child: const Text('Get available biometrics'),
+                                                        onPressed: _getAvailableBiometrics,
+                                                      ),
+                                                      Text('Current State: $_authorized\n'),
+                                                      RaisedButton(
+                                                        child: Text(_isAuthenticating ? 'Cancel' : 'Authenticate'),
+                                                        onPressed:
+                                                        _isAuthenticating ? _cancelAuthentication : _authenticate,
+                                                      )
+                                                    ])
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                            });
+                        },
+                        child: Text(
+                          "Other sign-in options",
+                          style: GoogleFonts.raleway(
+                              color: GlobalColors.greyTextColor,
+                            fontSize: _width/20
+                          )
+                          ,
+                        ),
+
+                      ),
                     ],
                   ),
                 ),

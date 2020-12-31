@@ -2,6 +2,7 @@ import 'package:eWoke/providers/connectivity_service.dart';
 import 'package:eWoke/providers/show_provider.dart';
 import 'package:eWoke/providers/timer_service.dart';
 import 'package:eWoke/providers/user_provider.dart';
+import 'package:floor/floor.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/custom_variables.dart';
@@ -10,7 +11,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'home/login.dart';
-
+import 'database/database.dart';
+import 'database/user_data.dart';
+import 'database/user_data_dao.dart';
 
 
 // final ThemeData _appTheme = buildAppTheme();
@@ -74,6 +77,13 @@ ThemeData buildAppTheme(){
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final database = await $FloorAppDatabase
+      .databaseBuilder('user_database.db')
+      .build();
+
+  final dao = database.userDao;
+
   await Firebase.initializeApp();
 
   UserProvider.instance().initUserProvider();
@@ -96,15 +106,23 @@ Future<void> main() async {
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData.light(),
+          theme: ThemeData(
+            bottomSheetTheme: BottomSheetThemeData(
+                backgroundColor: Colors.black.withOpacity(0)),
+          ),
           title: 'showTIME',
-          home: Router(),
+          home: Router(dao: dao),
         ),
       )
   );
 }
 
 class Router extends StatelessWidget {
+  final UserDao dao;
+
+  const Router({Key key, this.dao}) : super(key: key);
+
+
   @override
   Widget build(BuildContext context) {
       return Builder(
@@ -115,7 +133,7 @@ class Router extends StatelessWidget {
             case Status.Authenticated:
               return SplashScreen();
             default:
-              return LoginScreen();
+              return LoginScreen(dao: dao);
           }
         }
       );

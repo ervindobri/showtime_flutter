@@ -1,7 +1,9 @@
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/network/firebase_utils.dart';
+import 'package:floor/floor.dart';
 
 import '../main.dart';
+
 
 class SessionUser{
    dynamic id;
