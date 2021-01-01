@@ -9,9 +9,21 @@ abstract class UserDao {
   Future<List<UserData>> findAllPersons();
 
 
+
   @Query('SELECT * FROM userdata WHERE id = :id')
   Stream<UserData> findUserById(int id);
 
-  @insert
+  @Insert(onConflict: OnConflictStrategy.replace)
   Future<void> insertUser(UserData user);
+
+
+  @Query('SELECT * FROM userdata WHERE email = :email')
+  Future<UserData> findUserByEmail(String email);
+
+  @Query('SELECT * FROM userdata WHERE biometrics = 1')
+  Future<List<UserData>> fetchEnabledBiometricUsers();
+
+  @delete
+  Future<void> deleteUser(UserData user);
+
 }

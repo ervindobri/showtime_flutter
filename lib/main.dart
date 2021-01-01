@@ -79,7 +79,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final database = await $FloorAppDatabase
-      .databaseBuilder('user_database.db')
+      .databaseBuilder('users.db')
       .build();
 
   final dao = database.userDao;
@@ -131,7 +131,7 @@ class Router extends StatelessWidget {
               .watch<UserProvider>()
               .status) {
             case Status.Authenticated:
-              return SplashScreen();
+              return SplashScreen(dao: dao);
             default:
               return LoginScreen(dao: dao);
           }

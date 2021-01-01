@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/components/toast.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/database/user_data.dart';
 import 'package:eWoke/database/user_data_dao.dart';
 import 'package:eWoke/home/splash.dart';
 import 'package:eWoke/providers/user_provider.dart';
@@ -18,6 +19,8 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:adaptive_dialog/adaptive_dialog.dart';
 
 class LoginScreen extends StatefulWidget {
   final UserDao dao;
@@ -56,6 +59,9 @@ class _LoginScreenState extends State<LoginScreen>
 
 
 
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+
   Future<void> _checkBiometrics() async {
     bool canCheckBiometrics;
     try {
@@ -84,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen>
     });
   }
 
-  Future<void> _authenticate() async {
+  Future<String> _authenticate() async {
     bool authenticated = false;
     try {
       setState(() {
@@ -102,12 +108,13 @@ class _LoginScreenState extends State<LoginScreen>
     } on PlatformException catch (e) {
       print(e);
     }
-    if (!mounted) return;
+    if (!mounted) return '';
 
     final String message = authenticated ? 'Authorized' : 'Not Authorized';
     setState(() {
       _authorized = message;
     });
+    return _authorized;
   }
 
   void _cancelAuthentication() {
@@ -147,6 +154,12 @@ class _LoginScreenState extends State<LoginScreen>
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        toolbarHeight: 0,
+        brightness: Brightness.dark,
+        backgroundColor: GlobalColors.greenColor,
+        shadowColor: Colors.transparent,
+      ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child:Stack(
@@ -584,12 +597,20 @@ class _LoginScreenState extends State<LoginScreen>
                                 });
                                 if (logging) {
                                   Future.delayed(const Duration(milliseconds: 300), () async{
-                                    print(nameController.text);
+                                    // print(nameController.text);
                                     String authenticate = await context.read<UserProvider>().login(nameController.text, passwordController.text);
-                                    if (authenticate == null){
+                                    if (authenticate == ''){
                                       setState(() {
                                         _state = 2;
                                       });
+                                      print(widget.dao);
+                                      if ( widget.dao != null){
+                                        final user = UserData(1,nameController.text, passwordController.text, true);
+                                        // await widget.dao.deleteUser(user);
+                                        await widget.dao.insertUser(user);
+                                      }
+
+
                                       Future.delayed(
                                           const Duration(milliseconds: 300), () {
                                         //Save login data
@@ -602,7 +623,8 @@ class _LoginScreenState extends State<LoginScreen>
                                           _storage.delete(key: 'email');
                                           _storage.delete(key: 'password');
                                         }
-                                        final home = SplashScreen();
+
+                                        final home = SplashScreen(dao: widget.dao,);
                                         Navigator.of(context)
                                             .pushAndRemoveUntil(CupertinoPageRoute(
                                           builder: (context) => home,
@@ -736,21 +758,114 @@ class _LoginScreenState extends State<LoginScreen>
                                                 child: Column(
                                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                     children: <Widget>[
-                                                      Text('Can check biometrics: $_canCheckBiometrics\n'),
-                                                      RaisedButton(
-                                                        child: const Text('Check biometrics'),
-                                                        onPressed: _checkBiometrics,
+                                                      FlatButton(
+                                                        textColor: Colors.white,
+                                                        highlightColor: GlobalColors.greenColor,
+                                                        color: GlobalColors.greyTextColor,
+                                                        shape: RoundedRectangleBorder(
+                                                          side: BorderSide(
+                                                            color: Colors.white
+                                                          ),
+                                                            borderRadius: BorderRadius.circular(15)
+                                                        ),
+                                                        child: Container(
+                                                          width: 150,
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(8.0),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Image(
+                                                                  image: AssetImage('assets/google_logo.png'),
+                                                                  height: 30,
+                                                                ),
+                                                                Text(
+                                                                    'Google Sign-In'
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        onPressed: () async{
+                                                          print("google sign in!");
+                                                          context.read<UserProvider>().signInWithGoogle()
+                                                              .then((result){
+                                                                print("result:$result");
+                                                            if (result != null) {
+                                                              final home = SplashScreen();
+                                                              Navigator.of(context)
+                                                                  .pushAndRemoveUntil(CupertinoPageRoute(
+                                                                builder: (context) => home,
+                                                              ),(route) => false);
+                                                            }
+                                                          });
+                                                        },
                                                       ),
-                                                      Text('Available biometrics: $_availableBiometrics\n'),
-                                                      RaisedButton(
-                                                        child: const Text('Get available biometrics'),
-                                                        onPressed: _getAvailableBiometrics,
-                                                      ),
-                                                      Text('Current State: $_authorized\n'),
-                                                      RaisedButton(
-                                                        child: Text(_isAuthenticating ? 'Cancel' : 'Authenticate'),
-                                                        onPressed:
-                                                        _isAuthenticating ? _cancelAuthentication : _authenticate,
+                                                      FlatButton(
+                                                        textColor: Colors.white,
+                                                        highlightColor: GlobalColors.greenColor,
+                                                        color: GlobalColors.greyTextColor,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(15)
+                                                        ),
+                                                        child: Text(
+                                                            _isAuthenticating ? 'Cancel' : 'Use fingerprint'
+                                                        ),
+                                                        onPressed: (){
+                                                          _authenticate().then((value) async{
+                                                            print(_authorized);
+                                                            if ( _authorized == 'Authorized'){
+                                                              print("fetching accounts");
+                                                              if ( widget.dao == null) throw Exception("DAO is null!");
+                                                              //get accounts with biometric - true
+                                                              List<UserData> list = [];
+                                                              var users = await widget.dao.fetchEnabledBiometricUsers();
+                                                              list.addAll(users);
+                                                              print(users.length);
+                                                              if ( list.length > 1){
+                                                                showCupertinoModalPopup(
+                                                                    context: context,
+                                                                    builder: (BuildContext context) {
+                                                                      return CupertinoActionSheet(
+                                                                        title: const Text('Account'),
+                                                                        message: const Text('Choose in which account would you like to sign-in'),
+                                                                        cancelButton: CupertinoActionSheetAction(
+                                                                          child: const Text('Cancel'),
+                                                                          isDefaultAction: true,
+                                                                          onPressed: () {
+                                                                            Navigator.pop(context, 'Cancel');
+                                                                          },
+                                                                        ),
+                                                                        actions: List.generate(list.length, (index) {
+                                                                          return CupertinoActionSheetAction(
+                                                                              child: Text(
+                                                                                  list[index].email
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                //log-in with the account
+                                                                                Navigator.pop(context, 'Cancel');
+                                                                              }
+                                                                          );
+                                                                        }),
+                                                                      );
+                                                                    }
+                                                                );
+                                                              }
+                                                              else{
+                                                                print("logging in! ${list.first.password}");
+                                                                String auth = await context.read<UserProvider>().login(list.first.email, list.first.password);
+                                                                if ( auth == ''){
+                                                                  final home = SplashScreen(dao: widget.dao,);
+                                                                  Navigator.of(context)
+                                                                      .pushAndRemoveUntil(CupertinoPageRoute(
+                                                                    builder: (context) => home,
+                                                                  ),(route) => false);
+                                                                }
+                                                              }
+                                                            }
+                                                          });
+
+                                                        }
                                                       )
                                                     ])
                                             ),

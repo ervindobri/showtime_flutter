@@ -171,45 +171,47 @@ class _FullScheduleState extends State<FullSchedule> {
                           ),
                           child: Center(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 65.0, horizontal: 35),
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                        "Oh no!",
-                                        style: TextStyle(
-                                          color: GlobalColors.greyTextColor,
-                                          fontSize: 32,
-                                          fontWeight: FontWeight.w700,
-                                          fontFamily: 'Raleway'
-                                        ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "There are no scheduled shows for you!",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
+                              padding: const EdgeInsets.symmetric(horizontal: 35),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                          "Oh no!",
+                                          style: TextStyle(
                                             color: GlobalColors.greyTextColor,
-                                            fontSize: 27,
-                                            fontWeight: FontWeight.w300,
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.w700,
                                             fontFamily: 'Raleway'
-                                        ),
+                                          ),
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    child: Container(
-                                      width: _width,
-                                      height: _height/3,
-                                      child: FlareActor("assets/ohno.flr",
-                                          alignment: Alignment.center,
-                                          fit: BoxFit.contain,
-                                          animation: "error-message"),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "There are no scheduled shows for you!",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: GlobalColors.greyTextColor,
+                                              fontSize: 27,
+                                              fontWeight: FontWeight.w300,
+                                              fontFamily: 'Raleway'
+                                          ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      child: Container(
+                                        width: _width,
+                                        height: _height/3,
+                                        child: FlareActor("assets/ohno.flr",
+                                            alignment: Alignment.center,
+                                            fit: BoxFit.contain,
+                                            animation: "error-message"),
+                                      )
                                     )
-                                  )
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),

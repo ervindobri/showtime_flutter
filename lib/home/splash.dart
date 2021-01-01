@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/database/user_data_dao.dart';
 import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
@@ -23,8 +24,8 @@ import 'home.dart';
 import 'package:progress_state_button/progress_button.dart';
 
 class SplashScreen extends StatefulWidget {
-
-  SplashScreen();
+  final UserDao dao;
+  SplashScreen({this.dao});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -88,6 +89,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
             final home = HomeView(
               user: currentUser,
               watchedShowsList: watchedShowsList,
+              dao: widget.dao
             );
 
             Navigator.of(context)
@@ -110,6 +112,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     // _watchedShowsStream = null;
     subscription = null;
     completed?.cancel();
+    _controller.dispose();
+
     super.dispose();
 
   }

@@ -5,6 +5,7 @@ import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eWoke/components/route.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/database/user_data_dao.dart';
 import 'package:eWoke/home/login.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
@@ -33,8 +34,9 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 class HomeView extends StatefulWidget {
   final SessionUser user;
   final List<WatchedTVShow> watchedShowsList;
+  final UserDao dao;
 
-  const HomeView({Key key, this.user, this.watchedShowsList})
+  const HomeView({Key key, this.user, this.watchedShowsList, this.dao})
       : super(key: key);
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -321,12 +323,15 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                     titlePadding: EdgeInsets.only(
                         top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
                     //TODO content add rive animation
-                    content: Text(
+                    content: AutoSizeText(
                       "You will be redirected to the login screen.",
+                      maxLines: 2,
+                      minFontSize: 10,
+                      maxFontSize: 20,
                       style: TextStyle(
                           fontFamily: 'Raleway',
-                          fontSize: 15,
-                          fontWeight: FontWeight.w100,
+                          // fontSize: 15,
+                          fontWeight: FontWeight.w300,
                           color: GlobalColors.greyTextColor),
                     ),
                     elevation: 5,
@@ -351,7 +356,10 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             GlobalVariables.clearAll();
                             // await authService.signOut();
                             await context.read<UserProvider>().signOut();
-                            final login = LoginScreen();
+                            await context.read<UserProvider>().signOutGoogle();
+
+                            final login = LoginScreen(dao: widget.dao);
+
                             Navigator.pop(context);
                             Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
@@ -987,18 +995,26 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     var shows = (context)
         .watch<ShowProvider>()
         .scheduledList;
-    return Container(
-        width: _width,
-        height: _height * .41,
-        color: GlobalColors.bgColor,
-        child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 5,
-            itemBuilder: (context, int index) {
-              return Center(
-                  child: ScheduleCard(episode: shows[index]));
-            })
-    );
+    if ( shows.length > 0){
+      return Container(
+          width: _width,
+          height: _height * .41,
+          color: GlobalColors.bgColor,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 5,
+              itemBuilder: (context, int index) {
+                return Center(
+                    child: ScheduleCard(episode: shows[index]));
+              })
+      );
+    }
+    else{
+      return Container(
+
+      );
+    }
+
   }
 
     Widget _createRouteShowDetail(List<WatchedTVShow> data, int index) {

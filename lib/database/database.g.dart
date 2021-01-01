@@ -80,7 +80,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `UserData` (`id` INTEGER, `email` TEXT, `biometrics` INTEGER, PRIMARY KEY (`id`))');
+            'CREATE TABLE IF NOT EXISTS `UserData` (`id` INTEGER, `email` TEXT, `password` TEXT, `biometrics` INTEGER, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -103,6 +103,19 @@ class _$UserDao extends UserDao {
             (UserData item) => <String, dynamic>{
                   'id': item.id,
                   'email': item.email,
+                  'password': item.password,
+                  'biometrics':
+                      item.biometrics == null ? null : (item.biometrics ? 1 : 0)
+                },
+            changeListener),
+        _userDataDeletionAdapter = DeletionAdapter(
+            database,
+            'UserData',
+            ['id'],
+            (UserData item) => <String, dynamic>{
+                  'id': item.id,
+                  'email': item.email,
+                  'password': item.password,
                   'biometrics':
                       item.biometrics == null ? null : (item.biometrics ? 1 : 0)
                 },
@@ -116,12 +129,15 @@ class _$UserDao extends UserDao {
 
   final InsertionAdapter<UserData> _userDataInsertionAdapter;
 
+  final DeletionAdapter<UserData> _userDataDeletionAdapter;
+
   @override
   Future<List<UserData>> findAllPersons() async {
-    return _queryAdapter.queryList('SELECT * FROM users',
+    return _queryAdapter.queryList('SELECT * FROM userdata',
         mapper: (Map<String, dynamic> row) => UserData(
             row['id'] as int,
             row['email'] as String,
+            row['password'] as String,
             row['biometrics'] == null
                 ? null
                 : (row['biometrics'] as int) != 0));
@@ -129,13 +145,40 @@ class _$UserDao extends UserDao {
 
   @override
   Stream<UserData> findUserById(int id) {
-    return _queryAdapter.queryStream('SELECT * FROM users WHERE id = ?',
+    return _queryAdapter.queryStream('SELECT * FROM userdata WHERE id = ?',
         arguments: <dynamic>[id],
         queryableName: 'UserData',
         isView: false,
         mapper: (Map<String, dynamic> row) => UserData(
             row['id'] as int,
             row['email'] as String,
+            row['password'] as String,
+            row['biometrics'] == null
+                ? null
+                : (row['biometrics'] as int) != 0));
+  }
+
+  @override
+  Future<UserData> findUserByEmail(String email) async {
+    return _queryAdapter.query('SELECT * FROM userdata WHERE email = ?',
+        arguments: <dynamic>[email],
+        mapper: (Map<String, dynamic> row) => UserData(
+            row['id'] as int,
+            row['email'] as String,
+            row['password'] as String,
+            row['biometrics'] == null
+                ? null
+                : (row['biometrics'] as int) != 0));
+  }
+
+  @override
+  Future<List<UserData>> fetchEnabledBiometricUsers() async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM userdata WHERE biometrics = 1',
+        mapper: (Map<String, dynamic> row) => UserData(
+            row['id'] as int,
+            row['email'] as String,
+            row['password'] as String,
             row['biometrics'] == null
                 ? null
                 : (row['biometrics'] as int) != 0));
@@ -143,6 +186,11 @@ class _$UserDao extends UserDao {
 
   @override
   Future<void> insertUser(UserData user) async {
-    await _userDataInsertionAdapter.insert(user, OnConflictStrategy.abort);
+    await _userDataInsertionAdapter.insert(user, OnConflictStrategy.replace);
+  }
+
+  @override
+  Future<void> deleteUser(UserData user) async {
+    await _userDataDeletionAdapter.delete(user);
   }
 }

@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 enum Status { Uninitialized, Authenticated, Authenticating, Unauthenticated }
 
@@ -71,6 +73,7 @@ class UserProvider  with ChangeNotifier {
         _status = Status.Authenticating;
         notifyListeners();
         await _auth.signInWithEmailAndPassword(email: userName, password: password);
+        return '';
       } on FirebaseAuthException catch (e) {
         _status = Status.Unauthenticated;
         notifyListeners();
@@ -133,5 +136,42 @@ class UserProvider  with ChangeNotifier {
     if (!_disposed) {
       super.notifyListeners();
     }
+  }
+
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<String> signInWithGoogle() async {
+    await Firebase.initializeApp();
+
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final UserCredential authResult = await _auth.signInWithCredential(credential);
+    final User user = authResult.user;
+
+    if (user != null) {
+      assert(!user.isAnonymous);
+      assert(await user.getIdToken() != null);
+
+      final User currentUser = _auth.currentUser;
+      assert(user.uid == currentUser.uid);
+
+      print('signInWithGoogle succeeded: $user');
+
+      return '$user';
+    }
+
+    return null;
+  }
+
+  Future<void> signOutGoogle() async {
+    await googleSignIn.signOut();
+
+    print("User Signed Out");
   }
 }
