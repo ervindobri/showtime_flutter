@@ -60,6 +60,11 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   Timer _timer;
   ShowProvider showProvider;
 
+  int _selectedSeason = 1;
+  int _selectedEpisode = 1;
+
+  int _episodeLength = 24;
+
   @override
   void setState(fn) {
     if(mounted) {
@@ -566,11 +571,188 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     return badges;
   }
 
+  Widget createBottomSheet() {
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
+
+    print(_selectedEpisode);
+    print(this.widget.show.episodePerSeason);
+    return ClipRRect(
+      borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
+      child: Container(
+        height: _height*.45,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                height: _height / 10,
+                color: Colors.white,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15.0),
+                      child: Text(
+                        "You are watching",
+                        style: TextStyle(
+                            fontFamily: 'Raleway',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                            color: GlobalColors.greyTextColor),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                      child: InkWell(
+                        highlightColor: GlobalColors.greenColor,
+                        focusColor: GlobalColors.greenColor,
+                        splashColor: GlobalColors.greenColor,
+                        onTap: () {
+                          setState(() {
+                            widget.show.currentSeason = _selectedSeason;
+                            widget.show.currentEpisode = _selectedEpisode;
+                          });
+                          widget.show.setLastWatchedDate();
+                          FirestoreUtils().updateEpisode(widget.show);
+                          Navigator.of(context).pop();
+                          StatusAlert.show(
+                            context,
+                            duration: Duration(seconds: 1),
+                            blurPower: 15.0,
+                            title: 'Updated successfully!',
+                            configuration: IconConfiguration(icon: FontAwesomeIcons.checkCircle),
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: GlobalColors.lightGreenColor,
+                            borderRadius: BorderRadius.circular(12)
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12),
+                            child: AutoSizeText(
+                              "Select",
+                              style: TextStyle(
+                                color: GlobalColors.greyTextColor,
+                                decoration: TextDecoration.underline,
+                                fontSize: 20,
+                                fontFamily: 'Raleway',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Container(
+                  height: _height / 2.4,
+                  color: Colors.white,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          AutoSizeText(
+                            "Season",
+                            minFontSize: 17,
+                            maxFontSize: 20,
+                            style: TextStyle(
+                                fontFamily: 'Raleway',
+                                fontWeight: FontWeight.w700,
+                                // fontSize: 15,
+                                color: GlobalColors.greyTextColor),
+                          ),
+                          Container(
+                            height: _height/5,
+                            width: _width/3,
+                            decoration: BoxDecoration(
+                                color: GlobalColors.lightGreenColor,
+                                borderRadius: BorderRadius.circular(12)
+                            ),
+                            child: Center(
+                              child: CupertinoPicker(
+                                itemExtent: 30,
+                                useMagnifier: false,
+                                diameterRatio: 1,
+                                looping: true,
+                                onSelectedItemChanged: (int value) {
+                                    //selected season
+                                  setState(() {
+                                    _selectedSeason = value + this.widget.show.currentSeason;
+                                    _episodeLength = this.widget.show.episodePerSeason[_selectedSeason.toString()];
+                                  });
+                                  print(_episodeLength);
+                                },
+                              children: List.generate(int.parse(this.widget.show.episodePerSeason.keys.last) - this.widget.show.currentSeason +1, (index) => Text((index+this.widget.show.currentSeason).toString())),
+
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          AutoSizeText(
+                            "Episode",
+                            minFontSize: 17,
+                            maxFontSize: 20,
+                            style: TextStyle(
+                                fontFamily: 'Raleway',
+                                fontWeight: FontWeight.w700,
+                                // fontSize: 15,
+                                color: GlobalColors.greyTextColor),
+                          ),
+                          Container(
+                            height: _height/5,
+                            width: _width/3,
+                            decoration: BoxDecoration(
+                                color: GlobalColors.lightGreenColor,
+                                borderRadius: BorderRadius.circular(12)
+                            ),
+                            child: Center(
+                              child: StatefulBuilder(
+                                builder: (BuildContext context, StateSetter setState){
+                                  return CupertinoPicker(
+                                    itemExtent: 30,
+                                    useMagnifier: false,
+                                    diameterRatio: 1,
+                                    looping: true,
+                                    onSelectedItemChanged: (int value) {
+                                      //selected season
+                                      setState(() {
+                                        _selectedEpisode = value+1;
+                                      });
+                                    },
+                                    children: List.generate(_episodeLength, (index) => Text((index+1).toString())),
+
+                                  );
+                                },
+
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   Widget displayActions() {
     final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
     // var timerService = Provider.of<TimerService>(context);
 
-    // final _height = MediaQuery.of(context).size.height;
     if (this.widget.show.calculateProgress() < 1.0) {
       return widget.show.nextEpisodeAired()
           ? Column(
@@ -637,6 +819,23 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                           child: FlatButton(
                             splashColor: GlobalColors.darkGreenColor,
                             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
+                            onLongPress: (){
+                              setState(() {
+                                _selectedSeason = this.widget.show.currentSeason;
+                                _selectedEpisode = this.widget.show.currentEpisode;
+                              });
+                              showModalBottomSheet(
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(25.0),
+                                        topRight: Radius.circular(25.0)),
+                                  ),
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return createBottomSheet();
+                                  });
+                            },
                             onPressed: () {
                               try {
                                 setState(() {

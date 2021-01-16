@@ -7,6 +7,7 @@ import 'package:eWoke/models/tvshow_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:blurrycontainer/blurrycontainer.dart';
 
 class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
@@ -36,145 +37,142 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     return SafeArea(
       child: SizedBox(
         height: expandedHeight,
-        child: Stack(
-            children: [
-                SizedBox(
-                height: appBarSize < minExtent*.6 ? minExtent*.6 : appBarSize,
-          //            height: appBarSize,
-                    child: Container(
-                      height: _height * .35,
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                              height: _height * .25,
-                              decoration: BoxDecoration(
-                                  color: GlobalColors.greenColor,
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(percentage > 0.0 ? 25.0 : 0.0),
-                                    bottomRight: Radius.circular(percentage > 0.0 ? 25.0 : 0.0)
-                                  )
-                              ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: IconButton(
-                                  icon: FaIcon(FontAwesomeIcons.times),
-                                  color: Colors.white,
-                                  onPressed: () => Navigator.of(context).pop()
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            child: Visibility(
-                              visible: proportion > 0.0 ? true : false,
-                              child: Opacity(
-                                opacity: percentage,
-                                child: Container(
-                                  width: _width * .3,
-                                  height: _width * .4,
-                                  child: Hero(
-                                    tag: 'thumbnailPhoto${show.id}',
-                                    child: CachedNetworkImage(
-                                      imageUrl: show.imageThumbnailPath,
-                                      imageBuilder: (context, image){
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(25.0),
-                                                bottomRight: Radius.circular(25.0),
-                                              ),
-                                              boxShadow: [BoxShadow(
-                                                color: Colors.grey.withOpacity(.5),
-                                                spreadRadius: 10,
-                                                blurRadius: 25,
-                                                offset: Offset(0, 3), // changes position of shadow
-                                              ),
-                                              ],
-                                              image: DecorationImage(
-                                                  image: image,
-                                                  fit: BoxFit.cover
-                                              )
-                                          ),
-                                        );
-                                      },
-
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned.fill(
-                            bottom: 0,
-                            left: appBarSize < _width * .3 + 20 ? appBarSize : _width * .3 + 20,
-                            // left: appBarSize,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                SizedBox(
-                                  height: _height * .15,
-                                  width: _width * .6,
-                                  // color: CupertinoColors.black,
-                                  child: Center(
-                                    child: Container(
-                                      child: Column(
-                                          mainAxisAlignment: MainAxisAlignment
-                                              .center,
-                                          children: <Widget>[
-                                            AutoSizeText(
-                                                show.name,
-                                                maxLines: 2,
-                                                maxFontSize: 24.0,
-                                                minFontSize: 10,
-                                                style: TextStyle(
-                                                  fontSize: _width / 15,
-                                                  fontFamily: 'Raleway',
-                                                  fontWeight: FontWeight.w700,
-                                                  color: CupertinoColors.white,
-
-                                                  shadows: [
-                                                    new BoxShadow(
-                                                      color: Colors.black.withOpacity(.3),
-                                                      blurRadius: 10.0,
-                                                      spreadRadius: 2
-                                                    )
-                                                  ]
-                                                )),
-                                            if (percentage > 0.0) Opacity(
-                                              opacity: percentage,
-                                              child: Text(show.startDate.split('-')[0].toString(),
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-                                                    color: CupertinoColors.white,
-                                                    fontSize: _width / 20,
-                                                    fontFamily: 'Raleway',
-                                                      shadows: [
-                                                        new BoxShadow(
-                                                            color: Colors.black.withOpacity(.3),
-                                                            blurRadius: 10.0,
-                                                            spreadRadius: 2
-                                                        )
-                                                      ]
-
-                                                  )),
-                                            ),
-                                          ]),
-
-                                    ), //TITLE-YEAR
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+        child: Container(
+          height: (_height)*percentage,
+          child: Stack(
+            children: <Widget>[
+              Stack(
+                children: [
+                  Opacity(
+                    opacity: percentage,
+                    child: CachedNetworkImage(
+                      imageUrl: this.show.imageThumbnailPath,
+                      width: _width,
+                      fit: BoxFit.cover,
                     ),
+                  ),
+                  BlurryContainer(
+                    blur: 40,
+                    width: _width,
+                    bgColor: Colors.black.withOpacity(.2),
+                    borderRadius: BorderRadius.zero,
+                    child: Container(),
+                  )
+                ],
+              ),
+              Container(
+                // height: _height * .45,
+                height: _height,
+                width: _width,
+                child: Opacity(
+                  opacity: percentage,
+                  child: CachedNetworkImage(
+                    imageUrl: this.show.imageThumbnailPath,
+                    width: _width,
+                    fit: BoxFit.scaleDown,
+                  ),
                 ),
-          ]
+              ),
+              Positioned(
+                top: 10,
+                right: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12)
+                    ),
+                    child: IconButton(
+                        icon: FaIcon(FontAwesomeIcons.times),
+                        color: GlobalColors.greyTextColor,
+                        onPressed: () => Navigator.of(context).pop()
+                    ),
+                  ),
+                ),
+              ),
+              // Positioned(
+              //   bottom: 0,
+              //   child: Visibility(
+              //     visible: proportion > 0.0 ? true : false,
+              //     child: Opacity(
+              //       opacity: percentage,
+              //       child: Container(
+              //         width: _width * .3,
+              //         height: _width * .4,
+              //         child: Hero(
+              //           tag: 'thumbnailPhoto${show.id}',
+              //           child: CachedNetworkImage(
+              //             imageUrl: show.imageThumbnailPath,
+              //             imageBuilder: (context, image){
+              //               return Container(
+              //                 decoration: BoxDecoration(
+              //                     borderRadius: BorderRadius.only(
+              //                       topRight: Radius.circular(25.0),
+              //                       bottomRight: Radius.circular(25.0),
+              //                     ),
+              //                     boxShadow: [BoxShadow(
+              //                       color: Colors.grey.withOpacity(.5),
+              //                       spreadRadius: 10,
+              //                       blurRadius: 25,
+              //                       offset: Offset(0, 3), // changes position of shadow
+              //                     ),
+              //                     ],
+              //                     image: DecorationImage(
+              //                         image: image,
+              //                         fit: BoxFit.cover
+              //                     )
+              //                 ),
+              //               );
+              //             },
+              //
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              Positioned.fill(
+                bottom: 0,
+                left: 1/_width,
+                child: Opacity(
+                  opacity: 1.0 - percentage,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 30.0
+                    ),
+                    child: Center(
+                      child: Container(
+                        // height: 25,
+                        child: AutoSizeText(
+                            show.name,
+                            maxLines: 3,
+                            maxFontSize: 28.0,
+                            minFontSize: 13,
+                            style: TextStyle(
+                              fontSize: _width / 15,
+                              fontFamily: 'Raleway',
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              // color: GlobalColors.greyTextColor,
+
+                              shadows: [
+                                new BoxShadow(
+                                  color: Colors.black.withOpacity(.3),
+                                  blurRadius: 10.0,
+                                  spreadRadius: 2
+                                )
+                              ]
+                            )),
+
+                      ), //TITLE-YEAR
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -184,7 +182,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => expandedHeight;
 
   @override
-  double get minExtent => expandedHeight/2;
+  double get minExtent => expandedHeight/6;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {

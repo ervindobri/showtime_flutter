@@ -18,9 +18,9 @@ import 'package:flare_flutter/flare_actor.dart';
 
 
 class AllTVShows extends StatefulWidget {
-  BuildContext context;
+  // BuildContext context;
 
-  AllTVShows(this.context);
+  AllTVShows();
 
   @override
   _AllTVShowsState createState() => _AllTVShowsState();
@@ -35,6 +35,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
   var _icon = Icon(Icons.search, color: Colors.white,);
   bool isSearchClicked = false;
   final TextEditingController _filter = new TextEditingController();
+  final bgColor = GlobalColors.blueColor;
 
   Widget _textField(){
     return CupertinoTextField(
@@ -49,7 +50,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
           Fluttertoast.showToast(
               msg: "Search failed!",
               toastLength: Toast.LENGTH_LONG,
-              backgroundColor: GlobalColors.greenColor,
+              backgroundColor: bgColor,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 2
           );
@@ -93,12 +94,13 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
 
   @override
   void initState() {
+    _searched = false;
     super.initState();
-    showSearchObject = getSearchResults(showName: _showName);
+    // showSearchObject = getSearchResults(showName: _showName);
 
-    setState(() {
-      _searched = false;
-    });
+    // setState(() {
+    //   _searched = false;
+    // });
   }
   DragStartDetails startVerticalDragDetails;
   DragUpdateDetails updateVerticalDragDetails;
@@ -112,16 +114,16 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: 0,
-        backgroundColor: GlobalColors.greenColor,
+        backgroundColor: bgColor,
         shadowColor: Colors.transparent,
         brightness: Brightness.dark,
       ),
       body: Container(
-        color: GlobalColors.greenColor,
+        color: bgColor,
         child: SafeArea(
         child: Container(
           // height: _height*.16,
-          color: GlobalColors.greenColor,
+          color: bgColor,
           child: _searched
               ? FutureBuilder(
               future: showSearchObject,
@@ -140,7 +142,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                               width: _width,
                               height: _height*.15,
                               decoration: BoxDecoration(
-                                  color: GlobalColors.greenColor,
+                                  color: bgColor,
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(25.0),
                                     bottomRight: Radius.circular(25.0),
@@ -176,7 +178,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                             ),
                             child: Center(
                               child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation(GlobalColors.greenColor),
+                                valueColor: AlwaysStoppedAnimation(bgColor),
                               ),
                             ),
                           )
@@ -204,7 +206,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                             child: Container(
                               width: _width,
                               decoration: BoxDecoration(
-                                  color: GlobalColors.greenColor,
+                                  color: bgColor,
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(25.0),
                                     bottomRight: Radius.circular(25.0),
@@ -292,7 +294,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                         SliverFillRemaining(
                           child: FlareActor(
                               "assets/notfound.flr",
-                              color: GlobalColors.greenColor.withOpacity(.3),
+                              color: bgColor.withOpacity(.3),
                               alignment:Alignment.topCenter,
                               fit:BoxFit.fitWidth,
                               animation:"idle"),
@@ -315,7 +317,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                     width: _width,
                     height: _height*.15,
                     decoration: BoxDecoration(
-                        color: GlobalColors.greenColor,
+                        color: bgColor,
                         borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(25.0),
                           bottomRight: Radius.circular(25.0),
@@ -440,7 +442,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                                                               textAlign: TextAlign.center,
                                                               style: TextStyle(
                                                                   decoration: TextDecoration.underline,
-                                                                  color: GlobalColors.greenColor,
+                                                                  color: bgColor,
                                                                   fontFamily: 'Raleway',
                                                                   fontSize: _width/20
                                                               ),
@@ -464,7 +466,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                     height: _height*.3,
                     child: Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(GlobalColors.greenColor),
+                        valueColor: AlwaysStoppedAnimation(bgColor),
                       ),
                     ),
                   );
@@ -491,7 +493,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                     height: MediaQuery.of(context).size.height * 0.6,
                     child: Center(
                       child: Theme(
-                        data: Theme.of(context).copyWith(accentColor: GlobalColors.greenColor),
+                        data: Theme.of(context).copyWith(accentColor: bgColor),
                         child:
                         CircularProgressIndicator(strokeWidth: 6.5,
                         ),
@@ -545,13 +547,13 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                 children: [
                   FaIcon(
                       FontAwesomeIcons.tv,
-                  color: GlobalColors.greenColor,
+                  color: bgColor,
                   size: _width/3,),
                   Text(
                     "Search for a show you want to watch",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: GlobalColors.greenColor,
+                      color: bgColor,
                       fontFamily: 'Raleway',
                       fontSize: _height/25,
                     ),
@@ -605,17 +607,17 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
             decoration: new InputDecoration(
               border: new UnderlineInputBorder(
                   borderSide: new BorderSide(
-                      color: GlobalColors.greenColor
+                      color: bgColor
                   )
               ),
                 errorBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: GlobalColors.greenColor),
+                  borderSide: BorderSide(color: bgColor),
                 ),
                 enabledBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: GlobalColors.greenColor),
+                  borderSide: BorderSide(color: bgColor),
                 ),
               focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: GlobalColors.greenColor),
+                borderSide: BorderSide(color: bgColor),
               ),
               suffixIcon: InkWell(
                   child: _icon,

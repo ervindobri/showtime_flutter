@@ -188,6 +188,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                                   InkWell(
                                     onTap: () async {
                                       showModalBottomSheet(
+                                        backgroundColor: Colors.white,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.only(
                                                 topLeft: Radius.circular(25.0),
@@ -215,6 +216,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                                             iconSize: 25,
                                             onPressed: () async {
                                               showModalBottomSheet(
+                                                  backgroundColor: Colors.white,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius: BorderRadius.only(
                                                         topLeft: Radius.circular(25.0),
@@ -428,7 +430,9 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
           ),
           Container(
             height: _height / 2.4,
+            color: Colors.white,
             child: CupertinoPicker(
+              backgroundColor: Colors.white,
               itemExtent: 50,
               diameterRatio: 1,
               looping: true,
@@ -439,10 +443,11 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                   _index = value;
                   criteria = GlobalVariables.SORT_CATEGORIES[_index];
                 });
-              }, children:
-              new List<Widget>.generate(GlobalVariables.SORT_CATEGORIES.length, (index){
+              },
+              children: new List<Widget>.generate(GlobalVariables.SORT_CATEGORIES.length, (index){
                 return Container(
                   width: _width,
+                  color: Colors.white,
                   child: Center(
                       child: Text(
                         GlobalVariables.SORT_CATEGORIES[index],
@@ -720,12 +725,8 @@ class _WatchlistViewState extends State<WatchlistView> {
               ),
             );
           }
-
         }
       ),
   );
 }
 
-Widget discoverFavorites() {
-  return Container();
-}

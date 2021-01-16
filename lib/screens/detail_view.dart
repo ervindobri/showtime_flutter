@@ -78,7 +78,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
     double _width = MediaQuery.of(context).size.width;
     // double _iconSize = _width/3;
     const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
-    const double height = .66;
+    const double height = .8;
 
     return ClipRRect(
         borderRadius: BorderRadius.only(
@@ -101,18 +101,14 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
           child: DraggableScrollableSheet(
               expand: false,
               initialChildSize: height,
-              minChildSize: height,
-              maxChildSize: .95,
+              minChildSize: .2,
+              maxChildSize: 1.0,
               builder: (context, scrollController) {
                 return Container(
                     width: _width,
-                    height: _height * .95,
+                    height: _height,
                     decoration: BoxDecoration(
                       color: GlobalColors.bgColor,
-                      //              borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(25.0),
-                          topRight: Radius.circular(25.0)),
                     ),
                     child: CustomScrollView(
                       // physics: NeverScrollableScrollPhysics(),
@@ -122,7 +118,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                               pinned: true,
                               floating: false,
                               delegate: ImageSliverAppBarDelegate(
-                                  expandedHeight: _height * .3,
+                                  expandedHeight: _height,
                                   show: widget.show)), //TOP IMAGES and title
                           SliverToBoxAdapter(
                             child: AnimationLimiter(

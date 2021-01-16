@@ -3,7 +3,7 @@ import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/models/tvshow_details.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/screens/discover/discover_contents.dart';
+import 'package:eWoke/screens/discover/watchlist.dart';
 import 'package:eWoke/screens/discover/most_popular_shows.dart';
 import 'package:eWoke/screens/discover/progress.dart';
 import 'package:flutter/material.dart';

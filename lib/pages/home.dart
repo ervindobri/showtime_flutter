@@ -23,6 +23,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -670,27 +671,31 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             ),
                           ),
                           OpenContainer(
-                            closedElevation: 0,
+                            closedElevation: 20,
                             closedColor: Colors.transparent,
                             closedShape: CircleBorder(),
+                            // transitionDuration: Duration(seconds: 1),
                             closedBuilder: (BuildContext context, void Function() action) {
                               return Container(
                                 width: _width * 0.5,
-                                height: _width * 0.3,
+                                height: _width * 0.25,
                                 child: Center(
                                   child: Container(
-                                      child: SizedBox(
-                                          width: _width * 0.5,
-                                          child: FlareActor(
-                                            'assets/blink.flr',
-                                            animation: 'Blink',
-                                          ))),
+                                      width: _width * 0.6,
+                                      height: _width * 0.25,
+                                      color: Colors.white,
+                                      child: FlareActor(
+                                        'assets/blink.flr',
+                                        animation: 'Blink',
+                                        fit: BoxFit.cover,
+                                      )),
                                 ),
                               );
                             },
                             openBuilder: (BuildContext context, void Function({Object returnValue}) action) {
-                              return AllTVShows(context);
+                              return AllTVShows();
                             },
+                            transitionType: ContainerTransitionType.fade,
 
                           ),
                           SizedBox(

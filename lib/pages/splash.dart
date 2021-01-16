@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
@@ -19,7 +18,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
 
-import '../main.dart';
+import 'package:eWoke/main.dart';
 import 'home.dart';
 import 'package:progress_state_button/progress_button.dart';
 
@@ -70,40 +69,33 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
       curve: Curves.easeOut,
     );
 
-    //Listen to actve/inactive connection
-    // subscription = Connectivity()
-    //     .onConnectivityChanged
-    //     .listen((ConnectivityResult result) {
-    //   setState(() {
-    //     connectionStatus = result;
-    //   });
-    // });
+
     //TODO: CHECK ACTIVE CONNECTION WITH PROVIDER
 
     sexController.text = GlobalVariables.sexCategories[0];
     ageController.text = 1.toString();
 
     //Call timer to check if all tasks finished
-    Timer.periodic(Duration(seconds: 1), (completed) {
-        if (allCompleted) {
-            final home = HomeView(
-              user: currentUser,
-              watchedShowsList: watchedShowsList,
-              dao: widget.dao
-            );
-
-            Navigator.of(context)
-                .pushAndRemoveUntil(
-                MaterialPageRoute(
-                builder: (context) => ListenableProvider<ShowProvider>.value(
-                    value: showProvider,
-                    child: home
-                ),
-            ), (route) => false);
-
-            completed.cancel();
-        }
-    });
+    // Timer.periodic(Duration(seconds: 1), (completed) {
+    //     if (allCompleted) {
+    //         final home = HomeView(
+    //           user: currentUser,
+    //           watchedShowsList: watchedShowsList,
+    //           dao: widget.dao
+    //         );
+    //
+    //         Navigator.of(context)
+    //             .pushAndRemoveUntil(
+    //             MaterialPageRoute(
+    //             builder: (context) => ListenableProvider<ShowProvider>.value(
+    //                 value: showProvider,
+    //                 child: home
+    //             ),
+    //         ), (route) => false);
+    //
+    //         completed.cancel();
+    //     }
+    // });
 
   }
 

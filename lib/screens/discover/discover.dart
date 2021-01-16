@@ -1,6 +1,6 @@
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/screens/discover/most_popular_shows.dart';
-import 'package:eWoke/screens/discover/discover_contents.dart';
+import 'package:eWoke/screens/discover/watchlist.dart';
 import 'package:eWoke/screens/discover/progress.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
