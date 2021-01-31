@@ -76,26 +76,26 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     ageController.text = 1.toString();
 
     //Call timer to check if all tasks finished
-    // Timer.periodic(Duration(seconds: 1), (completed) {
-    //     if (allCompleted) {
-    //         final home = HomeView(
-    //           user: currentUser,
-    //           watchedShowsList: watchedShowsList,
-    //           dao: widget.dao
-    //         );
-    //
-    //         Navigator.of(context)
-    //             .pushAndRemoveUntil(
-    //             MaterialPageRoute(
-    //             builder: (context) => ListenableProvider<ShowProvider>.value(
-    //                 value: showProvider,
-    //                 child: home
-    //             ),
-    //         ), (route) => false);
-    //
-    //         completed.cancel();
-    //     }
-    // });
+    Timer.periodic(Duration(seconds: 1), (completed) {
+        if (allCompleted) {
+            final home = HomeView(
+              user: currentUser,
+              watchedShowsList: watchedShowsList,
+              dao: widget.dao
+            );
+
+            // Navigator.of(context)
+            //     .pushAndRemoveUntil(
+            //     MaterialPageRoute(
+            //     builder: (context) => ListenableProvider<ShowProvider>.value(
+            //         value: showProvider,
+            //         child: home
+            //     ),
+            // ), (route) => false);
+
+            completed.cancel();
+        }
+    });
 
   }
 
@@ -108,15 +108,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
     super.dispose();
 
-  }
-
-  bool checkInternetConnectivity() {
-    if (connectionStatus == ConnectivityResult.none) {
-      return false;
-    }
-    else{
-      return true;
-    }
   }
 
   @override
@@ -146,20 +137,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
               Container(
                 width: _width,
                   height: _height,
-                  child: SizedBox(
-                      width: _width * 0.5,
-                      child: FlareActor(
-                        'assets/flowingbg.flr',
-                        shouldClip: false,
-                        callback: (boom){
-                          // print(boom);
-                          setState(() {
-                            animationName = 'Flow';
-                          });
-                        },
-                        animation: animationName,
-                        fit: BoxFit.cover,
-                      ))
               ),
               Column(
                 children: [
@@ -611,10 +588,10 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                     // notAiredList: notAiredList,
                                                     watchedShowsList: GlobalVariables.watchedShowList,
                                                   );
-                                                  Navigator.of(context)
-                                                      .pushAndRemoveUntil(CupertinoPageRoute(
-                                                    builder: (context) => home,
-                                                  ),(route) => false);
+                                                  // Navigator.of(context)
+                                                  //     .pushAndRemoveUntil(CupertinoPageRoute(
+                                                  //   builder: (context) => home,
+                                                  // ),(route) => false);
                                                 });
                                               }
                                             }
@@ -751,7 +728,21 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                       allCompleted = true;
                     });
                   });
-                  return Container();
+                  return Center(
+                    child: Container(
+                      width: _width*.5,
+                      height: _height*.75,
+                      // color: Colors.black,
+                      child: SizedBox(
+                        child: Center(
+                          child: FlareActor("assets/loadingcouch-white.flr",
+                              alignment: Alignment.bottomCenter,
+                              fit: BoxFit.contain,
+                              animation: "load"),
+                        ),
+                      ),
+                    ),
+                  );
                 }
                 return Center(
                   child: Container(

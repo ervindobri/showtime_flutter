@@ -46,7 +46,6 @@ class _ExpandableTextState extends State<ExpandableText>
           : new FlatButton(
           child: widget.textLabel,
           onPressed: () {
-            widget.onTap;
             setState(() => widget.isExpanded = true);
           })
     ]);

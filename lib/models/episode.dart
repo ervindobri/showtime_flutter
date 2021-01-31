@@ -79,6 +79,7 @@ class Episode{
 
       return "${diff.inDays.abs()}:${diff.inHours.remainder(24).abs()}:${diff.inMinutes.remainder(60).abs()}:${(diff.inSeconds.remainder(60).abs())}";
     }
+    return "";
 
   }
 

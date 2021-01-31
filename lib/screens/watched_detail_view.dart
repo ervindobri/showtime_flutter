@@ -22,7 +22,6 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 
 class WatchedDetailView extends StatefulWidget {
@@ -34,7 +33,6 @@ class WatchedDetailView extends StatefulWidget {
 }
 
 class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMixin {
-  RefreshController _refreshController;
   Future<List<dynamic>> episodes;
   double _percentage;
   int _lastWatchedDay;
@@ -82,7 +80,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     (context).read<TimerService>().init(widget.show);
 
     super.initState();
-    _refreshController = RefreshController(initialRefresh: false);
 
     //Fetch updated data
     _getShowData(widget.show);
@@ -110,7 +107,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
         CurvedAnimation(
             curve: Curves.fastOutSlowIn, parent: _reverseController));
 
-    _reverseController.forward();
 
     setState(() {
       countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes() -1].getDifference();
@@ -120,7 +116,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   @override
   void dispose() {
-    _refreshController.dispose();
     _controller.dispose();
     _reverseController.dispose();
     _containerSizeAnimation = null;
@@ -130,9 +125,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     super.dispose();
   }
 
-  void enterRefresh() {
-    _refreshController.requestLoading();
-  }
+
 
   String removeDecimalZeroFormat(double n) {
     return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 1);

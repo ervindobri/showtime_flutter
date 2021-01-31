@@ -9,7 +9,6 @@ import 'package:eWoke/models/tvshow_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class DetailView extends StatefulWidget {
@@ -22,7 +21,6 @@ class DetailView extends StatefulWidget {
 }
 
 class _WatchedDetailViewState extends State<DetailView> with TickerProviderStateMixin {
-  RefreshController _refreshController;
 
   double radius = 25.0;
 
@@ -49,7 +47,6 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
       parent: _controller,
       curve: Curves.easeInCubic,
     );
-    _refreshController = RefreshController(initialRefresh: false);
 //    print(widget.tvshow.name);
 
     _controller.reset();
@@ -62,13 +59,9 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
 
   @override
   void dispose() {
-    _refreshController.dispose();
     super.dispose();
   }
 
-  void enterRefresh() {
-    _refreshController.requestLoading();
-  }
 
 
   @override

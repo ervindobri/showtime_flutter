@@ -256,7 +256,7 @@ class _FullScheduleState extends State<FullSchedule> {
 
     return CarouselSlider.builder(
       itemCount: list.length,
-      itemBuilder: (_, index) {
+      itemBuilder: (_, index, what) {
         if ( list.length > 0 ){
 
           return FullScheduleCard(episodes: list[index]);

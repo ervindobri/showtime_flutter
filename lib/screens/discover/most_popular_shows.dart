@@ -188,8 +188,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                         ),
                                       ),
                                     CarouselSlider.builder(
-                                      itemBuilder: (BuildContext context, int index) {
-                                        // print(limitMap[index + 1]);
+                                      itemBuilder: (BuildContext context, int index, int what) {
                                         return FutureBuilder(
                                             future: getShowList(limitMap[index + 1]),
                                             builder: (context, snapshot) {

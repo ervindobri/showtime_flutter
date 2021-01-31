@@ -1,7 +1,5 @@
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/models/tvshow_details.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:flutter/cupertino.dart';
 
 
 class WatchedTVShow extends TVShowDetails{

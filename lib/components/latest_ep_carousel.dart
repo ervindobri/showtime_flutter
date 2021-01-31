@@ -1,6 +1,4 @@
-import 'dart:ui';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eWoke/models/tvshow_details.dart';
 import 'package:eWoke/ui/episode_card.dart';
@@ -34,7 +32,7 @@ class _LatestEpisodesCarouselState extends State<LatestEpisodesCarousel> {
             height: _width * .58,
             child: CarouselSlider.builder(
               itemCount: widget.show.episodes.reversed.toList().take(10).length,
-              itemBuilder: (BuildContext context, int itemIndex) {
+              itemBuilder: (BuildContext context, int itemIndex, int what) {
                 return EpisodeCard(episode: widget.show.episodes.reversed.toList()[itemIndex]);
               },
               options: CarouselOptions(

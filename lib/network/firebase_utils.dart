@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/models/tvshow_details.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 import '../main.dart';
 import 'network.dart';

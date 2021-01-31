@@ -2,21 +2,17 @@ import 'package:eWoke/providers/connectivity_service.dart';
 import 'package:eWoke/providers/show_provider.dart';
 import 'package:eWoke/providers/timer_service.dart';
 import 'package:eWoke/providers/user_provider.dart';
-import 'package:floor/floor.dart';
 import 'package:provider/provider.dart';
 
 import 'constants/custom_variables.dart';
-import 'package:eWoke/home/splash.dart';
+import 'package:eWoke/pages/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'home/login.dart';
+import 'package:eWoke/pages/login.dart';
 import 'database/database.dart';
-import 'database/user_data.dart';
 import 'database/user_data_dao.dart';
 
-
-// final ThemeData _appTheme = buildAppTheme();
 
 
 TextTheme buildAppTextTheme( TextTheme base){
