@@ -43,6 +43,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
   @override
   void dispose() {
     _timer?.cancel();
+    _countdownLabel = "";
+
     super.dispose();
   }
 
@@ -56,8 +58,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
     // const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
     const BorderRadius _leftRadius = BorderRadius.only(
         topLeft:  Radius.circular(75.0),
@@ -65,9 +67,9 @@ class _ScheduleCardState extends State<ScheduleCard> {
         bottomLeft: Radius.circular(25.0),
         topRight: Radius.circular(25.0),
     );
-    double airHeight = _height/13;
-    double cardHeight = _height / 4;
-    double cardWidth = _height / 3;
+    final double airHeight = _height/13;
+    final double cardHeight = _height / 4;
+    final double cardWidth = _height / 3;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 10),

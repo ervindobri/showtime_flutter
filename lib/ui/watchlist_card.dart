@@ -24,47 +24,48 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
   IconData _icon = FontAwesomeIcons.heart;
 
   bool _added = true;
-
+  double _percentage = 0.0;
   @override
   void initState() {
     super.initState();
     _icon = widget.show.favorite ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart;
     checkFavorite();
+    _percentage = widget.show.calculateProgress();
+
   }
 
 
   checkFavorite() async{
     _added = await FirestoreUtils().isFavorite(widget.show.id);
     widget.show.favorite = _added;
-    print(_added);
   }
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
-    double _percentage = widget.show.calculateProgress();
-
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
+    final cardHeight = _height/3.5;
     return Padding(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 15),
       child: Container(
         width: _width * .9,
-        height: _width/2,
+        height: cardHeight+20,
+        // color: Colors.blue,
         child: Stack(
           children: [
             Container(
               width: _width * .9,
-              height: _height/3.5,
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.only(
+              height: cardHeight,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(50.0),
                   topRight: Radius.circular(25.0),
                   bottomLeft: Radius.circular(50.0),
                   bottomRight: Radius.circular(25.0),),
                 boxShadow: [
-                  new BoxShadow(
-                      color: Colors.grey.withOpacity(1),
+                  const BoxShadow(
+                      color: Colors.grey,
                       blurRadius: 20.0,
                       spreadRadius: -2,
                       offset: Offset(0, 3)),
@@ -72,27 +73,6 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
               ),
               child: Stack(
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: widget.show.imageThumbnailPath,
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover),
-                          borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                          boxShadow: [ new BoxShadow(
-                              color: Colors.black.withOpacity(.5),
-                              blurRadius: 5.0,
-                              spreadRadius:-2,
-                              offset: Offset(2, 5)),
-                          ],
-                        ),
-                      );
-                    },
-                    placeholder: (context, url) => CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white),),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  ),
                   Row(
                     children: [
                       Align(
@@ -103,22 +83,21 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                             return Container(
                               width: _width*.35,
                               decoration: BoxDecoration(
-                                boxShadow: [ new BoxShadow(
-                                    color: Colors.grey.withOpacity(.3),
-                                    blurRadius: 25.0,
-                                    spreadRadius: -4,
-                                    offset: Offset(0, 0)),],
                                 image: DecorationImage(
                                     image: imageProvider,
                                     fit: BoxFit.cover),
-                                borderRadius: BorderRadius.only(
+                                borderRadius: const BorderRadius.only(
                                     topLeft: Radius.circular(25.0),
                                     bottomLeft: Radius.circular(25.0)
                                 ),
                               ),
                             );
                           },
-                          placeholder: (context, url) => Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white),)),
+                          placeholder: (context, url)
+                          => Container(
+                              width: _width*.35,
+                              child: Center(
+                                  child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation(Colors.white),))),
                           errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.white,),),
                         ),
                       ),
@@ -127,37 +106,27 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                             topRight: Radius.circular(25.0),
                             bottomRight: Radius.circular(25.0)
                         ),
-                        child:  BackdropFilter(
-                          filter:  ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                          child:  Container(
-                            width: _width*.55,
-                            decoration:  BoxDecoration(
-                              color: Colors.black.withOpacity(.33),
-                              borderRadius: BorderRadius.only(
-                                // topRight: Radius.circular(25.0),
-                                // bottomRight: Radius.circular(25.0),
-                              ),
-                            ),
-                            child: new Center(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      child: AutoSizeText(
-                                        widget.show.name,
-                                        minFontSize: (_width/20).roundToDouble(),
-                                        maxFontSize: (_width/10).roundToDouble(),
-                                        stepGranularity: .1,
-                                        maxLines: 2,
-                                        textAlign: TextAlign.center,
-                                        style: ShowTheme.listWatchCardTitleStyle,
-                                      ),
+                        child:  Container(
+                          width: _width*.55,
+                          child: new Center(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    child: AutoSizeText(
+                                      widget.show.name,
+                                      minFontSize: (_width/20).roundToDouble(),
+                                      maxFontSize: (_width/10).roundToDouble(),
+                                      stepGranularity: .1,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: ShowTheme.listWatchCardTitleStyle,
                                     ),
                                   ),
-                                  _checkFinishedShow(context, _percentage),
-                                ],
-                              ),
+                                ),
+                                _checkFinishedShow(context, _percentage),
+                              ],
                             ),
                           ),
                         ),
@@ -167,27 +136,29 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                 ],
               ),
             ),
-            Align(
-                alignment: Alignment.bottomCenter,
-                // left: _width/2,
-                child: Padding(
-                  padding: const EdgeInsets.only(left:50.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _addToFavorites(context, widget.show),
-                      _percentage == 1.0
-                          ? Container(
-                        child: GlobalVariables.allBadges['finished'],
-                      )
-                          : Container(
-                        height: 1,
-                        width: 1,
-                      ),
-                      _ratingBadge(),
-                    ],
-                  ),
-                )
+            Positioned(
+              child: Align(
+                  alignment: Alignment.bottomCenter,
+                  // left: _width/2,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left:50.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _addToFavorites(context, widget.show),
+                        _percentage == 1.0
+                            ? Container(
+                          child: GlobalVariables.allBadges['finished'],
+                        )
+                            : Container(
+                          height: 1,
+                          width: 1,
+                        ),
+                        _ratingBadge(),
+                      ],
+                    ),
+                  )
+              ),
             ),
 
           ],
@@ -238,8 +209,8 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
   }
 
   Widget _addToFavorites(BuildContext context, WatchedTVShow show) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal:5.0),
       child: InkWell(
@@ -283,7 +254,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
           child: Container(
               height: _height/10,
               width: _height/10,
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(25)),
                   color: GlobalColors.pinkColor
               ),

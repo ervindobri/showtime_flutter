@@ -20,6 +20,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
 
@@ -131,7 +132,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     return n.toStringAsFixed(n.truncateToDouble() == n ? 0 : 1);
   }
 
-  
+
   @override
   Widget build(BuildContext context) {
 
@@ -1076,4 +1077,285 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   //       }
   //   );
   // }
+}
+
+
+
+
+class WatchedDetailViewPlaceholder extends StatefulWidget {
+
+  @override
+  _WatchedDetailViewPlaceholderState createState() => _WatchedDetailViewPlaceholderState();
+}
+
+class _WatchedDetailViewPlaceholderState extends State<WatchedDetailViewPlaceholder> with AnimationMixin {
+
+
+
+  AnimationController _animationController;
+  Animation _colorTween;
+
+  List<AnimationController> listControllers = [];
+  List<Animation> listAnimations = [];
+
+  var startingColor = Colors.grey;
+  var endColor = Colors.grey.shade100;
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+        vsync: this, duration: Duration(milliseconds: 1690));
+    listControllers.add(_animationController);
+    listControllers.add(_animationController);
+    listControllers.add(_animationController);
+
+    _colorTween = ColorTween(begin: startingColor, end: endColor).animate(_animationController);
+    listControllers.forEach((element) {
+        listAnimations.add(ColorTween(begin: startingColor, end: endColor).animate(element));
+    });
+
+
+    changeColors();
+    super.initState();
+  }
+
+  Future changeColors() async {
+    while (true) {
+      await new Future.delayed(const Duration(milliseconds: 1690), () async {
+        if (_animationController.status == AnimationStatus.completed) {
+          _animationController.reverse();
+          listControllers[0].reverse();
+          await new Future.delayed(const Duration(milliseconds: 300), () {
+              listControllers[1].reverse();
+          });
+          await new Future.delayed(const Duration(milliseconds: 300), () {
+            listControllers[2].reverse();
+          });
+        } else {
+          _animationController.forward();
+          listControllers[0].forward();
+          await new Future.delayed(const Duration(milliseconds: 300), () {
+            listControllers[1].forward();
+          });
+          await new Future.delayed(const Duration(milliseconds: 300), () {
+            listControllers[2].forward();
+          });
+        }
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
+
+    return Container(
+      width: _width,
+      height: _height*.95,
+      decoration: BoxDecoration(
+        color: GlobalColors.bgColor,
+      ),
+      child: Container(
+        height: _height*.95,
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Stack(
+              alignment: Alignment.topCenter,
+              children: <Widget>[
+                Container(
+                  height: _height * .55,
+                  // color: GlobalColors.blueColor,
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      Container(
+                        height: _height * .4,
+                        decoration: BoxDecoration(
+                          color: GlobalColors.greyTextColor,
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(25.0),
+                            bottomLeft: Radius.circular(25.0),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 50,
+                        child: Container(
+                            height: _height/3.5,
+                            width: _width*.4,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(.2),
+                                  spreadRadius: 2,
+                                  blurRadius: 15,
+                                  offset: Offset(10, 0), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                        ),
+                      ),
+                      Positioned(
+                          bottom: 0,
+                          child: _yourProgressPlaceholder( _height, _width)
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            displayBadgesPlaceholder(_height, _width),
+            // FadeIn(.35,_checkIfPopular(_percentage, show.lastWatchDate, show.hasMoreEpisodes())),
+            Expanded(
+              child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child:  displayActions(),
+                  )),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _yourProgressPlaceholder( double _height, double _width) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
+      child: AnimatedBuilder(
+        builder: (context, child) {
+          return Container(
+                  width: _width*.85,
+                  height: _height*.25,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                    color: _colorTween.value,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(.3),
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                        offset: Offset(2, 5), // changes position of shadow
+                      ),
+                    ],
+                  ),
+          );
+        }, animation: _colorTween,
+      ),
+    );
+  }
+
+
+  Widget displayBadgesPlaceholder(double _height, double _width) {
+    List<Widget> badges = [
+
+    ];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
+      child: Container(
+        // color: Colors.grey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Shimmer.fromColors(
+                        baseColor: GlobalColors.greyTextColor,
+                        highlightColor: Colors.white,
+                        child: AutoSizeText(
+                          "Badges",
+                          style: TextStyle(
+                            color: GlobalColors.greyTextColor,
+                            fontFamily: 'Raleway',
+                            fontWeight: FontWeight.w700,
+                            fontSize: _width / 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 15.0),
+                child: Container(
+                  width: _width,
+                  height: _height/9,
+                  child: Row(
+                    //TODO: shimmer
+                    children: List.generate(3, (index) => Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: AnimatedBuilder(
+                        builder: (context, child) {
+                          return Container(
+                            width: _height/9,
+                            height: _height/9,
+                            decoration: BoxDecoration(
+                            color: listAnimations[index].value,
+                              shape: BoxShape.circle
+                            ),
+                          );
+                        }, animation: listAnimations[index],
+                      ),
+                    )
+                    ),
+                  ),
+                ),
+              )
+            ],
+          )),
+    );
+  }
+
+  Widget displayActions() {
+    final _width = MediaQuery.of(context).size.width;
+    final _height = MediaQuery.of(context).size.height;
+    // var timerService = Provider.of<TimerService>(context);
+
+      return Column(
+        children: [
+          Container(
+            // color: Colors.black,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: _width/2.5,
+                    height: _width/7,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                        color: Colors.grey,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: _width/2.5,
+                    height: _width/7,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                        color: Colors.grey,
+
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      );
+  }
 }

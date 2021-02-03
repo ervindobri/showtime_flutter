@@ -4,7 +4,6 @@ import 'package:eWoke/screens/browse_shows.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'navigator_observer.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -13,14 +12,12 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/login':
-        NavigatorHistory.lastPushed = '/login';
         if ( args is UserDao){
           return MaterialPageRoute(builder: (_) => LoginScreen(dao: args));
         }
         break;
       case AllTVShows.routeName:
         print("pushed BROWSE!");
-        NavigatorHistory.lastPushed = AllTVShows.routeName;
         return MaterialPageRoute(builder: (_) => AllTVShows());
         break;
       default:

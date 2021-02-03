@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
-import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:eWoke/components/navigator_observer.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/database/user_data_dao.dart';
 import 'package:eWoke/pages/login.dart';
@@ -56,7 +54,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _panelState = PanelState.OPEN;
+    _panelState = PanelState.CLOSED;
     _customTitle = title;
   }
 
@@ -74,17 +72,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
-    final GlobalKey<ScaffoldState> _slidingPanelKey =
-    new GlobalKey<ScaffoldState>();
-    // double _height = MediaQuery
-    //     .of(context)
-    //     .size
-    //     .height;
-
+    final GlobalKey<ScaffoldState> _slidingPanelKey = new GlobalKey<ScaffoldState>();
     showProvider = Provider.of<ShowProvider>(context);
-
-    print("last popped ${NavigatorHistory.lastPushed}");
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       //new line
@@ -474,7 +463,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0),
                   child: Container(
-                    //                    color: Colors.redAccent,
                     height: _height * .25,
                     color: GlobalColors.bgColor,
                     width: _width,
@@ -568,7 +556,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             maxHeight: _panelHeightOpen,
             minHeight: _panelHeightClosed,
             key: _slidingPanelKey,
-            defaultPanelState: NavigatorHistory.lastPushed == AllTVShows.routeName ? _panelState : PanelState.CLOSED,
+            defaultPanelState: _panelState,
             boxShadow: [
               BoxShadow(
                 color: GlobalColors.greenColor.withOpacity(0.15),
@@ -1023,6 +1011,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               data[index].episodes = snapshot.data;
               return WatchedDetailView(show: data[index]);
             } else {
+              return WatchedDetailViewPlaceholder();
               return Container(
                 width: _width,
                 height: _height * .95,
@@ -1044,6 +1033,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   ],
                 ),
               );
+
             }
           }),
     );

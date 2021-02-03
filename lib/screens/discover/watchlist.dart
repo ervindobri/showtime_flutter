@@ -292,6 +292,10 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                                 controller: controller,
                                 startIcon: Icons.keyboard_arrow_up,
                                 endIcon: Icons.keyboard_arrow_down,
+                                // add this tooltip for the start icon
+                                startTooltip: 'Icons.add_circle',
+                                // add this tooltip for the end icon
+                                endTooltip: 'Icons.add_circle_outline',
                                 size: 35.0,
                                 duration: Duration(milliseconds: 200),
                                 color: Colors.white,
@@ -600,7 +604,6 @@ class _WatchlistViewState extends State<WatchlistView> {
     scrollController = widget.scrollController;
     scrollController.addListener(onListen);
 
-    print("watchliested");
   }
 
   @override
@@ -635,58 +638,30 @@ class _WatchlistViewState extends State<WatchlistView> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
     final itemSize = _height / 2.7;
-    // print("watchlist");
-    return AnimationLimiter(
-      child: ListView.builder(
-          controller: widget.scrollController,
-          itemCount: widget.list.length,
-          itemBuilder: (_, index) {
-            final itemPositionOffset = index * itemSize;
-            final difference = scrollController.offset - itemPositionOffset;
-            final percent = 1 - (difference / (itemSize));
-            double scalex = percent;
-            if (scalex > 1.0) scalex = 1.0;
-
-            return AnimationConfiguration.staggeredList(
-              position: index,
-              duration: const Duration(milliseconds: 375),
-              child: SlideAnimation(
-                verticalOffset: 50.0*index,
-                child: FadeInAnimation(
-                  delay: Duration(milliseconds:index*50 ),
-                  child: Center(
-                    child: Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()..scale(scalex, scalex),
-                      child: SizedBox(
-                        height: itemSize,
-                        child: InkWell(
-                            onTap: (){
-                              showModalBottomSheet<dynamic>(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(25.0),
-                                        topRight: Radius.circular(25.0)),
-                                  ),
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return _createRouteShowDetail(widget.list,index, _width, _height);
-                                  },
-                                  isScrollControlled: true);
-                            },
-                            child: WatchedCardInList(
-                                show: widget.list[index % widget.list.length])),
-                      ),
+    return ListView.builder(
+        controller: widget.scrollController,
+        itemCount: widget.list.length,
+        itemBuilder: (_, index) {
+          return InkWell(
+              onTap: (){
+                showModalBottomSheet<dynamic>(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25.0),
+                          topRight: Radius.circular(25.0)),
                     ),
-                  ),
-                ),
-              ),
-            );
-          }),
-    );
+                    context: context,
+                    builder: (BuildContext context) {
+                      return _createRouteShowDetail(widget.list,index, _width, _height);
+                    },
+                    isScrollControlled: true);
+              },
+              // child: Container(child: Text("bu"),),),
+              child: WatchedCardInList(show: widget.list[index % widget.list.length]));
+        });
   }
 }
 

@@ -16,12 +16,6 @@ abstract class ShowTheme{
     );
 
   static var listWatchCardSubStyle = TextStyle(
-    shadows: [
-      new Shadow(
-        color: Colors.black,
-        blurRadius: 15,
-      )
-    ],
     color: GlobalColors.watchCardFontColor,
     fontFamily: 'Raleway',
     fontSize: width / 20,
@@ -48,12 +42,6 @@ abstract class ShowTheme{
     }
 
   static TextStyle listWatchCardTitleStyle = TextStyle(
-    shadows: [
-      new Shadow(
-        color: Colors.black.withOpacity(.2),
-        blurRadius: 15,
-      )
-    ],
     color: GlobalColors.watchCardFontColor,
     fontFamily: 'Raleway',
     fontWeight: FontWeight.w700,
@@ -61,12 +49,6 @@ abstract class ShowTheme{
   );
 
   static var listWatchCardDaysStyle = TextStyle(
-    shadows: [
-      new Shadow(
-        color: Colors.black,
-        blurRadius: 15,
-      )
-    ],
     color: GlobalColors.watchCardFontColor,
     fontFamily: 'Raleway',
     fontWeight: FontWeight.w700,

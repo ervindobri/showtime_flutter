@@ -28,8 +28,8 @@ class GlobalColors{
   static const bgColor = const Color(0xFFF9F9F9);
 
 
-  static const Color watchCardFontColor = Colors.white;
-  static const Color watchCardShadowColor = Colors.black;
+  static Color watchCardFontColor = greyTextColor;
+  static Color watchCardShadowColor = Colors.black;
 
 
 }

@@ -4,7 +4,6 @@ import 'package:eWoke/providers/timer_service.dart';
 import 'package:eWoke/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'components/navigator_observer.dart';
 import 'components/route_generator.dart';
 import 'constants/custom_variables.dart';
 import 'package:eWoke/pages/splash.dart';
@@ -103,7 +102,6 @@ Future<void> main() async {
             ChangeNotifierProvider<TimerService>(create: (_) => TimerService())
         ],
         child: MaterialApp(
-          navigatorObservers:[ NavigatorHistory()],
           onGenerateRoute: RouteGenerator.generateRoute,
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
