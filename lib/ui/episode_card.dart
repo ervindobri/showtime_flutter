@@ -221,7 +221,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  "This apisode is not yet released!",
+                                  "This episode is not yet released!",
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Raleway',

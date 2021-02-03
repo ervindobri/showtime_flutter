@@ -7,6 +7,7 @@ import 'package:eWoke/network/network.dart';
 import 'package:eWoke/providers/show_provider.dart';
 import 'package:eWoke/screens/watched_detail_view.dart';
 import 'package:eWoke/ui/watch_card.dart';
+import 'package:eWoke/ui/watchlist_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_icons/animate_icons.dart';

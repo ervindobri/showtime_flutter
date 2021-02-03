@@ -18,10 +18,7 @@ import 'package:flare_flutter/flare_actor.dart';
 
 
 class AllTVShows extends StatefulWidget {
-  // BuildContext context;
-
-  AllTVShows();
-
+  static const String routeName = "/browse";
   @override
   _AllTVShowsState createState() => _AllTVShowsState();
 }

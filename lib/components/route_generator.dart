@@ -1,0 +1,44 @@
+import 'package:eWoke/database/user_data_dao.dart';
+import 'package:eWoke/pages/login.dart';
+import 'package:eWoke/screens/browse_shows.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import 'navigator_observer.dart';
+
+class RouteGenerator {
+  static Route<dynamic> generateRoute(RouteSettings settings) {
+    // Getting arguments passed in while calling Navigator.pushNamed
+    final args = settings.arguments;
+
+    switch (settings.name) {
+      case '/login':
+        NavigatorHistory.lastPushed = '/login';
+        if ( args is UserDao){
+          return MaterialPageRoute(builder: (_) => LoginScreen(dao: args));
+        }
+        break;
+      case AllTVShows.routeName:
+        print("pushed BROWSE!");
+        NavigatorHistory.lastPushed = AllTVShows.routeName;
+        return MaterialPageRoute(builder: (_) => AllTVShows());
+        break;
+      default:
+      // If there is no such named route in the switch statement, e.g. /third
+        return _errorRoute();
+    }
+  }
+
+  static Route<dynamic> _errorRoute() {
+    return MaterialPageRoute(builder: (_) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('Error'),
+        ),
+        body: Center(
+          child: Text('ERROR'),
+        ),
+      );
+    });
+  }
+}

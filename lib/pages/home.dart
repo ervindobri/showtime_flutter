@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:eWoke/components/navigator_observer.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/database/user_data_dao.dart';
 import 'package:eWoke/pages/login.dart';
@@ -57,7 +58,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     super.initState();
     _panelState = PanelState.OPEN;
     _customTitle = title;
-    print("homeinit!");
   }
 
   @override
@@ -82,6 +82,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     //     .height;
 
     showProvider = Provider.of<ShowProvider>(context);
+
+    print("last popped ${NavigatorHistory.lastPushed}");
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -566,7 +568,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
             maxHeight: _panelHeightOpen,
             minHeight: _panelHeightClosed,
             key: _slidingPanelKey,
-            defaultPanelState: _panelState,
+            defaultPanelState: NavigatorHistory.lastPushed == AllTVShows.routeName ? _panelState : PanelState.CLOSED,
             boxShadow: [
               BoxShadow(
                 color: GlobalColors.greenColor.withOpacity(0.15),
@@ -667,33 +669,19 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             )),
                       ),
                     ),
-                    OpenContainer(
-                      closedElevation: 20,
-                      closedColor: Colors.transparent,
-                      closedShape: CircleBorder(),
-                      // transitionDuration: Duration(seconds: 1),
-                      closedBuilder: (BuildContext context, void Function() action) {
-                        return Container(
-                          width: min(_width * 0.5, 80),
-                          height: min(_width * 0.25,80),
-                          child: Center(
-                            child: Container(
-                                width: max(_width * 0.6,80),
-                                height: max(_width * 0.25,80),
-                                color: Colors.white,
-                                child: FlareActor(
-                                  'assets/blink.flr',
-                                  animation: 'Blink',
-                                  fit: BoxFit.cover,
-                                )),
+                    InkWell(
+                          onTap: () {
+                            Navigator.pushNamed(context, AllTVShows.routeName);
+                          } ,
+                          child: SizedBox(
+                            width: min(_width * 0.6, 90),
+                            height: min(_width * 0.6, 90),
+                            child: FlareActor(
+                              'assets/blink.flr',
+                              animation: 'Blink',
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        );
-                      },
-                      openBuilder: (BuildContext context, void Function({Object returnValue}) action) {
-                        return AllTVShows();
-                      },
-                      transitionType: ContainerTransitionType.fade,
-
                     ),
                     SizedBox(
                       height: _width / 10,

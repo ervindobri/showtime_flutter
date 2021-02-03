@@ -85,6 +85,10 @@ class FirestoreUtils{
     return docSnapshot.exists;
   }
 
+  Future<bool> isFavorite(String showID) async {
+    final docSnapshot = await favorites.doc(showID).get();
+    return docSnapshot.exists;
+  }
   void favoriteShow(WatchedTVShow show, bool value){
     watchedShows
         .doc(show.id.toString())
@@ -96,6 +100,7 @@ class FirestoreUtils{
   void deleteFromFavorites(WatchedTVShow show) {
     favorites.doc(show.id.toString()).delete();
   }
+
   Future<dynamic> getWatchedShowData(String showID){
     return watchedShows.doc(showID).get();
   }
@@ -114,6 +119,10 @@ class FirestoreUtils{
 
 
 
+
+  Future<void> resetPassword(String email) async {
+    await auth.sendPasswordResetEmail(email: email);
+  }
 
   Future<List<List<Episode>>> getEpisodeList(List<int> watchedShowIdList) async {
     EpisodeList episodes = await Network().getScheduledEpisodes();

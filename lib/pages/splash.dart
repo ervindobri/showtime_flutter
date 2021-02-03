@@ -84,14 +84,14 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
               dao: widget.dao
             );
 
-            // Navigator.of(context)
-            //     .pushAndRemoveUntil(
-            //     MaterialPageRoute(
-            //     builder: (context) => ListenableProvider<ShowProvider>.value(
-            //         value: showProvider,
-            //         child: home
-            //     ),
-            // ), (route) => false);
+            Navigator.of(context)
+                .pushAndRemoveUntil(
+                MaterialPageRoute(
+                builder: (context) => ListenableProvider<ShowProvider>.value(
+                    value: showProvider,
+                    child: home
+                ),
+            ), (route) => false);
 
             completed.cancel();
         }
@@ -588,10 +588,10 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                     // notAiredList: notAiredList,
                                                     watchedShowsList: GlobalVariables.watchedShowList,
                                                   );
-                                                  // Navigator.of(context)
-                                                  //     .pushAndRemoveUntil(CupertinoPageRoute(
-                                                  //   builder: (context) => home,
-                                                  // ),(route) => false);
+                                                  Navigator.of(context)
+                                                      .pushAndRemoveUntil(CupertinoPageRoute(
+                                                    builder: (context) => home,
+                                                  ),(route) => false);
                                                 });
                                               }
                                             }
