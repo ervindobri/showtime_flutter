@@ -6,8 +6,11 @@ import 'package:eWoke/components/toast.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/database/user_data.dart';
 import 'package:eWoke/database/user_data_dao.dart';
+import 'package:eWoke/get_controllers/auth_controller.dart';
+import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/pages/splash.dart';
+import 'package:eWoke/providers/show_provider.dart';
 import 'package:eWoke/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +24,7 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:local_auth/local_auth.dart';
@@ -70,6 +74,57 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
   bool _isBgAnimStopped = true;
 
   CarouselController _carouselController = CarouselController();
+  
+  AuthController authController = Get.put(AuthController());
+
+  UserDao dao;
+  
+  
+
+
+
+  List<UserData> list = [];
+
+  @override
+  void initState() {
+    _canCheckBiometrics = false;
+    _fingerprintAnimStopped = true;
+    super.initState();
+    getSavedData();
+    fToast = FToast();
+    fToast.init(context);
+    setState(() {
+      dao = authController.dao;
+    });
+    //get accounts with biometric - true
+    fetchAccounts();
+    _checkBiometrics();
+    print(_canCheckBiometrics);
+    _getAvailableBiometrics();
+    initialTimer();
+
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 550),
+      vsync: this,
+    );
+
+    animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInCubic,
+    );
+  }
+
+  var startAnimation = false;
+
+  initialTimer() async {
+    await new Future.delayed(const Duration(milliseconds: 2000));
+    setState(() {
+      startAnimation = true;
+      _isBgAnimStopped = false;
+    });
+    await new Future.delayed(const Duration(milliseconds: 300));
+    _controller.forward();
+  }
 
 
   Future<void> _checkBiometrics() async {
@@ -139,48 +194,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
       return 'PasswordShort';
     }
     return null;
-  }
-
-  List<UserData> list = [];
-
-  @override
-  void initState() {
-    _canCheckBiometrics = false;
-    _fingerprintAnimStopped = true;
-    super.initState();
-    getSavedData();
-    fToast = FToast();
-    fToast.init(context);
-    if (widget.dao == null)
-      print("DAO is null!");
-    //get accounts with biometric - true
-    fetchAccounts();
-    _checkBiometrics();
-    print(_canCheckBiometrics);
-    _getAvailableBiometrics();
-    initialTimer();
-
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 550),
-      vsync: this,
-    );
-
-    animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInCubic,
-    );
-  }
-
-  var startAnimation = false;
-
-  initialTimer() async {
-    await new Future.delayed(const Duration(milliseconds: 2000));
-    setState(() {
-      startAnimation = true;
-      _isBgAnimStopped = false;
-    });
-    await new Future.delayed(const Duration(milliseconds: 300));
-    _controller.forward();
   }
 
   @override
@@ -280,20 +293,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                       ),
                                       onPressed: () async {
                                         print("google sign in!");
-                                        context
-                                            .read<UserProvider>()
-                                            .signInWithGoogle()
-                                            .then((result) {
-                                          print("result:$result");
-                                          if (result != null) {
-                                            final home = SplashScreen();
-                                            Navigator.of(context).pushAndRemoveUntil(
-                                                CupertinoPageRoute(
-                                                  builder: (context) => home,
-                                                ),
-                                                    (route) => false);
-                                          }
-                                        });
+                                        authController.signInWithGoogle();
                                       },
                                     ),
                                   ),
@@ -308,7 +308,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                   ) InkWell(
                                     highlightColor: GlobalColors.greenColor,
                                     onTap: () {
-
                                       _authenticate().then((value) async {
                                         if (_authorized == 'Authorized') {
                                           _fingerprintAnimStopped = false;
@@ -334,10 +333,12 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                       return CupertinoActionSheetAction(
                                                           child: Text(
                                                               list[index].email),
-                                                          onPressed: () {
-                                                            //log-in with the account
-                                                            Navigator.pop(context,
-                                                                'Cancel');
+                                                          onPressed: () async {
+                                                            //log-in with the biometric account
+                                                            String auth = await authController.login(list[index].email,list[index].password);
+                                                            if (auth == '') {
+                                                              navigateToSplashScreen(context);
+                                                            }
                                                           });
                                                     }),
                                                   );
@@ -346,21 +347,9 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                           else {
                                             print(
                                                 "logging in! ${list.first.password}");
-                                            String auth = await context
-                                                .read<UserProvider>()
-                                                .login(list.first.email,
-                                                list.first.password);
+                                            String auth = await authController.login(list.first.email,list.first.password);
                                             if (auth == '') {
-                                              final home = SplashScreen(
-                                                dao: widget.dao,
-                                              );
-                                              Navigator.of(context)
-                                                  .pushAndRemoveUntil(
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                    home,
-                                                  ),
-                                                      (route) => false);
+                                              navigateToSplashScreen(context);
                                             }
                                           }
                                         }
@@ -461,8 +450,9 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
   }
 
   Future<void> fetchAccounts() async {
-
-     var users = await widget.dao.fetchEnabledBiometricUsers();
+      await Future.delayed(Duration(seconds: 1));
+     print("fetching accs");
+      var users = await dao.fetchEnabledBiometricUsers();
      list.addAll(users);
      print("Accounts with biometric: ${users.length}");
   }
@@ -987,29 +977,24 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                               _state = 1;
                                             });
                                             if (logging) {
+                                              print(nameController.text);
                                               Future.delayed(
                                                   const Duration(milliseconds: 300),
                                                       () async {
                                                     // print(nameController.text);
-                                                    String authenticate = await context
-                                                        .read<UserProvider>()
-                                                        .login(nameController.text,
-                                                        passwordController.text);
+                                                        String authenticate = await authController.login(nameController.text,passwordController.text);
                                                     if (authenticate == '') {
                                                       setState(() {
                                                         _state = 2;
                                                       });
-                                                      print(widget.dao);
-                                                      if (widget.dao != null) {
-                                                        final user = UserData(
-                                                            1,
-                                                            nameController.text,
-                                                            passwordController.text,
-                                                            true);
-                                                        // await widget.dao.deleteUser(user);
-                                                        await widget.dao.insertUser(user);
-                                                      }
-
+                                                      //TODO: add biometric switch
+                                                      // print(dao);
+                                                      // if (dao != null) {
+                                                      // final user = UserData( 1, nameController.text, passwordController.text, true);
+                                                      // final user = UserData( 1, "dobriervin@yahoo.com", "djcaponegood", true);
+                                                        // await dao.deleteUser(user);
+                                                        // await dao.insertUser(user);
+                                                      // }
                                                       Future.delayed(
                                                           const Duration(milliseconds: 300),
                                                               () {
@@ -1027,17 +1012,10 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                               _storage.delete(key: 'password');
                                                             }
 
-                                                            final home = SplashScreen(
-                                                              dao: widget.dao,
-                                                            );
-                                                            Navigator.of(context)
-                                                                .pushAndRemoveUntil(
-                                                                CupertinoPageRoute(
-                                                                  builder: (context) => home,
-                                                                ),
-                                                                    (route) => false);
+                                                            navigateToSplashScreen(context);
                                                           });
-                                                    } else {
+                                                    }
+                                                    else {
                                                       setState(() {
                                                         _state = 0;
                                                       });
@@ -1322,12 +1300,21 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                     ),
                   ),
                 ]
-
               ),
             );
           }
         );
-
     });
+  }
+
+  void navigateToSplashScreen(BuildContext context) {
+    final home = SplashScreen(
+      dao: dao,
+    );
+    Navigator.pushReplacement(context,
+      CupertinoPageRoute(
+        builder: (context) =>
+            home
+      ),);
   }
 }

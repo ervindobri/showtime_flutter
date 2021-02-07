@@ -1,7 +1,10 @@
+import 'package:eWoke/get_controllers/auth_controller.dart';
+import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/providers/connectivity_service.dart';
 import 'package:eWoke/providers/show_provider.dart';
 import 'package:eWoke/providers/timer_service.dart';
 import 'package:eWoke/providers/user_provider.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import 'components/route_generator.dart';
@@ -13,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:eWoke/pages/login.dart';
 import 'database/database.dart';
 import 'database/user_data_dao.dart';
+import 'package:get/get.dart';
+
+import 'get_bindings/instance_binding.dart';
 
 
 
@@ -75,11 +81,8 @@ ThemeData buildAppTheme(){
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final database = await $FloorAppDatabase
-      .databaseBuilder('users.db')
-      .build();
 
-  final dao = database.userDao;
+
 
   await Firebase.initializeApp();
 
@@ -87,30 +90,16 @@ Future<void> main() async {
   print("starting");
   //TODO: integrate PROVIDER to EVERY screen/page
   runApp(
-      MultiProvider(
-        providers: [
-            ChangeNotifierProvider<UserProvider>(
-                create: (_) => UserProvider.instance(),
-                builder: (context,child){
-                  return child;
-                }
-            ),
-            FutureProvider(create:(_) async => UserProvider.instance().getUserData()),
-            StreamProvider(create: (_) => ShowProvider().getWatchedShows()),
-            ChangeNotifierProvider(create: (_) => ShowProvider()),
-            StreamProvider(create: (_) => ConnectivityService().connectionStatusController.stream),
-            ChangeNotifierProvider<TimerService>(create: (_) => TimerService())
-        ],
-        child: MaterialApp(
-          onGenerateRoute: RouteGenerator.generateRoute,
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            bottomSheetTheme: BottomSheetThemeData(
-                backgroundColor: Colors.black.withOpacity(0)),
-          ),
-          title: 'showTIME',
-          home: Router(dao: dao),
+      GetMaterialApp(
+        initialBinding: InstanceBinding(),
+        onGenerateRoute: RouteGenerator.generateRoute,
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          bottomSheetTheme: BottomSheetThemeData(
+              backgroundColor: Colors.black.withOpacity(0)),
         ),
+        title: 'showTIME',
+        home: Router(),
       )
   );
 }
@@ -123,6 +112,9 @@ class Router extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return Obx((){
+      return Get.find<AuthController>().user != null ? SplashScreen() : LoginScreen();
+    });
       return Builder(
         builder: (newContext) {
           switch (newContext

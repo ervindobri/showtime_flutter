@@ -6,6 +6,7 @@ import 'package:eWoke/components/custom_elevation.dart';
 import 'package:eWoke/components/dialogs.dart';
 import 'package:eWoke/components/toast.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/get_controllers/timer_controller.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
@@ -17,10 +18,10 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
 
@@ -64,6 +65,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   int _episodeLength = 24;
 
+  TimerController timerController = Get.put(TimerController());
+
   @override
   void setState(fn) {
     if(mounted) {
@@ -78,7 +81,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
     controller.duration = Duration(milliseconds: 250);
 // <-- start the animation playback
-    (context).read<TimerService>().init(widget.show);
+    timerController.init(widget.show);
 
     super.initState();
 
@@ -182,33 +185,30 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             ),
                             Positioned(
                               top: 50,
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaY: 20.0, sigmaX: 20.0),
-                                child: Container(
-                                  height: _height/3.5,
-                                  width: _width*.4,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(.2),
-                                        spreadRadius: 2,
-                                        blurRadius: 15,
-                                        offset: Offset(10, 0), // changes position of shadow
-                                      ),
-                                    ],
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    child: CachedNetworkImage(
-                                      imageUrl: widget.show.imageThumbnailPath,
-                                      progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                          Center(child: CircularProgressIndicator(value: downloadProgress.progress, valueColor: AlwaysStoppedAnimation(Colors.white),)),
-                                      errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.white,)),
+                              child: Container(
+                                height: _height/3.5,
+                                width: _width*.4,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(.2),
+                                      spreadRadius: 2,
+                                      blurRadius: 15,
+                                      offset: Offset(10, 0), // changes position of shadow
                                     ),
-                                  )
+                                  ],
                                 ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  child: CachedNetworkImage(
+                                    imageUrl: widget.show.imageThumbnailPath,
+                                    progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                        Center(child: CircularProgressIndicator(value: downloadProgress.progress, valueColor: AlwaysStoppedAnimation(Colors.white),)),
+                                    errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.white,)),
+                                  ),
+                                )
                               ),
                             ),
                             Positioned(
@@ -569,13 +569,12 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
 
-    print(_selectedEpisode);
-    print(this.widget.show.episodePerSeason);
     return ClipRRect(
       borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
       child: Container(
         height: _height*.45,
         child: SingleChildScrollView(
+          physics: NeverScrollableScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -620,7 +619,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: GlobalColors.lightGreenColor,
+                            color: GlobalColors.greenColor,
                             borderRadius: BorderRadius.circular(12)
                           ),
                           child: Padding(
@@ -628,7 +627,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             child: AutoSizeText(
                               "Select",
                               style: TextStyle(
-                                color: GlobalColors.greyTextColor,
+                                color: Colors.white,
                                 decoration: TextDecoration.underline,
                                 fontSize: 20,
                                 fontFamily: 'Raleway',
@@ -644,7 +643,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
               Padding(
                 padding: const EdgeInsets.only(top: 15.0),
                 child: Container(
-                  height: _height / 2.4,
+                  height: _height / 3,
                   color: Colors.white,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -758,39 +757,33 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: _width/2.5,
-                        height: _width/7,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                            color: GlobalColors.lightGreenColor.withOpacity(.3)
+                      child: OutlineButton(
+                        borderSide: BorderSide(
+                          color: GlobalColors.greenColor
                         ),
-                        child: CustomElevation(
-                          color: GlobalColors.greenColor.withOpacity(.3),
-                          blurRadius: 5,
-                          spreadRadius: 3,
-                          child: FlatButton(
-                            splashColor: GlobalColors.greenColor,
-                            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-                            clipBehavior: Clip.antiAlias,
-                            onPressed: () {
-                              showAnimatedDialog(
-                                context: context,
-                                animationType: DialogTransitionType.slideFromBottomFade,
-                                barrierDismissible: false,
-                                duration: Duration(milliseconds: 100),
-                                builder: (BuildContext context) {
-                                  return unwatchDialog(context, widget.show.name, widget.show.id);
-                                },
-                              );
+                        color: Colors.white,
+                        highlightedBorderColor: GlobalColors.darkGreenColor,
+                        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0)),
+                        clipBehavior: Clip.antiAlias,
+                        onPressed: () {
+                          showAnimatedDialog(
+                            context: context,
+                            animationType: DialogTransitionType.slideFromBottomFade,
+                            barrierDismissible: false,
+                            duration: Duration(milliseconds: 100),
+                            builder: (BuildContext context) {
+                              return unwatchDialog(context, widget.show.name, widget.show.id);
                             },
-                            child: Center(
-                              child: Text(
-                                "Unwatch",
-                                style: TextStyle(
-                                  color: GlobalColors.greenColor,
-                                  fontSize: 20,
-                                ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Center(
+                            child: Text(
+                              "Unwatch",
+                              style: TextStyle(
+                                color: GlobalColors.greenColor,
+                                fontSize: 20,
                               ),
                             ),
                           ),
@@ -799,76 +792,72 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: _width/2.5,
-                        height: _width/7,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                            color: GlobalColors.greenColor.withOpacity(1)
-                        ),
-                        child: CustomElevation(
-                          color: GlobalColors.greenColor.withOpacity(.3),
-                          spreadRadius: 2,
-                          blurRadius: 15,
-                          child: FlatButton(
-                            splashColor: GlobalColors.darkGreenColor,
-                            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-                            onLongPress: (){
-                              setState(() {
-                                _selectedSeason = this.widget.show.currentSeason;
-                                _selectedEpisode = this.widget.show.currentEpisode;
-                              });
-                              showModalBottomSheet(
-                                  backgroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(25.0),
-                                        topRight: Radius.circular(25.0)),
-                                  ),
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return createBottomSheet();
-                                  });
-                            },
-                            onPressed: () {
-                              try {
-                                setState(() {
-                                  widget.show.incrementEpisodeWatch();
+                      child: CustomElevation(
+                        color: GlobalColors.greenColor.withOpacity(.3),
+                        spreadRadius: 2,
+                        blurRadius: 15,
+                        child: FlatButton(
+                          splashColor: GlobalColors.darkGreenColor,
+                          color: GlobalColors.greenColor,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                          onLongPress: (){
+                            setState(() {
+                              _selectedSeason = this.widget.show.currentSeason;
+                              _selectedEpisode = this.widget.show.currentEpisode;
+                            });
+                            showModalBottomSheet(
+                                backgroundColor: Colors.white,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(25.0),
+                                      topRight: Radius.circular(25.0)),
+                                ),
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return createBottomSheet();
                                 });
+                          },
+                          onPressed: () {
+                            try {
+                              setState(() {
+                                widget.show.incrementEpisodeWatch();
                                 widget.show.setLastWatchedDate();
-                                FirestoreUtils().updateEpisode(widget.show);
-                                StatusAlert.show(
-                                  context,
-                                  duration:
-                                  Duration(
-                                      seconds:
-                                      1),
-                                  blurPower: 15.0,
-                                  title:
-                                  'Episode added',
-                                  configuration:
-                                  IconConfiguration(
-                                      icon: Icons
-                                          .done),
-                                );
-                              } catch (e, s) {
-                                // print(s);
-                                StatusAlert.show(
-                                  context,
-                                  duration:
-                                  Duration(
-                                      seconds: 1),
-                                  blurPower: 15.0,
-                                  title:
-                                  '{$e}:Couldn\'t add episode!',
-                                  configuration:
-                                  IconConfiguration(
-                                      icon: Icons
-                                          .error),
-                                );
-                              }
+                              });
+                              FirestoreUtils().updateEpisode(widget.show);
+                              StatusAlert.show(
+                                context,
+                                duration:
+                                Duration(
+                                    seconds:
+                                    1),
+                                blurPower: 15.0,
+                                title:
+                                'Episode added',
+                                configuration:
+                                IconConfiguration(
+                                    icon: Icons
+                                        .done),
+                              );
+                            } catch (e, s) {
+                              // print(s);
+                              StatusAlert.show(
+                                context,
+                                duration:
+                                Duration(
+                                    seconds: 1),
+                                blurPower: 15.0,
+                                title:
+                                '{$e}:Couldn\'t add episode!',
+                                configuration:
+                                IconConfiguration(
+                                    icon: Icons
+                                        .error),
+                              );
+                            }
 
-                            },
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
                             child: Center(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -984,14 +973,16 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: AutoSizeText(
-                                  (context).watch<TimerService>().countDown,
-                                  maxFontSize: 20,
-                                  minFontSize: 13,
-                                  style: GoogleFonts.lato(
-                                      fontSize: _width/22,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white
+                                child: Obx( () =>
+                                  AutoSizeText(
+                                    timerController.countDown ?? "N/A",
+                                    maxFontSize: 20,
+                                    minFontSize: 13,
+                                    maxLines: 1,
+                                    style: GoogleFonts.lato(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white
+                                    ),
                                   ),
                                 ),
                               ),
@@ -1012,53 +1003,51 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
      return Container(
        child: Padding(
          padding: const EdgeInsets.all(8.0),
-         child: Container(
-           width: _width/2,
-           height: 50,
-           decoration: BoxDecoration(
-               borderRadius: BorderRadius.all(Radius.circular(25.0)),
-               color: GlobalColors.greenColor
-           ),
-           child: CustomElevation(
-             color: GlobalColors.greenColor.withOpacity(.4),
-             child: FlatButton(
-               splashColor: GlobalColors.lightGreenColor,
-               shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-               clipBehavior: Clip.antiAlias,
-               onPressed: () {
-                 //RESET THE NUMBERS AND INCREMENT
-                 setState(() {
-                     this.widget.show.watchedTimes+=1;
-                     this.widget.show.currentSeason = 1;
-                     this.widget.show.currentEpisode = 0;
-                 });
-                 widget.show.setLastWatchedDate();
+         child: CustomElevation(
+           color: GlobalColors.greenColor.withOpacity(.4),
+           child: FlatButton(
+             color: GlobalColors.greenColor,
+             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0)),
+             clipBehavior: Clip.antiAlias,
+             onPressed: () {
+               //RESET THE NUMBERS AND INCREMENT
+               setState(() {
+                   this.widget.show.watchedTimes+=1;
+                   this.widget.show.currentSeason = 1;
+                   this.widget.show.currentEpisode = 0;
+               });
+               widget.show.setLastWatchedDate();
 
-                 this.widget.show.calculateWatchedEpisodes();
-                  //Reset episode counters;
-                  FirestoreUtils().incrementWatchedTime(this.widget.show);
-               },
-               child: Center(
-                 child: Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                   children: [
-                     FaIcon(
-                       FontAwesomeIcons.rev,
-                       color: Colors.white,
-                       size: 25,
-                     ),
-                     AutoSizeText(
-                       "Rewatch",
-                       style: GoogleFonts.roboto(
-                         textStyle: TextStyle(
-                             fontSize: 22,
-                             fontFamily: 'Raleway',
-                             fontWeight: FontWeight.w500,
-                             color: Colors.white
+               this.widget.show.calculateWatchedEpisodes();
+                //Reset episode counters;
+                FirestoreUtils().incrementWatchedTime(this.widget.show);
+             },
+             child: Padding(
+               padding: const EdgeInsets.symmetric(horizontal: 8.0),
+               child: Container(
+                 width: _width/3,
+                 child: Center(
+                   child: Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                     children: [
+                       FaIcon(
+                         FontAwesomeIcons.rev,
+                         color: Colors.white,
+                         size: 20,
+                       ),
+                       AutoSizeText(
+                         "Rewatch",
+                         style: GoogleFonts.roboto(
+                           textStyle: TextStyle(
+                               fontSize: 22,
+                               fontFamily: 'Raleway',
+                               fontWeight: FontWeight.w500,
+                               color: Colors.white
+                           ),
                          ),
                        ),
-                     ),
-                   ],
+                     ],
+                   ),
                  ),
                ),
              ),
@@ -1077,285 +1066,4 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   //       }
   //   );
   // }
-}
-
-
-
-
-class WatchedDetailViewPlaceholder extends StatefulWidget {
-
-  @override
-  _WatchedDetailViewPlaceholderState createState() => _WatchedDetailViewPlaceholderState();
-}
-
-class _WatchedDetailViewPlaceholderState extends State<WatchedDetailViewPlaceholder> with AnimationMixin {
-
-
-
-  AnimationController _animationController;
-  Animation _colorTween;
-
-  List<AnimationController> listControllers = [];
-  List<Animation> listAnimations = [];
-
-  var startingColor = Colors.grey;
-  var endColor = Colors.grey.shade100;
-
-  @override
-  void initState() {
-    _animationController = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 1690));
-    listControllers.add(_animationController);
-    listControllers.add(_animationController);
-    listControllers.add(_animationController);
-
-    _colorTween = ColorTween(begin: startingColor, end: endColor).animate(_animationController);
-    listControllers.forEach((element) {
-        listAnimations.add(ColorTween(begin: startingColor, end: endColor).animate(element));
-    });
-
-
-    changeColors();
-    super.initState();
-  }
-
-  Future changeColors() async {
-    while (true) {
-      await new Future.delayed(const Duration(milliseconds: 1690), () async {
-        if (_animationController.status == AnimationStatus.completed) {
-          _animationController.reverse();
-          listControllers[0].reverse();
-          await new Future.delayed(const Duration(milliseconds: 300), () {
-              listControllers[1].reverse();
-          });
-          await new Future.delayed(const Duration(milliseconds: 300), () {
-            listControllers[2].reverse();
-          });
-        } else {
-          _animationController.forward();
-          listControllers[0].forward();
-          await new Future.delayed(const Duration(milliseconds: 300), () {
-            listControllers[1].forward();
-          });
-          await new Future.delayed(const Duration(milliseconds: 300), () {
-            listControllers[2].forward();
-          });
-        }
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
-
-    return Container(
-      width: _width,
-      height: _height*.95,
-      decoration: BoxDecoration(
-        color: GlobalColors.bgColor,
-      ),
-      child: Container(
-        height: _height*.95,
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Stack(
-              alignment: Alignment.topCenter,
-              children: <Widget>[
-                Container(
-                  height: _height * .55,
-                  // color: GlobalColors.blueColor,
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: <Widget>[
-                      Container(
-                        height: _height * .4,
-                        decoration: BoxDecoration(
-                          color: GlobalColors.greyTextColor,
-                          borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(25.0),
-                            bottomLeft: Radius.circular(25.0),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 50,
-                        child: Container(
-                            height: _height/3.5,
-                            width: _width*.4,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.shade300,
-                              borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(.2),
-                                  spreadRadius: 2,
-                                  blurRadius: 15,
-                                  offset: Offset(10, 0), // changes position of shadow
-                                ),
-                              ],
-                            ),
-                        ),
-                      ),
-                      Positioned(
-                          bottom: 0,
-                          child: _yourProgressPlaceholder( _height, _width)
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            displayBadgesPlaceholder(_height, _width),
-            // FadeIn(.35,_checkIfPopular(_percentage, show.lastWatchDate, show.hasMoreEpisodes())),
-            Expanded(
-              child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child:  displayActions(),
-                  )),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _yourProgressPlaceholder( double _height, double _width) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
-      child: AnimatedBuilder(
-        builder: (context, child) {
-          return Container(
-                  width: _width*.85,
-                  height: _height*.25,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                    color: _colorTween.value,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(.3),
-                        spreadRadius: 2,
-                        blurRadius: 10,
-                        offset: Offset(2, 5), // changes position of shadow
-                      ),
-                    ],
-                  ),
-          );
-        }, animation: _colorTween,
-      ),
-    );
-  }
-
-
-  Widget displayBadgesPlaceholder(double _height, double _width) {
-    List<Widget> badges = [
-
-    ];
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
-      child: Container(
-        // color: Colors.grey,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Shimmer.fromColors(
-                        baseColor: GlobalColors.greyTextColor,
-                        highlightColor: Colors.white,
-                        child: AutoSizeText(
-                          "Badges",
-                          style: TextStyle(
-                            color: GlobalColors.greyTextColor,
-                            fontFamily: 'Raleway',
-                            fontWeight: FontWeight.w700,
-                            fontSize: _width / 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
-                child: Container(
-                  width: _width,
-                  height: _height/9,
-                  child: Row(
-                    //TODO: shimmer
-                    children: List.generate(3, (index) => Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: AnimatedBuilder(
-                        builder: (context, child) {
-                          return Container(
-                            width: _height/9,
-                            height: _height/9,
-                            decoration: BoxDecoration(
-                            color: listAnimations[index].value,
-                              shape: BoxShape.circle
-                            ),
-                          );
-                        }, animation: listAnimations[index],
-                      ),
-                    )
-                    ),
-                  ),
-                ),
-              )
-            ],
-          )),
-    );
-  }
-
-  Widget displayActions() {
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
-    // var timerService = Provider.of<TimerService>(context);
-
-      return Column(
-        children: [
-          Container(
-            // color: Colors.black,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: _width/2.5,
-                    height: _width/7,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        color: Colors.grey,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: _width/2.5,
-                    height: _width/7,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                        color: Colors.grey,
-
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ],
-      );
-  }
 }

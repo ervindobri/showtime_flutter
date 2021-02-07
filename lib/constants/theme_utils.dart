@@ -31,7 +31,7 @@ abstract class ShowTheme{
     color: Colors.white,
     fontFamily: 'Raleway',
     fontWeight: FontWeight.w700,
-    fontSize: width / 15,
+    fontSize: width / 25,
   );
 
   static const radius25 = const BorderRadius.all(Radius.circular(25));

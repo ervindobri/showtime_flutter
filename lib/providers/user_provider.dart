@@ -41,8 +41,9 @@ class UserProvider  with ChangeNotifier {
 
   final Duration _loginTime = Duration(milliseconds: 500);
 
-  Future<SessionUser> getUserData() async {
+  SessionUser getUserData()  {
     SessionUser user = SessionUser();
+    // print("current user - ${_auth.currentUser?.email}");
     FirebaseFirestore.instance.doc("${_auth.currentUser?.email}/user").snapshots().first.then((element) {
       if ( element.exists){
         user.id = _auth.currentUser.uid;

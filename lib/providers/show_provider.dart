@@ -29,8 +29,20 @@ class ShowProvider extends ChangeNotifier{
       return show;
     }).toList());
     print("GET - ${_watchedShowList.length}");
-    notifyListeners();
     return x;
+  }
+
+  Future<List<WatchedTVShow>> fetchWatchlist() async{
+     List<WatchedTVShow> shows = [];
+    await FirestoreUtils().watchedShows
+        .get()
+        .then((QuerySnapshot querySnapshot) => {
+    querySnapshot.docs.forEach((doc) {
+        GlobalVariables.watchedShowIdList.add(int.parse(doc.id));
+        WatchedTVShow show = new WatchedTVShow.fromFirestore(doc.data(), doc.id);
+        shows.add(show);
+    })});
+    return shows;
   }
 
   setCurrentShow(WatchedTVShow show){
@@ -43,13 +55,12 @@ class ShowProvider extends ChangeNotifier{
     return currentShow.episodes[currentShow.calculateWatchedEpisodes()].getDifference();
   }
 
-  void setList(List<WatchedTVShow> watchedShowsList) {
+   setList(List<WatchedTVShow> watchedShowsList) {
      _watchedShowList = watchedShowsList;
      // notifyListeners();
-
   }
 
-  void setScheduledList(List<Episode> notAiredList) {
+   setScheduledList(List<Episode> notAiredList) {
      _scheduledList = notAiredList;
      // notifyListeners();
   }

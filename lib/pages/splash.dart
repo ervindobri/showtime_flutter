@@ -4,16 +4,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/database/user_data_dao.dart';
+import 'package:eWoke/get_controllers/auth_controller.dart';
+import 'package:eWoke/get_controllers/show_controller.dart';
 import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/providers/connectivity_service.dart';
 import 'package:eWoke/providers/show_provider.dart';
+import 'package:eWoke/providers/user_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -34,7 +38,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
   StreamSubscription<ConnectivityResult> subscription;
   var connectionStatus;
-  Future<List<List<Episode>>> _scheduledEpisodes;
   SessionUser currentUser = SessionUser();
   bool allDone = false;
   List<Episode> notAiredList = [];
@@ -54,15 +57,18 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   List<WatchedTVShow> watchedShowsList = [];
   ShowProvider showProvider;
 
-  @override
+  ShowController showController = Get.put(ShowController());
+  AuthController authController = Get.put(AuthController());
 
+  @override
   void initState() {
     super.initState();
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 550),
       vsync: this,
-    )..forward();
+    )
+      ..forward();
 
     animation = CurvedAnimation(
       parent: _controller,
@@ -70,33 +76,33 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     );
 
 
-    //TODO: CHECK ACTIVE CONNECTION WITH PROVIDER
+    //TODO: CHECK ACTIVE CONNECTION WITH GETX
 
     sexController.text = GlobalVariables.sexCategories[0];
     ageController.text = 1.toString();
 
+    //Fetch current user and show data
+    authController.getUserData();
+    showController.initialize();
+
     //Call timer to check if all tasks finished
     Timer.periodic(Duration(seconds: 1), (completed) {
-        if (allCompleted) {
-            final home = HomeView(
-              user: currentUser,
-              watchedShowsList: watchedShowsList,
-              dao: widget.dao
-            );
+      if (allCompleted) {
+        print("HOME");
+        final home = HomeView(
+            dao: widget.dao
+        );
 
-            Navigator.of(context)
-                .pushAndRemoveUntil(
-                MaterialPageRoute(
-                builder: (context) => ListenableProvider<ShowProvider>.value(
-                    value: showProvider,
-                    child: home
-                ),
+        Navigator.of(context)
+            .pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (context) =>
+                home
             ), (route) => false);
 
-            completed.cancel();
-        }
+        completed.cancel();
+      }
     });
-
   }
 
   @override
@@ -107,20 +113,20 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     _controller.dispose();
 
     super.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
-    // checkInternetConnectivity();
+    final _width = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final _height = MediaQuery
+        .of(context)
+        .size
+        .height;
 
-    connectionStatus = Provider.of<ConnectivityStatus>(context);
-    currentUser = Provider.of<SessionUser>(context);
-    showProvider = Provider.of<ShowProvider>(context);
-    watchedShowsList = Provider.of<List<WatchedTVShow>>(context) ?? [];
-    // print(connectionStatus);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -136,18 +142,19 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
             children: [
               Container(
                 width: _width,
-                  height: _height,
+                height: _height,
               ),
               Column(
                 children: [
                   //ANIMATE IN LOGO
-                    SlideTransition(
-                        position: Tween<Offset>(
-                            begin: Offset(0, -1),
-                            end: Offset.zero,
+                  SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(0, -1),
+                      end: Offset.zero,
                     ).animate(animation),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 10),
                       child: Hero(
                         tag: 'logo',
                         child: Container(
@@ -162,7 +169,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                     ),
                   ),
                   // PROGRESS BAR TO LOAD HOME STUFF
-                    splashBody(_width, _height),
+                  splashBody(_width, _height, context),
                 ],
               ),
             ],
@@ -172,7 +179,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     );
   }
 
-  createProfile(double _width, double _height) {
+  createProfile(double _width, double _height, BuildContext context) {
     final node = FocusScope.of(context);
     return SlideTransition(
       position: Tween<Offset>(
@@ -181,8 +188,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
       ).animate(animation),
       child: Center(
         child: Container(
-          width: _width*.81,
-          height: _height*.7,
+          width: _width * .81,
+          height: _height * .7,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(25.0),
@@ -249,26 +256,28 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                       "first Name",
                                       style: GoogleFonts.roboto(
                                           color: GlobalColors.greyTextColor,
-                                          fontSize: _width/20,
+                                          fontSize: _width / 20,
                                           fontWeight: FontWeight.w300
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30.0),
                                       child: Container(
-                                        width: _width/3,
-                                        height: _width/6,
+                                        width: _width / 3,
+                                        height: _width / 6,
                                         child: TextFormField(
                                           controller: firstNameController,
                                           keyboardType: TextInputType.name,
-                                          textCapitalization: TextCapitalization.words,
+                                          textCapitalization: TextCapitalization
+                                              .words,
 
                                           autofocus: false,
-                                          validator: (val){
-                                            if ( val == ""){
+                                          validator: (val) {
+                                            if (val == "") {
                                               return "Your first name!";
                                             }
-                                            else{
+                                            else {
                                               return null;
                                             }
                                           },
@@ -279,45 +288,54 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                             ),
                                             hintStyle: TextStyle(
                                                 fontFamily: 'Raleway',
-                                                color: GlobalColors.greyTextColor,
+                                                color: GlobalColors
+                                                    .greyTextColor,
                                                 fontWeight: FontWeight.w300
                                             ),
-                                            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                            contentPadding: EdgeInsets
+                                                .symmetric(vertical: 10.0,
+                                                horizontal: 10.0),
                                             filled: true,
                                             fillColor: Colors.white,
                                             hintText: 'John',
                                             focusColor: GlobalColors.greenColor,
                                             enabledBorder: const OutlineInputBorder(
                                               borderSide:
-                                              BorderSide(color: GlobalColors.blueColor),
+                                              BorderSide(color: GlobalColors
+                                                  .blueColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             border: const OutlineInputBorder(
                                               borderSide:
-                                              BorderSide(color: GlobalColors.blueColor),
+                                              BorderSide(color: GlobalColors
+                                                  .blueColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             focusedBorder: const OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: GlobalColors.greenColor, width: 2),
+                                                  color: GlobalColors
+                                                      .greenColor, width: 2),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             errorBorder: const OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: GlobalColors.orangeColor, width: 2),
+                                                  color: GlobalColors
+                                                      .orangeColor, width: 2),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                           ),
                                           style: GoogleFonts.roboto(
                                               color: GlobalColors.greyTextColor,
-                                              fontSize: _width/20,
+                                              fontSize: _width / 20,
                                               fontWeight: FontWeight.w500
                                           ),
-                                          onEditingComplete: () => node.nextFocus(), // Move focus to next
+                                          onEditingComplete: () =>
+                                              node
+                                                  .nextFocus(), // Move focus to next
 
                                         ),
                                       ),
@@ -335,24 +353,26 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                       "last Name",
                                       style: GoogleFonts.roboto(
                                           color: GlobalColors.greyTextColor,
-                                          fontSize: _width/20,
+                                          fontSize: _width / 20,
                                           fontWeight: FontWeight.w300
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30.0),
                                       child: Container(
-                                        width: _width/3,
-                                        height: _width/6,
+                                        width: _width / 3,
+                                        height: _width / 6,
                                         child: TextFormField(
                                           controller: lastNameController,
                                           autofocus: false,
-                                          textCapitalization: TextCapitalization.words,
+                                          textCapitalization: TextCapitalization
+                                              .words,
                                           validator: (val) {
-                                            if ( val == ""){
+                                            if (val == "") {
                                               return "Your last name!";
                                             }
-                                            else{
+                                            else {
                                               return null;
                                             }
                                           },
@@ -361,44 +381,51 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                                 fontFamily: 'Raleway',
                                                 color: GlobalColors.orangeColor
                                             ),
-                                            contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                            contentPadding: EdgeInsets
+                                                .symmetric(vertical: 10.0,
+                                                horizontal: 10.0),
                                             filled: true,
                                             fillColor: Colors.white,
                                             hintText: 'Doe',
                                             hintStyle: TextStyle(
                                                 fontFamily: 'Raleway',
-                                                color: GlobalColors.greyTextColor,
+                                                color: GlobalColors
+                                                    .greyTextColor,
                                                 fontWeight: FontWeight.w300
                                             ),
                                             focusColor: GlobalColors.greenColor,
                                             enabledBorder: const OutlineInputBorder(
                                               borderSide:
-                                              BorderSide(color: GlobalColors.blueColor),
+                                              BorderSide(color: GlobalColors
+                                                  .blueColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             border: const OutlineInputBorder(
                                               borderSide:
-                                              BorderSide(color: GlobalColors.blueColor),
+                                              BorderSide(color: GlobalColors
+                                                  .blueColor),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             focusedBorder: const OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: GlobalColors.greenColor, width: 2),
+                                                  color: GlobalColors
+                                                      .greenColor, width: 2),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             errorBorder: const OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: GlobalColors.orangeColor, width: 2),
+                                                  color: GlobalColors
+                                                      .orangeColor, width: 2),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                           ),
                                           style: GoogleFonts.roboto(
                                               color: GlobalColors.greyTextColor,
-                                              fontSize: _width/20,
+                                              fontSize: _width / 20,
                                               fontWeight: FontWeight.w500
                                           ),
 
@@ -419,33 +446,39 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                       "age",
                                       style: GoogleFonts.roboto(
                                           color: GlobalColors.greyTextColor,
-                                          fontSize: _width/20,
+                                          fontSize: _width / 20,
                                           fontWeight: FontWeight.w300
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30.0),
                                       child: Container(
-                                        width: _width/3,
-                                        height: _width/10,
+                                        width: _width / 3,
+                                        height: _width / 10,
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(50.0)),
-                                          border:  Border.all(
+                                          border: Border.all(
                                               color: GlobalColors.blueColor
                                           ),
                                         ),
                                         child: CupertinoTheme(
                                           data: CupertinoThemeData(
-                                            scaffoldBackgroundColor: Colors.transparent,
+                                            scaffoldBackgroundColor: Colors
+                                                .transparent,
                                             primaryColor: Colors.transparent,
-                                            primaryContrastingColor: Colors.transparent,
-                                            barBackgroundColor: Colors.transparent,
+                                            primaryContrastingColor: Colors
+                                                .transparent,
+                                            barBackgroundColor: Colors
+                                                .transparent,
                                             textTheme: CupertinoTextThemeData(
 
-                                              pickerTextStyle: GoogleFonts.roboto(
-                                                  color: GlobalColors.greyTextColor,
+                                              pickerTextStyle: GoogleFonts
+                                                  .roboto(
+                                                  color: GlobalColors
+                                                      .greyTextColor,
                                                   fontSize: 25
                                               ),
                                             ),
@@ -466,17 +499,22 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                             //       ),
                                             //     )
                                             // ),
-                                            itemExtent: 50, onSelectedItemChanged: (int value) {
-                                            ageController.text = (value+1).toString();
-                                          },
-                                            children: List.generate(100, (index) =>
+                                            itemExtent: 50,
+                                            onSelectedItemChanged: (int value) {
+                                              ageController.text =
+                                                  (value + 1).toString();
+                                            },
+                                            children: List.generate(
+                                                100, (index) =>
                                                 Center(
                                                   child: Text(
-                                                    (index+1).toString(),
+                                                    (index + 1).toString(),
                                                     style: GoogleFonts.roboto(
-                                                        color: GlobalColors.greyTextColor,
-                                                        fontSize: _width/20,
-                                                        fontWeight: FontWeight.w500
+                                                        color: GlobalColors
+                                                            .greyTextColor,
+                                                        fontSize: _width / 20,
+                                                        fontWeight: FontWeight
+                                                            .w500
                                                     ),
                                                   ),
                                                 )
@@ -497,22 +535,23 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                     Text(
                                       "sex",
                                       style: GoogleFonts.roboto(
-                                          fontSize: _width/20,
+                                          fontSize: _width / 20,
                                           fontWeight: FontWeight.w300,
                                           color: GlobalColors.greyTextColor
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 30.0),
                                       child: Container(
-                                        width: _width/3,
-                                        height: _width/10,
+                                        width: _width / 3,
+                                        height: _width / 10,
 
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius: BorderRadius.all(
                                               Radius.circular(50.0)),
-                                          border:  Border.all(
+                                          border: Border.all(
                                               color: GlobalColors.blueColor
                                           ),
                                         ),
@@ -532,20 +571,29 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                           //     ),
                                           //   )
                                           // ),
-                                          itemExtent: 50, onSelectedItemChanged: (int value) {
-                                          sexController.text = GlobalVariables.sexCategories[value];
-                                        },
-                                          children: List.generate(GlobalVariables.sexCategories.length, (index) =>
+                                          itemExtent: 50,
+                                          onSelectedItemChanged: (int value) {
+                                            sexController.text = GlobalVariables
+                                                .sexCategories[value];
+                                          },
+                                          children: List.generate(
+                                              GlobalVariables.sexCategories
+                                                  .length, (index) =>
                                               Align(
-                                                  alignment: Alignment.centerRight,
+                                                  alignment: Alignment
+                                                      .centerRight,
                                                   child: Padding(
-                                                    padding: const EdgeInsets.only(right: 15.0),
+                                                    padding: const EdgeInsets
+                                                        .only(right: 15.0),
                                                     child: Text(
-                                                      GlobalVariables.sexCategories[index],
+                                                      GlobalVariables
+                                                          .sexCategories[index],
                                                       style: GoogleFonts.roboto(
-                                                          color: GlobalColors.greyTextColor,
-                                                          fontSize: _width/20,
-                                                          fontWeight: FontWeight.w500
+                                                          color: GlobalColors
+                                                              .greyTextColor,
+                                                          fontSize: _width / 20,
+                                                          fontWeight: FontWeight
+                                                              .w500
                                                       ),
                                                     ),
                                                   )
@@ -561,50 +609,49 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                 padding: const EdgeInsets.all(15.0),
                                 child: Container(
                                     child: ProgressButton(
-                                      maxWidth: _width/3,
-                                      minWidth: _width/3,
+                                      maxWidth: _width / 3,
+                                      minWidth: _width / 3,
                                       state: buttonState,
-                                      onPressed: (){
+                                      onPressed: () {
                                         setState(() {
                                           buttonState = ButtonState.loading;
                                         });
-                                        Future.delayed(Duration(seconds: 2), () {
+                                        Future.delayed(
+                                            Duration(seconds: 1), () {
                                           setState(() {
-                                            if ( _formKey.currentState.validate()){
+                                            if (_formKey.currentState
+                                                .validate()) {
                                               // print("validated");
-                                              currentUser.id = auth.currentUser.uid;
-                                              currentUser.emailAddress = auth.currentUser.email;
-                                              currentUser.firstName = firstNameController.text;
-                                              currentUser.lastName = lastNameController.text;
-                                              currentUser.age = int.parse(ageController.text);
-                                              currentUser.sex= sexController.text;
+                                              currentUser.id =
+                                                  auth.currentUser.uid;
+                                              currentUser.emailAddress =
+                                                  auth.currentUser.email;
+                                              currentUser.firstName =
+                                                  firstNameController.text;
+                                              currentUser.lastName =
+                                                  lastNameController.text;
+                                              currentUser.age =
+                                                  int.parse(ageController.text);
+                                              currentUser.sex =
+                                                  sexController.text;
                                               // print(currentUser);
-                                              FirestoreUtils().updateUserInfo(currentUser);
+                                              FirestoreUtils().updateUserInfo(
+                                                  currentUser);
                                               buttonState = ButtonState.success;
-                                              if ( buttonState == ButtonState.success){
-                                                Future.delayed(Duration(seconds: 2),(){
-                                                  final home = HomeView(
-                                                    user: currentUser,
-                                                    // notAiredList: notAiredList,
-                                                    watchedShowsList: GlobalVariables.watchedShowList,
-                                                  );
-                                                  Navigator.of(context)
-                                                      .pushAndRemoveUntil(CupertinoPageRoute(
-                                                    builder: (context) => home,
-                                                  ),(route) => false);
-                                                });
+                                              if (buttonState ==
+                                                  ButtonState.success) {
+                                                allCompleted = true;
                                               }
                                             }
-                                            else{
+                                            else {
                                               buttonState = ButtonState.fail;
                                             }
                                           });
                                         });
-
-
                                       },
                                       padding: const EdgeInsets.all(8.0),
-                                      progressIndicatorAligment: MainAxisAlignment.center,
+                                      progressIndicatorAligment: MainAxisAlignment
+                                          .center,
                                       radius: 25.0,
                                       stateWidgets: {
                                         ButtonState.idle: Text(
@@ -612,13 +659,15 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                           style: GoogleFonts.roboto(
                                               color: Colors.white,
                                               fontWeight: FontWeight.w500,
-                                              fontSize: _width/20
+                                              fontSize: _width / 20
                                           ),
                                         ),
                                         ButtonState.loading: Container(),
                                         ButtonState.fail: Text(
                                           "Submit Failed",
-                                          style: GoogleFonts.roboto(color: Colors.white, fontWeight: FontWeight.w500),
+                                          style: GoogleFonts.roboto(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500),
                                         ),
                                         ButtonState.success: FaIcon(
                                           FontAwesomeIcons.check,
@@ -626,10 +675,14 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                                         )
                                       },
                                       stateColors: {
-                                        ButtonState.idle: GlobalColors.blueColor,
-                                        ButtonState.loading: GlobalColors.blueColor,
-                                        ButtonState.fail: GlobalColors.fireColor,
-                                        ButtonState.success: GlobalColors.greenColor,
+                                        ButtonState.idle: GlobalColors
+                                            .blueColor,
+                                        ButtonState.loading: GlobalColors
+                                            .blueColor,
+                                        ButtonState.fail: GlobalColors
+                                            .fireColor,
+                                        ButtonState.success: GlobalColors
+                                            .greenColor,
                                       },
 
                                     )
@@ -650,12 +703,12 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     );
   }
 
-  Widget splashBody(double _width, double _height) {
+  Widget splashBody(double _width, double _height, BuildContext context) {
     // print(currentUser);
-    if ( connectionStatus == ConnectivityStatus.Offline){
+    if (connectionStatus == ConnectivityStatus.Offline) {
       return Container(
         width: _width,
-        height: _height*.6,
+        height: _height * .6,
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -676,9 +729,9 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                     child: Text(
                       "No internet connection",
                       style: TextStyle(
-                        fontSize: 25,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700
+                          fontSize: 25,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700
                       ),
                     ),
                   ),
@@ -689,65 +742,23 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
         ),
       );
     }
-    if ( currentUser?.firstName != null){
-      if ( watchedShowsList != null){
-          // log(GlobalVariables.watchedShowIdList.length.toString());
-          (context).watch<ShowProvider>().setList(watchedShowsList);
-
-          // log("WATCHLIST - "  + shows.length.toString());
-          _scheduledEpisodes = FirestoreUtils().getEpisodeList(GlobalVariables.watchedShowIdList);
-          return FutureBuilder(
-              future: _scheduledEpisodes,
-              builder: (context, snapshot) {
-                if ( snapshot.hasData){
-                  // print("loading scheduled episodes");
-                  // print(snapshot.data);
-                  notAiredList.clear();
-                  if ( snapshot.data.length > 0){
-                    // print(snapshot.data.length);
-                    for(int index=0 ; index < snapshot.data.length; index++){
-                      GlobalVariables.scheduledEpisodes.add(snapshot.data[index]);
-                      int notAired = snapshot.data[index].length - 1;
-                      for(int i=0; i< snapshot.data[index].length ; i++){
-                        if ( !snapshot.data[index][i].aired()){
-                          notAired = i;
-                          break;
-                        }
-                      }
-                      // print(snapshot.data[index][notAired].name);
-                      notAiredList.add(snapshot.data[index][notAired]);
-                    }
-                  }
-                  notAiredList.sort( (a,b) => a.airDate.compareTo(b.airDate));
-
-                  (context).watch<ShowProvider>().setScheduledList(notAiredList);
-
-                  // print(notAiredList.length);
-                  Timer.run(() {
-                    setState(() {
-                      allCompleted = true;
-                    });
+    if (authController.sessionUser.value == null) {
+        return createProfile(_width, _height, context);
+      }
+      else {
+          return GetX<ShowController>(
+            init: showController,
+            builder: (controller){
+              if (controller.notAired.isNotEmpty) {
+                Timer.run(() {
+                  setState(() {
+                    allCompleted = true;
                   });
-                  return Center(
-                    child: Container(
-                      width: _width*.5,
-                      height: _height*.75,
-                      // color: Colors.black,
-                      child: SizedBox(
-                        child: Center(
-                          child: FlareActor("assets/loadingcouch-white.flr",
-                              alignment: Alignment.bottomCenter,
-                              fit: BoxFit.contain,
-                              animation: "load"),
-                        ),
-                      ),
-                    ),
-                  );
-                }
+                });
                 return Center(
                   child: Container(
-                    width: _width*.5,
-                    height: _height*.75,
+                    width: _width * .5,
+                    height: _height * .75,
                     // color: Colors.black,
                     child: SizedBox(
                       child: Center(
@@ -760,29 +771,25 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                   ),
                 );
               }
+              else {
+                return Center(
+                  child: Container(
+                    width: _width * .5,
+                    height: _height * .75,
+                    // color: Colors.black,
+                    child: SizedBox(
+                      child: Center(
+                        child: FlareActor("assets/loadingcouch-white.flr",
+                            alignment: Alignment.bottomCenter,
+                            fit: BoxFit.contain,
+                            animation: "load"),
+                      ),
+                    ),
+                  ),
+                );
+              }
+            },
           );
       }
-      else{
-        return Center(
-          child: Container(
-            width: _width*.5,
-            height: _height*.75,
-            // color: Colors.black,
-            child: SizedBox(
-              child: Center(
-                child: FlareActor("assets/loadingcouch-white.flr",
-                    alignment: Alignment.bottomCenter,
-                    fit: BoxFit.contain,
-                    animation: "load"),
-              ),
-            ),
-          ),
-        );
-      }
-    }
-    else{
-      //TODO: create your profile
-      return createProfile(_width, _height);
-    }
   }
 }

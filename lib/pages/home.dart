@@ -5,11 +5,15 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eWoke/constants/custom_variables.dart';
 import 'package:eWoke/database/user_data_dao.dart';
+import 'package:eWoke/get_controllers/auth_controller.dart';
+import 'package:eWoke/get_controllers/show_controller.dart';
+import 'package:eWoke/models/episode.dart';
 import 'package:eWoke/pages/login.dart';
 import 'package:eWoke/models/user.dart';
 import 'package:eWoke/models/watched.dart';
 import 'package:eWoke/network/firebase_utils.dart';
 import 'package:eWoke/network/network.dart';
+import 'package:eWoke/placeholders/watched_detail_view_placeholder.dart';
 import 'package:eWoke/providers/show_provider.dart';
 import 'package:eWoke/providers/user_provider.dart';
 import 'package:eWoke/screens/browse_shows.dart';
@@ -24,6 +28,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -32,11 +37,14 @@ import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class HomeView extends StatefulWidget {
-  final SessionUser user;
-  final List<WatchedTVShow> watchedShowsList;
   final UserDao dao;
 
-  const HomeView({Key key, this.user, this.watchedShowsList, this.dao})
+  const HomeView({Key key,
+    // this.user,
+    // this.watchedShowsList,
+    this.dao,
+    // this.scheduledEpisodes
+  })
       : super(key: key);
   @override
   _HomeViewState createState() => _HomeViewState();
@@ -49,13 +57,21 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       child: Image(image: AssetImage('showTIME.png'), height: 50));
   Widget _customTitle;
   PanelController _pc = new PanelController();
-  ShowProvider showProvider;
+
+
+  SessionUser currentUser;
+
+  //GetX
+  ShowController showController = Get.put(ShowController());
+  AuthController authController = Get.put(AuthController());
 
   @override
   void initState() {
     super.initState();
     _panelState = PanelState.CLOSED;
     _customTitle = title;
+    currentUser = authController.sessionUser.value;
+
   }
 
   @override
@@ -73,7 +89,8 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
     final GlobalKey<ScaffoldState> _slidingPanelKey = new GlobalKey<ScaffoldState>();
-    showProvider = Provider.of<ShowProvider>(context);
+
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       //new line
@@ -146,7 +163,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         color: GlobalColors.greyTextColor),
                                   ),
                                   Text(
-                                    "${widget.user.firstName}",
+                                    "${currentUser.firstName}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -171,7 +188,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         color: GlobalColors.greyTextColor),
                                   ),
                                   Text(
-                                    "${widget.user.lastName}",
+                                    "${currentUser.lastName}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -196,7 +213,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         color: GlobalColors.greyTextColor),
                                   ),
                                   Text(
-                                    "${widget.user.age}",
+                                    "${currentUser.age}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -221,7 +238,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                         color: GlobalColors.greyTextColor),
                                   ),
                                   Text(
-                                    "${widget.user.sex}",
+                                    "${currentUser.sex}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -303,8 +320,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                       borderRadius: BorderRadius.all(Radius.circular(25)),
                     ),
                     title: Center(
-                      child: Text(
+                      child: AutoSizeText(
                         'Are you sure you want to sign out?',
+                        maxLines: 2,
+                        maxFontSize: 20,
+                        minFontSize: 13,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                     titleTextStyle: TextStyle(
@@ -347,17 +368,18 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           onTap: () async {
                             GlobalVariables.clearAll();
                             // await authService.signOut();
-                            await context.read<UserProvider>().signOut();
-                            await context.read<UserProvider>().signOutGoogle();
+                            await authController.signOut();
+                            await authController.signOutGoogle();
 
-                            final login = LoginScreen(dao: widget.dao);
-
-                            Navigator.pop(context);
-                            Navigator.of(context).pushAndRemoveUntil(
-                                MaterialPageRoute(
-                                  builder: (context) => login,
-                                ),
-                                    (route) => false);
+                            Get.to(LoginScreen(dao: widget.dao));
+                            // final login = LoginScreen(dao: widget.dao);
+                            //
+                            // Navigator.pop(context);
+                            // Navigator.of(context).pushAndRemoveUntil(
+                            //     MaterialPageRoute(
+                            //       builder: (context) => login,
+                            //     ),
+                            //         (route) => false);
                           },
                           child: Text(
                             'Sign Out',
@@ -396,8 +418,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     );
   }
 
-    Widget homeScreenBody(BuildContext context,
-      GlobalKey<ScaffoldState> _slidingPanelKey) {
+    Widget homeScreenBody(BuildContext context, GlobalKey<ScaffoldState> _slidingPanelKey) {
     final double _width = MediaQuery
         .of(context)
         .size
@@ -499,8 +520,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    //                    color: Colors.redAccent,
-                    //                     height: _height * .42,
                     width: _width,
                     color: GlobalColors.bgColor,
                     // color: Colors.black,
@@ -525,7 +544,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                     Navigator.of(context).push(
                                         CupertinoPageRoute(
                                             builder: (builder) =>
-                                                FullSchedule())),
+                                                FullSchedule( ))),
                                 child: Container(
                                   width: 70,
                                   height: 30,
@@ -543,7 +562,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        _buildScheduledShowView(),
+                        _buildScheduledShowView(context),
                       ],
                     ),
                   ),
@@ -880,6 +899,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
           : const EdgeInsets.symmetric(horizontal: 25.0),
       child: InkWell(
         onTap: () => Navigator.of(context).push(
+
             SecondPageRoute(list: data),
         ),
         child: Align(
@@ -954,50 +974,44 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     );
   }
 
-    Widget _buildScheduledShowView() {
-    double _width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    double _height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    Widget _buildScheduledShowView(BuildContext context) {
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
 
-    var shows = (context)
-        .watch<ShowProvider>()
-        .scheduledList;
-    if ( shows.length > 0){
-      return Container(
-          width: _width,
-          height: _height * .41,
-          color: GlobalColors.bgColor,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 5,
-              itemBuilder: (context, int index) {
-                return Center(
-                    child: ScheduleCard(episode: shows[index]));
-              })
+    return Obx( () {
+      if ( showController.notAired.length > 0){
+        return Container(
+            width: _width,
+            height: _height * .41,
+            color: GlobalColors.bgColor,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: showController.notAired.length,
+                itemBuilder: (context, int index) {
+                  return Center(
+                      child: ScheduleCard(episode: showController.notAired[index]));
+                })
       );
-    }
-    else{
+      }
+      else{
       return Container(
+        child: Center(
+          child: Text(
+            "empty as fuck bro"
 
+          ),
+        ),
       );
-    }
+      }
+    });
+
+
+
 
   }
 
     Widget _createRouteShowDetail(List<WatchedTVShow> data, int index) {
-    double _height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    double _width = MediaQuery
-        .of(context)
-        .size
-        .width;
 
     Future<List<dynamic>> episodes = new Network().getEpisodes(
         showID: data[index].id);
@@ -1012,28 +1026,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               return WatchedDetailView(show: data[index]);
             } else {
               return WatchedDetailViewPlaceholder();
-              return Container(
-                width: _width,
-                height: _height * .95,
-                color: GlobalColors.bgColor,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: _width,
-                      // color: Colors.black,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              GlobalColors.greenColor),
-                          // backgroundColor: GlobalColors.greenColor,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-
             }
           }),
     );
@@ -1054,6 +1046,6 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
       greetings = 'Good Night';
     }
     // print(firstName);
-    return greetings + ", ${widget.user.firstName}!";
+    return greetings + ", ${currentUser.firstName}!";
   }
 }

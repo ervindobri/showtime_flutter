@@ -9,9 +9,9 @@ class Badge extends StatelessWidget {
   final String description;
   final IconData icon;
   final List<Color> colors;
+  final double size;
 
-  const Badge({Key key, this.icon, this.colors, this.description}) : super(key: key);
-
+  const Badge({Key key, this.icon, this.colors, this.description, this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +35,13 @@ class Badge extends StatelessWidget {
           ),
           child: ClipOval(
             child: Container(
-              width: MediaQuery.of(context).size.height/10,
-              height: MediaQuery.of(context).size.height/10,
+              width: size ?? MediaQuery.of(context).size.height/10,
+              height: size ?? MediaQuery.of(context).size.height/10,
               padding: EdgeInsets.all(5),
               child: Center(
                 child: FaIcon(
                   icon,
-                  size: 35,
+                  size: size != null ? size/2 : MediaQuery.of(context).size.height/20,
                   color: Colors.white,
                 ),
               ),

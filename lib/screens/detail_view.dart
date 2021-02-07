@@ -343,7 +343,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
       colors: [GlobalColors.blueColor, Colors.lightBlue],
     ));
     badges.add(new DetailBadge(
-      text: widget.show.countryCode(),
+      text: widget.show.countryCode() ?? "",
       colors: [GlobalColors.orangeColor, Colors.orangeAccent],
     ));
     return badges;

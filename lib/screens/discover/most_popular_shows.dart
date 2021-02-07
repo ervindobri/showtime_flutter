@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:eWoke/components/back.dart';
 import 'package:eWoke/components/popular_appbar.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/constants/theme_utils.dart';
 import 'package:eWoke/models/tvshow.dart';
 import 'package:eWoke/network/imdb.dart';
 import 'package:eWoke/ui/mps_card.dart';
@@ -106,14 +107,9 @@ class _MostPopularShowsState extends State<MostPopularShows>
 
   @override
   Widget build(BuildContext context) {
-    //TODO: set scrolloffset to 0 after sorting ASC/DESC
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
-    const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
 
-    // if (_controller.hasClients) print(_controller.position);
-
-    // print(sortedList.length);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -136,33 +132,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                         physics: NeverScrollableScrollPhysics(),
                         controller: _controller,
                         slivers: [
-                          SliverPersistentHeader(
-                            delegate: PopularSliverDelegate(
-                              child: Container(
-                                width: _width,
-                                height: _height * .15,
-                                decoration: BoxDecoration(
-                                    color: pink,
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(25.0),
-                                      bottomRight: Radius.circular(25.0),
-                                    )),
-                                // color: Colors.black,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 30.0, vertical: 10),
-                                      child: _textField(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              expandedHeight: _height * .15,
-                              back: back(context),
-                            ),
-                          ),
+                          getSliverHeader(_width, _height),
                           SliverFillRemaining(
                             child: Stack(
                               children: [
@@ -289,7 +259,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                           .grey
                                                                           .shade300,
                                                                       borderRadius:
-                                                                      _radius,
+                                                                      ShowTheme.radius25,
                                                                       boxShadow: [
                                                                         new BoxShadow(
                                                                             color: Colors.black.withOpacity(
@@ -323,7 +293,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                           .grey
                                                                           .shade300,
                                                                       borderRadius:
-                                                                      _radius,
+                                                              ShowTheme.radius25,
                                                                       boxShadow: [
                                                                         new BoxShadow(
                                                                             color: Colors.black.withOpacity(
@@ -441,40 +411,12 @@ class _MostPopularShowsState extends State<MostPopularShows>
                   else{
                     if (snapshot.hasData) {
                       getShowLinks(snapshot.data.take(maxShows));
-                      // print(showLinks.length);
-                      // popularShows.clear();
                       return CustomScrollView(
                         // key: UniqueKey(),
                           physics: NeverScrollableScrollPhysics(),
                           controller: _controller,
                           slivers: [
-                            SliverPersistentHeader(
-                              delegate: PopularSliverDelegate(
-                                child: Container(
-                                  width: _width,
-                                  height: _height * .15,
-                                  decoration: BoxDecoration(
-                                      color: pink,
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(25.0),
-                                        bottomRight: Radius.circular(25.0),
-                                      )),
-                                  // color: Colors.black,
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 30.0, vertical: 10),
-                                        child: _textField(),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                expandedHeight: _height * .15,
-                                back: back(context),
-                              ),
-                            ),
+                            getSliverHeader(_width, _height),
                             SliverFillRemaining(
                               child: Stack(
                                 children: [
@@ -549,7 +491,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                         ));
                                                   }
                                                   else {
-                                                    print("fetching data;");
+                                                    // print("fetching data;");
                                                     return Container(
                                                       decoration: BoxDecoration(
                                                           color: GlobalColors.bgColor,
@@ -600,7 +542,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                             .grey
                                                                             .shade300,
                                                                         borderRadius:
-                                                                        _radius,
+                                                                        ShowTheme.radius25,
                                                                         boxShadow: [
                                                                           new BoxShadow(
                                                                               color: Colors.black.withOpacity(
@@ -634,7 +576,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                             .grey
                                                                             .shade300,
                                                                         borderRadius:
-                                                                        _radius,
+                                                                ShowTheme.radius25,
                                                                         boxShadow: [
                                                                           new BoxShadow(
                                                                               color: Colors.black.withOpacity(
@@ -749,71 +691,12 @@ class _MostPopularShowsState extends State<MostPopularShows>
                           ]);
                     }
                     else {
-                      print("Waiting on IMDB data");
+                      // print("Waiting on IMDB data");
                       return CustomScrollView(
                         // key: UniqueKey(),
                         controller: _controller,
                         slivers: [
-                          SliverPersistentHeader(
-                            delegate: PopularSliverDelegate(
-                              child: Container(
-                                width: _width,
-                                height: _height * .15,
-                                decoration: BoxDecoration(
-                                    color: pink,
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(25.0),
-                                      bottomRight: Radius.circular(25.0),
-                                    )),
-                                // color: Colors.black,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 30.0, vertical: 10),
-                                      child: _textField(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              expandedHeight: _height * .15,
-                              back: Row(
-                                children: [
-                                  Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 25.0),
-                                      child: InkWell(
-                                        onTap: () => Navigator.pop(context),
-                                        child: Container(
-                                          // color: CupertinoColors.black
-                                          child: Row(
-                                            children: [
-                                              FaIcon(
-                                                Icons.arrow_back_ios,
-                                                size: 25,
-                                                color: Colors.white,
-                                              ),
-                                              Text(
-                                                "Back",
-                                                style: TextStyle(
-                                                  decoration:
-                                                  TextDecoration.underline,
-                                                  color: Colors.white,
-                                                  fontFamily: 'Raleway',
-                                                  fontSize: 20,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          getSliverHeader(_width, _height),
                           // displayLabel(_width),
                           SliverFillRemaining(
                             child: Container(
@@ -964,6 +847,35 @@ class _MostPopularShowsState extends State<MostPopularShows>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  getSliverHeader(double _width, double _height) {
+    return SliverPersistentHeader(
+      delegate: PopularSliverDelegate(
+        child: Container(
+          width: _width,
+          decoration: BoxDecoration(
+              color: pink,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(GlobalVariables.sliverRadius),
+                bottomRight: Radius.circular(GlobalVariables.sliverRadius),
+              )),
+          // color: Colors.black,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 30.0, vertical: 5),
+                child: _textField(),
+              ),
+            ],
+          ),
+        ),
+        expandedHeight: _height * .15,
+        back: back(context),
       ),
     );
   }

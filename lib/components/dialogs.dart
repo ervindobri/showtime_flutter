@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eWoke/constants/custom_variables.dart';
+import 'package:eWoke/network/firebase_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -56,8 +57,7 @@ Widget unwatchDialog(BuildContext context, String showName, String showID) {
         padding: const EdgeInsets.only(right: 25.0, bottom: 5),
         child: InkWell(
           onTap: () {
-            FirebaseFirestore.instance
-                .collection("${auth.currentUser.email}/shows/watched_shows")
+            FirestoreUtils().watchedShows
                 .doc(showID)
                 .delete();
             StatusAlert.show(

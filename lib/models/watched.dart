@@ -39,6 +39,30 @@ class WatchedTVShow extends TVShowDetails{
           totalSeasons : totalSeasons,
       episodePerSeason : episodePerSeason);
 
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is WatchedTVShow &&
+          runtimeType == other.runtimeType &&
+          currentSeason == other.currentSeason &&
+          currentEpisode == other.currentEpisode &&
+          firstWatchDate == other.firstWatchDate &&
+          lastWatchDate == other.lastWatchDate &&
+          favorite == other.favorite &&
+          criteriaMap == other.criteriaMap &&
+          watchedTimes == other.watchedTimes;
+
+  @override
+  int get hashCode =>
+      currentSeason.hashCode ^
+      currentEpisode.hashCode ^
+      firstWatchDate.hashCode ^
+      lastWatchDate.hashCode ^
+      favorite.hashCode ^
+      criteriaMap.hashCode ^
+      watchedTimes.hashCode;
+
   bool hasMoreEpisodes(){
     bool flag = false;
     GlobalVariables.scheduledEpisodes.forEach((show) {
@@ -75,9 +99,17 @@ class WatchedTVShow extends TVShowDetails{
     }
     else if ( calculateWatchedEpisodes() > 0 ){
       if ( this.episodes[calculateWatchedEpisodes()].airDate != ""){
-        var airDate = DateTime.parse("${this.episodes[calculateWatchedEpisodes()]?.airDate} 12:00:00.000");
-        var diff = airDate.difference(DateTime.now());
-        return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
+        try{
+          var airDate = DateTime.parse("${this.episodes[calculateWatchedEpisodes()]?.airDate} 12:00:00.000");
+          var diff = airDate.difference(DateTime.now());
+          return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
+        }
+        catch(e){
+          var airDate = DateTime.parse("2021-12-31 12:24:36.000");
+          var diff = airDate.difference(DateTime.now());
+          return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
+        }
+
       }
     }
     return [Duration(days: 0), DateTime.now()];
@@ -107,10 +139,7 @@ class WatchedTVShow extends TVShowDetails{
   }
   double calculateProgress() {
     int watchedEpisodes = calculateWatchedEpisodes();
-
     int totalEpisodes = calculateTotalEpisodes();
-
-//    print("total: ${totalEpisodes} watched: ${watchedEpisodes}");
     return (watchedEpisodes / totalEpisodes);
   }
 

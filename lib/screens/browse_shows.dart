@@ -131,37 +131,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                   return CustomScrollView(
                       // physics: NeverScrollableScrollPhysics(),
                       slivers: [
-                        SliverPersistentHeader(
-                          pinned: true,
-                          floating: true,
-                          delegate: PopularSliverDelegate(
-                            child: Container(
-                              width: _width,
-                              height: _height*.15,
-                              decoration: BoxDecoration(
-                                  color: bgColor,
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(25.0),
-                                    bottomRight: Radius.circular(25.0),
-                                  )
-                              ),
-                              // color: Colors.black,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
-                                    child: _textField(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            expandedHeight: _height*.15,
-                            hideTitleWhenExpanded: true,
-                            back: back(context),
-
-                          ),
-                        ),
+                        sliverHeader(_width, _height),
                         SliverFillRemaining(
                           child: Container(
                             height: _height,
@@ -195,36 +165,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                     return CustomScrollView(
                       physics: ClampingScrollPhysics(),
                       slivers: [
-                        SliverPersistentHeader(
-                          pinned: true,
-                          floating: true,
-                          delegate: PopularSliverDelegate(
-                            back: back(context),
-                            child: Container(
-                              width: _width,
-                              decoration: BoxDecoration(
-                                  color: bgColor,
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(25.0),
-                                    bottomRight: Radius.circular(25.0),
-                                  )
-                              ),
-                              // color: Colors.black,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
-                                    child: _textField(),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            hideTitleWhenExpanded: true,
-                            expandedHeight: _height*.15,
-
-                          ),
-                        ),
+                        sliverHeader(_width, _height),
                         SliverFillRemaining(
                             child: Container(
                               height: _height,
@@ -306,35 +247,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
           : CustomScrollView(
             physics: NeverScrollableScrollPhysics(),
             slivers: [
-              SliverPersistentHeader(
-                pinned: true,
-                floating: true,
-                delegate: PopularSliverDelegate(
-                  child: Container(
-                    width: _width,
-                    height: _height*.15,
-                    decoration: BoxDecoration(
-                        color: bgColor,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(25.0),
-                          bottomRight: Radius.circular(25.0),
-                        )
-                    ),
-                    // color: Colors.black,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10),
-                            child: _textField(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  expandedHeight: _height*.15,
-                  back: back(context),
-                ),
-              ),
+              sliverHeader(_width, _height),
               SliverFillRemaining(
                 // hasScrollBody: false,
                 // fillOverscroll: false,
@@ -634,6 +547,38 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                 fontSize: MediaQuery.of(context).size.width/30,
               )
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  sliverHeader(double _width, double _height) {
+    return SliverPersistentHeader(
+      pinned: true,
+      floating: true,
+      delegate: PopularSliverDelegate(
+        // hideTitleWhenExpanded: true,
+        expandedHeight: _height*.15,
+        back: back(context),
+        // actions: getActions(),
+        child: Container(
+          width: _width,
+          decoration: BoxDecoration(
+              color: GlobalColors.blueColor,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(GlobalVariables.sliverRadius),
+                bottomRight: Radius.circular(GlobalVariables.sliverRadius),
+              )
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
+                child: _textField(),
+              ),
+            ],
           ),
         ),
       ),

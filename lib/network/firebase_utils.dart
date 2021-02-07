@@ -10,10 +10,10 @@ import 'network.dart';
 //TODO: REFACTOR FIRESTORE- CODE USAGES
 
 class FirestoreUtils{
-  final CollectionReference watchedShows = FirebaseFirestore.instance.collection('${auth.currentUser?.email}/shows/watched_shows');
-  final CollectionReference favorites = FirebaseFirestore.instance.collection("${auth.currentUser?.email}/shows/favorites");
-  final CollectionReference searchHistory = FirebaseFirestore.instance.collection("${auth.currentUser?.email}/shows/search_history");
-  final DocumentReference userProfile = FirebaseFirestore.instance.doc("${auth.currentUser?.email}/user");
+   CollectionReference watchedShows = FirebaseFirestore.instance.collection('${auth.currentUser?.email}/shows/watched_shows');
+   CollectionReference favorites = FirebaseFirestore.instance.collection("${auth.currentUser?.email}/shows/favorites");
+   CollectionReference searchHistory = FirebaseFirestore.instance.collection("${auth.currentUser?.email}/shows/search_history");
+   DocumentReference userProfile = FirebaseFirestore.instance.doc("${auth.currentUser?.email}/user");
   final Duration loginTime = Duration(milliseconds: 600);
 
 
@@ -125,10 +125,12 @@ class FirestoreUtils{
   }
 
   Future<List<List<Episode>>> getEpisodeList(List<int> watchedShowIdList) async {
+    // print("user - ${auth.currentUser.email} - id list: ${watchedShowIdList.length}");
     EpisodeList episodes = await Network().getScheduledEpisodes();
     List<List<Episode>> list = [];
 
-    watchedShowIdList.forEach((id) {
+    //to avoid duplicates
+    watchedShowIdList.toSet().toList().forEach((id) {
       List<Episode> current = [];
       episodes.episodes.forEach((episode) {
         if (episode.embedded['show']['id'] == id) {
@@ -142,6 +144,7 @@ class FirestoreUtils{
 
     //Sort by airdate instead id
     list.sort((a, b) => a[0].airDate.compareTo(b[0].airDate));
+    list = list.toSet().toList();
     // print("Scheduled shows:${list.length}");
     return list;
   }

@@ -7,12 +7,14 @@ class PopularSliverDelegate extends SliverPersistentHeaderDelegate {
   final bool hideTitleWhenExpanded;
   final Widget child;
   final Widget back;
+  final Widget actions;
 
   PopularSliverDelegate({
     this.child,
     @required this.back,
     @required this.expandedHeight,
     this.hideTitleWhenExpanded = true,
+    this.actions,
 
   });
 
@@ -26,26 +28,34 @@ class PopularSliverDelegate extends SliverPersistentHeaderDelegate {
     return Container(
       child: SizedBox(
         height: expandedHeight,
-        child: Stack(
-          children: [
-            SizedBox(
-              height: appBarSize < minExtent*.6 ? minExtent*.6 : appBarSize,
+        child: SizedBox(
+          height: appBarSize < minExtent*.6 ? minExtent*.6 : appBarSize,
 //            height: appBarSize,
-              child: child
-          ),
-            Positioned(
-              bottom: 10,
-                child: Visibility(
-                  visible: proportion >= 0.0 ? true : false,
-                  child: Opacity(
+          child: Column(
+            children: [
+              child,
+              Visibility(
+                visible: proportion >= 0.0 ? true : false,
+                child: Opacity(
                     opacity: proportion >= 0.0 && proportion <= 1.0 ? proportion : 0,
-                      child: back
-                  ),
-                )
-            )
-          ]
-          ,
-        ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          back,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 15.0),
+                            child: actions ?? Container(),
+                          )
+                        ],
+                      ),
+                    )
+                ),
+              )
+            ],
+          )
+          ),
       ),
     );
   }
