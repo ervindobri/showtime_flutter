@@ -37,15 +37,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 
 class HomeView extends StatefulWidget {
-  final UserDao dao;
 
-  const HomeView({Key key,
-    // this.user,
-    // this.watchedShowsList,
-    this.dao,
-    // this.scheduledEpisodes
-  })
-      : super(key: key);
   @override
   _HomeViewState createState() => _HomeViewState();
 }
@@ -368,18 +360,9 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                           onTap: () async {
                             GlobalVariables.clearAll();
                             // await authService.signOut();
-                            await authController.signOut();
+                            authController.signOut();
                             await authController.signOutGoogle();
-
-                            Get.to(LoginScreen(dao: widget.dao));
-                            // final login = LoginScreen(dao: widget.dao);
-                            //
-                            // Navigator.pop(context);
-                            // Navigator.of(context).pushAndRemoveUntil(
-                            //     MaterialPageRoute(
-                            //       builder: (context) => login,
-                            //     ),
-                            //         (route) => false);
+                            Get.off(LoginScreen());
                           },
                           child: Text(
                             'Sign Out',

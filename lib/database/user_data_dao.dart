@@ -9,7 +9,6 @@ abstract class UserDao {
   Future<List<UserData>> findAllPersons();
 
 
-
   @Query('SELECT * FROM userdata WHERE id = :id')
   Stream<UserData> findUserById(int id);
 

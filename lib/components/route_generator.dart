@@ -13,7 +13,7 @@ class RouteGenerator {
     switch (settings.name) {
       case '/login':
         if ( args is UserDao){
-          return MaterialPageRoute(builder: (_) => LoginScreen(dao: args));
+          return MaterialPageRoute(builder: (_) => LoginScreen());
         }
         break;
       case AllTVShows.routeName:

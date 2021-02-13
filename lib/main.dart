@@ -80,11 +80,14 @@ ThemeData buildAppTheme(){
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-
-
-
   await Firebase.initializeApp();
+  AuthController authController = Get.put(AuthController());
+
+  final database = await $FloorAppDatabase
+      .databaseBuilder('user_database.db')
+      .build();
+
+  authController.setDao(database.userDao);
 
   UserProvider.instance().initUserProvider();
   print("starting");
@@ -113,19 +116,7 @@ class Router extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx((){
-      return Get.find<AuthController>().user != null ? SplashScreen() : LoginScreen();
+      return Get.find<AuthController>().user?.firstName != null ? SplashScreen() : LoginScreen();
     });
-      return Builder(
-        builder: (newContext) {
-          switch (newContext
-              .watch<UserProvider>()
-              .status) {
-            case Status.Authenticated:
-              return SplashScreen(dao: dao);
-            default:
-              return LoginScreen(dao: dao);
-          }
-        }
-      );
   }
 }

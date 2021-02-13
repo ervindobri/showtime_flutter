@@ -29,7 +29,6 @@ class ShowController extends GetxController{
     watchedShowIds.clear();
     fetchWatchedShows();
     fetchScheduledEpisodes();
-    print("Initializing Show Controller!");
   }
 
   void fetchWatchedShows() async {

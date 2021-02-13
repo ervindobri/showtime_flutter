@@ -32,9 +32,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class LoginScreen extends StatefulWidget {
-  final UserDao dao;
-
-  const LoginScreen({Key key, this.dao}) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -83,7 +80,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
 
 
 
-  List<UserData> list = [];
 
   @override
   void initState() {
@@ -97,7 +93,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
       dao = authController.dao;
     });
     //get accounts with biometric - true
-    fetchAccounts();
     _checkBiometrics();
     print(_canCheckBiometrics);
     _getAvailableBiometrics();
@@ -305,74 +300,79 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                   ),
                                   if ( _canCheckBiometrics
                                   // && list.isNotEmpty
-                                  ) InkWell(
-                                    highlightColor: GlobalColors.greenColor,
-                                    onTap: () {
-                                      _authenticate().then((value) async {
-                                        if (_authorized == 'Authorized') {
-                                          _fingerprintAnimStopped = false;
-                                          if (list.length > 1) {
-                                            showCupertinoModalPopup(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return CupertinoActionSheet(
-                                                    title: const Text('Account'),
-                                                    message: const Text(
-                                                        'Choose in which account would you like to sign-in'),
-                                                    cancelButton:
-                                                    CupertinoActionSheetAction(
-                                                      child: const Text('Cancel'),
-                                                      isDefaultAction: true,
-                                                      onPressed: () {
-                                                        Navigator.pop(
-                                                            context, 'Cancel');
-                                                      },
-                                                    ),
-                                                    actions: List.generate(
-                                                        list.length, (index) {
-                                                      return CupertinoActionSheetAction(
-                                                          child: Text(
-                                                              list[index].email),
-                                                          onPressed: () async {
-                                                            //log-in with the biometric account
-                                                            String auth = await authController.login(list[index].email,list[index].password);
-                                                            if (auth == '') {
-                                                              navigateToSplashScreen(context);
-                                                            }
-                                                          });
-                                                    }),
-                                                  );
-                                                });
-                                          }
-                                          else {
-                                            print(
-                                                "logging in! ${list.first.password}");
-                                            String auth = await authController.login(list.first.email,list.first.password);
-                                            if (auth == '') {
-                                              navigateToSplashScreen(context);
-                                            }
-                                          }
-                                        }
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(25.0),
-                                      child: Container(
-                                        width: 60,
-                                        height: 60,
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            shape: BoxShape.circle
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: FlareActor("assets/fingerprint.flr",
-                                              isPaused: _fingerprintAnimStopped,
-                                              fit: BoxFit.contain,
-                                              animation: "Untitled"),
-                                        ),
-                                      ),
-                                    ),
+                                  )
+                                    GetBuilder<AuthController>(
+                                      init: authController,
+                                      builder: (_) {
+                                        return InkWell(
+                                          highlightColor: GlobalColors.greenColor,
+                                          onTap: () {
+                                            _authenticate().then((value) async {
+                                              if (_authorized == 'Authorized') {
+                                                _fingerprintAnimStopped = false;
+                                                if (authController.usersWithBiometricAuth.length > 1) {
+                                                  showCupertinoModalPopup(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return CupertinoActionSheet(
+                                                          title: const Text('Account'),
+                                                          message: const Text(
+                                                              'Choose in which account would you like to sign-in'),
+                                                          cancelButton:
+                                                          CupertinoActionSheetAction(
+                                                            child: const Text('Cancel'),
+                                                            isDefaultAction: true,
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context, 'Cancel');
+                                                            },
+                                                          ),
+                                                          actions: List.generate(
+                                                              authController.usersWithBiometricAuth.length, (index) {
+                                                            return CupertinoActionSheetAction(
+                                                                child: Text(
+                                                                    authController.usersWithBiometricAuth[index].email),
+                                                                onPressed: () async {
+                                                                  //log-in with the biometric account
+                                                                  String auth = await authController.login(authController.usersWithBiometricAuth[index].email,authController.usersWithBiometricAuth[index].password);
+                                                                  if (auth == '') {
+                                                                    Get.off(SplashScreen());
+                                                                  }
+                                                                });
+                                                          }),
+                                                        );
+                                                      });
+                                                }
+                                                else {
+                                                  print("logging in! ${authController.usersWithBiometricAuth.first.password}");
+                                                  String auth = await authController.login(authController.usersWithBiometricAuth.first.email,authController.usersWithBiometricAuth.first.password);
+                                                  if (auth == '') {
+                                                    Get.off(SplashScreen());
+                                                  }
+                                                }
+                                              }
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(25.0),
+                                            child: Container(
+                                              width: 60,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  shape: BoxShape.circle
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: FlareActor("assets/fingerprint.flr",
+                                                    isPaused: _fingerprintAnimStopped,
+                                                    fit: BoxFit.contain,
+                                                    animation: "Untitled"),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }
                                   ),
                                   Expanded(
                                     child: Align(
@@ -446,16 +446,11 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
   @override
   void dispose() {
     _state = null;
+    _controller.dispose();
     super.dispose();
   }
 
-  Future<void> fetchAccounts() async {
-      await Future.delayed(Duration(seconds: 1));
-     print("fetching accs");
-      var users = await dao.fetchEnabledBiometricUsers();
-     list.addAll(users);
-     print("Accounts with biometric: ${users.length}");
-  }
+
 
   void openBottomSheet() {
     final _height = MediaQuery.of(context).size.height;
@@ -776,6 +771,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                     onChanged: (value) =>
                                                         setState(() {
                                                           this.selected = value;
+                                                          authController.selected = value;
                                                         }),
                                                   ),
                                                 ),
@@ -977,7 +973,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                               _state = 1;
                                             });
                                             if (logging) {
-                                              print(nameController.text);
                                               Future.delayed(
                                                   const Duration(milliseconds: 300),
                                                       () async {
@@ -988,32 +983,9 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                         _state = 2;
                                                       });
                                                       //TODO: add biometric switch
-                                                      // print(dao);
-                                                      // if (dao != null) {
-                                                      // final user = UserData( 1, nameController.text, passwordController.text, true);
-                                                      // final user = UserData( 1, "dobriervin@yahoo.com", "djcaponegood", true);
-                                                        // await dao.deleteUser(user);
-                                                        // await dao.insertUser(user);
-                                                      // }
-                                                      Future.delayed(
-                                                          const Duration(milliseconds: 300),
-                                                              () {
-                                                            //Save login data
-                                                            if (selected) {
-                                                              _storage.write(
-                                                                  key: 'email',
-                                                                  value: nameController.text);
-                                                              _storage.write(
-                                                                  key: 'password',
-                                                                  value: passwordController.text);
-                                                              // print("saved");
-                                                            } else {
-                                                              _storage.delete(key: 'email');
-                                                              _storage.delete(key: 'password');
-                                                            }
-
-                                                            navigateToSplashScreen(context);
-                                                          });
+                                                      await authController.deleteUser(nameController.text, passwordController.text);
+                                                      authController.rememberInfo(nameController.text, passwordController.text);
+                                                      Get.off(SplashScreen());
                                                     }
                                                     else {
                                                       setState(() {
@@ -1031,7 +1003,8 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                       );
                                                     }
                                                   });
-                                            } else {
+                                            }
+                                            else {
                                               Future.delayed(
                                                   const Duration(milliseconds: 300),
                                                       () async {
@@ -1307,14 +1280,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
     });
   }
 
-  void navigateToSplashScreen(BuildContext context) {
-    final home = SplashScreen(
-      dao: dao,
-    );
-    Navigator.pushReplacement(context,
-      CupertinoPageRoute(
-        builder: (context) =>
-            home
-      ),);
+  void navigateToSplashScreen() {
+    
   }
 }
