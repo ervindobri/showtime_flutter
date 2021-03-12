@@ -2,8 +2,9 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow_details.dart';
+import 'package:get/get.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/tvshow_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -15,8 +16,8 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final TVShowDetails show;
 
   ImageSliverAppBarDelegate({
-    this.show,
-    @required this.expandedHeight,
+    required this.show,
+    required this.expandedHeight,
     this.hideTitleWhenExpanded = true,
 
   });
@@ -27,8 +28,8 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     final appBarSize = expandedHeight - (shrinkOffset);
     final proportion = 2 - (expandedHeight / appBarSize);
-    double _height = MediaQuery.of(context).size.height;
-    double _width = MediaQuery.of(context).size.width;
+    double _height = Get.size.height;
+    double _width = Get.size.width;
     double percentage = proportion;
     if (percentage < 0.0) percentage = 0.0;
     if (percentage > 1.0) percentage = 1.0;
@@ -46,7 +47,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                   Opacity(
                     opacity: percentage,
                     child: CachedNetworkImage(
-                      imageUrl: this.show.imageThumbnailPath,
+                      imageUrl: this.show.imageThumbnailPath!,
                       width: _width,
                       fit: BoxFit.cover,
                     ),
@@ -67,7 +68,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                 child: Opacity(
                   opacity: percentage,
                   child: CachedNetworkImage(
-                    imageUrl: this.show.imageThumbnailPath,
+                    imageUrl: this.show.imageThumbnailPath!,
                     width: _width,
                     fit: BoxFit.scaleDown,
                   ),

@@ -3,25 +3,24 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/database/user_data_dao.dart';
-import 'package:eWoke/get_controllers/auth_controller.dart';
-import 'package:eWoke/get_controllers/show_controller.dart';
-import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/pages/login.dart';
-import 'package:eWoke/models/user.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/network/network.dart';
-import 'package:eWoke/placeholders/watched_detail_view_placeholder.dart';
-import 'package:eWoke/providers/show_provider.dart';
-import 'package:eWoke/providers/user_provider.dart';
-import 'package:eWoke/screens/browse_shows.dart';
-import 'package:eWoke/screens/full_schedule.dart';
-import 'package:eWoke/screens/watched_detail_view.dart';
-import 'package:eWoke/screens/discover/discover.dart';
-import 'package:eWoke/ui/schedule_card.dart';
-import 'package:eWoke/ui/watch_card.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/database/user_data_dao.dart';
+import 'package:show_time/get_controllers/auth_controller.dart';
+import 'package:show_time/get_controllers/show_controller.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/pages/login.dart';
+import 'package:show_time/models/user.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/network/network.dart';
+import 'package:show_time/placeholders/watched_detail_view_placeholder.dart';
+import 'package:show_time/screens/browse_shows.dart';
+import 'package:show_time/screens/full_schedule.dart';
+import 'package:show_time/screens/watched_detail_view.dart';
+import 'package:show_time/screens/discover/discover.dart';
+import 'package:show_time/ui/colorful_card_home.dart';
+import 'package:show_time/ui/schedule_card.dart';
+import 'package:show_time/ui/watch_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -30,11 +29,12 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
+import 'package:simple_animations/simple_animations.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class HomeView extends StatefulWidget {
 
@@ -42,33 +42,33 @@ class HomeView extends StatefulWidget {
   _HomeViewState createState() => _HomeViewState();
 }
 
-class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
-  PanelState _panelState;
+class _HomeViewState extends State<HomeView>  with AnimationMixin {
+  late PanelState _panelState;
   Widget title = Container(
       color: GlobalColors.bgColor,
       child: Image(image: AssetImage('showTIME.png'), height: 50));
-  Widget _customTitle;
+  late Widget _customTitle;
   PanelController _pc = new PanelController();
 
 
-  SessionUser currentUser;
+  late SessionUser currentUser;
 
   //GetX
-  ShowController showController = Get.put(ShowController());
-  AuthController authController = Get.put(AuthController());
+  ShowController showController = Get.put(ShowController())!;
+  AuthController authController = Get.put(AuthController())!;
 
   @override
   void initState() {
+    print("home init!");
     super.initState();
     _panelState = PanelState.CLOSED;
     _customTitle = title;
-    currentUser = authController.sessionUser.value;
+    currentUser = authController.sessionUser.value!;
 
   }
 
   @override
   void dispose() {
-    _pc = null;
     super.dispose();
   }
 
@@ -85,7 +85,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      //new line
+      // new line
       key: _drawerKey,
       appBar: new AppBar(
         backgroundColor: GlobalColors.bgColor,
@@ -362,7 +362,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                             // await authService.signOut();
                             authController.signOut();
                             await authController.signOutGoogle();
-                            Get.off(LoginScreen());
+                            Get.offAll(() => LoginScreen());
                           },
                           child: Text(
                             'Sign Out',
@@ -392,24 +392,15 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
         ],
       ),
       backgroundColor: GlobalColors.bgColor,
-      body: Container(
-        color: GlobalColors.greenColor,
-        child: SafeArea(
-            child: homeScreenBody(context, _slidingPanelKey)
-        ),
+      body: SafeArea(
+          child: homeScreenBody(context, _slidingPanelKey)
       ),
     );
   }
 
     Widget homeScreenBody(BuildContext context, GlobalKey<ScaffoldState> _slidingPanelKey) {
-    final double _width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final double _height = MediaQuery
-        .of(context)
-        .size
-        .height;
+    final double _width = Get.size.width;
+    final double _height = Get.size.height;
     final _panelHeightOpen = _height * .80;
     final _panelHeightClosed = _height / 10;
     return Center(
@@ -429,17 +420,18 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
-                        Shimmer.fromColors(
-                          highlightColor: GlobalColors.greenColor,
-                          baseColor: GlobalColors.blueColor,
-                          direction: ShimmerDirection.ltr,
-                          period: const Duration(seconds: 10),
-                          child: Container(
+                        //TODO: shimmer not working on web
+                        // Shimmer.fromColors(
+                        //   highlightColor: GlobalColors.greenColor,
+                        //   baseColor: GlobalColors.blueColor,
+                        //   direction: ShimmerDirection.ltr,
+                        //   period: const Duration(seconds: 10),
+                        //   child:
+                          Container(
                             height: _height * 0.07,
                             width: _width * .8,
                             decoration: BoxDecoration(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(25.0)),
+                              borderRadius: BorderRadius.all(Radius.circular(25.0)),
                               gradient: LinearGradient(
                                   begin: Alignment.topRight,
                                   end: Alignment.bottomLeft,
@@ -449,7 +441,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                   ]),
                             ),
                           ),
-                        ),
+                        // ),
                         Center(
                           child: Text(
                             showGreetings(),
@@ -492,8 +484,12 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                               itemCount: GlobalVariables.DISCOVER_DATA.length,
                               shrinkWrap: true,
                               itemBuilder: (context, int index) {
-                                return createColorfulCard(index,
-                                    GlobalVariables.DISCOVER_DATA[index]);
+                                return ColorfulCard(
+                                    index: index,
+                                    data: GlobalVariables.DISCOVER_DATA[index],
+                                  maxWidth: kIsWeb ? 200 : _width/3,
+                                  maxHeight: kIsWeb ? 200 : _width/3,
+                                );
                               }),
                         )
                       ],
@@ -576,11 +572,47 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                   borderRadius: radius,
                   color: GlobalColors.greenColor,
                 ),
-                child: Shimmer.fromColors(
-                  period: const Duration(milliseconds: 3500),
-                  baseColor: Colors.white54,
-                  highlightColor: Colors.white,
-                  child: Container(
+                child:
+                // Shimmer.fromColors(
+                //   period: const Duration(milliseconds: 3500),
+                //   baseColor: Colors.white54,
+                //   highlightColor: Colors.white,
+                //   child:
+                  kIsWeb && Get.width > 646
+                      ? InkWell(
+                    onTap: () => _pc.open(),
+                        child: Center(
+                          child: Container(
+                            width: Get.width/3,
+                            height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25)
+                    ),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          FaIcon(
+                            FontAwesomeIcons.arrowAltCircleUp,
+                            color: GlobalColors.greenColor,
+                          ),
+                          Text(
+                              "Open panel",
+                              style: TextStyle(
+                                color: GlobalColors.greenColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: Get.height/30
+                              )
+                              ,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                        ),
+                      )
+                      : Container(
                     height: 30,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -598,7 +630,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-              ),
+              // ),
             ),
             panel: Container(
               height: _height * 0.8,
@@ -616,139 +648,177 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
               ),
               child: Padding(
                 padding: const EdgeInsets.only(top: 15.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 25.0),
-                        child: Center(
-                            child: Shimmer.fromColors(
-                              period: const Duration(milliseconds: 3500),
-                              baseColor: Colors.white54,
-                              highlightColor: Colors.white,
-                              child: AnimatedSizeAndFade(
-                                vsync: this,
-                                child: Container(
-                                  height: 30,
-                                  child: Text(
-                                      "What are we watching today?",
-                                      textAlign: TextAlign.center,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.symmetric(horizontal: 25.0),
+                          child: Center(
+                              child:
+                              // Shimmer.fromColors(
+                              //   period: const Duration(milliseconds: 3500),
+                              //   baseColor: Colors.white54,
+                              //   highlightColor: Colors.white,
+                              //   child:
+                                AnimatedSizeAndFade(
+                                  vsync: this,
+                                  child: Container(
+                                    height: 30,
+                                    child: Text(
+                                        "What are we watching today?",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: _height / 30,
+
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: 'Raleway',
+                                        )),
+                                  ),
+                                  fadeDuration:
+                                  const Duration(milliseconds: 100),
+                                  sizeDuration:
+                                  const Duration(milliseconds: 200),
+                                ),
+                              // )
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                            onTap: () {
+                              Get.to(() => AllTVShows(), transition: Transition.cupertino);
+                            } ,
+                            child: SizedBox(
+                              width: kIsWeb ? 150 : min(_width * 0.6, 90),
+                              height: kIsWeb ? 150 : min(_width * 0.6, 90),
+                              child: FlareActor(
+                                'assets/blink.flr',
+                                animation: 'Blink',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                      ),
+                      SizedBox(
+                        height: _width / 10,
+                      ),
+                      Column(
+                        children: <Widget>[
+                          //Label - LAst watched
+                          Container(
+                            padding: EdgeInsets.only(left: 32, right: 32),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Last watched",
+                                      textAlign: TextAlign.left,
                                       style: TextStyle(
                                         shadows: <Shadow>[
                                           Shadow(
                                             offset: Offset(0.0, 3.0),
                                             blurRadius: 6.0,
-                                            color:
-                                            Colors.black.withOpacity(.2),
+                                            color: Colors.black
+                                                .withOpacity(.2),
                                           ),
                                         ],
                                         color: Colors.white,
-                                        fontSize: _width / 17,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Raleway',
+                                        fontSize: _height/30,
+                                        fontFamily: "Raleway",
+                                        fontWeight: FontWeight.w900,
                                       )),
-                                ),
-                                fadeDuration:
-                                const Duration(milliseconds: 100),
-                                sizeDuration:
-                                const Duration(milliseconds: 200),
+                                ],
                               ),
-                            )),
-                      ),
-                    ),
-                    InkWell(
-                          onTap: () {
-                            Navigator.pushNamed(context, AllTVShows.routeName);
-                          } ,
-                          child: SizedBox(
-                            width: min(_width * 0.6, 90),
-                            height: min(_width * 0.6, 90),
-                            child: FlareActor(
-                              'assets/blink.flr',
-                              animation: 'Blink',
-                              fit: BoxFit.cover,
                             ),
                           ),
-                    ),
-                    SizedBox(
-                      height: _width / 10,
-                    ),
-                    Column(
-                      children: <Widget>[
-                        //Label - LAst watched
-                        Container(
-                          padding: EdgeInsets.only(left: 32, right: 32),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("Last watched",
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      shadows: <Shadow>[
-                                        Shadow(
-                                          offset: Offset(0.0, 3.0),
-                                          blurRadius: 6.0,
-                                          color: Colors.black
-                                              .withOpacity(.2),
-                                        ),
-                                      ],
-                                      color: Colors.white,
-                                      fontSize: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height /
-                                          30,
-                                      fontFamily: "Raleway",
-                                      fontWeight: FontWeight.w900,
-                                    )),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // Horizontal scrollview container
-                        Container(
-                          child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: StreamBuilder(
-                                  stream: FirestoreUtils()
-                                      .watchedShows
-                                      .orderBy('lastWatched',
-                                      descending: true)
-                                      .snapshots(),
-                                  builder: (context, snapshot) {
-                                    // print(snapshot.connectionState);
-                                    if (snapshot.hasData) {
-                                      // print("data");
-                                      if (snapshot
-                                          .data.docs.length >
-                                          0) {
-                                        GlobalVariables.watchedShowList
-                                            .clear();
-                                        // allWatchedShows.clear();
-                                        snapshot.data.docs
-                                            .forEach((f) {
-                                          WatchedTVShow show =
-                                          new WatchedTVShow
-                                              .fromFirestore(
-                                              f.data(),
-                                              f.id);
-                                          GlobalVariables
-                                              .watchedShowList
-                                              .add(show);
-                                        });
-                                        return createCarouselSlider(
+                          // Horizontal scrollview container
+                          Container(
+                            child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: StreamBuilder(
+                                    stream: FirestoreUtils()
+                                        .watchedShows
+                                        .orderBy('lastWatched',
+                                        descending: true)
+                                        .snapshots(),
+                                    builder: (context, AsyncSnapshot snapshot) {
+                                      // print(snapshot.connectionState);
+                                      if (snapshot.hasData && snapshot.data != null) {
+                                        // print("data");
+                                        if (snapshot.data!.docs.length > 0) {
+                                          GlobalVariables.watchedShowList
+                                              .clear();
+                                          // allWatchedShows.clear();
+                                          snapshot.data!.docs
+                                              .forEach((f) {
+                                            WatchedTVShow show =
+                                            new WatchedTVShow
+                                                .fromFirestore(
+                                                f.data(),
+                                                f.id);
                                             GlobalVariables
                                                 .watchedShowList
-                                                .take(5)
-                                                .toList(),
-                                            context);
+                                                .add(show);
+                                          });
+                                          return createCarouselSlider(
+                                              GlobalVariables
+                                                  .watchedShowList
+                                                  .take(5)
+                                                  .toList());
+                                        } else {
+                                          return Container(
+                                              height: _height / 3,
+                                              child: Center(
+                                                  child: Padding(
+                                                    padding:
+                                                    const EdgeInsets.all(
+                                                        25.0),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .center,
+                                                      children: [
+                                                        AutoSizeText(
+                                                          "Your watchlist is empty",
+                                                          textAlign: TextAlign
+                                                              .center,
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                              color: Colors
+                                                                  .white,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w700,
+                                                              fontSize:
+                                                              _height /
+                                                                  25),
+                                                        ),
+                                                        AutoSizeText(
+                                                          "Press the eye above for magic",
+                                                          textAlign: TextAlign
+                                                              .center,
+                                                          style: GoogleFonts
+                                                              .roboto(
+                                                              color: Colors
+                                                                  .white,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w100,
+                                                              fontSize:
+                                                              _height /
+                                                                  25),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )));
+                                        }
                                       } else {
+                                        // print("no stream");
                                         return Container(
                                             height: _height / 3,
                                             child: Center(
@@ -756,72 +826,25 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                                                   padding:
                                                   const EdgeInsets.all(
                                                       25.0),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .center,
-                                                    children: [
-                                                      AutoSizeText(
-                                                        "Your watchlist is empty",
-                                                        textAlign: TextAlign
-                                                            .center,
-                                                        style: GoogleFonts
-                                                            .roboto(
-                                                            color: Colors
-                                                                .white,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .w700,
-                                                            fontSize:
-                                                            _height /
-                                                                25),
-                                                      ),
-                                                      AutoSizeText(
-                                                        "Press the eye above for magic",
-                                                        textAlign: TextAlign
-                                                            .center,
-                                                        style: GoogleFonts
-                                                            .roboto(
-                                                            color: Colors
-                                                                .white,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .w100,
-                                                            fontSize:
-                                                            _height /
-                                                                25),
-                                                      ),
-                                                    ],
+                                                  child: Text(
+                                                    "Press the eye above for magic",
+                                                    textAlign:
+                                                    TextAlign.center,
+                                                    style: TextStyle(
+                                                        color: Colors
+                                                            .white,
+                                                        fontFamily: 'Raleway',
+                                                        fontSize:
+                                                        _height / 25),
                                                   ),
                                                 )));
                                       }
-                                    } else {
-                                      // print("no stream");
-                                      return Container(
-                                          height: _height / 3,
-                                          child: Center(
-                                              child: Padding(
-                                                padding:
-                                                const EdgeInsets.all(
-                                                    25.0),
-                                                child: Text(
-                                                  "Press the eye above for magic",
-                                                  textAlign:
-                                                  TextAlign.center,
-                                                  style: TextStyle(
-                                                      color: Colors
-                                                          .white,
-                                                      fontFamily: 'Raleway',
-                                                      fontSize:
-                                                      _height / 25),
-                                                ),
-                                              )));
-                                    }
-                                  })),
-                        ),
-                      ],
-                    ),
-                  ],
+                                    })),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -832,64 +855,59 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
     );
   }
 
-    Widget createCarouselSlider(List<WatchedTVShow> data, BuildContext context) {
-    return Center(
-      child: CarouselSlider.builder(
-        itemCount: data.length,
-        itemBuilder: (BuildContext context, int itemIndex, int what) =>
-            InkWell(
-              onTap: () {
-                showModalBottomSheet<dynamic>(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(25.0),
-                          topRight: Radius.circular(25.0)),
-                    ),
-                    context: context,
-                    builder: (BuildContext context) {
-                      return _createRouteShowDetail(data, itemIndex);
-                    },
-                    isScrollControlled: true);
-                // Navigator.push(context, _createRouteShowDetail(data, itemIndex)),
-              },
-              child: WatchedCard(
-                show: data[itemIndex],
-              ),
-            ),
-        options: CarouselOptions(
-          height: MediaQuery
-              .of(context)
-              .size
-              .width * .7,
-          enableInfiniteScroll: false,
+    Widget createCarouselSlider(List<WatchedTVShow> data) {
+    if ( kIsWeb && Get.width > 646){
+      print("is web ${Get.width}");
+      return Center(
+        child: Container(
+          width: Get.width,
+          height: 300,
+          child: ListView.builder(
+            itemCount: data.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (BuildContext context, int itemIndex) =>
+                  WatchedCardWeb(
+                    show: data[itemIndex],
+                    maxWidth: max(Get.width/data.length - 10, 300),
+                    maxHeight: max(Get.width/data.length -100, 210),
+                  ),
+          ),
         ),
-      ),
-    );
+      );
+    }
+    else{
+      return Center(
+        child: CarouselSlider.builder(
+          itemCount: data.length,
+          itemBuilder: (BuildContext context, int itemIndex, int what) =>
+              WatchedCard(
+                  show: data[itemIndex],
+                ),
+          options: CarouselOptions(
+            height: MediaQuery
+                .of(context)
+                .size
+                .width * .7,
+            enableInfiniteScroll: false,
+          ),
+        ),
+      );
+    }
+
   }
 
     Widget createColorfulCard(int index, List<dynamic> data) {
-    double _width = MediaQuery
-        .of(context)
-        .size
-        .width;
-    double _height = MediaQuery
-        .of(context)
-        .size
-        .height;
     return Padding(
       padding: index != GlobalVariables.DISCOVER_DATA.length - 1
           ? const EdgeInsets.only(left: 25.0)
           : const EdgeInsets.symmetric(horizontal: 25.0),
       child: InkWell(
-        onTap: () => Navigator.of(context).push(
-
-            SecondPageRoute(list: data),
-        ),
+        onTap: () => Get.to(SecondPageRoute(list: data),),
         child: Align(
           alignment: Alignment.center,
           child: Container(
-            width: _height / 4.5,
-            height: _height * .18,
+            width: Get.size.height / 4.5,
+            height: Get.size.height * .18,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.bottomRight,
@@ -907,49 +925,51 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
                     offset: Offset(0, 3)),
               ],
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      // color: Colors.black,
-                      height: 10,
-                      child: FaIcon(
-                        data[3],
-                        color: Colors.white,
-                        size: _width / 12,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15.0),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        // color: Colors.black,
+                        height: 10,
+                        child: FaIcon(
+                          data[3],
+                          color: Colors.white,
+                          size: Get.size.width / 12,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 15.0, horizontal: 15),
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Text(
-                      data[0],
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        shadows: [
-                          new BoxShadow(
-                              color: Colors.black.withOpacity(.15),
-                              spreadRadius: 1.2,
-                              blurRadius: 5,
-                              offset: Offset(0, 3.0))
-                        ],
-                        color: Colors.white,
-                        fontSize: _width / 25,
-                        fontFamily: 'Raleway',
-                        fontWeight: FontWeight.w700,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 15.0, horizontal: 15),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        data[0],
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          shadows: [
+                            new BoxShadow(
+                                color: Colors.black.withOpacity(.15),
+                                spreadRadius: 1.2,
+                                blurRadius: 5,
+                                offset: Offset(0, 3.0))
+                          ],
+                          color: Colors.white,
+                          fontSize: Get.size.width / 25,
+                          fontFamily: 'Raleway',
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -994,25 +1014,7 @@ class _HomeViewState extends State<HomeView> with TickerProviderStateMixin {
 
   }
 
-    Widget _createRouteShowDetail(List<WatchedTVShow> data, int index) {
 
-    Future<List<dynamic>> episodes = new Network().getEpisodes(
-        showID: data[index].id);
-    return ClipRRect(
-      borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
-      child: FutureBuilder<Object>(
-          future: episodes,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              data[index].episodes = snapshot.data;
-              return WatchedDetailView(show: data[index]);
-            } else {
-              return WatchedDetailViewPlaceholder();
-            }
-          }),
-    );
-  }
 
     String showGreetings() {
     var timeNow = DateTime

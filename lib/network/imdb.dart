@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/tvshow.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -20,8 +20,8 @@ class APIService {
 
   // Base API request to get response
   Future<dynamic> get({
-    @required String endpoint,
-    @required Map<String, String> query,
+    required String endpoint,
+    required Map<String, String> query,
   }) async {
     Uri uri = Uri.https(_baseUrl, endpoint, query);
     final response = await http.get(uri, headers: _headers);
@@ -33,11 +33,11 @@ class APIService {
       throw Exception('Failed to load json data');
     }
   }
-  Future<TVShow> getShowResults({String imdbLink}) async{
+  Future<TVShow?> getShowResults({required String imdbLink}) async{
     try{
       var searchURL = GlobalVariables.IMDBSHOW_URL + imdbLink;
       // print(searchURL);
-      final response = await http.get(Uri.encodeFull(searchURL));
+      final response = await http.get(Uri.parse(searchURL));
 
       if (response.statusCode == 200) {
         return TVShow.fromJson(json.decode(response.body));

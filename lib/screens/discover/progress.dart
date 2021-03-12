@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:eWoke/components/back.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/statistics.dart';
+import 'package:show_time/components/back.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/statistics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -20,16 +20,16 @@ class OverallProgress extends StatefulWidget {
 
 class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
   var grey = Color(GlobalVariables.DISCOVER_DATA[0][1]);
-  Animation<double> sizeAnimation;
-  AnimationController animationController;
+  late Animation<double> sizeAnimation;
+  late AnimationController animationController;
 
-  TabController _controller;
+  late TabController _controller;
 
-  int touchedIndex;
+  late int touchedIndex;
 
   final Duration animDuration = const Duration(milliseconds: 250);
 
-  int length;
+  late int length;
 
   @override
   void initState() {
@@ -193,7 +193,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                           Expanded(
                                             child: FutureBuilder(
                                               future: Statistics().weeklyWatchedEpisodes(),
-                                              builder: (context, snapshot) {
+                                              builder: (context, AsyncSnapshot snapshot) {
                                                 if ( snapshot.hasData){
                                                   // print("data");
                                                   List<String> bottomData = [
@@ -250,7 +250,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                           Expanded(
                                             child: FutureBuilder(
                                                 future: Statistics().monthlyWatchedEpisodes(),
-                                                builder: (context, snapshot) {
+                                                builder: (context,AsyncSnapshot snapshot) {
                                                   if ( snapshot.hasData){
                                                     // print("data");
                                                     List<String> bottomData = Statistics().getMonths();
@@ -310,7 +310,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                           Expanded(
                                             child: FutureBuilder(
                                                 future: Statistics().yearlyWatchedEpisodes(),
-                                                builder: (context, snapshot) {
+                                                builder: (context,AsyncSnapshot snapshot) {
                                                   if ( snapshot.hasData){
                                                     // print("data");
                                                     List<String> bottomData = Statistics().getYears();
@@ -378,7 +378,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                       ),
                                       FutureBuilder(
                                         future: Statistics().getDaysOfShow(),
-                                        builder: (context, snapshot) {
+                                        builder: (context,AsyncSnapshot snapshot) {
                                           if ( snapshot.hasData){
                                             if ( snapshot.data.length > 0 ){
                                               return Padding(
@@ -555,7 +555,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
         touchTooltipData: BarTouchTooltipData(
             tooltipBgColor: GlobalColors.blueColor,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              String weekDay;
+              String weekDay = '';
               switch (group.x.toInt()) {
                 case 0:
                   weekDay = 'Monday';
@@ -587,7 +587,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
             if (barTouchResponse.spot != null &&
                 barTouchResponse.touchInput is! FlPanEnd &&
                 barTouchResponse.touchInput is! FlLongPressEnd) {
-              touchedIndex = barTouchResponse.spot.touchedBarGroupIndex;
+              touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
             } else {
               touchedIndex = -1;
             }
@@ -632,33 +632,33 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
       barGroups: List.generate(7, (i) {
         switch (i) {
           case 0:
-            return makeGroupData(0, watchesPerDay[0].toDouble(),isTouched: i == touchedIndex,
+            return makeGroupData(0, watchesPerDay[0]!.toDouble(),isTouched: i == touchedIndex,
                 barColor: Colors.white);
           case 1:
-            return makeGroupData(1, watchesPerDay[1].toDouble(),isTouched: i == touchedIndex,
+            return makeGroupData(1, watchesPerDay[1]!.toDouble(),isTouched: i == touchedIndex,
                 barColor: Colors.white);
           case 2:
-            return makeGroupData(2, watchesPerDay[2].toDouble(),isTouched: i == touchedIndex,
+            return makeGroupData(2, watchesPerDay[2]!.toDouble(),isTouched: i == touchedIndex,
                 barColor: Colors.white);
 
         case 3:
-            return makeGroupData(3, watchesPerDay[3].toDouble(),isTouched: i == touchedIndex,
+            return makeGroupData(3, watchesPerDay[3]!.toDouble(),isTouched: i == touchedIndex,
             barColor: Colors.white);
 
         case 4:
-            return makeGroupData(4, watchesPerDay[4].toDouble(),isTouched: i == touchedIndex,
+            return makeGroupData(4, watchesPerDay[4]!.toDouble(),isTouched: i == touchedIndex,
             barColor: Colors.white);
 
           case 5:
-            return makeGroupData(5, watchesPerDay[5].toDouble(),isTouched: i == touchedIndex,
+            return makeGroupData(5, watchesPerDay[5]!.toDouble(),isTouched: i == touchedIndex,
         barColor: Colors.white);
 
           case 6:
-            return makeGroupData(6, watchesPerDay[6].toDouble(),isTouched: i == touchedIndex,
+            return makeGroupData(6, watchesPerDay[6]!.toDouble(),isTouched: i == touchedIndex,
         barColor: Colors.white);
 
           default:
-            return null;
+            return makeGroupData(-1,-1, isTouched: false);
         }
       }),
     );

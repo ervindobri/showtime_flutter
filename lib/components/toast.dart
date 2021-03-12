@@ -8,7 +8,10 @@ class CustomToast extends StatefulWidget {
   final IconData icon;
   final String text;
 
-  const CustomToast({Key key, this.color, this.icon, this.text}) : super(key: key);
+  const CustomToast({ Key? key,
+    required this.color,
+    required this.icon,
+    required this.text}) : super(key: key);
   @override
   _CustomToastState createState() => _CustomToastState();
 }

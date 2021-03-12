@@ -1,15 +1,15 @@
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow_details.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/tvshow_details.dart';
 
 
 class WatchedTVShow extends TVShowDetails{
 
   int currentSeason;
   int currentEpisode;
-  String firstWatchDate;
-  String lastWatchDate;
-  bool favorite;
-  Map<String, dynamic> criteriaMap ;
+  String? firstWatchDate;
+  String? lastWatchDate;
+  bool? favorite;
+  Map<String, dynamic>? criteriaMap ;
   int watchedTimes;
 
   WatchedTVShow({
@@ -22,13 +22,13 @@ class WatchedTVShow extends TVShowDetails{
     episodes,
     totalSeasons,
     episodePerSeason,
-    this.currentSeason,
-  this.currentEpisode,
+    required this.currentSeason,
+  required this.currentEpisode,
   this.firstWatchDate,
   this.lastWatchDate,
   this.criteriaMap,
   this.favorite,
-  this.watchedTimes}):
+  this.watchedTimes = 0}):
         super(id: id,
         name: name,
           startDate: startDate,
@@ -67,7 +67,7 @@ class WatchedTVShow extends TVShowDetails{
     bool flag = false;
     GlobalVariables.scheduledEpisodes.forEach((show) {
       // print("${show[0].embedded['show']['id']} == ${this.id}");
-        if ( show[0].embedded['show']['id'].toString() == this.id){
+        if ( show[0].embedded!['show']['id'].toString() == this.id){
           flag = true;
         }
     });
@@ -91,16 +91,16 @@ class WatchedTVShow extends TVShowDetails{
 
   nextEpisodeAirDate(){
     if ( calculateWatchedEpisodes() == 0){
-      if ( this.episodes[0].airDate != ""){
-        var airDate = DateTime.parse("${this.episodes[0]?.airDate} 12:00:00.000");
+      if ( this.episodes![0].airDate != ""){
+        var airDate = DateTime.parse("${this.episodes![0]?.airDate} 12:00:00.000");
         var diff = airDate.difference(DateTime.now());
         return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
       }
     }
     else if ( calculateWatchedEpisodes() > 0 ){
-      if ( this.episodes[calculateWatchedEpisodes()].airDate != ""){
+      if ( this.episodes![calculateWatchedEpisodes()].airDate != ""){
         try{
-          var airDate = DateTime.parse("${this.episodes[calculateWatchedEpisodes()]?.airDate} 12:00:00.000");
+          var airDate = DateTime.parse("${this.episodes![calculateWatchedEpisodes()]?.airDate} 12:00:00.000");
           var diff = airDate.difference(DateTime.now());
           return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
         }
@@ -120,9 +120,9 @@ class WatchedTVShow extends TVShowDetails{
 
   int calculateWatchedEpisodes(){
     int watchedEpisodes = 0;
-    this.episodePerSeason.forEach((key, value) {
-      if ( int.parse(key) < currentSeason){
-        watchedEpisodes += value;
+    this.episodePerSeason!.forEach((key, value) {
+      if ( int.parse(key) < currentSeason.toInt()){
+        watchedEpisodes += int.parse(value);
       }
       else if( currentSeason == int.parse(key)){
         watchedEpisodes += currentEpisode;
@@ -130,27 +130,30 @@ class WatchedTVShow extends TVShowDetails{
     });
     return watchedEpisodes;
   }
+
   int calculateTotalEpisodes(){
     int totalEpisodes = 0;
-    this.episodePerSeason.forEach((key, value) {
-      totalEpisodes += value;
+    this.episodePerSeason!.forEach((key, value) {
+      totalEpisodes += int.parse(value);
     });
     return totalEpisodes;
   }
+
   double calculateProgress() {
     int watchedEpisodes = calculateWatchedEpisodes();
     int totalEpisodes = calculateTotalEpisodes();
-    return (watchedEpisodes / totalEpisodes);
+    double total = watchedEpisodes / totalEpisodes;
+    return total > 1.0 ? 1.0 : total;
   }
 
-  int getWatchedTimes(){
+  int? getWatchedTimes(){
     return this.watchedTimes;
   }
 
    incrementEpisodeWatch() {
      print(currentEpisode);
-     if ( currentSeason < totalSeasons){
-       if(currentEpisode < episodePerSeason[currentSeason.toString()] ){
+     if ( currentSeason < totalSeasons!.toInt()){
+       if(currentEpisode < episodePerSeason![currentSeason.toString()] ){
          currentEpisode++;
        }
        else{
@@ -160,7 +163,7 @@ class WatchedTVShow extends TVShowDetails{
        }
      }
      else{
-       if(currentEpisode < episodePerSeason[currentSeason.toString()] ){
+       if(currentEpisode < episodePerSeason![currentSeason.toString()] ){
          currentEpisode++;
        }
      }
@@ -187,7 +190,7 @@ class WatchedTVShow extends TVShowDetails{
         startDate : json['start_date'],
         runtime : json['runtime'] ??  0,
         rating : json['rating'] ?? 0.0,
-        imageThumbnailPath : json['image_thumbnail_path'],
+        imageThumbnailPath : json['image_thumbnail_path'].replaceFirst('http', 'https'),
         totalSeasons : json['total_seasons'],
         episodePerSeason : json['episodesPerSeason'],
         currentSeason : json['currentSeason'],
@@ -208,7 +211,7 @@ class WatchedTVShow extends TVShowDetails{
         startDate : json['start_date'],
         runtime : json['runtime'] ??  0,
         rating : json['rating'] ?? 0.0,
-        imageThumbnailPath : json['image_thumbnail_path'],
+        imageThumbnailPath : json['image_thumbnail_path'].contains('https') ? json['image_thumbnail_path'] : json['image_thumbnail_path'].replaceFirst('http', 'https'),
         totalSeasons : json['total_seasons'],
         episodePerSeason : json['episodesPerSeason'],
         currentSeason : json['currentSeason'],
@@ -218,6 +221,12 @@ class WatchedTVShow extends TVShowDetails{
         favorite: json['favorite'] ?? false,
         watchedTimes : json['watchedTimes'] ?? 0
     );
+  }
+
+  String newestEpisodeDifference() {
+
+    String diff = episodes!.last.getDifference();
+    return diff;
   }
 }
 

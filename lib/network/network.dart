@@ -1,15 +1,16 @@
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/models/tvshow.dart';
-import 'package:eWoke/models/tvshow_details.dart';
 import 'dart:convert';
+
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/models/tvshow.dart';
+import 'package:show_time/models/tvshow_details.dart';
 import 'package:http/http.dart';
 
 class Network{
 
-  Future<AllTVShowList> getShowResults({String showName}) async{
+  Future<AllTVShowList> getShowResults({required String showName}) async{
     var searchURL = GlobalVariables.SEARCH_URL + showName;
-    final response = await get(Uri.encodeFull(searchURL));
+    final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return AllTVShowList.fromJson(json.decode(response.body));
@@ -19,9 +20,9 @@ class Network{
     }
   }
 
-  Future<TVShowDetails> getDetailResults({TVShow show}) async{
+  Future<TVShowDetails> getDetailResults({required TVShow show}) async{
     var searchURL = GlobalVariables.EPISODES_URL + show.id + '/episodes';
-    final response = await get(Uri.encodeFull(searchURL));
+    final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return TVShowDetails.fromJson(show, json.decode(response.body));
@@ -31,9 +32,9 @@ class Network{
     }
   }
 
-  Future<TVShow> getShowInfo({String showID}) async{
+  Future<TVShow> getShowInfo({required String showID}) async{
     var searchURL = GlobalVariables.SHOW_URL + showID;
-    final response = await get(Uri.encodeFull(searchURL));
+    final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return TVShow.fromJson(json.decode(response.body));
@@ -43,9 +44,9 @@ class Network{
     }
   }
 
-  Future<List<dynamic>> getEpisodes({String showID}) async{
+  Future<List<dynamic>> getEpisodes({required String showID}) async{
     var searchURL = GlobalVariables.EPISODES_URL + showID + '/episodes';
-    final response = await get(Uri.encodeFull(searchURL));
+    final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       // print(response.body);
@@ -55,10 +56,10 @@ class Network{
       throw Exception("Error getting episode data!");
     }
   }
-  Future<List<dynamic>> getDetailUpdates({String showID}) async{
+  Future<List<dynamic>> getDetailUpdates({required String showID}) async{
     // print(showID);
     var searchURL = GlobalVariables.EPISODES_URL+ showID + "/episodes";
-    final response = await get(Uri.encodeFull(searchURL));
+    final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return getUpdates(json.decode(response.body));
@@ -93,7 +94,7 @@ class Network{
 
   Future<EpisodeList> getScheduledEpisodes() async{
     var searchURL = GlobalVariables.FULL_SCHEDULE_URL;
-    final response = await get(Uri.encodeFull(searchURL));
+    final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return EpisodeList.fromJson(json.decode(response.body));

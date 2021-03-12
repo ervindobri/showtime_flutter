@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/network/firebase_utils.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/network/firebase_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:status_alert/status_alert.dart';
 
-import '../main.dart';
 
 Widget unwatchDialog(BuildContext context, String showName, String showID) {
   return CustomDialogWidget(

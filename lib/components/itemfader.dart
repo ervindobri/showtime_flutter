@@ -3,15 +3,16 @@ import 'package:flutter/cupertino.dart';
 class ItemFader extends StatefulWidget {
   final Widget child;
 
-  const ItemFader({Key key, this.child}) : super(key: key);
+  const ItemFader({required Key key,
+    required this.child}) : super(key: key);
   @override
   _ItemFaderState createState() => _ItemFaderState();
 }
 
 class _ItemFaderState extends State<ItemFader> with SingleTickerProviderStateMixin{
   int position = 1;
-  AnimationController _animationController;
-  Animation _animation;
+  late AnimationController _animationController;
+  late Animation _animation;
 
   @override
   void initState() {
@@ -32,7 +33,7 @@ class _ItemFaderState extends State<ItemFader> with SingleTickerProviderStateMix
       child: widget.child,
       builder: (_, child) {
         return Transform.translate(
-          offset: Offset(0, 64 * position * ( 1- _animation.value)),
+          offset: Offset(0, (64 * position * ( 1- _animation.value)).toDouble()),
           child: Opacity(
             opacity: _animation.value,
             child: child,

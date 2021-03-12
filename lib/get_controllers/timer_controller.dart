@@ -1,14 +1,14 @@
-import 'package:eWoke/models/watched.dart';
+import 'package:show_time/models/watched.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 
 
 class TimerController extends GetxController{
-  Timer _timer;
-  String _countDown;
+  late Timer _timer;
+  late String _countDown;
   String get countDown => _countDown;
 
-  WatchedTVShow _show;
+  late WatchedTVShow _show;
   WatchedTVShow get show => _show;
 
   @override
@@ -28,7 +28,7 @@ class TimerController extends GetxController{
     _timer = new Timer.periodic(
         oneSec,
             (Timer timer) {
-          _countDown = _show.episodes[show.calculateWatchedEpisodes()].getDifference();
+          _countDown = _show.newestEpisodeDifference();
         }
     );
   }

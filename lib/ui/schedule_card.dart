@@ -1,21 +1,20 @@
 import 'dart:async';
 import 'dart:ui';
-
-import 'package:eWoke/constants/theme_utils.dart';
+import 'package:get/get.dart';
+import 'package:show_time/constants/theme_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/constants/custom_variables.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/constants/custom_variables.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 class ScheduleCard extends StatefulWidget {
   final Episode episode;
 
 
-  ScheduleCard({this.episode});
+  ScheduleCard({required this.episode});
 
   @override
   _ScheduleCardState createState() => _ScheduleCardState();
@@ -23,13 +22,7 @@ class ScheduleCard extends StatefulWidget {
 
 class _ScheduleCardState extends State<ScheduleCard> {
   String _countdownLabel = "";
-  Timer _timer;
-  PaletteGenerator paletteGenerator;
-
-  Rect region;
-
-  Color color = Colors.white;
-
+  late Timer _timer;
   Color episodeLabelColor = GlobalColors.greyTextColor;
 
   @override
@@ -58,8 +51,8 @@ class _ScheduleCardState extends State<ScheduleCard> {
 
   @override
   Widget build(BuildContext context) {
-    final double _width = MediaQuery.of(context).size.width;
-    final double _height = MediaQuery.of(context).size.height;
+    final double _width = Get.size.width;
+    final double _height = Get.size.height;
     // const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
     const BorderRadius _leftRadius = BorderRadius.only(
         topLeft:  Radius.circular(75.0),
@@ -114,20 +107,19 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                  crossAxisAlignment: CrossAxisAlignment.end,
                                  children: [
                                    Container(
-                                        // color: Colors.black,
                                         width: cardWidth,
                                         height: 40,
                                         child: Padding(
                                           padding: const EdgeInsets.only(left: 50.0, right: 10, top: 10),
                                           child: AutoSizeText(
-                                              widget.episode.embedded['show']['name'],
+                                              widget.episode.embedded!['show']['name'],
                                               textAlign: TextAlign.right,
                                               softWrap: true,
                                               maxFontSize: 25,
                                               maxLines: 2,
                                               style: GoogleFonts.roboto(
                                                 color: Colors.white,
-                                                fontSize: _width / 15,
+                                                fontSize: cardWidth / 5,
                                                 fontWeight: FontWeight.w700,
                                                 // fontFamily: 'Raleway',
                                               )
@@ -142,7 +134,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                          style: GoogleFonts.roboto(
                                            color: Colors.white,
                                            fontStyle: FontStyle.italic,
-                                           fontSize: _width / 23,
+                                           fontSize: cardWidth / 15,
                                            // fontWeight: FontWeight.w700,
                                            // fontFamily: 'Raleway',
                                          )
@@ -161,41 +153,43 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                                           children: [
                                             Container(
-                                              child: Column(
-                                                children: [
-                                                  AutoSizeText(
-                                                    widget.episode.season.toString(),
-                                                    minFontSize: 10,
-                                                    maxFontSize: 25,
-                                                    style: TextStyle(
-                                                        shadows: <Shadow>
-                                                        [Shadow(
-                                                            offset: Offset(0.0, 3.0),
-                                                            blurRadius: 15.0,
-                                                            color: Colors.black
-                                                              .withOpacity(.2),
-                                                          ),
-                                                        ],
-                                                        fontWeight: FontWeight.w700,
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  children: [
+                                                    AutoSizeText(
+                                                      widget.episode.season.toString(),
+                                                      minFontSize: 10,
+                                                      maxFontSize: 25,
+                                                      style: TextStyle(
+                                                          shadows: <Shadow>
+                                                          [Shadow(
+                                                              offset: Offset(0.0, 3.0),
+                                                              blurRadius: 15.0,
+                                                              color: Colors.black
+                                                                .withOpacity(.2),
+                                                            ),
+                                                          ],
+                                                          fontWeight: FontWeight.w700,
 //                                                color: GlobalColors.greyTextColor,
 //                                                color: Colors.white,
-                                                        color: episodeLabelColor,
+                                                          color: episodeLabelColor,
 
-                                                        fontSize: _width / 10,
-                                                        fontFamily: 'Raleway'
+                                                          fontSize: cardWidth / 10,
+                                                          fontFamily: 'Raleway'
+                                                      ),
                                                     ),
-                                                  ),
-                                                  AutoSizeText(
-                                                    "Season",
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.w300,
+                                                    AutoSizeText(
+                                                      "Season",
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.w300,
 //                                                color: Colors.white,
-                                                        color: episodeLabelColor,
-                                                        fontSize: _width / 25,
-                                                        fontFamily: 'Raleway'
+                                                          color: episodeLabelColor,
+                                                          fontSize: cardWidth / 25,
+                                                          fontFamily: 'Raleway'
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                             Container(
@@ -218,7 +212,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                                         color: episodeLabelColor,
 //                                                color: Colors.white,
 //                                                fontSize: _width / 10,
-                                                        fontSize: _width / 10,
+                                                        fontSize: cardWidth / 10,
 
                                                         fontFamily: 'Raleway'
                                                     ),
@@ -232,7 +226,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                                         fontWeight: FontWeight.w300,
                                                         color: episodeLabelColor,
 //                                                color: Colors.white,
-                                                        fontSize: _width / 25,
+                                                        fontSize: cardWidth / 25,
                                                         fontFamily: 'Raleway'
                                                     ),
                                                   ),
@@ -255,7 +249,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
               bottom: -(airHeight / 2),
               child: Container(
                 height: airHeight+5,
-                width: _width * .35,
+                width: cardWidth * .6,
                 decoration: BoxDecoration(
                     color:  widget.episode.getDiffDays().abs() > 3 ? GlobalColors.lightGreenColor : GlobalColors.orangeColor,
                     borderRadius: ShowTheme.radius50,
@@ -267,38 +261,40 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     )
                     ]
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                        widget.episode.getAirDateLabel(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          fontSize: _width / 25,
-                          fontFamily: 'Raleway',
-                        )
-                    ),
-                    Container(
-                      height: (airHeight+10)/2,
-                      width: _width * .35,
-                      child: Center(
-                        child: AutoSizeText(
-                            widget.episode.getDiffDays() >= 0 ? "Available": widget.episode.airTime,
-                            // textAlign: TextAlign.center,
-                            minFontSize: 25,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                              // fontSize: _width / 15,
-                              fontFamily: 'Raleway',
-                            )
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                          widget.episode.getAirDateLabel(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                            fontSize: cardWidth / 15,
+                            fontFamily: 'Raleway',
+                          )
+                      ),
+                      Container(
+                        height: (airHeight+10)/2,
+                        width: cardWidth * .65,
+                        child: Center(
+                          child: AutoSizeText(
+                              widget.episode.getDiffDays() >= 0 ? "Available": widget.episode.airTime,
+                              // textAlign: TextAlign.center,
+                              minFontSize: 25,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white,
+                                // fontSize: _width / 15,
+                                fontFamily: 'Raleway',
+                              )
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -342,7 +338,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                             _countdownLabel,
                             style: GoogleFonts.roboto(
                               color: GlobalColors.greyTextColor.withOpacity(.4),
-                              fontSize: _width/20,
+                              fontSize: cardWidth/20,
                               fontWeight: FontWeight.w700
                             ),
                           ),

@@ -9,15 +9,15 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
   final bool hideTitleWhenExpanded;
   final Widget child;
   final Widget back;
-  final Widget actions;
-  final Widget cancel;
+  final Widget? actions;
+  final Widget? cancel;
   final Color backgroundColor;
 
   BlurrySliverDelegate(  {
-    @required this.backgroundColor,
-    @required this.child,
-    @required this.back,
-    @required this.expandedHeight,
+    required this.backgroundColor,
+    required this.child,
+    required this.back,
+    required this.expandedHeight,
     this.hideTitleWhenExpanded = true,
     this.actions,
     this.cancel,

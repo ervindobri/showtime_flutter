@@ -3,14 +3,15 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow.dart';
-import 'package:eWoke/models/tvshow_details.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/network/network.dart';
-import 'package:eWoke/screens/detail_view.dart';
-import 'package:eWoke/screens/watched_detail_view.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/models/tvshow.dart';
+import 'package:show_time/models/tvshow_details.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/network/network.dart';
+import 'package:show_time/screens/detail_view.dart';
+import 'package:show_time/screens/watched_detail_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,7 +23,7 @@ import '../main.dart';
 class PopularCard extends StatefulWidget {
   final TVShow show;
 
-  const PopularCard({Key key, this.show}) : super(key: key);
+  const PopularCard({Key? key, required this.show}) : super(key: key);
   @override
   _PopularCardState createState() => _PopularCardState();
 }
@@ -31,13 +32,12 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
 
 
 
-  bool _tapped;
+  late bool _tapped;
 
-  Animation<double> animation;
-  AnimationController _controller;
-  TVShowDetails showDetails;
-
-  bool _added;
+  late Animation<double> animation;
+  late AnimationController _controller;
+  late TVShowDetails showDetails;
+  late bool _added;
 
 
 
@@ -77,7 +77,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
 
   Future<dynamic> _checkIfAdded() async{
     final docSnapshot = await FirebaseFirestore.instance
-        .collection("${auth.currentUser.email}/shows/watched_shows")
+        .collection("${auth.currentUser!.email}/shows/watched_shows")
         .doc(widget.show.id)
         .get();
 
@@ -85,7 +85,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
   }
 
 
-  getDetailResults({TVShow show}) => new Network().getDetailResults(show: show);
+  getDetailResults({required TVShow show}) => new Network().getDetailResults(show: show);
 
   _getShowDetails() async {
 //    print("getting details: ${widget.show.name}");
@@ -126,7 +126,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
             child: Stack(
               children: [
                 CachedNetworkImage(
-                  imageUrl: widget.show.imageThumbnailPath,
+                  imageUrl: widget.show.imageThumbnailPath!,
                   imageBuilder: (context, imageProvider) {
                     return Container(
                       height: _height/3.1,
@@ -261,7 +261,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                       ),
                                                       child: Center(
                                                         child: AutoSizeText(
-                                                          "${widget.show.startDate.split('-')[0]}",
+                                                          "${widget.show.startDate!.split('-')[0]}",
                                                           textAlign: TextAlign.left,
                                                           style: TextStyle(
                                                               color: Colors.white,
@@ -335,47 +335,48 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                               try{
                                                                   show = GlobalVariables.watchedShowList.firstWhere((element) => element.id == widget.show.id);
                                                                   episodes = new Network().getEpisodes(showID: show.id);
+                                                                  return ClipRRect(
+                                                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
+                                                                    child: FutureBuilder<Object>(
+                                                                        future: episodes,
+                                                                        builder: (context, snapshot) {
+                                                                          if ( snapshot.hasData){
+                                                                            show.episodes = snapshot.data as List<Episode>;
+                                                                            // print(show.episodes.length);
+                                                                            // print(data[index].episodes.length);
+                                                                            return WatchedDetailView(show: show);
+                                                                          }
+                                                                          else{
+                                                                            return Container(
+                                                                              width: _width,
+                                                                              height: _height*.95,
+                                                                              color: GlobalColors.bgColor,
+                                                                              child: Column(
+                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    width: _width,
+                                                                                    // color: Colors.black,
+                                                                                    child: Center(
+                                                                                      child: CircularProgressIndicator(
+                                                                                        valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
+                                                                                        // backgroundColor: GlobalColors.greenColor,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            );
+                                                                          }
+                                                                        }
+                                                                    ),
+                                                                  );
                                                               }
                                                               catch(e){
                                                                 print("No such show: ${e}");
                                                                 Navigator.pop(context);
+                                                                return Container();
                                                               }
-                                                              return ClipRRect(
-                                                                borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
-                                                              child: FutureBuilder<Object>(
-                                                                future: episodes,
-                                                                builder: (context, snapshot) {
-                                                                  if ( snapshot.hasData){
-                                                                    show.episodes = snapshot.data;
-                                                                    // print(show.episodes.length);
-                                                                    // print(data[index].episodes.length);
-                                                                    return WatchedDetailView(show: show);
-                                                                  }
-                                                                  else{
-                                                                    return Container(
-                                                                      width: _width,
-                                                                      height: _height*.95,
-                                                                      color: GlobalColors.bgColor,
-                                                                      child: Column(
-                                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                                        children: [
-                                                                          Container(
-                                                                            width: _width,
-                                                                            // color: Colors.black,
-                                                                            child: Center(
-                                                                              child: CircularProgressIndicator(
-                                                                                valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.greenColor),
-                                                                                // backgroundColor: GlobalColors.greenColor,
-                                                                              ),
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  }
-                                                                }
-                                                              ),
-                                                            );
                                                           },
                                                           isScrollControlled: true);
                                                     }

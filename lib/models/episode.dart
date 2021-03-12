@@ -1,13 +1,13 @@
-import 'package:eWoke/constants/custom_variables.dart';
+import 'package:show_time/constants/custom_variables.dart';
 
 class EpisodeList{
   final List<Episode> episodes;
 
-  EpisodeList({this.episodes});
+  EpisodeList({required this.episodes});
 
   factory EpisodeList.fromJson(List<dynamic> json){
-    List episodes;
-    episodes = json.map((i) => Episode.fromJson(i)).toList();
+    List<Episode> episodes = <Episode>[];
+    episodes = json.map((i) => Episode.fromJson(i)).cast<Episode>().toList();
     return EpisodeList(
       episodes : episodes,
     );
@@ -18,18 +18,18 @@ class EpisodeList{
 
 class Episode{
   int id;
-  int season;
-  int episode;
-  String name;
-  String airDate;
-  String airTime;
-  int runtime;
-  String image;
-  String summary;
+  int? season;
+  int? episode;
+  String? name;
+  String? airDate;
+  String? airTime;
+  int? runtime;
+  String? image;
+  String? summary;
 
-  Map<String, dynamic> embedded;
+  Map<String, dynamic>? embedded;
 
-  Episode({this.id, this.season, this.episode, this.name, this.airDate,
+  Episode({required this.id, this.season, this.episode, this.name, this.airDate,
       this.airTime, this.runtime, this.image, this.summary, this.embedded});
 
   factory Episode.fromJson(Map <String, dynamic> json){

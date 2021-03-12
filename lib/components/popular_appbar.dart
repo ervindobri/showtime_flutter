@@ -7,12 +7,12 @@ class PopularSliverDelegate extends SliverPersistentHeaderDelegate {
   final bool hideTitleWhenExpanded;
   final Widget child;
   final Widget back;
-  final Widget actions;
+  final Widget? actions;
 
   PopularSliverDelegate({
-    this.child,
-    @required this.back,
-    @required this.expandedHeight,
+    required this.child,
+    required this.back,
+    required this.expandedHeight,
     this.hideTitleWhenExpanded = true,
     this.actions,
 

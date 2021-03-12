@@ -1,11 +1,11 @@
-import 'package:eWoke/components/badge.dart';
-import 'package:eWoke/models/tvshow.dart';
-import 'package:eWoke/models/tvshow_details.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/screens/discover/watchlist.dart';
-import 'package:eWoke/screens/discover/most_popular_shows.dart';
-import 'package:eWoke/screens/discover/progress.dart';
+import 'package:show_time/components/badge.dart';
+import 'package:show_time/models/tvshow.dart';
+import 'package:show_time/models/tvshow_details.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/screens/discover/watchlist.dart';
+import 'package:show_time/screens/discover/most_popular_shows.dart';
+import 'package:show_time/screens/discover/progress.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -37,14 +37,14 @@ class GlobalColors{
 class GlobalVariables{
   static const FONTFAMILY = 'Raleway';
   static const EPISODES_URL = "https://api.tvmaze.com/shows/";
-  static const SEARCH_URL = "http://api.tvmaze.com/search/shows?q=";
+  static const SEARCH_URL = "https://api.tvmaze.com/search/shows?q=";
   static const FULL_SCHEDULE_URL = "https://api.tvmaze.com/schedule/full";
 
   //Concat these two to get episodes by date
   static const SHOW_URL = "https://api.tvmaze.com/shows/";
   static const SCHEDULE_URL = "/episodesbydate?date=";
 
-  static const IMDBSHOW_URL = "http://api.tvmaze.com/lookup/shows?imdb=";
+  static const IMDBSHOW_URL = "https://api.tvmaze.com/lookup/shows?imdb=";
 
   static const double sliverRadius = 35.0;
 
@@ -53,14 +53,14 @@ class GlobalVariables{
   static const List<String> sexCategories = ["Female", "Male"];
 
 
-  static List<WatchedTVShow> watchedShowList = new List<WatchedTVShow>();
-  static List<TVShowDetails> showDetailList = new List<TVShowDetails>();
-  static List<WatchedTVShow> favorites = new List<WatchedTVShow>();
+  static List<WatchedTVShow> watchedShowList = <WatchedTVShow>[];
+  static List<TVShowDetails> showDetailList = <TVShowDetails>[];
+  static List<WatchedTVShow> favorites = <WatchedTVShow>[];
   static List<List<Episode>> scheduledEpisodes = [];
   static List<TVShow> popularShows = [];
-  static List<WatchedTVShow> list = new List<WatchedTVShow>();
+  static List<WatchedTVShow> list = <WatchedTVShow>[];
 
-  static List<WatchedTVShow> allWatchedShows = new List<WatchedTVShow>();
+  static List<WatchedTVShow> allWatchedShows = <WatchedTVShow>[];
   static List<int> watchedShowIdList = [];
 
 
@@ -71,7 +71,7 @@ class GlobalVariables{
   static final Map<String, dynamic> discoverMap = {
     "Overall Progress": OverallProgress(),
     "Most popular shows": MostPopularShows(),
-    "Watchlist": DiscoverWatchList(),
+    "Watchlist": DiscoverWatchList(data: [],),
     "Favorites": MostPopularShows()
   };
 

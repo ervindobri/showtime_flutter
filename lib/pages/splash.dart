@@ -1,31 +1,21 @@
 import 'dart:async';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/database/user_data_dao.dart';
-import 'package:eWoke/get_controllers/auth_controller.dart';
-import 'package:eWoke/get_controllers/show_controller.dart';
-import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/models/user.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/providers/connectivity_service.dart';
-import 'package:eWoke/providers/show_provider.dart';
-import 'package:eWoke/providers/user_provider.dart';
-import 'package:eWoke/ui/create_profile_card.dart';
+import 'package:flutter/foundation.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/get_controllers/auth_controller.dart';
+import 'package:show_time/get_controllers/show_controller.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/providers/connectivity_service.dart';
+import 'package:show_time/ui/create_profile_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
-
-import 'package:eWoke/main.dart';
 import 'home.dart';
-import 'package:progress_state_button/progress_button.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -35,22 +25,21 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
-  StreamSubscription<ConnectivityResult> subscription;
+  late StreamSubscription<ConnectivityResult> subscription;
   var connectionStatus;
   bool allDone = false;
   List<Episode> notAiredList = [];
 
   var animationName = 'Shrink';
-  Animation<double> animation;
-  AnimationController _controller;
+  late Animation<double> animation;
+  late AnimationController _controller;
   bool allCompleted = false;
-  Timer completed;
-  QuerySnapshot watchedShowsSnapshot;
+  late Timer completed;
+  late QuerySnapshot watchedShowsSnapshot;
   List<WatchedTVShow> watchedShowsList = [];
-  ShowProvider showProvider;
 
-  ShowController showController = Get.put(ShowController());
-  AuthController authController = Get.put(AuthController());
+  ShowController showController = Get.put(ShowController())!;
+  AuthController authController = Get.put(AuthController())!;
 
   @override
   void initState() {
@@ -73,15 +62,14 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     //Fetch current user and show data
     authController.getUserData();
     showController.initialize();
+    print("splash init");
 
   }
 
   @override
   void dispose() {
-    subscription = null;
-    completed?.cancel();
+    completed.cancel();
     _controller.dispose();
-
     super.dispose();
   }
 
@@ -184,7 +172,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
             builder: (_){
               if (showController.notAired.isNotEmpty) {
                 Timer.run(() {
-                  Get.offAll(HomeView());
+                  print("go to home!");
+                  Get.offAll(() => HomeView());
                 });
                 return loadingCouch();
               }

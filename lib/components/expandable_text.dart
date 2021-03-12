@@ -1,4 +1,4 @@
-import 'package:eWoke/constants/custom_variables.dart';
+import 'package:show_time/constants/custom_variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,7 +9,9 @@ class ExpandableText extends StatefulWidget {
   final String text;
   final Widget textLabel;
 
-  ExpandableText({this.text, this.textLabel, this.onTap});
+  ExpandableText({required this.text,
+    required this.textLabel,
+    required this.onTap});
 
   bool isExpanded = false;
 

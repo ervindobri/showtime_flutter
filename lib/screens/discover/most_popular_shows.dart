@@ -1,11 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:eWoke/components/back.dart';
-import 'package:eWoke/components/popular_appbar.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/constants/theme_utils.dart';
-import 'package:eWoke/models/tvshow.dart';
-import 'package:eWoke/network/imdb.dart';
-import 'package:eWoke/ui/mps_card.dart';
+import 'package:show_time/components/back.dart';
+import 'package:show_time/components/popular_appbar.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/constants/theme_utils.dart';
+import 'package:show_time/models/tvshow.dart';
+import 'package:show_time/network/imdb.dart';
+import 'package:show_time/ui/mps_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -27,9 +27,8 @@ class _MostPopularShowsState extends State<MostPopularShows>
   // String _searchTerm;
   APIService apiService = APIService();
   // You future
-  Future future;
-
-  ScrollController _controller;
+  late Future future;
+  late ScrollController _controller;
 
   double _offset = 1.0;
 
@@ -38,8 +37,8 @@ class _MostPopularShowsState extends State<MostPopularShows>
   //Querys :          -----------------,         tconst(e.g. tt0944947),
   //Endpoints : title/get-most-popular-tv-shows, title/get-details
 
-  Animation<double> sizeAnimation;
-  AnimationController animationController;
+  late Animation<double> sizeAnimation;
+  late AnimationController animationController;
 
   int threshold = 5;
   int nrShows = 10;
@@ -61,7 +60,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
     10: [90, "91-100"],
   };
 
-  PageController pageController;
+  late PageController pageController;
 
   int maxPages = 10;
   String label = "";
@@ -94,7 +93,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
           "currentCountry": "US",
           "homeCountry": "US"
         });
-    label = limitMap[1][1];
+    label = limitMap[1]![1];
   }
 
   @override
@@ -125,7 +124,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
             color: pink,
             child: FutureBuilder(
                 future: future,
-                builder: (context, snapshot) {
+                builder: (context, AsyncSnapshot snapshot) {
                   if ( GlobalVariables.limitedShows.isNotEmpty){
                     return CustomScrollView(
                       // key: UniqueKey(),
@@ -160,8 +159,8 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                     CarouselSlider.builder(
                                       itemBuilder: (BuildContext context, int index, int what) {
                                         return FutureBuilder(
-                                            future: getShowList(limitMap[index + 1]),
-                                            builder: (context, snapshot) {
+                                            future: getShowList(limitMap[index + 1]!),
+                                            builder: (context, AsyncSnapshot snapshot) {
                                               // print(snapshot.connectionState);
                                               // print(snapshot.hasData);
 
@@ -342,7 +341,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               }
                                               else{
                                                 _selectedIndex = 1;
-                                                label = limitMap[val+1][1].toString();
+                                                label = limitMap[val+1]![1].toString();
                                               }
                                             });
                                           },
@@ -394,15 +393,14 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                             icon: FontAwesomeIcons.chevronCircleRight
                                           ),
                                         ],
-                                        // onTabChange: (index) {
-                                        //   setState(() {
-                                        //     _selectedIndex = index;
-                                        //   });
-                                        // }),
+                                        onTabChange: (index) {
+                                          setState(() {
+                                            _selectedIndex = index;
+                                          });
+                                        }),
                                       ),
                                     ),
                                   ),
-                                ),
                               ],
                             ),
                           ),
@@ -410,7 +408,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                   }
                   else{
                     if (snapshot.hasData) {
-                      getShowLinks(snapshot.data.take(maxShows));
+                      getShowLinks(snapshot.data!.take(maxShows));
                       return CustomScrollView(
                         // key: UniqueKey(),
                           physics: NeverScrollableScrollPhysics(),
@@ -444,8 +442,8 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                         items: List.generate(maxPages, (index) {
                                           // Future<dynamic> popular = getShowList(limitMap[index + 1]);
                                           return FutureBuilder(
-                                              future: getShowList(limitMap[index + 1]),
-                                              builder: (context, snapshot) {
+                                              future: getShowList(limitMap[index + 1]!),
+                                              builder: (context, AsyncSnapshot snapshot) {
                                                 // print(GlobalVariables.limitedShows.length);
                                                 if ( GlobalVariables.limitedShows != null && GlobalVariables.limitedShows.length > index){
                                                   return Container(
@@ -625,7 +623,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                 }
                                                 else{
                                                   _selectedIndex = 1;
-                                                  label = limitMap[val+1][1].toString();
+                                                  label = limitMap[val+1]![1].toString();
                                                 }
                                               });
                                             },
@@ -676,15 +674,14 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               icon: Icons.queue_play_next_rounded,
                                             ),
                                           ],
-                                          // onTabChange: (index) {
-                                          //   setState(() {
-                                          //     _selectedIndex = index;
-                                          //   });
-                                          // }),
+                                          onTabChange: (index) {
+                                            setState(() {
+                                              _selectedIndex = index;
+                                            });
+                                          }),
                                         ),
                                       ),
                                     ),
-                                  ),
                                 ],
                               ),
                             ),
@@ -784,7 +781,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
     List<TVShow> data = [];
     // print(showLinks.length);
     for (String show in GlobalVariables.showLinks.skip(limits[0]).take(10)) {
-      TVShow tvshow = await apiService.getShowResults(imdbLink: show);
+      TVShow tvshow = (await apiService.getShowResults(imdbLink: show))!;
       // print(tvshow);
       if (tvshow != null) {
         data.add(tvshow);

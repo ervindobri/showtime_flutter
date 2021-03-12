@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:eWoke/constants/custom_variables.dart';
+import 'package:flutter/foundation.dart';
+import 'package:show_time/constants/custom_variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -17,8 +18,8 @@ class _WatchedDetailViewPlaceholderState extends State<WatchedDetailViewPlacehol
 
 
 
-  AnimationController _animationController;
-  Animation _colorTween;
+  late AnimationController _animationController;
+  late Animation _colorTween;
 
   List<AnimationController> listControllers = [];
   List<Animation> listAnimations = [];
@@ -283,5 +284,10 @@ class _WatchedDetailViewPlaceholderState extends State<WatchedDetailViewPlacehol
         ),
       ],
     );
+  }
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<AnimationController>('_animationController', _animationController));
   }
 }

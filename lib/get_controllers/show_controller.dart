@@ -1,23 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/network/firebase_utils.dart';
 import 'package:get/get.dart';
 
 class ShowController extends GetxController{
-  var watchedShows = List<WatchedTVShow>().obs;
+  var watchedShows = <WatchedTVShow>[].obs;
   List<int> watchedShowIds = [];
-  var scheduledEpisodes = List<List<Episode>>().obs;
-  var notAiredList = List<Episode>().obs;
+  var scheduledEpisodes = <List<Episode>>[].obs;
+  var notAiredList = <Episode>[].obs;
 
 
   // ignore: invalid_use_of_protected_member
-  List<Episode> get notAired  => notAiredList?.value;
+  List<Episode> get notAired  => notAiredList.value;
   // ignore: invalid_use_of_protected_member
-  List<List<Episode>> get scheduled  => scheduledEpisodes?.value;
+  List<List<Episode>> get scheduled  => scheduledEpisodes.value;
   // ignore: invalid_use_of_protected_member
-  List<WatchedTVShow> get watched => watchedShows?.value;
+  List<WatchedTVShow> get watched => watchedShows.value;
 
   @override
   void onInit() {
@@ -41,7 +40,7 @@ class ShowController extends GetxController{
           if ( !watchedShowIds.contains(doc.id)){ //somehow duplicates get in FFS
             watchedShowIds.add(int.parse(doc.id));
           }
-          WatchedTVShow show = new WatchedTVShow.fromFirestore(doc.data(), doc.id);
+          WatchedTVShow show = new WatchedTVShow.fromFirestore(doc.data()!, doc.id);
           result.add(show);
         })});
       watchedShows.assignAll(result);
@@ -65,10 +64,10 @@ class ShowController extends GetxController{
 
   @override
   void onClose() {
-    watchedShows?.close();
+    watchedShows.close();
     watchedShowIds.clear();
-    scheduledEpisodes?.close();
-    notAiredList?.close();
+    scheduledEpisodes.close();
+    notAiredList.close();
     super.onClose();
   }
 
@@ -94,7 +93,7 @@ class ShowController extends GetxController{
         episodes.add(scheduled[index][notAired]);
 
       }
-    episodes.sort( (a,b) => a.airDate.compareTo(b.airDate));
+    episodes.sort( (a,b) => a.airDate!.compareTo(b.airDate!));
     episodes = episodes.toSet().toList();
     notAiredList.assignAll(episodes);
   }

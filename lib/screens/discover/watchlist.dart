@@ -1,36 +1,26 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:eWoke/components/back.dart';
-import 'package:eWoke/components/blurry_header.dart';
-import 'package:eWoke/components/custom_elevation.dart';
-import 'package:eWoke/components/popular_appbar.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/get_controllers/show_controller.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/network.dart';
-import 'package:eWoke/providers/show_provider.dart';
-import 'package:eWoke/screens/watched_detail_view.dart';
-import 'package:eWoke/ui/watch_card.dart';
-import 'package:eWoke/ui/watchlist_card.dart';
+import 'package:show_time/components/back.dart';
+import 'package:show_time/components/blurry_header.dart';
+import 'package:show_time/components/custom_elevation.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/get_controllers/show_controller.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/ui/watchlist_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_icons/animate_icons.dart';
-import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
-import 'dart:developer';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:provider/provider.dart';
 
 
 class DiscoverWatchList extends StatefulWidget {
   final List data;
 
-  const DiscoverWatchList({Key key, this.data}) : super(key: key);
+  const DiscoverWatchList({Key? key, required this.data}) : super(key: key);
   @override
   _DiscoverWatchListState createState() => _DiscoverWatchListState();
 }
@@ -40,31 +30,22 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   List<WatchedTVShow> sortedList = [];
 
 
-  bool _sorting;
+  late bool _sorting;
   String criteria = "Criteria";
-
   bool _ascending = false;
-
   bool isPlaying = false;
-
-  Animation animation;
-
-  AnimateIconController controller;
+  late Animation animation;
+  late AnimateIconController controller;
   final TextEditingController _filter = new TextEditingController();
 
-  String _searchTerm;
+  late String _searchTerm;
   int _index = 0;
 
-  //
-  // ScrollController listController = new ScrollController(
-  //   initialScrollOffset: 0
-  // );
 
-  ShowController showController = Get.put(ShowController());
-
+  ShowController showController = Get.put(ShowController())!;
   ScrollController _scrollController = ScrollController();
 
-  double _scrollPosition;
+  late double _scrollPosition;
 
 
 
@@ -166,7 +147,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
           child: GetX<ShowController>(
             builder: (showController) {
                var shows = showController.watched;
-              sortedList = shows.where((e) => e.name.toLowerCase().contains(_searchTerm.toLowerCase())).toList();
+              sortedList = shows.where((e) => e.name!.toLowerCase().contains(_searchTerm.toLowerCase())).toList();
               print(sortedList.length);
               return Stack(
                 children: [
@@ -247,7 +228,8 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                                     endTooltip: 'Icons.add_circle_outline',
                                     size: 35.0,
                                     duration: Duration(milliseconds: 200),
-                                    color: Colors.white,
+                                    startIconColor: Colors.white,
+                                    endIconColor: Colors.white,
                                     clockwise: false,
                                     onStartIconPress: () {
                                       _onpressed();
@@ -606,7 +588,7 @@ class WatchlistView extends StatefulWidget {
   final List list;
   final String term;
 
-  const WatchlistView({Key key, this.list, this.term,
+  const WatchlistView({Key? key, required this.list, required this.term,
     // this.scrollController
   }) : super(key: key);
   @override

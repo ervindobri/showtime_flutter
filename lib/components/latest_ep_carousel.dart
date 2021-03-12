@@ -1,14 +1,15 @@
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:eWoke/models/tvshow_details.dart';
-import 'package:eWoke/ui/episode_card.dart';
+import 'package:get/get.dart';
+import 'package:show_time/models/tvshow_details.dart';
+import 'package:show_time/ui/episode_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LatestEpisodesCarousel extends StatefulWidget {
   final TVShowDetails show;
 
-  LatestEpisodesCarousel({this.show});
+  LatestEpisodesCarousel({required this.show});
 
 
   @override
@@ -22,8 +23,8 @@ class _LatestEpisodesCarouselState extends State<LatestEpisodesCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    double _width = Get.size.width;
+    double _height = Get.size.height;
 
     return Center(
         child: Padding(
@@ -31,9 +32,9 @@ class _LatestEpisodesCarouselState extends State<LatestEpisodesCarousel> {
           child: Container(
             height: _width * .58,
             child: CarouselSlider.builder(
-              itemCount: widget.show.episodes.reversed.toList().take(10).length,
+              itemCount: widget.show.episodes!.reversed.toList().take(10).length,
               itemBuilder: (BuildContext context, int itemIndex, int what) {
-                return EpisodeCard(episode: widget.show.episodes.reversed.toList()[itemIndex]);
+                return EpisodeCard(episode: widget.show.episodes!.reversed.toList()[itemIndex]);
               },
               options: CarouselOptions(
                 height: _width * .56,

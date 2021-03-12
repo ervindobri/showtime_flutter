@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 class CustomElevation extends StatelessWidget {
   final Widget child;
   final Color color;
-  final double blurRadius;
-  final double spreadRadius;
+  final double? blurRadius;
+  final double? spreadRadius;
 
-  CustomElevation({@required this.child, this.color, this.blurRadius, this.spreadRadius}) : assert(child != null);
+  CustomElevation({required this.child,
+    required this.color,
+    this.blurRadius,
+    this.spreadRadius});
 
   @override
   Widget build(BuildContext context) {

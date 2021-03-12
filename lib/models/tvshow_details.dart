@@ -1,5 +1,5 @@
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/tvshow.dart';
 import 'package:html/parser.dart';
 
 import 'episode.dart';
@@ -7,11 +7,11 @@ import 'episode.dart';
 class AllTVShowDetailsList{
   final String total;
   final int page;
-  final int pages;
+  final int? pages;
   final List<dynamic> showList;
 
 
-  AllTVShowDetailsList({this.total,this.page, this.pages, this.showList});
+  AllTVShowDetailsList({required this.total,required this.page, this.pages, required this.showList});
 
   factory AllTVShowDetailsList.fromJson(Map <String, dynamic> json){
     List shows;
@@ -27,13 +27,13 @@ class AllTVShowDetailsList{
 
 
 class TVShowDetails extends TVShow{
-  String description;
-  String ratingCount;
-  List<dynamic> pictures;
-  String imagePath;
-  List<dynamic> episodes;
-  int totalSeasons;
-  Map<String, dynamic> episodePerSeason;
+  String? description;
+  String? ratingCount;
+  List<dynamic>? pictures;
+  String? imagePath;
+  List<dynamic>? episodes;
+  int? totalSeasons;
+  Map<String, dynamic>? episodePerSeason;
 
   TVShowDetails(
       {     id,
@@ -68,10 +68,10 @@ class TVShowDetails extends TVShow{
     return 'TVShowDetails{description: $description, ratingCount: $ratingCount, pictures: $pictures, imagePath: $imagePath, episodes: $episodes, totalSeasons: $totalSeasons, episodePerSeason: $episodePerSeason}';
   }
 
-  String countryCode(){
+  String? countryCode(){
     // print(countryCodes[0]["name"]);
     print(this.language);
-    if ( this.language.isNotEmpty){
+    if ( this.language!.isNotEmpty){
         var x  = GlobalVariables.countryCodes.firstWhere((element) => element["name"] == this.language) ?? {"code": "N/A"};
         return x["code"].toString().toUpperCase() ?? r"N\A";
     }
@@ -80,7 +80,7 @@ class TVShowDetails extends TVShow{
   String parseHtmlString() {
     try {
       var document = parse(this.summary);
-      String parsedString = parse(document.body.text).documentElement.text;
+      String parsedString = parse(document.body!.text).documentElement!.text;
       return parsedString;
     } catch (e) {
       return "No description";
@@ -127,7 +127,7 @@ class TVShowDetails extends TVShow{
   }
 
   bool isSafe() {
-    if ( this.id != null && this.name != null && this.episodePerSeason != null){
+    if ( this.name != null && this.episodePerSeason != null){
       return true;
     }
     return false;

@@ -3,15 +3,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Badge extends StatelessWidget {
   final String description;
   final IconData icon;
   final List<Color> colors;
-  final double size;
+  final double? size;
 
-  const Badge({Key key, this.icon, this.colors, this.description, this.size}) : super(key: key);
+  const Badge({Key? key,
+    required this.icon,
+    required this.colors,
+    required this.description,
+    this.size}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,13 +40,13 @@ class Badge extends StatelessWidget {
           ),
           child: ClipOval(
             child: Container(
-              width: size ?? MediaQuery.of(context).size.height/10,
-              height: size ?? MediaQuery.of(context).size.height/10,
+              width: size ?? Get.size.height/10,
+              height: size ?? Get.size.height/10,
               padding: EdgeInsets.all(5),
               child: Center(
                 child: FaIcon(
                   icon,
-                  size: size != null ? size/2 : MediaQuery.of(context).size.height/20,
+                  size: size?? Get.size.width/12,
                   color: Colors.white,
                 ),
               ),
@@ -59,7 +64,9 @@ class DetailBadge extends StatelessWidget {
   final String text;
   final List<Color> colors;
 
-  const DetailBadge({Key key, this.text, this.colors}) : super(key: key);
+  const DetailBadge({Key? key,
+    required this.text,
+    required this.colors}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -83,8 +90,8 @@ class DetailBadge extends StatelessWidget {
         ),
         child: ClipOval(
           child: Container(
-            width: MediaQuery.of(context).size.height/11,
-            height: MediaQuery.of(context).size.height/11,
+            width: Get.size.height/11,
+            height: Get.size.height/11,
             padding: EdgeInsets.all(7),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -94,7 +101,7 @@ class DetailBadge extends StatelessWidget {
                 text,
                 style: GoogleFonts.roboto(
                         color: Colors.white,
-                  fontSize: MediaQuery.of(context).size.height/20,
+                  fontSize: Get.size.height/20,
                   fontWeight: FontWeight.w700
                     ),
                 ),

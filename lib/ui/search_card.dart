@@ -1,10 +1,10 @@
 import 'dart:ui';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow.dart';
-import 'package:eWoke/models/tvshow_details.dart';
-import 'package:eWoke/network/network.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/screens/detail_view.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/tvshow.dart';
+import 'package:show_time/models/tvshow_details.dart';
+import 'package:show_time/network/network.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/screens/detail_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,32 +13,18 @@ import 'package:status_alert/status_alert.dart';
 
 class ShowCard extends StatefulWidget {
   final TVShow show;
-
-  // final BorderRadiusGeometry _leftRadius = const BorderRadius.only(
-  //   bottomRight: Radius.circular(25.0),
-  //   topRight: Radius.circular(50.0),
-  // );
-
-  const ShowCard({Key key, this.show}) : super(key: key);
+  const ShowCard({Key? key, required this.show}) : super(key: key);
 
   @override
   _ShowCardState createState() => _ShowCardState();
 }
 
 class _ShowCardState extends State<ShowCard> with AnimationMixin {
-  TVShowDetails showDetails;
+  late TVShowDetails showDetails;
 
   bool _added = false;
 
-
-  // double radius = 25.0;
-  //
-  // bool isExpanded = false;
-
-  getDetailResults({TVShow show}) => new Network().getDetailResults(show: show);
-
-  // Animation<double> animation;
-  // AnimationController _controller;
+  getDetailResults({required TVShow show}) => new Network().getDetailResults(show: show);
 
   @override
   void setState(fn) {
@@ -112,7 +98,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                 decoration: BoxDecoration(
                   color: GlobalColors.bgColor,
                   image: DecorationImage(
-                      image: NetworkImage(widget.show.imageThumbnailPath),
+                      image: NetworkImage(widget.show.imageThumbnailPath!),
                       fit: BoxFit.fill),
                   borderRadius: _radius,
                   boxShadow: [
@@ -335,26 +321,8 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
         ));
   }
 
-
-
   @override
   void dispose() {
-    _added = null;
-    showDetails = null;
     super.dispose();
   }
-
-
-
-  // void _updateRating(TVShowDetails show) {
-  //   FirebaseFirestore.instance
-  //       .collection("${auth.currentUser.email}")
-  //       .doc("shows")
-  //       .collection("watched_shows")
-  //       .doc(show.id.toString())
-  //       .update(
-  //           {"rating" : show.rating}
-  //       );
-  // }
-
 }

@@ -1,33 +1,24 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:eWoke/components/custom_elevation.dart';
-import 'package:eWoke/components/toast.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/database/user_data.dart';
-import 'package:eWoke/database/user_data_dao.dart';
-import 'package:eWoke/get_controllers/auth_controller.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/pages/splash.dart';
-import 'package:eWoke/providers/show_provider.dart';
-import 'package:eWoke/providers/user_provider.dart';
+import 'package:show_time/components/custom_elevation.dart';
+import 'package:show_time/components/toast.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/get_controllers/auth_controller.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/pages/splash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import 'package:local_auth/local_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:simple_animations/simple_animations.dart';
 
@@ -42,61 +33,42 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
   bool logging = true;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController repasswordController = TextEditingController();
-  TextEditingController resetController = TextEditingController();
+
 
   bool _showPassword = true;
 
   FaIcon eye = FaIcon(FontAwesomeIcons.eye, color: GlobalColors.greenColor);
   int _state = 0;
-  final _storage = FlutterSecureStorage();
   var animationName = 'Shrink';
-  FToast fToast;
-
-  final LocalAuthentication auth = LocalAuthentication();
-  bool _canCheckBiometrics;
-  List<BiometricType> _availableBiometrics;
-  String _authorized = 'Not Authorized';
-  bool _isAuthenticating = false;
+  late FToast fToast;
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  bool _fingerprintAnimStopped;
+  late bool _fingerprintAnimStopped;
 
-  Animation<double> animation;
-  AnimationController _controller;
+  late Animation<double> animation;
+  late AnimationController _controller;
 
   bool _isBgAnimStopped = true;
 
   CarouselController _carouselController = CarouselController();
-  
-  AuthController authController = Get.put(AuthController());
 
-  UserDao dao;
-  
-  
+  AuthController authController = Get.put(AuthController())!;
+
+  // UserDao dao;
+
+
 
 
 
 
   @override
   void initState() {
-    _canCheckBiometrics = false;
+    initialTimer();
     _fingerprintAnimStopped = true;
     super.initState();
-    getSavedData();
     fToast = FToast();
     fToast.init(context);
-    setState(() {
-      dao = authController.dao;
-    });
-    //get accounts with biometric - true
-    _checkBiometrics();
-    print(_canCheckBiometrics);
-    _getAvailableBiometrics();
-    initialTimer();
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 550),
@@ -121,65 +93,10 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
     _controller.forward();
   }
 
+  //TODO: refactor to auth controller
 
-  Future<void> _checkBiometrics() async {
-    bool canCheckBiometrics;
-    try {
-      canCheckBiometrics = await auth.canCheckBiometrics;
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return;
 
-    setState(() {
-      _canCheckBiometrics = canCheckBiometrics;
-    });
-  }
 
-  Future<void> _getAvailableBiometrics() async {
-    List<BiometricType> availableBiometrics;
-    try {
-      availableBiometrics = await auth.getAvailableBiometrics();
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return;
-
-    setState(() {
-      _availableBiometrics = availableBiometrics;
-    });
-  }
-
-  Future<String> _authenticate() async {
-    bool authenticated = false;
-    try {
-      setState(() {
-        _isAuthenticating = true;
-        _authorized = 'Authenticating';
-      });
-      authenticated = await auth.authenticateWithBiometrics(
-          localizedReason: 'Scan your fingerprint to authenticate',
-          useErrorDialogs: true,
-          stickyAuth: true);
-      setState(() {
-        _isAuthenticating = false;
-        _authorized = 'Authenticating';
-      });
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return '';
-
-    final String message = authenticated ? 'Authorized' : 'Not Authorized';
-    setState(() {
-      _authorized = message;
-    });
-    return _authorized;
-  }
-
-  void _cancelAuthentication() {
-    auth.stopAuthentication();
-  }
 
   // /password validator possible structure
   passwordValidator(String password) {
@@ -190,6 +107,8 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
     }
     return null;
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -231,178 +150,136 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                 fit: BoxFit.cover,
                 animation: "in"),
           ),
-          SlideTransition(
-            position: Tween<Offset>(
-              begin: Offset(0, 1),
-              end: Offset.zero,
-            ).animate(animation),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(25),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                        child: Container(
-                          height: _height * .7,
-                          width: _width,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: GlobalColors.bgColor.withOpacity(.2),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 30.0),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: FlatButton(
-                                      textColor: GlobalColors.greyTextColor,
-                                      highlightColor: GlobalColors.greenColor,
-                                      color: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                          side: BorderSide(color: GlobalColors.greyTextColor, width: .3),
-                                          borderRadius: BorderRadius.circular(15)),
-                                      child: Container(
-                                        width: 150,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Image(
-                                                image: AssetImage(
-                                                    'assets/google_logo.png'),
-                                                height: 30,
-                                              ),
-                                              Text('Google Sign-In'),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () async {
-                                        print("google sign in!");
-                                        authController.signInWithGoogle();
-                                      },
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                        "or"
-                                    ),
-                                  ),
-                                  if ( _canCheckBiometrics
-                                  // && list.isNotEmpty
-                                  )
-                                    GetBuilder<AuthController>(
-                                      init: authController,
-                                      builder: (_) {
-                                        return InkWell(
-                                          highlightColor: GlobalColors.greenColor,
-                                          onTap: () {
-                                            _authenticate().then((value) async {
-                                              if (_authorized == 'Authorized') {
-                                                _fingerprintAnimStopped = false;
-                                                if (authController.usersWithBiometricAuth.length > 1) {
-                                                  showCupertinoModalPopup(
-                                                      context: context,
-                                                      builder: (BuildContext context) {
-                                                        return CupertinoActionSheet(
-                                                          title: const Text('Account'),
-                                                          message: const Text(
-                                                              'Choose in which account would you like to sign-in'),
-                                                          cancelButton:
-                                                          CupertinoActionSheetAction(
-                                                            child: const Text('Cancel'),
-                                                            isDefaultAction: true,
-                                                            onPressed: () {
-                                                              Navigator.pop(
-                                                                  context, 'Cancel');
-                                                            },
-                                                          ),
-                                                          actions: List.generate(
-                                                              authController.usersWithBiometricAuth.length, (index) {
-                                                            return CupertinoActionSheetAction(
-                                                                child: Text(
-                                                                    authController.usersWithBiometricAuth[index].email),
-                                                                onPressed: () async {
-                                                                  //log-in with the biometric account
-                                                                  String auth = await authController.login(authController.usersWithBiometricAuth[index].email,authController.usersWithBiometricAuth[index].password);
-                                                                  if (auth == '') {
-                                                                    Get.off(SplashScreen());
-                                                                  }
-                                                                });
-                                                          }),
-                                                        );
-                                                      });
-                                                }
-                                                else {
-                                                  print("logging in! ${authController.usersWithBiometricAuth.first.password}");
-                                                  String auth = await authController.login(authController.usersWithBiometricAuth.first.email,authController.usersWithBiometricAuth.first.password);
-                                                  if (auth == '') {
-                                                    Get.off(SplashScreen());
-                                                  }
-                                                }
-                                              }
-                                            });
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(25.0),
-                                            child: Container(
-                                              width: 60,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  shape: BoxShape.circle
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: FlareActor("assets/fingerprint.flr",
-                                                    isPaused: _fingerprintAnimStopped,
-                                                    fit: BoxFit.contain,
-                                                    animation: "Untitled"),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      }
-                                  ),
-                                  Expanded(
-                                    child: Align(
-                                      alignment: FractionalOffset.bottomCenter,
-                                      child: InkWell(
-                                        onTap: openBottomSheet,
+          FadeTransition(
+          opacity: Tween<double>(
+          begin: 0,
+          end: 1,
+          ).animate(animation),
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: Offset(0, 1),
+                end: Offset.zero,
+              ).animate(animation),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                          child: Container(
+                            height: _height * .7,
+                            width: _width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: GlobalColors.bgColor.withOpacity(.2),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 30.0),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: FlatButton(
+                                        textColor: GlobalColors.greyTextColor,
+                                        highlightColor: GlobalColors.greenColor,
+                                        color: Colors.white,
+                                        shape: RoundedRectangleBorder(
+                                            side: BorderSide(color: GlobalColors.greyTextColor, width: .3),
+                                            borderRadius: BorderRadius.circular(15)),
                                         child: Container(
-                                          child: Text(
-                                            "Login with Email and Password instead",
-                                            style: TextStyle(
-                                                fontFamily: 'Raleway',
-                                                color: Colors.white,
-                                              shadows: [BoxShadow(
-                                                color: GlobalColors.greyTextColor,
-                                                spreadRadius: -2,
-                                                blurRadius: 20
-                                              )]
+                                          width: 150,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Image(
+                                                  image: AssetImage(
+                                                      'assets/google_logo.png'),
+                                                  height: 30,
+                                                ),
+                                                Text('Google Sign-In'),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        onPressed: () async {
+                                          print("google sign in!");
+                                          authController.signInWithGoogle();
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                          "or"
+                                      ),
+                                    ),
+                                    if ( authController.canCheckBiometrics)
+                                      GetBuilder<AuthController>(
+                                        init: authController,
+                                        builder: (_) {
+                                          return InkWell(
+                                            highlightColor: GlobalColors.greenColor,
+                                            onTap: authController.authenticateUserWithFingerprint,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(25.0),
+                                              child: Container(
+                                                width: 60,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    shape: BoxShape.circle
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: FlareActor("assets/fingerprint.flr",
+                                                      isPaused: _fingerprintAnimStopped,
+                                                      fit: BoxFit.contain,
+                                                      animation: "Untitled"),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                    ),
+                                    Expanded(
+                                      child: Align(
+                                        alignment: FractionalOffset.bottomCenter,
+                                        child: InkWell(
+                                          onTap: openBottomSheet,
+                                          child: Container(
+                                            child: Text(
+                                              "Login with Email and Password instead",
+                                              style: TextStyle(
+                                                  fontFamily: 'Raleway',
+                                                  color: Colors.white,
+                                                shadows: [BoxShadow(
+                                                  color: GlobalColors.greyTextColor,
+                                                  spreadRadius: -2,
+                                                  blurRadius: 20
+                                                )]
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                ]),
+                                    )
+                                  ]),
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -434,18 +311,10 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
     }
   }
 
-  void getSavedData() async {
-    try {
-      nameController.text = await _storage.read(key: 'email');
-      passwordController.text = await _storage.read(key: 'password');
-    } catch (e) {
-      //
-    }
-  }
+
 
   @override
   void dispose() {
-    _state = null;
     _controller.dispose();
     super.dispose();
   }
@@ -508,291 +377,107 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                                   child: Container(
-                                    child: Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 25.0, vertical: 5.0),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      "E-mail address",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontFamily: 'Raleway',
-                                                          color: Colors.white,
-                                                          fontWeight: FontWeight.w600),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 15.0),
-                                                child: Container(
-                                                  // height: textFieldHeight,
-                                                  child: TextFormField(
-                                                    validator: (value) =>
-                                                    EmailValidator.validate(value)
-                                                        ? null
-                                                        : "E-mail address is not valid",
-                                                    controller: nameController,
-                                                    keyboardType:
-                                                    TextInputType.emailAddress,
-                                                    autofocus: false,
-                                                    style: new TextStyle(
-                                                        fontSize: 15.0,
-                                                        fontFamily: 'Raleway',
-                                                        color: GlobalColors.greyTextColor),
-                                                    decoration: const InputDecoration(
-                                                      errorStyle: TextStyle(
-                                                          fontFamily: 'Raleway',
-                                                          color: GlobalColors.orangeColor),
-                                                      contentPadding: EdgeInsets.symmetric(
-                                                          vertical: 5.0, horizontal: 10.0),
-                                                      filled: true,
-                                                      fillColor: Colors.white,
-                                                      hintText: 'johndoe@example.com',
-                                                      focusColor: GlobalColors.greenColor,
-                                                      enabledBorder:
-                                                      const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: GlobalColors.blueColor),
-                                                        borderRadius: BorderRadius.all(
-                                                            Radius.circular(50.0)),
-                                                      ),
-                                                      border: const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: GlobalColors.blueColor),
-                                                        borderRadius: BorderRadius.all(
-                                                            Radius.circular(50.0)),
-                                                      ),
-                                                      focusedBorder:
-                                                      const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: GlobalColors.greenColor,
-                                                            width: 2),
-                                                        borderRadius: BorderRadius.all(
-                                                            Radius.circular(50.0)),
-                                                      ),
-                                                      errorBorder: const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: GlobalColors.orangeColor,
-                                                            width: 2),
-                                                        borderRadius: BorderRadius.all(
-                                                            Radius.circular(50.0)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 25.0, vertical: 0.0),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      "Password",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontFamily: 'Raleway',
-                                                          color: Colors.white,
-                                                          fontWeight: FontWeight.w600),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(
-                                                    horizontal: 15.0),
-                                                child: Stack(
-                                                  children: [
-                                                    Container(
-                                                      // height: textFieldHeight,
-                                                      child: TextFormField(
-                                                        validator: (value) {
-                                                          debugPrint(value);
-                                                          return passwordValidator(value);
-                                                        },
-                                                        keyboardType: TextInputType.visiblePassword,
-                                                        controller: passwordController,
-                                                        obscureText: _showPassword,
-                                                        style: new TextStyle(
-                                                            fontSize: 15.0,
-                                                            fontFamily: 'Raleway',
-                                                            color:
-                                                            GlobalColors.greyTextColor),
-                                                        decoration: const InputDecoration(
-                                                            contentPadding:
-                                                            EdgeInsets.symmetric(
-                                                                vertical: 1.0,
-                                                                horizontal: 10.0),
-                                                            errorStyle: TextStyle(
-                                                                fontFamily: 'Raleway',
-                                                                color: GlobalColors
-                                                                    .orangeColor),
-                                                            errorText: null,
-                                                            errorMaxLines: 1,
-                                                            filled: true,
-                                                            fillColor: Colors.white,
-                                                            hintText: 'password1234',
-                                                            focusColor:
-                                                            GlobalColors.greenColor,
-                                                            enabledBorder:
-                                                            const OutlineInputBorder(
-                                                              borderSide: const BorderSide(
-                                                                  color: GlobalColors
-                                                                      .greenColor),
-                                                              borderRadius:
-                                                              const BorderRadius.all(
-                                                                  Radius.circular(
-                                                                      50.0)),
-                                                            ),
-                                                            border:
-                                                            const OutlineInputBorder(
-                                                              borderSide: const BorderSide(
-                                                                  color: GlobalColors
-                                                                      .greenColor),
-                                                              borderRadius:
-                                                              const BorderRadius.all(
-                                                                  Radius.circular(
-                                                                      50.0)),
-                                                            ),
-                                                            focusedBorder:
-                                                            const OutlineInputBorder(
-                                                              borderSide: const BorderSide(
-                                                                  color: GlobalColors
-                                                                      .greenColor,
-                                                                  width: 1.5),
-                                                              borderRadius:
-                                                              const BorderRadius.all(
-                                                                  Radius.circular(
-                                                                      50.0)),
-                                                            ),
-                                                            errorBorder:
-                                                            const OutlineInputBorder(
-                                                              borderSide: const BorderSide(
-                                                                  color: GlobalColors
-                                                                      .orangeColor,
-                                                                  width: 1.5),
-                                                              borderRadius:
-                                                              const BorderRadius.all(
-                                                                  Radius.circular(
-                                                                      50.0)),
-                                                            )),
-                                                      ),
-                                                    ),
-                                                    if (logging)
-                                                      Container(
-                                                        height: textFieldHeight,
-                                                        child: Align(
-                                                            alignment:
-                                                            Alignment.centerRight,
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal: 15.0),
-                                                              child: InkWell(
-                                                                  onTap: () {
-                                                                    setState(() {
-                                                                      _showPassword =
-                                                                      !_showPassword;
-                                                                      eye = _showPassword
-                                                                          ? FaIcon(
-                                                                        FontAwesomeIcons
-                                                                            .eye,
-                                                                        color: GlobalColors
-                                                                            .greenColor,
-                                                                      )
-                                                                          : FaIcon(
-                                                                        FontAwesomeIcons
-                                                                            .eyeSlash,
-                                                                        color: GlobalColors
-                                                                            .greenColor,
-                                                                      );
-                                                                    });
-                                                                  },
-                                                                  child: eye),
-                                                            )),
-                                                      ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          AnimatedSizeAndFade(
-                                            vsync: this,
-                                            child: logging
-                                                ? Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                    child: GetBuilder<AuthController>(
+                                      init: authController,
+                                      builder: (_) => Form(
+                                        key: _formKey,
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            Column(
                                               children: [
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(
-                                                      horizontal: 25.0,
-                                                      vertical: 5.0),
+                                                      horizontal: 25.0, vertical: 5.0),
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        "Remember me",
+                                                        "E-mail address",
                                                         style: TextStyle(
-                                                            fontSize: 15,
+                                                            fontSize: 20,
                                                             fontFamily: 'Raleway',
-                                                            color: GlobalColors.greyTextColor,
-                                                            fontWeight:
-                                                            FontWeight.w600),
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w600),
                                                       ),
                                                     ],
                                                   ),
                                                 ),
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(
-                                                      horizontal: 25.0),
-                                                  child: CircularCheckBox(
-                                                    value: this.selected,
-                                                    activeColor: GlobalColors.greenColor,
-                                                    materialTapTargetSize: MaterialTapTargetSize.padded,
-                                                    inactiveColor: GlobalColors.greyTextColor,
-                                                    hoverColor: GlobalColors.greyTextColor,
-                                                    checkColor: Colors.white,
-                                                    focusColor: GlobalColors.greyTextColor,
-                                                    onChanged: (value) =>
-                                                        setState(() {
-                                                          this.selected = value;
-                                                          authController.selected = value;
-                                                        }),
+                                                      horizontal: 15.0),
+                                                  child: Container(
+                                                    // height: textFieldHeight,
+                                                    child: TextFormField(
+                                                      validator: (value) =>
+                                                      EmailValidator.validate(value)
+                                                          ? null
+                                                          : "E-mail address is not valid",
+                                                      controller: authController.nameController,
+                                                      keyboardType:
+                                                      TextInputType.emailAddress,
+                                                      autofocus: false,
+                                                      style: new TextStyle(
+                                                          fontSize: 15.0,
+                                                          fontFamily: 'Raleway',
+                                                          color: GlobalColors.greyTextColor),
+                                                      decoration: const InputDecoration(
+                                                        errorStyle: TextStyle(
+                                                            fontFamily: 'Raleway',
+                                                            color: GlobalColors.orangeColor),
+                                                        contentPadding: EdgeInsets.symmetric(
+                                                            vertical: 5.0, horizontal: 10.0),
+                                                        filled: true,
+                                                        fillColor: Colors.white,
+                                                        hintText: 'johndoe@example.com',
+                                                        focusColor: GlobalColors.greenColor,
+                                                        enabledBorder:
+                                                        const OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: GlobalColors.blueColor),
+                                                          borderRadius: BorderRadius.all(
+                                                              Radius.circular(50.0)),
+                                                        ),
+                                                        border: const OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: GlobalColors.blueColor),
+                                                          borderRadius: BorderRadius.all(
+                                                              Radius.circular(50.0)),
+                                                        ),
+                                                        focusedBorder:
+                                                        const OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: GlobalColors.greenColor,
+                                                              width: 2),
+                                                          borderRadius: BorderRadius.all(
+                                                              Radius.circular(50.0)),
+                                                        ),
+                                                        errorBorder: const OutlineInputBorder(
+                                                          borderSide: BorderSide(
+                                                              color: GlobalColors.orangeColor,
+                                                              width: 2),
+                                                          borderRadius: BorderRadius.all(
+                                                              Radius.circular(50.0)),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
+                                                )
                                               ],
-                                            )
-                                                : Column(
+                                            ),
+                                            Column(
                                               children: [
                                                 Padding(
                                                   padding: const EdgeInsets.symmetric(
-                                                      horizontal: 25.0,
-                                                      vertical: 0.0),
+                                                      horizontal: 25.0, vertical: 0.0),
                                                   child: Row(
                                                     children: [
                                                       Text(
-                                                        "Password again",
+                                                        "Password",
                                                         style: TextStyle(
                                                             fontSize: 20,
                                                             fontFamily: 'Raleway',
                                                             color: Colors.white,
-                                                            fontWeight:
-                                                            FontWeight.w600),
+                                                            fontWeight: FontWeight.w600),
                                                       ),
                                                     ],
                                                   ),
@@ -806,54 +491,40 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                         // height: textFieldHeight,
                                                         child: TextFormField(
                                                           validator: (value) {
-                                                            if (value !=
-                                                                passwordController
-                                                                    .text) {
-                                                              return "Passwords do not match!";
-                                                            }
-                                                            return null;
+                                                            debugPrint(value);
+                                                            return passwordValidator(value!);
                                                           },
-                                                          keyboardType: TextInputType
-                                                              .visiblePassword,
-                                                          controller:
-                                                          repasswordController,
-                                                          obscureText: true,
+                                                          keyboardType: TextInputType.visiblePassword,
+                                                          controller: authController.passwordController,
+                                                          obscureText: _showPassword,
                                                           style: new TextStyle(
                                                               fontSize: 15.0,
                                                               fontFamily: 'Raleway',
-                                                              color: GlobalColors
-                                                                  .greyTextColor),
-                                                          decoration:
-                                                          const InputDecoration(
-                                                              contentPadding: EdgeInsets
-                                                                  .symmetric(
-                                                                  vertical:
-                                                                  1.0,
-                                                                  horizontal:
-                                                                  10.0),
+                                                              color:
+                                                              GlobalColors.greyTextColor),
+                                                          decoration: const InputDecoration(
+                                                              contentPadding:
+                                                              EdgeInsets.symmetric(
+                                                                  vertical: 1.0,
+                                                                  horizontal: 10.0),
                                                               errorStyle: TextStyle(
-                                                                  fontFamily:
-                                                                  'Raleway',
+                                                                  fontFamily: 'Raleway',
                                                                   color: GlobalColors
                                                                       .orangeColor),
                                                               errorText: null,
                                                               errorMaxLines: 1,
                                                               filled: true,
-                                                              fillColor:
-                                                              Colors.white,
-                                                              hintText:
-                                                              'password1234',
+                                                              fillColor: Colors.white,
+                                                              hintText: 'password1234',
                                                               focusColor:
-                                                              GlobalColors
-                                                                  .greenColor,
+                                                              GlobalColors.greenColor,
                                                               enabledBorder:
                                                               const OutlineInputBorder(
                                                                 borderSide: const BorderSide(
                                                                     color: GlobalColors
                                                                         .greenColor),
                                                                 borderRadius:
-                                                                const BorderRadius
-                                                                    .all(
+                                                                const BorderRadius.all(
                                                                     Radius.circular(
                                                                         50.0)),
                                                               ),
@@ -863,8 +534,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                                     color: GlobalColors
                                                                         .greenColor),
                                                                 borderRadius:
-                                                                const BorderRadius
-                                                                    .all(
+                                                                const BorderRadius.all(
                                                                     Radius.circular(
                                                                         50.0)),
                                                               ),
@@ -875,8 +545,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                                         .greenColor,
                                                                     width: 1.5),
                                                                 borderRadius:
-                                                                const BorderRadius
-                                                                    .all(
+                                                                const BorderRadius.all(
                                                                     Radius.circular(
                                                                         50.0)),
                                                               ),
@@ -887,8 +556,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                                         .orangeColor,
                                                                     width: 1.5),
                                                                 borderRadius:
-                                                                const BorderRadius
-                                                                    .all(
+                                                                const BorderRadius.all(
                                                                     Radius.circular(
                                                                         50.0)),
                                                               )),
@@ -898,14 +566,12 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                         Container(
                                                           height: textFieldHeight,
                                                           child: Align(
-                                                              alignment: Alignment
-                                                                  .centerRight,
+                                                              alignment:
+                                                              Alignment.centerRight,
                                                               child: Padding(
-                                                                padding:
-                                                                const EdgeInsets
+                                                                padding: const EdgeInsets
                                                                     .symmetric(
-                                                                    horizontal:
-                                                                    15.0),
+                                                                    horizontal: 15.0),
                                                                 child: InkWell(
                                                                     onTap: () {
                                                                       setState(() {
@@ -915,14 +581,14 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                                             ? FaIcon(
                                                                           FontAwesomeIcons
                                                                               .eye,
-                                                                          color:
-                                                                          GlobalColors.greenColor,
+                                                                          color: GlobalColors
+                                                                              .greenColor,
                                                                         )
                                                                             : FaIcon(
                                                                           FontAwesomeIcons
                                                                               .eyeSlash,
-                                                                          color:
-                                                                          GlobalColors.greenColor,
+                                                                          color: GlobalColors
+                                                                              .greenColor,
                                                                         );
                                                                       });
                                                                     },
@@ -934,10 +600,216 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                 )
                                               ],
                                             ),
-                                            fadeDuration: const Duration(milliseconds: 200),
-                                            sizeDuration: const Duration(milliseconds: 200),
-                                          ),
-                                        ],
+                                            AnimatedSizeAndFade(
+                                              vsync: this,
+                                              child: logging
+                                                  ? Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 25.0,
+                                                        vertical: 5.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          "Remember me",
+                                                          style: TextStyle(
+                                                              fontSize: 15,
+                                                              fontFamily: 'Raleway',
+                                                              color: GlobalColors.greyTextColor,
+                                                              fontWeight:
+                                                              FontWeight.w600),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 25.0),
+                                                    child: CircularCheckBox(
+                                                      value: this.selected,
+                                                      activeColor: GlobalColors.greenColor,
+                                                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                                                      inactiveColor: GlobalColors.greyTextColor,
+                                                      hoverColor: GlobalColors.blueColor,
+                                                      checkColor: Colors.white,
+                                                      focusColor: GlobalColors.greyTextColor,
+                                                      onChanged: (value) =>
+                                                          setState(() {
+                                                            this.selected = value;
+                                                            authController.selected = value;
+                                                          }),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                                  : Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 25.0,
+                                                        vertical: 0.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Text(
+                                                          "Password again",
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              fontFamily: 'Raleway',
+                                                              color: Colors.white,
+                                                              fontWeight:
+                                                              FontWeight.w600),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 15.0),
+                                                    child: Stack(
+                                                      children: [
+                                                        Container(
+                                                          // height: textFieldHeight,
+                                                          child: TextFormField(
+                                                            validator: (value) {
+                                                              if (value !=
+                                                                  authController.passwordController
+                                                                      .text) {
+                                                                return "Passwords do not match!";
+                                                              }
+                                                              return null;
+                                                            },
+                                                            keyboardType: TextInputType
+                                                                .visiblePassword,
+                                                            controller:
+                                                            authController.repasswordController,
+                                                            obscureText: true,
+                                                            style: new TextStyle(
+                                                                fontSize: 15.0,
+                                                                fontFamily: 'Raleway',
+                                                                color: GlobalColors
+                                                                    .greyTextColor),
+                                                            decoration:
+                                                            const InputDecoration(
+                                                                contentPadding: EdgeInsets
+                                                                    .symmetric(
+                                                                    vertical:
+                                                                    1.0,
+                                                                    horizontal:
+                                                                    10.0),
+                                                                errorStyle: TextStyle(
+                                                                    fontFamily:
+                                                                    'Raleway',
+                                                                    color: GlobalColors
+                                                                        .orangeColor),
+                                                                errorText: null,
+                                                                errorMaxLines: 1,
+                                                                filled: true,
+                                                                fillColor:
+                                                                Colors.white,
+                                                                hintText:
+                                                                'password1234',
+                                                                focusColor:
+                                                                GlobalColors
+                                                                    .greenColor,
+                                                                enabledBorder:
+                                                                const OutlineInputBorder(
+                                                                  borderSide: const BorderSide(
+                                                                      color: GlobalColors
+                                                                          .greenColor),
+                                                                  borderRadius:
+                                                                  const BorderRadius
+                                                                      .all(
+                                                                      Radius.circular(
+                                                                          50.0)),
+                                                                ),
+                                                                border:
+                                                                const OutlineInputBorder(
+                                                                  borderSide: const BorderSide(
+                                                                      color: GlobalColors
+                                                                          .greenColor),
+                                                                  borderRadius:
+                                                                  const BorderRadius
+                                                                      .all(
+                                                                      Radius.circular(
+                                                                          50.0)),
+                                                                ),
+                                                                focusedBorder:
+                                                                const OutlineInputBorder(
+                                                                  borderSide: const BorderSide(
+                                                                      color: GlobalColors
+                                                                          .greenColor,
+                                                                      width: 1.5),
+                                                                  borderRadius:
+                                                                  const BorderRadius
+                                                                      .all(
+                                                                      Radius.circular(
+                                                                          50.0)),
+                                                                ),
+                                                                errorBorder:
+                                                                const OutlineInputBorder(
+                                                                  borderSide: const BorderSide(
+                                                                      color: GlobalColors
+                                                                          .orangeColor,
+                                                                      width: 1.5),
+                                                                  borderRadius:
+                                                                  const BorderRadius
+                                                                      .all(
+                                                                      Radius.circular(
+                                                                          50.0)),
+                                                                )),
+                                                          ),
+                                                        ),
+                                                        if (logging)
+                                                          Container(
+                                                            height: textFieldHeight,
+                                                            child: Align(
+                                                                alignment: Alignment
+                                                                    .centerRight,
+                                                                child: Padding(
+                                                                  padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                      15.0),
+                                                                  child: InkWell(
+                                                                      onTap: () {
+                                                                        setState(() {
+                                                                          _showPassword =
+                                                                          !_showPassword;
+                                                                          eye = _showPassword
+                                                                              ? FaIcon(
+                                                                            FontAwesomeIcons
+                                                                                .eye,
+                                                                            color:
+                                                                            GlobalColors.greenColor,
+                                                                          )
+                                                                              : FaIcon(
+                                                                            FontAwesomeIcons
+                                                                                .eyeSlash,
+                                                                            color:
+                                                                            GlobalColors.greenColor,
+                                                                          );
+                                                                        });
+                                                                      },
+                                                                      child: eye),
+                                                                )),
+                                                          ),
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                              fadeDuration: const Duration(milliseconds: 200),
+                                              sizeDuration: const Duration(milliseconds: 200),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -962,106 +834,108 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                     child: CustomElevation(
                                       color: CupertinoColors.black.withOpacity(.15),
                                       spreadRadius: -2,
-                                      child: FlatButton(
-                                        minWidth: _width / 2,
+                                      child: Container(
+                                        decoration: BoxDecoration(
                                         color: GlobalColors.greenColor,
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(12.0)),
-                                        onPressed: () async {
-                                          if (_formKey.currentState.validate()) {
-                                            setState(() {
-                                              _state = 1;
-                                            });
-                                            if (logging) {
-                                              Future.delayed(
-                                                  const Duration(milliseconds: 300),
-                                                      () async {
-                                                    // print(nameController.text);
-                                                        String authenticate = await authController.login(nameController.text,passwordController.text);
-                                                    if (authenticate == '') {
-                                                      setState(() {
-                                                        _state = 2;
-                                                      });
-                                                      //TODO: add biometric switch
-                                                      await authController.deleteUser(nameController.text, passwordController.text);
-                                                      authController.rememberInfo(nameController.text, passwordController.text);
-                                                      Get.off(SplashScreen());
-                                                    }
-                                                    else {
-                                                      setState(() {
-                                                        _state = 0;
-                                                      });
-                                                      Widget toast = CustomToast(
-                                                          color: GlobalColors.fireColor,
-                                                          icon: FontAwesomeIcons
-                                                              .exclamationCircle,
-                                                          text: "$authenticate");
-                                                      fToast.showToast(
-                                                        child: toast,
-                                                        gravity: ToastGravity.BOTTOM,
-                                                        toastDuration: Duration(seconds: 3),
-                                                      );
-                                                    }
-                                                  });
-                                            }
-                                            else {
-                                              Future.delayed(
-                                                  const Duration(milliseconds: 300),
-                                                      () async {
-                                                    String authenticate =
-                                                    await Provider.of<UserProvider>(context,
-                                                        listen: false)
-                                                        .register(nameController.text,
-                                                        passwordController.text);
-                                                    passwordController.clear();
-                                                    nameController.clear();
-                                                    if (authenticate == null) {
-                                                      setState(() {
-                                                        _state = 2;
-                                                      });
-                                                      Future.delayed(
-                                                          const Duration(milliseconds: 300),
-                                                              () {
-                                                            setState(() {
-                                                              logging = true;
-                                                              _state = 1;
-                                                            });
-                                                          });
-                                                    } else {
-                                                      // print(auth);
-                                                      setState(() {
-                                                        _state = 0;
-                                                      });
-                                                      Fluttertoast.showToast(
-                                                          msg: "$authenticate",
-                                                          toastLength: Toast.LENGTH_LONG,
-                                                          backgroundColor:
-                                                          GlobalColors.orangeColor,
+                                          borderRadius: BorderRadius.circular(12.0),
+                                        ),
+                                        child: TextButton(
+                                          //     borderRadius: BorderRadius.circular(12.0)),
+                                          onPressed: () async {
+                                            if (_formKey.currentState!.validate()) {
+                                              setState(() {
+                                                _state = 1;
+                                              });
+                                              if (logging) {
+                                                Future.delayed(
+                                                    const Duration(milliseconds: 300),
+                                                        () async {
+                                                      // print(nameController.text);
+                                                          String authenticate = await authController.login(authController.nameController.text,authController.passwordController.text);
+                                                      if (authenticate == '') {
+                                                        setState(() {
+                                                          _state = 2;
+                                                        });
+                                                        //TODO: add biometric switch
+                                                        await authController.addUser(authController.nameController.text, authController.passwordController.text);
+                                                        authController.rememberInfo(authController.nameController.text, authController.passwordController.text);
+                                                        Get.off(() => SplashScreen());
+                                                      }
+                                                      else {
+                                                        setState(() {
+                                                          _state = 0;
+                                                        });
+                                                        Widget toast = CustomToast(
+                                                            color: GlobalColors.fireColor,
+                                                            icon: FontAwesomeIcons
+                                                                .exclamationCircle,
+                                                            text: "$authenticate");
+                                                        fToast.showToast(
+                                                          child: toast,
                                                           gravity: ToastGravity.BOTTOM,
-                                                          timeInSecForIosWeb: 2);
-                                                    }
-                                                  });
+                                                          toastDuration: Duration(seconds: 3),
+                                                        );
+                                                      }
+                                                    });
+                                              }
+                                              else {
+                                                Future.delayed(
+                                                    const Duration(milliseconds: 300),
+                                                        () async {
+                                                      String authenticate =
+                                                      await authController.register(
+                                                          authController.nameController.text,
+                                                          authController.passwordController.text);
+                                                      authController.passwordController.clear();
+                                                      authController.nameController.clear();
+                                                      if (authenticate == null) {
+                                                        setState(() {
+                                                          _state = 2;
+                                                        });
+                                                        Future.delayed(
+                                                            const Duration(milliseconds: 300),
+                                                                () {
+                                                              setState(() {
+                                                                logging = true;
+                                                                _state = 1;
+                                                              });
+                                                            });
+                                                      } else {
+                                                        // print(auth);
+                                                        setState(() {
+                                                          _state = 0;
+                                                        });
+                                                        Fluttertoast.showToast(
+                                                            msg: "$authenticate",
+                                                            toastLength: Toast.LENGTH_LONG,
+                                                            backgroundColor:
+                                                            GlobalColors.orangeColor,
+                                                            gravity: ToastGravity.BOTTOM,
+                                                            timeInSecForIosWeb: 2);
+                                                      }
+                                                    });
+                                              }
                                             }
-                                          }
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Container(
-                                              height: _height / 20,
-                                              width: _width / 2,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                children: [
-                                                  buttonChild(),
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(left: 20.0),
-                                                    child: FaIcon(
-                                                      FontAwesomeIcons.longArrowAltRight,
-                                                      color: Colors.white,
-                                                    ),
-                                                  )
-                                                ],
-                                              )),
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Container(
+                                                height: _height / 20,
+                                                width: _width / 2,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                  children: [
+                                                    buttonChild(),
+                                                    Padding(
+                                                      padding: const EdgeInsets.only(left: 20.0),
+                                                      child: FaIcon(
+                                                        FontAwesomeIcons.longArrowAltRight,
+                                                        color: Colors.white,
+                                                      ),
+                                                    )
+                                                  ],
+                                                )),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1070,26 +944,23 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                     padding: const EdgeInsets.all(8.0),
                                     child: CustomElevation(
                                       color: CupertinoColors.black.withOpacity(.05),
-                                      child: OutlineButton(
-                                          focusColor: GlobalColors.greenColor,
-                                          highlightedBorderColor: GlobalColors.greenColor,
-                                          color: Colors.white,
-                                          highlightColor: GlobalColors.lightGreenColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                                          ),
+                                      child: OutlinedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                                          overlayColor: MaterialStateProperty.all<Color>(GlobalColors.greenColor),
+                                        ),
                                           onPressed: () {
                                             setState(() {
                                               logging = !logging;
                                               if (!logging) {
-                                                nameController.clear();
-                                                passwordController.clear();
-                                                repasswordController.clear();
+                                                authController.nameController.clear();
+                                                authController.passwordController.clear();
+                                                authController.repasswordController.clear();
                                               }
                                             });
                                           },
                                           child: Padding(
-                                            padding: const EdgeInsets.only(left:12.0, right: 12.0),
+                                            padding: const EdgeInsets.only(left:8.0, right: 8.0),
                                             child: Container(
                                               height: textFieldHeight,
                                               width: _width / 2,
@@ -1154,7 +1025,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                             EmailValidator.validate(value)
                                 ? null
                                 : "E-mail address is not valid",
-                            controller: resetController,
+                            controller: authController.resetController,
                             keyboardType: TextInputType.emailAddress,
                             autofocus: false,
                             style: new TextStyle(
@@ -1202,14 +1073,18 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                             ),
                           ),
                         ),
-                        FlatButton(
-                          minWidth: _width / 2,
-                          color: GlobalColors.greenColor,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0)),
+                        TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(GlobalColors.greenColor),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12.0)
+                              ),
+                            )
+                          ),
                           onPressed: () async {
-                            if ( resetController.text.isNotEmpty){
-                              FirestoreUtils().resetPassword(resetController.text);
+                            if ( authController.resetController.text.isNotEmpty){
+                              FirestoreUtils().resetPassword(authController.resetController.text);
                             }
                             //TODO: show success/failure
                           },
@@ -1237,18 +1112,17 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                           padding: const EdgeInsets.all(8.0),
                           child: CustomElevation(
                             color: CupertinoColors.black.withOpacity(.05),
-                            child: OutlineButton(
-                                focusColor: GlobalColors.greenColor,
-                                highlightedBorderColor: GlobalColors.greenColor,
-                                color: Colors.white,
-                                highlightColor: GlobalColors.lightGreenColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                                ),
+                            child: OutlinedButton(
+                                // focusColor: GlobalColors.greenColor,
+                                // highlightedBorderColor: GlobalColors.greenColor,
+                                // color: Colors.white,
+                                // highlightColor: GlobalColors.lightGreenColor,
+                                // shape: RoundedRectangleBorder(
+                                //   borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                                // ),
                                 onPressed: () {
                                   //go back
-                                  _carouselController.previousPage(
-                                      duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+                                  _carouselController.previousPage(duration: Duration(milliseconds: 100), curve: Curves.easeIn);
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.only(left:12.0, right: 12.0),
@@ -1278,9 +1152,5 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
           }
         );
     });
-  }
-
-  void navigateToSplashScreen() {
-    
   }
 }

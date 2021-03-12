@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/models/tvshow.dart';
-import 'package:eWoke/models/tvshow_details.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/network/network.dart';
-import 'package:eWoke/screens/detail_view.dart';
-import 'package:eWoke/screens/watched_detail_view.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/models/tvshow.dart';
+import 'package:show_time/models/tvshow_details.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/network/network.dart';
+import 'package:show_time/screens/detail_view.dart';
+import 'package:show_time/screens/watched_detail_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,7 +21,7 @@ import 'package:google_fonts/google_fonts.dart';
 class FullScheduleCard extends StatefulWidget {
   final List<Episode> episodes;
 
-  const FullScheduleCard({Key key, this.episodes}) : super(key: key);
+  const FullScheduleCard({Key? key, required this.episodes}) : super(key: key);
 
 
   @override
@@ -30,7 +30,7 @@ class FullScheduleCard extends StatefulWidget {
 
 class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin{
   List<String> countdown = [];
-  Timer _timer;
+  late Timer _timer;
 
   var countDownStyle = GoogleFonts.roboto(
       textStyle: TextStyle(
@@ -42,17 +42,14 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
       )
   );
 
-  Animation<double> animation;
-  AnimationController _controller;
+  late Animation<double> animation;
+  late AnimationController _controller;
+  late bool _tapped;
 
+  late WatchedTVShow show;
+  late Future<List<dynamic>> episodesObject;
 
-
-  bool _tapped;
-
-  WatchedTVShow show;
-  Future<List<dynamic>> episodesObject;
-
-  TVShowDetails showDetails;
+  late TVShowDetails showDetails;
 
 
   @override
@@ -86,10 +83,10 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
   }
 
 
-  getDetailResults({TVShow show}) => new Network().getDetailResults(show: show);
+  getDetailResults({required TVShow show}) => new Network().getDetailResults(show: show);
 
   _getShowDetails() async {
-    TVShow show = await Network().getShowInfo(showID: widget.episodes[0].embedded['show']['id'].toString());
+    TVShow show = await Network().getShowInfo(showID: widget.episodes[0].embedded!['show']['id'].toString());
     showDetails =  await getDetailResults(show: show);
   }
 
@@ -116,7 +113,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
     const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
     const BorderRadius _smallRadius = BorderRadius.all(Radius.circular(12.0));
 
-    final Future<List<dynamic>> episodesObject = new Network().getEpisodes(showID: widget.episodes[0].embedded['show']['id'].toString());
+    final Future<List<dynamic>> episodesObject = new Network().getEpisodes(showID: widget.episodes[0].embedded!['show']['id'].toString());
 
     final _cardHeight = _height*.45;
     final _cardWidth = _width * .65;
@@ -160,8 +157,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                     child: Stack(
                       children: [
                         CachedNetworkImage(
-                          imageUrl: widget.episodes[0]
-                              .embedded['show']['image']['medium'],
+                          imageUrl: widget.episodes[0].embedded!['show']['image']['medium'],
                           imageBuilder: (context, imageProvider) =>Container(
                             width: _cardWidth,
                             height: _cardHeight,
@@ -352,8 +348,8 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                                 return ClipRRect(
                                                                   borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
                                                                   child: FutureBuilder(
-                                                                    future: FirestoreUtils().getWatchedShowData(widget.episodes[0].embedded['show']['id'].toString()),
-                                                                    builder: (context, snapshot) {
+                                                                    future: FirestoreUtils().getWatchedShowData(widget.episodes[0].embedded!['show']['id'].toString()),
+                                                                    builder: (context, AsyncSnapshot snapshot) {
                                                                       if ( !snapshot.hasData){
                                                                         return Container(
                                                                           width: _width,
@@ -377,14 +373,14 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                                         );
                                                                       }
                                                                       else{
-                                                                        WatchedTVShow show = new WatchedTVShow.fromFirestore(snapshot.data.data(), widget.episodes[0].embedded['show']['id'].toString());
+                                                                        WatchedTVShow show = new WatchedTVShow.fromFirestore(snapshot.data!.data(), widget.episodes[0].embedded!['show']['id'].toString());
                                                                         print("fetching episode data");
                                                                         return FutureBuilder<Object>(
                                                                             future: episodesObject,
-                                                                            builder: (context, snapshot) {
+                                                                            builder: (context, AsyncSnapshot snapshot) {
                                                                               if ( snapshot.hasData){
                                                                                 print("data");
-                                                                                show.episodes = snapshot.data;
+                                                                                show.episodes = snapshot.data as List<Episode>;
                                                                                 return WatchedDetailView(show: show);
                                                                               }
                                                                               else{
@@ -623,7 +619,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
     }
   }
 
-  String latestEpisode() {
+  String? latestEpisode() {
       for(Episode x in widget.episodes){
           if( !x.aired()){
               return x.name;

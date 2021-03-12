@@ -2,16 +2,15 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eWoke/components/custom_elevation.dart';
-import 'package:eWoke/components/dialogs.dart';
-import 'package:eWoke/components/toast.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/get_controllers/timer_controller.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/network/network.dart';
-import 'package:eWoke/providers/show_provider.dart';
-import 'package:eWoke/providers/timer_service.dart';
+import 'package:flutter/foundation.dart';
+import 'package:show_time/components/custom_elevation.dart';
+import 'package:show_time/components/dialogs.dart';
+import 'package:show_time/components/toast.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/get_controllers/timer_controller.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/network/network.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
@@ -21,7 +20,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:status_alert/status_alert.dart';
 
@@ -29,43 +27,41 @@ import 'package:status_alert/status_alert.dart';
 class WatchedDetailView extends StatefulWidget {
   final WatchedTVShow show;
 
-  const WatchedDetailView({Key key, this.show}) : super(key: key);
+  const WatchedDetailView({Key? key, required this.show}) : super(key: key);
   @override
   _WatchedDetailViewState createState() => _WatchedDetailViewState();
 }
 
 class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMixin {
-  Future<List<dynamic>> episodes;
-  double _percentage;
-  int _lastWatchedDay;
+  late Future<List<dynamic>> episodes;
+  late double _percentage;
+  late int _lastWatchedDay;
 
-  Animation<double> size;
+  late Animation<double> size;
 
-  Animation<double> animation;
-  AnimationController _controller;
+  late Animation<double> animation;
+  late AnimationController _controller;
+  late Animation<double> sizeAnimation;
+  late AnimationController _reverseController;
 
-  Animation<double> sizeAnimation;
-  AnimationController _reverseController;
+  late double containerWidth;
+  late double containerHeight;
 
-  double containerWidth;
-  double containerHeight;
+  late Animation<double> _containerSizeAnimation;
 
-  Animation<double> _containerSizeAnimation;
-
-  FToast fToast;
+  late FToast fToast;
 
 
   String countdown = "";
 
-  Timer _timer;
-  ShowProvider showProvider;
+  late Timer _timer;
 
   int _selectedSeason = 1;
   int _selectedEpisode = 1;
 
   int _episodeLength = 24;
 
-  TimerController timerController = Get.put(TimerController());
+  TimerController timerController = Get.put(TimerController())!;
 
   @override
   void setState(fn) {
@@ -113,7 +109,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
 
     setState(() {
-      countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes() -1].getDifference();
+      countdown = widget.show.newestEpisodeDifference();
     });
     // startTimer();
   }
@@ -122,10 +118,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   void dispose() {
     _controller.dispose();
     _reverseController.dispose();
-    _containerSizeAnimation = null;
-    sizeAnimation = null;
-    animation = null;
-    fToast = null;
     super.dispose();
   }
 
@@ -172,7 +164,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                   color: GlobalColors.greenColor,
                                   image: DecorationImage(
                                     image: NetworkImage(
-                                      widget.show.imageThumbnailPath,
+                                      widget.show.imageThumbnailPath!,
                                     ),
                                     fit: BoxFit.cover
                                   ),
@@ -203,7 +195,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(25.0),
                                   child: CachedNetworkImage(
-                                    imageUrl: widget.show.imageThumbnailPath,
+                                    imageUrl: widget.show.imageThumbnailPath!,
                                     progressIndicatorBuilder: (context, url, downloadProgress) =>
                                         Center(child: CircularProgressIndicator(value: downloadProgress.progress, valueColor: AlwaysStoppedAnimation(Colors.white),)),
                                     errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.white,)),
@@ -216,7 +208,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 child:
                                 _yourProgress(_percentage, widget.show, _height, _width)
                             ),
-                            if ( this.widget.show.watchedTimes > 0) Positioned(
+                            if ( this.widget.show.watchedTimes! > 0) Positioned(
                               bottom: _height/4.5,
                               right: _width/10,
                               child: InkWell(
@@ -459,10 +451,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
       // print(episodes.length);
       var snapshots = FirestoreUtils().watchedShows.doc(show.id).snapshots();
       snapshots.first.then((value) {
-        show.currentSeason = value.data()['currentSeason'];
+        show.currentSeason = value.data()!['currentSeason'];
         show.totalSeasons = list[0];
         show.episodePerSeason = list[1];
-        show.currentEpisode = value.data()['currentEpisode'];
+        show.currentEpisode = value.data()!['currentEpisode'];
         // return show;
       });
     }
@@ -541,26 +533,26 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     List<Widget> badges = [];
 
     if (widget.show.hasMoreEpisodes()) {
-      badges.add(GlobalVariables.allBadges['waiting']);
+      badges.add(GlobalVariables.allBadges['waiting']!);
     }
     if (_lastWatchedDay < 15) {
       //Display fire badge
       // print("fire");
-      badges.add(GlobalVariables.allBadges['fresh']);
+      badges.add(GlobalVariables.allBadges['fresh']!);
     }
     else{
       //  Haven't watched in last two weeks
-      badges.add(GlobalVariables.allBadges['paused']);
+      badges.add(GlobalVariables.allBadges['paused']!);
     }
     if ( _percentage < 1.0){
-      badges.add(GlobalVariables.allBadges['watching']);
+      badges.add(GlobalVariables.allBadges['watching']!);
 
     }
     else{
-      badges.add(GlobalVariables.allBadges['finished']);
+      badges.add(GlobalVariables.allBadges['finished']!);
     }
-    if ( widget.show.favorite){
-      badges.add(GlobalVariables.allBadges['favorite']);
+    if ( widget.show.favorite!){
+      badges.add(GlobalVariables.allBadges['favorite']!);
     }
     return badges;
   }
@@ -677,11 +669,11 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                     //selected season
                                   setState(() {
                                     _selectedSeason = value + this.widget.show.currentSeason;
-                                    _episodeLength = this.widget.show.episodePerSeason[_selectedSeason.toString()];
+                                    _episodeLength = this.widget.show.episodePerSeason![_selectedSeason.toString()];
                                   });
                                   print(_episodeLength);
                                 },
-                              children: List.generate(int.parse(this.widget.show.episodePerSeason.keys.last) - this.widget.show.currentSeason +1, (index) => Text((index+this.widget.show.currentSeason).toString())),
+                              children: List.generate(int.parse(this.widget.show.episodePerSeason!.keys.last) - this.widget.show.currentSeason +1, (index) => Text((index+this.widget.show.currentSeason).toString())),
 
                               ),
                             ),
@@ -772,7 +764,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             barrierDismissible: false,
                             duration: Duration(milliseconds: 100),
                             builder: (BuildContext context) {
-                              return unwatchDialog(context, widget.show.name, widget.show.id);
+                              return unwatchDialog(context, widget.show.name!, widget.show.id);
                             },
                           );
                         },
@@ -920,7 +912,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             barrierDismissible: false,
                             duration: Duration(milliseconds: 100),
                             builder: (BuildContext context) {
-                              return unwatchDialog(context, widget.show.name, widget.show.id);
+                              return unwatchDialog(context, widget.show.name!, widget.show.id);
                             },
                           );
                         },
@@ -1056,6 +1048,11 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
        ),
      );
     }
+  }
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DiagnosticsProperty<Timer>('_timer', _timer));
   }
   // void startTimer() {
   //   const oneSec = const Duration(seconds: 1);

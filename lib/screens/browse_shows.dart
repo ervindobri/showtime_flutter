@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eWoke/components/back.dart';
-import 'package:eWoke/components/custom_elevation.dart';
-import 'package:eWoke/components/popular_appbar.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/network/network.dart';
-import 'package:eWoke/ui/search_card.dart';
+import 'package:show_time/components/back.dart';
+import 'package:show_time/components/custom_elevation.dart';
+import 'package:show_time/components/popular_appbar.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/tvshow.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/network/network.dart';
+import 'package:show_time/ui/search_card.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -25,9 +25,9 @@ class AllTVShows extends StatefulWidget {
 
 class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
   String _showName = "";
-  Future<AllTVShowList> showSearchObject;
+  late Future<AllTVShowList> showSearchObject;
 
-  bool _searched;
+  late bool _searched;
 
   var _icon = Icon(Icons.search, color: Colors.white,);
   bool isSearchClicked = false;
@@ -99,8 +99,8 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
     //   _searched = false;
     // });
   }
-  DragStartDetails startVerticalDragDetails;
-  DragUpdateDetails updateVerticalDragDetails;
+  late DragStartDetails startVerticalDragDetails;
+  late DragUpdateDetails updateVerticalDragDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -154,11 +154,11 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                   );
                 }
                 else {
-                  print(snapshot.data.showList.length);
-                  if (snapshot.data.showList.length > 0) {
+                  print(snapshot.data!.showList.length);
+                  if (snapshot.data!.showList.length > 0) {
                     var tags = GlobalVariables.searchHistory.firstWhere((search) =>
-                    search == _showName, orElse: () => null);
-                    if (tags == null) {
+                    search == _showName, orElse: () => '');
+                    if (tags == '') {
                       GlobalVariables.searchHistory.add(_showName);
                       FirestoreUtils().setSearchHistory(_showName);
                     }
@@ -182,9 +182,9 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                                 padding: const EdgeInsets.symmetric(horizontal: 0.0),
                                 child: ListView.builder(
                                   // physics: PageScrollPhysics(),
-                                  itemCount: snapshot.data.showList.length,
+                                  itemCount: snapshot.data!.showList.length,
                                   itemBuilder: (context, index){
-                                    return ShowCard(show: snapshot.data.showList[index]);
+                                    return ShowCard(show: snapshot.data!.showList[index]);
                                   },
                                 ),
                               ),
@@ -281,7 +281,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
     );
   }
 
-  Future<AllTVShowList> getSearchResults({String showName})  =>
+  Future<AllTVShowList> getSearchResults({required String showName})  =>
        new Network().getShowResults(showName:showName);
 
   Widget displaySearchHistory(BuildContext context){
@@ -307,7 +307,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
             ),
             StreamBuilder<QuerySnapshot>(
               stream: FirestoreUtils().getSearchHistory(),
-              builder: (context, snapshot) {
+              builder: (context, AsyncSnapshot snapshot) {
                 if ( snapshot.hasData){
                   // snapshot.data.docs.forEach((element) {
                   //   print(element.data());
@@ -323,7 +323,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                           spacing: 3.0, // gap between adjacent chips
                           runSpacing: 2.0, // gap between lines
                           children: List.generate(
-                              snapshot.data.docs.length,
+                              snapshot.data!.docs.length,
                                   (index) => AnimationConfiguration.staggeredList(
                                     position: index,
                                     child: FadeInAnimation(
@@ -412,22 +412,24 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                   );
                 }
                 else {
-                  if (snapshot.data.showList.length > 0) {
+                  if (snapshot.data!.showList.length > 0) {
                     print("not empty");
 
                     //If the tag is not added, add to search history
                     var tags = GlobalVariables.searchHistory.firstWhere((search) =>
-                    search == _showName, orElse: () => null);
-                    if (tags == null) {
+                    search == _showName, orElse: () => '');
+                    if (tags == '') {
                       GlobalVariables.searchHistory.add(_showName);
                     }
 
                     return CustomScrollView(
-                      slivers: [SliverList(
+                      slivers: [
+                        SliverList(
                           delegate: SliverChildBuilderDelegate((context, int index) {
 //                      children: snapshot.data.showList.map((e) => ShowCard(show: e)).toList(),
-                            return ShowCard(show: snapshot.data.showList[index]);
-                          }, childCount: snapshot.data.showList.length)
+                            return ShowCard(show: snapshot.data!.showList[index]);
+                          },
+                              childCount: snapshot.data!.showList.length)
                       )],
                     );
                   }

@@ -1,11 +1,11 @@
 import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:eWoke/components/badge.dart';
-import 'package:eWoke/components/image_sliver_delegate.dart';
-import 'package:eWoke/components/latest_ep_carousel.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/models/tvshow_details.dart';
+import 'package:show_time/components/badge.dart';
+import 'package:show_time/components/image_sliver_delegate.dart';
+import 'package:show_time/components/latest_ep_carousel.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/models/tvshow_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,7 +14,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 class DetailView extends StatefulWidget {
   final TVShowDetails show;
 
-  const DetailView({Key key, this.show}) : super(key: key);
+  const DetailView({Key? key, required this.show}) : super(key: key);
 
   @override
   _WatchedDetailViewState createState() => _WatchedDetailViewState();
@@ -26,8 +26,8 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
 
   bool isExpanded = false;
 
-  Animation<double> animation;
-  AnimationController _controller;
+  late Animation<double> animation;
+  late AnimationController _controller;
   List<Widget> badges = [];
 
   String moreLabel = "Show More";
@@ -129,7 +129,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                       child: ListView(
                                         scrollDirection: Axis.horizontal,
                                         children: List.generate(
-                                            widget.show.genres.length,
+                                            widget.show.genres!.length,
                                                 (index) {
                                           return AnimationConfiguration
                                               .staggeredList(
@@ -160,7 +160,7 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                       Center(
                                                         child:
                                                         AutoSizeText(
-                                                          widget.show.genres[index],
+                                                          widget.show.genres![index],
                                                           maxFontSize: 16,
                                                           minFontSize: 13,
                                                           maxLines: 1,

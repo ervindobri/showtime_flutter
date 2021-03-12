@@ -1,16 +1,16 @@
 //region LISTS
 
 
-import 'package:eWoke/constants/custom_variables.dart';
+import 'package:show_time/constants/custom_variables.dart';
 
 class AllTVShowList{
   final List showList;
 
 
-  AllTVShowList({ this.showList});
+  AllTVShowList({ required this.showList});
 
   factory AllTVShowList.fromJson(List <dynamic> json){
-    List<dynamic> showList = new List<dynamic>();
+    List<dynamic> showList = <dynamic>[];
 //    print("data: $json");
 //    showList.clear();
     json.forEach((element) {
@@ -29,20 +29,20 @@ class AllTVShowList{
 
 class TVShow{
   String id;
-  String name;
-  String language;
-  String type;
-  List<dynamic> genres;
-  String startDate;
+  String? name;
+  String? language;
+  String? type;
+  List<dynamic>? genres;
+  String? startDate;
   dynamic rating;
-  String updated;
-  String status;
-  String imageThumbnailPath;
+  String? updated;
+  String? status;
+  String? imageThumbnailPath;
   dynamic runtime;
-  String summary;
+  String? summary;
 
   TVShow({
-      this.id,
+      required this.id,
       this.name,
       this.language,
       this.type,

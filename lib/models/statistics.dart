@@ -1,5 +1,5 @@
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/network/firebase_utils.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/network/firebase_utils.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';
 
@@ -63,7 +63,7 @@ class Statistics{
       // print(getWeekOfShow(show['lastWatched']));
       if (watchedPerWeek.containsKey(weeksAsX()[getWeekOfShow(show['lastWatched'])])){
         // print("contains");
-        watchedPerWeek.update(weeksAsX()[getWeekOfShow(show['lastWatched'])], (value) => value+1);
+        watchedPerWeek.update(weeksAsX()[getWeekOfShow(show['lastWatched'])]!, (value) => value+1);
         // return;
       }
       else{
@@ -89,7 +89,7 @@ class Statistics{
     List<FlSpot> spots = [];
     weekly.docs.forEach((show) {
       if (watchedPerMonth.containsKey(monthsAsX[getMonthOfShow(show['lastWatched'])])){
-        watchedPerMonth.update(monthsAsX[getMonthOfShow(show['lastWatched'])], (value) => value+1);
+        watchedPerMonth.update(monthsAsX[getMonthOfShow(show['lastWatched'])]!, (value) => value+1);
       }
     });
     watchedPerMonth.forEach((key, value) {
@@ -111,7 +111,7 @@ class Statistics{
     List<FlSpot> spots = [];
     weekly.docs.forEach((show) {
       if (watchedPerYear.containsKey(yearAsX[getYearOfShow(show['lastWatched'])])){
-        watchedPerYear.update(yearAsX[getYearOfShow(show['lastWatched'])], (value) => value+1);
+        watchedPerYear.update(yearAsX[getYearOfShow(show['lastWatched'])]!, (value) => value+1);
       }
       else{
 
@@ -154,9 +154,9 @@ class Statistics{
   }
   List<String> getMonths() {
     List<String> months = [];
-    months.add(monthMap[DateTime.now().month -2]);
-    months.add(monthMap[DateTime.now().month -1 ]);
-    months.add(monthMap[DateTime.now().month ]);
+    months.add(monthMap[DateTime.now().month -2]!);
+    months.add(monthMap[DateTime.now().month -1 ]!);
+    months.add(monthMap[DateTime.now().month ]!);
     return months;
   }
 

@@ -1,17 +1,17 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:eWoke/components/back.dart';
-import 'package:eWoke/components/popular_appbar.dart';
-import 'package:eWoke/get_controllers/show_controller.dart';
-import 'package:eWoke/models/episode.dart';
+import 'package:show_time/components/back.dart';
+import 'package:show_time/components/popular_appbar.dart';
+import 'package:show_time/get_controllers/show_controller.dart';
+import 'package:show_time/models/episode.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:eWoke/constants/custom_variables.dart';
+import 'package:show_time/constants/custom_variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:eWoke/ui/full_schedule_card.dart';
+import 'package:show_time/ui/full_schedule_card.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,14 +25,7 @@ class FullSchedule extends StatefulWidget {
 }
 
 class _FullScheduleState extends State<FullSchedule> {
-  // BorderRadius _bottomRadius = const BorderRadius.only(
-  //   bottomLeft: Radius.circular(50.0),
-  //   bottomRight: Radius.circular(50.0),
-  // );
-
-  // final TextEditingController _filter = new TextEditingController();
-  String _searchTerm;
-  // int _currentStep = 0;
+  late String _searchTerm;
   List<List<Episode>> list = [];
   int currentStep = 0;
   int currentView = 0;
@@ -40,7 +33,7 @@ class _FullScheduleState extends State<FullSchedule> {
 
   int _loadingDuration =  569; // milliseconds
 
-  ShowController showController = Get.put(ShowController());
+  ShowController showController = Get.put(ShowController())!;
 
   @override
   void initState() {
@@ -290,7 +283,7 @@ class _FullScheduleState extends State<FullSchedule> {
           _searchTerm = value;
           list = GlobalVariables.scheduledEpisodes
               .where((e) => e[0]
-              .embedded['show']['name']
+              .embedded!['show']['name']
               .toLowerCase()
               .contains(_searchTerm.toLowerCase()))
               .toList();
@@ -399,7 +392,7 @@ class _FullScheduleState extends State<FullSchedule> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        episode.embedded['show']['name'],
+                                        episode.embedded!['show']['name'],
                                         style: GoogleFonts.openSans(
                                           fontSize: 13.0,
                                           fontWeight: FontWeight.w300,
@@ -530,7 +523,7 @@ class _FullScheduleState extends State<FullSchedule> {
                                   Padding(
                                     padding: const EdgeInsets.only(left: 12.0),
                                     child: Text(
-                                      list[index].first.name,
+                                      list[index].first.name!,
                                       style: GoogleFonts.openSans(
                                           fontSize: 13.0,
                                           fontWeight: FontWeight.w700,
@@ -563,7 +556,7 @@ class _FullScheduleState extends State<FullSchedule> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             AutoSizeText(
-                              episode.embedded['show']['name'],
+                              episode.embedded!['show']['name'],
                               maxLines: 1,
                               style: GoogleFonts.openSans(
                                 fontSize: 12.0,

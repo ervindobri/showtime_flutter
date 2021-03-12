@@ -1,13 +1,14 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:eWoke/components/badge.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/constants/theme_utils.dart';
-import 'package:eWoke/models/watched.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/network/network.dart';
-import 'package:eWoke/placeholders/watched_detail_view_placeholder.dart';
-import 'package:eWoke/screens/watched_detail_view.dart';
+import 'package:show_time/components/badge.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/constants/theme_utils.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/models/watched.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/network/network.dart';
+import 'package:show_time/placeholders/watched_detail_view_placeholder.dart';
+import 'package:show_time/screens/watched_detail_view.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 class WatchedCardInList extends StatefulWidget {
   final WatchedTVShow show;
 
-  const WatchedCardInList({Key key, this.show}) : super(key: key);
+  const WatchedCardInList({Key? key, required this.show}) : super(key: key);
 
   @override
   _WatchedCardInListState createState() => _WatchedCardInListState();
@@ -27,7 +28,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
   IconData _icon = FontAwesomeIcons.heart;
 
   bool _added = true;
-  double _percentage;
+  late double _percentage;
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
     //weird behaviour: I have to call calculateProgress() every time, variable not working
 
     super.initState();
-    _icon = widget.show.favorite ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart;
+    _icon = widget.show.favorite! ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart;
     checkFavorite();
   }
 
@@ -65,7 +66,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
               ),
               context: context,
               builder: (BuildContext context) {
-                return _createRouteShowDetail(widget.show, _width, _height);
+                return createRouteShowDetail(widget.show, _width, _height);
               },
               isScrollControlled: true);
         },
@@ -103,7 +104,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                 width: _width*.35,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      image: NetworkImage(widget.show.imageThumbnailPath),
+                                      image: NetworkImage(widget.show.imageThumbnailPath!),
                                       fit: BoxFit.cover),
                                   borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(25.0),
@@ -328,26 +329,24 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
       ),
     );
   }
+}
 
-
-  _createRouteShowDetail(WatchedTVShow show, double _width, double _height) {
-    Future<List<dynamic>> episodes = new Network().getEpisodes(showID: show.id);
-    // print("creating route to details");
-    return ClipRRect(
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
-      child: FutureBuilder<Object>(
-          future: episodes,
-          builder: (context, snapshot) {
-            if ( snapshot.hasData){
-              show.episodes = snapshot.data;
-              // print(data[index].episodes.length);
-              return WatchedDetailView(show: show);
-            }
-            else{
-              return WatchedDetailViewPlaceholder();
-            }
+createRouteShowDetail(WatchedTVShow show, double _width, double _height) {
+  Future<List<dynamic>> episodes = new Network().getEpisodes(showID: show.id);
+  // print("creating route to details");
+  return ClipRRect(
+    borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
+    child: FutureBuilder<Object>(
+        future: episodes,
+        builder: (context, snapshot) {
+          if ( snapshot.hasData){
+            show.episodes = snapshot.data as List<Episode>;
+            return WatchedDetailView(show: show);
           }
-      ),
-    );
-  }
+          else{
+            return WatchedDetailViewPlaceholder();
+          }
+        }
+    ),
+  );
 }

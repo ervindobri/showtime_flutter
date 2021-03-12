@@ -7,8 +7,8 @@ class SessionUser{
    String sex;
    int age;
 
-  SessionUser({this.id, this.emailAddress, this.firstName, this.lastName,
-      this.sex, this.age});
+  SessionUser({this.id, required this.emailAddress, required this.firstName, required this.lastName,
+      required this.sex, required this.age});
 
   @override
   String toString() {

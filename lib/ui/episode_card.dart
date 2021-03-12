@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:eWoke/models/episode.dart';
+import 'package:get/get.dart';
+import 'package:show_time/models/episode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,15 +11,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 class EpisodeCard extends StatefulWidget {
   final Episode episode;
 
-  EpisodeCard({this.episode});
+  EpisodeCard({required this.episode});
   @override
   _EpisodeCardState createState() => _EpisodeCardState();
 }
 
 class _EpisodeCardState extends State<EpisodeCard> {
 
-  bool _tapped;
-
+  late bool _tapped;
 
   @override
   void initState() {
@@ -28,8 +28,8 @@ class _EpisodeCardState extends State<EpisodeCard> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    double _width = Get.size.width;
+    double _height = Get.size.height;
 
     const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
 
@@ -60,8 +60,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
           child: Stack(
             children: [
               CachedNetworkImage(
-                imageUrl:
-                widget.episode.image,
+                imageUrl: widget.episode.image!,
                 imageBuilder: (context, image) {
                   return Container(
                     decoration: BoxDecoration(

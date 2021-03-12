@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eWoke/models/episode.dart';
-import 'package:eWoke/models/tvshow_details.dart';
-import 'package:eWoke/models/user.dart';
-import 'package:eWoke/models/watched.dart';
+import 'package:show_time/models/episode.dart';
+import 'package:show_time/models/tvshow_details.dart';
+import 'package:show_time/models/user.dart';
+import 'package:show_time/models/watched.dart';
 
 import '../main.dart';
 import 'network.dart';
@@ -133,7 +133,7 @@ class FirestoreUtils{
     watchedShowIdList.toSet().toList().forEach((id) {
       List<Episode> current = [];
       episodes.episodes.forEach((episode) {
-        if (episode.embedded['show']['id'] == id) {
+        if (episode.embedded!['show']['id'] == id) {
           current.add(episode);
         }
       });
@@ -143,7 +143,7 @@ class FirestoreUtils{
     });
 
     //Sort by airdate instead id
-    list.sort((a, b) => a[0].airDate.compareTo(b[0].airDate));
+    list.sort((a, b) => a[0].airDate!.compareTo(b[0].airDate!));
     list = list.toSet().toList();
     // print("Scheduled shows:${list.length}");
     return list;

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:eWoke/constants/custom_variables.dart';
-import 'package:eWoke/get_controllers/auth_controller.dart';
-import 'package:eWoke/network/firebase_utils.dart';
-import 'package:eWoke/pages/home.dart';
+import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/get_controllers/auth_controller.dart';
+import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,8 +20,8 @@ class CreateProfile extends StatefulWidget {
 }
 
 class _CreateProfileState extends State<CreateProfile> with TickerProviderStateMixin{
-  Animation<double> animation;
-  AnimationController _controller;
+  late Animation<double> animation;
+  late AnimationController _controller;
 
   TextEditingController firstNameController = new TextEditingController();
   TextEditingController lastNameController = new TextEditingController();
@@ -31,7 +31,7 @@ class _CreateProfileState extends State<CreateProfile> with TickerProviderStateM
   final _formKey = GlobalKey<FormState>();
   ButtonState buttonState = ButtonState.idle;
 
-  AuthController authController = Get.put(AuthController());
+  AuthController authController = Get.put(AuthController())!;
 
 
   @override
@@ -499,8 +499,7 @@ class _CreateProfileState extends State<CreateProfile> with TickerProviderStateM
                                             Future.delayed(
                                                 Duration(seconds: 1), () {
                                               setState(() {
-                                                if (_formKey.currentState
-                                                    .validate()) {
+                                                if (_formKey.currentState!.validate()) {
                                                   // print("validated");
                                                   authController.updateUserInfo(
                                                     firstNameController.text,
