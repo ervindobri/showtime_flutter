@@ -92,7 +92,7 @@ class WatchedTVShow extends TVShowDetails{
   nextEpisodeAirDate(){
     if ( calculateWatchedEpisodes() == 0){
       if ( this.episodes![0].airDate != ""){
-        var airDate = DateTime.parse("${this.episodes![0]?.airDate} 12:00:00.000");
+        var airDate = DateTime.parse("${this.episodes![0].airDate} 12:00:00.000");
         var diff = airDate.difference(DateTime.now());
         return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
       }
@@ -100,7 +100,7 @@ class WatchedTVShow extends TVShowDetails{
     else if ( calculateWatchedEpisodes() > 0 ){
       if ( this.episodes![calculateWatchedEpisodes()].airDate != ""){
         try{
-          var airDate = DateTime.parse("${this.episodes![calculateWatchedEpisodes()]?.airDate} 12:00:00.000");
+          var airDate = DateTime.parse("${this.episodes![calculateWatchedEpisodes()].airDate} 12:00:00.000");
           var diff = airDate.difference(DateTime.now());
           return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
         }
@@ -120,9 +120,9 @@ class WatchedTVShow extends TVShowDetails{
 
   int calculateWatchedEpisodes(){
     int watchedEpisodes = 0;
-    this.episodePerSeason!.forEach((key, value) {
+    this.episodePerSeason!.forEach((key, int value) {
       if ( int.parse(key) < currentSeason.toInt()){
-        watchedEpisodes += int.parse(value);
+        watchedEpisodes += value;
       }
       else if( currentSeason == int.parse(key)){
         watchedEpisodes += currentEpisode;
@@ -134,7 +134,7 @@ class WatchedTVShow extends TVShowDetails{
   int calculateTotalEpisodes(){
     int totalEpisodes = 0;
     this.episodePerSeason!.forEach((key, value) {
-      totalEpisodes += int.parse(value);
+      totalEpisodes += value;
     });
     return totalEpisodes;
   }
@@ -151,9 +151,8 @@ class WatchedTVShow extends TVShowDetails{
   }
 
    incrementEpisodeWatch() {
-     print(currentEpisode);
      if ( currentSeason < totalSeasons!.toInt()){
-       if(currentEpisode < episodePerSeason![currentSeason.toString()] ){
+       if(currentEpisode < episodePerSeason![currentSeason.toString()]!.toInt() ){
          currentEpisode++;
        }
        else{
@@ -163,7 +162,7 @@ class WatchedTVShow extends TVShowDetails{
        }
      }
      else{
-       if(currentEpisode < episodePerSeason![currentSeason.toString()] ){
+       if(currentEpisode < episodePerSeason![currentSeason.toString()]!.toInt() ){
          currentEpisode++;
        }
      }
@@ -204,7 +203,6 @@ class WatchedTVShow extends TVShowDetails{
     return show;
   }
   factory WatchedTVShow.fromFirestore(Map <String, dynamic> json, dynamic collId){
-    // print(json['runtime']);
     return WatchedTVShow(
         id: collId,
         name : json['name'],
@@ -213,7 +211,7 @@ class WatchedTVShow extends TVShowDetails{
         rating : json['rating'] ?? 0.0,
         imageThumbnailPath : json['image_thumbnail_path'].contains('https') ? json['image_thumbnail_path'] : json['image_thumbnail_path'].replaceFirst('http', 'https'),
         totalSeasons : json['total_seasons'],
-        episodePerSeason : json['episodesPerSeason'],
+        episodePerSeason : Map<String, int>.from(json['episodesPerSeason']),
         currentSeason : json['currentSeason'],
         currentEpisode : json['currentEpisode'],
         firstWatchDate : json['startedWatching'],
@@ -224,7 +222,6 @@ class WatchedTVShow extends TVShowDetails{
   }
 
   String newestEpisodeDifference() {
-
     String diff = episodes!.last.getDifference();
     return diff;
   }

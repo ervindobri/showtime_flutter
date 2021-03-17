@@ -1,18 +1,15 @@
 import 'dart:async';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/get_controllers/auth_controller.dart';
-import 'package:show_time/network/firebase_utils.dart';
+import 'package:show_time/get_controllers/ui_controller.dart';
 import 'package:show_time/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:progress_state_button/progress_button.dart';
 
-import '../main.dart';
 
 class CreateProfile extends StatefulWidget {
   @override
@@ -29,9 +26,9 @@ class _CreateProfileState extends State<CreateProfile> with TickerProviderStateM
   TextEditingController sexController = new TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  ButtonState buttonState = ButtonState.idle;
 
   AuthController authController = Get.put(AuthController())!;
+  UIController uiController = Get.put(UIController())!;
 
 
   @override
@@ -488,14 +485,14 @@ class _CreateProfileState extends State<CreateProfile> with TickerProviderStateM
                                     child: GetBuilder<AuthController>(
                                       init: authController,
                                       builder: (_){
-                                        return ProgressButton(
-                                          maxWidth: _width / 3,
-                                          minWidth: _width / 3,
-                                          state: buttonState,
+                                        return TextButton(
+                                          // maxWidth: _width / 3,
+                                          // minWidth: _width / 3,
+                                          // state: buttonState,
                                           onPressed: () {
-                                            setState(() {
-                                              buttonState = ButtonState.loading;
-                                            });
+                                            // setState(() {
+                                            //   buttonState = ButtonState.loading;
+                                            // });
                                             Future.delayed(
                                                 Duration(seconds: 1), () {
                                               setState(() {
@@ -508,55 +505,62 @@ class _CreateProfileState extends State<CreateProfile> with TickerProviderStateM
                                                     sexController.text
                                                   );
 
-                                                  buttonState = ButtonState.success;
-                                                  if (buttonState ==
-                                                      ButtonState.success) {
+                                                  // buttonState = ButtonState.success;
+                                                  // if (buttonState ==
+                                                  //     ButtonState.success) {
                                                     Timer.run((){
                                                       Get.to(HomeView());
                                                     });
-                                                  }
                                                 }
-                                                else {
-                                                  buttonState = ButtonState.fail;
-                                                }
+                                                // else {
+                                                //   buttonState = ButtonState.fail;
+                                                // }
                                               });
                                             });
                                           },
-                                          padding: const EdgeInsets.all(8.0),
-                                          progressIndicatorAligment: MainAxisAlignment
-                                              .center,
-                                          radius: 25.0,
-                                          stateWidgets: {
-                                            ButtonState.idle: Text(
-                                              "Save",
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: _width / 20
-                                              ),
+                                          child: Text(
+                                            "Save",
+                                            style: GoogleFonts.roboto(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: _width / 20
                                             ),
-                                            ButtonState.loading: Container(),
-                                            ButtonState.fail: Text(
-                                              "Submit Failed",
-                                              style: GoogleFonts.roboto(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500),
-                                            ),
-                                            ButtonState.success: FaIcon(
-                                              FontAwesomeIcons.check,
-                                              color: Colors.white,
-                                            )
-                                          },
-                                          stateColors: {
-                                            ButtonState.idle: GlobalColors
-                                                .blueColor,
-                                            ButtonState.loading: GlobalColors
-                                                .blueColor,
-                                            ButtonState.fail: GlobalColors
-                                                .fireColor,
-                                            ButtonState.success: GlobalColors
-                                                .greenColor,
-                                          },
+                                          ),
+                                          // padding: const EdgeInsets.all(8.0),
+                                          // progressIndicatorAligment: MainAxisAlignment
+                                          //     .center,
+                                          // radius: 25.0,
+                                          // stateWidgets: {
+                                          //   ButtonState.idle: Text(
+                                          //     "Save",
+                                          //     style: GoogleFonts.roboto(
+                                          //         color: Colors.white,
+                                          //         fontWeight: FontWeight.w500,
+                                          //         fontSize: _width / 20
+                                          //     ),
+                                          //   ),
+                                          //   ButtonState.loading: Container(),
+                                          //   ButtonState.fail: Text(
+                                          //     "Submit Failed",
+                                          //     style: GoogleFonts.roboto(
+                                          //         color: Colors.white,
+                                          //         fontWeight: FontWeight.w500),
+                                          //   ),
+                                          //   ButtonState.success: FaIcon(
+                                          //     FontAwesomeIcons.check,
+                                          //     color: Colors.white,
+                                          //   )
+                                          // },
+                                          // stateColors: {
+                                          //   ButtonState.idle: GlobalColors
+                                          //       .blueColor,
+                                          //   ButtonState.loading: GlobalColors
+                                          //       .blueColor,
+                                          //   ButtonState.fail: GlobalColors
+                                          //       .fireColor,
+                                          //   ButtonState.success: GlobalColors
+                                          //       .greenColor,
+                                          // },
 
                                         );
                                       },
@@ -577,6 +581,5 @@ class _CreateProfileState extends State<CreateProfile> with TickerProviderStateM
         ),
       ),
     );
-    return Container();
   }
 }

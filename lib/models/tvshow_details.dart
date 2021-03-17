@@ -31,9 +31,9 @@ class TVShowDetails extends TVShow{
   String? ratingCount;
   List<dynamic>? pictures;
   String? imagePath;
-  List<dynamic>? episodes;
+  List<Episode>? episodes;
   int? totalSeasons;
-  Map<String, dynamic>? episodePerSeason;
+  Map<String, int>? episodePerSeason;
 
   TVShowDetails(
       {     id,
@@ -72,8 +72,8 @@ class TVShowDetails extends TVShow{
     // print(countryCodes[0]["name"]);
     print(this.language);
     if ( this.language!.isNotEmpty){
-        var x  = GlobalVariables.countryCodes.firstWhere((element) => element["name"] == this.language) ?? {"code": "N/A"};
-        return x["code"].toString().toUpperCase() ?? r"N\A";
+        var x  = GlobalVariables.countryCodes.firstWhere((element) => element["name"] == this.language);
+        return x["code"].toString().toUpperCase();
     }
   }
 
@@ -89,9 +89,9 @@ class TVShowDetails extends TVShow{
 
   factory TVShowDetails.fromJson(TVShow show, List <dynamic> json){
 
-    List<dynamic> episodes;
+    List<Episode> episodes;
     episodes = json.map((i) => Episode.fromJson(i)).toList();
-    Map<String, dynamic> episodePerSeason = new Map<String, dynamic>();
+    Map<String, int> episodePerSeason = new Map<String, int>();
     int totalSeasons = json.length>0 ? json[json.length - 1]['season'] : 0;
     if(totalSeasons > 0){
       for(int i = 1 ; i<=totalSeasons; ++i){

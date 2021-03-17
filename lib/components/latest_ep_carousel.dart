@@ -24,7 +24,6 @@ class _LatestEpisodesCarouselState extends State<LatestEpisodesCarousel> {
   @override
   Widget build(BuildContext context) {
     double _width = Get.size.width;
-    double _height = Get.size.height;
 
     return Center(
         child: Padding(

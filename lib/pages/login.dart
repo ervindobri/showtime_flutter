@@ -1,10 +1,12 @@
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:show_time/components/custom_elevation.dart';
 import 'package:show_time/components/toast.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/get_controllers/auth_controller.dart';
+import 'package:show_time/get_controllers/ui_controller.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:show_time/pages/splash.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,7 +15,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -40,7 +41,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
   FaIcon eye = FaIcon(FontAwesomeIcons.eye, color: GlobalColors.greenColor);
   int _state = 0;
   var animationName = 'Shrink';
-  late FToast fToast;
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -54,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
   CarouselController _carouselController = CarouselController();
 
   AuthController authController = Get.put(AuthController())!;
+  UIController uiController = Get.put(UIController())!;
 
   // UserDao dao;
 
@@ -67,8 +68,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
     initialTimer();
     _fingerprintAnimStopped = true;
     super.initState();
-    fToast = FToast();
-    fToast.init(context);
 
     _controller = AnimationController(
       duration: const Duration(milliseconds: 550),
@@ -409,7 +408,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                     // height: textFieldHeight,
                                                     child: TextFormField(
                                                       validator: (value) =>
-                                                      EmailValidator.validate(value)
+                                                      EmailValidator.validate(value!)
                                                           ? null
                                                           : "E-mail address is not valid",
                                                       controller: authController.nameController,
@@ -610,7 +609,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                   Padding(
                                                     padding: const EdgeInsets.symmetric(
                                                         horizontal: 25.0,
-                                                        vertical: 5.0),
+                                                        vertical: 25.0),
                                                     child: Row(
                                                       mainAxisAlignment:
                                                       MainAxisAlignment
@@ -631,17 +630,15 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                   Padding(
                                                     padding: const EdgeInsets.symmetric(
                                                         horizontal: 25.0),
-                                                    child: CircularCheckBox(
-                                                      value: this.selected,
-                                                      activeColor: GlobalColors.greenColor,
-                                                      materialTapTargetSize: MaterialTapTargetSize.padded,
-                                                      inactiveColor: GlobalColors.greyTextColor,
-                                                      hoverColor: GlobalColors.blueColor,
-                                                      checkColor: Colors.white,
-                                                      focusColor: GlobalColors.greyTextColor,
-                                                      onChanged: (value) =>
+                                                    child: RoundCheckBox(
+                                                      isChecked: this.selected,
+                                                      checkedColor: GlobalColors.greenColor,
+                                                      // uncheckedColor: GlobalColors.greyTextColor,
+                                                      borderColor: GlobalColors.greenColor,
+                                                      size: 25,
+                                                      onTap: (value) =>
                                                           setState(() {
-                                                            this.selected = value;
+                                                            this.selected = value!;
                                                             authController.selected = value;
                                                           }),
                                                     ),
@@ -857,7 +854,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                           _state = 2;
                                                         });
                                                         //TODO: add biometric switch
-                                                        await authController.addUser(authController.nameController.text, authController.passwordController.text);
+                                                        // await authController.addUser(authController.nameController.text, authController.passwordController.text);
                                                         authController.rememberInfo(authController.nameController.text, authController.passwordController.text);
                                                         Get.off(() => SplashScreen());
                                                       }
@@ -865,16 +862,13 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                                         setState(() {
                                                           _state = 0;
                                                         });
-                                                        Widget toast = CustomToast(
+                                                        uiController.showToast(
+                                                          context: context,
                                                             color: GlobalColors.fireColor,
                                                             icon: FontAwesomeIcons
                                                                 .exclamationCircle,
-                                                            text: "$authenticate");
-                                                        fToast.showToast(
-                                                          child: toast,
-                                                          gravity: ToastGravity.BOTTOM,
-                                                          toastDuration: Duration(seconds: 3),
-                                                        );
+                                                            text: "$authenticate",
+                                                            gravity: ToastGravity.BOTTOM);
                                                       }
                                                     });
                                               }
@@ -1022,7 +1016,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                           padding: const EdgeInsets.symmetric(horizontal: 45.0,vertical: 25),
                           child: TextFormField(
                             validator: (value) =>
-                            EmailValidator.validate(value)
+                            EmailValidator.validate(value!)
                                 ? null
                                 : "E-mail address is not valid",
                             controller: authController.resetController,

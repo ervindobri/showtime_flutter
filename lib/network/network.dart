@@ -44,13 +44,13 @@ class Network{
     }
   }
 
-  Future<List<dynamic>> getEpisodes({required String showID}) async{
+  Future<List<Episode>> getEpisodes({required String showID}) async{
     var searchURL = GlobalVariables.EPISODES_URL + showID + '/episodes';
     final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
-      // print(response.body);
-      return json.decode(response.body).map((i) => Episode.fromJson(i)).toList();
+      List<Episode> list = json.decode(response.body).map<Episode>((i) => Episode.fromJson(i)).toList();
+      return list;
     }
     else {
       throw Exception("Error getting episode data!");

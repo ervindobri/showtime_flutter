@@ -8,7 +8,6 @@ import 'package:show_time/models/tvshow_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:blurrycontainer/blurrycontainer.dart';
 
 class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
@@ -52,12 +51,12 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                       fit: BoxFit.cover,
                     ),
                   ),
-                  BlurryContainer(
-                    blur: 40,
-                    width: _width,
-                    bgColor: Colors.black.withOpacity(.2),
-                    borderRadius: BorderRadius.zero,
-                    child: Container(),
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
+                    child: Container(
+                      width: _width,
+                      color: Colors.black.withOpacity(.2),
+                    ),
                   )
                 ],
               ),
@@ -147,7 +146,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                       child: Container(
                         // height: 25,
                         child: AutoSizeText(
-                            show.name,
+                            show.name!,
                             maxLines: 3,
                             maxFontSize: 28.0,
                             minFontSize: 13,

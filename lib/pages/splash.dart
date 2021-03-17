@@ -34,7 +34,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   late Animation<double> animation;
   late AnimationController _controller;
   bool allCompleted = false;
-  late Timer completed;
   late QuerySnapshot watchedShowsSnapshot;
   List<WatchedTVShow> watchedShowsList = [];
 
@@ -68,7 +67,6 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
   @override
   void dispose() {
-    completed.cancel();
     _controller.dispose();
     super.dispose();
   }
@@ -196,7 +194,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
         // color: Colors.black,
         child: SizedBox(
           child: Center(
-            child: FlareActor("assets/loadingcouch.flr",
+            child: FlareActor(
+                "assets/loadingcouch.flr",
                 alignment: Alignment.bottomCenter,
                 fit: BoxFit.contain,
                 animation: "load"),

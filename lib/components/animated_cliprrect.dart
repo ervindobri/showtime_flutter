@@ -6,10 +6,7 @@ class AnimatedClipRRect extends StatelessWidget {
     this.curve = Curves.linear,
     required this.borderRadius,
     required this.child,
-  })  : assert(duration != null),
-        assert(curve != null),
-        assert(borderRadius != null),
-        assert(child != null);
+  });
 
   final Duration duration;
   final Curve curve;

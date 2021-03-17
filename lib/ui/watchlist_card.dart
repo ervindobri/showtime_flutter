@@ -127,7 +127,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Container(
                                       child: AutoSizeText(
-                                        widget.show.name,
+                                        widget.show.name!,
                                         minFontSize: (_width/20).roundToDouble(),
                                         maxFontSize: (_width/10).roundToDouble(),
                                         stepGranularity: .1,
@@ -319,7 +319,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                 child:
                 Center(
                     child: Text(
-                        widget.show.rating.toString() ?? "0.0",
+                        widget.show.rating!.toString(),
                         style: ShowTheme.listWatchCardBadgeStyle
                     )
                 )
@@ -332,13 +332,13 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
 }
 
 createRouteShowDetail(WatchedTVShow show, double _width, double _height) {
-  Future<List<dynamic>> episodes = new Network().getEpisodes(showID: show.id);
-  // print("creating route to details");
+  var episodes = new Network().getEpisodes(showID: show.id);
   return ClipRRect(
     borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
-    child: FutureBuilder<Object>(
+    child: FutureBuilder<List<Episode>>(
         future: episodes,
         builder: (context, snapshot) {
+          print(snapshot.error);
           if ( snapshot.hasData){
             show.episodes = snapshot.data as List<Episode>;
             return WatchedDetailView(show: show);

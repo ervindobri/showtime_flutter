@@ -94,7 +94,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                             Padding(
                               padding: const EdgeInsets.all(15.0),
                               child: AutoSizeText(
-                                widget.episode.name,
+                                widget.episode.name!,
                                 maxLines: 2,
                                 maxFontSize: 20,
                                 minFontSize: 2,
@@ -184,7 +184,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                             Padding(
                               padding: const EdgeInsets.only(top: 15.0),
                               child: AutoSizeText(
-                                widget.episode.airDate,
+                                widget.episode.airDate!,
                                 maxLines: 1,
                                 maxFontSize: 15,
                                 minFontSize: 2,

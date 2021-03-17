@@ -3,12 +3,17 @@ import 'package:show_time/models/episode.dart';
 import 'package:show_time/models/watched.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:get/get.dart';
+import 'package:show_time/network/network.dart';
 
 class ShowController extends GetxController{
   var watchedShows = <WatchedTVShow>[].obs;
   List<int> watchedShowIds = [];
   var scheduledEpisodes = <List<Episode>>[].obs;
   var notAiredList = <Episode>[].obs;
+
+  List<WatchedTVShow> sortedList = [];
+
+  RxBool isAscending = true.obs;
 
 
   // ignore: invalid_use_of_protected_member
@@ -17,6 +22,9 @@ class ShowController extends GetxController{
   List<List<Episode>> get scheduled  => scheduledEpisodes.value;
   // ignore: invalid_use_of_protected_member
   List<WatchedTVShow> get watched => watchedShows.value;
+
+
+  RxString searchTerm = ''.obs;
 
   @override
   void onInit() {
@@ -28,6 +36,7 @@ class ShowController extends GetxController{
     watchedShowIds.clear();
     fetchWatchedShows();
     fetchScheduledEpisodes();
+    sortedList = watched.where((e) => e.name!.toLowerCase().contains(searchTerm.toLowerCase())).toList();
   }
 
   void fetchWatchedShows() async {
@@ -54,7 +63,7 @@ class ShowController extends GetxController{
       "Title": a.name,
       "Year": a.startDate,
       "Runtime": a.runtime,
-      "Progress": a.calculateProgress() ?? 0.0,
+      "Progress": a.calculateProgress(),
       "Rating" : a.rating ?? 0.0
     };
     return criteriaMap[criteria];
@@ -96,5 +105,35 @@ class ShowController extends GetxController{
     episodes.sort( (a,b) => a.airDate!.compareTo(b.airDate!));
     episodes = episodes.toSet().toList();
     notAiredList.assignAll(episodes);
+  }
+  getShowData(WatchedTVShow show) async {
+    try{
+      List<dynamic> list = await new Network().getDetailUpdates(showID: show.id);
+      var snapshots = FirestoreUtils().watchedShows.doc(show.id).snapshots();
+      snapshots.first.then((value) {
+        show.currentSeason = value.data()!['currentSeason'];
+        show.totalSeasons = list[0];
+        show.episodePerSeason = Map<String, int>.from(list[1]);
+        show.currentEpisode = value.data()!['currentEpisode'];
+        // return show;
+      });
+    }
+    catch(e ){
+      print(e);
+      rethrow;
+    }
+  }
+
+  sort(String x){
+    isAscending.value = !isAscending.value!;
+    if (isAscending.value!){
+      sortedList.sort((a, b) => getCriteria(a, x).compareTo(getCriteria(b, x)));
+    }
+    else{
+      sortedList.sort((a, b) => getCriteria(b, x).compareTo(getCriteria(a, x)));
+    }
+  }
+  filter(String value) {
+    sortedList = watched.where((e) => e.name!.toLowerCase().contains(value.toLowerCase())).toList();
   }
 }

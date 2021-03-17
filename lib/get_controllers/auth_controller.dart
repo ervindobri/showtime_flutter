@@ -6,9 +6,7 @@ import 'package:show_time/database/database.dart';
 import 'package:show_time/database/user_data.dart';
 import 'package:show_time/database/user_data_dao.dart';
 import 'package:show_time/models/user.dart';
-import 'package:show_time/models/user.dart';
 import 'package:show_time/network/firebase_utils.dart';
-import 'package:show_time/pages/home.dart';
 import 'package:show_time/pages/login.dart';
 import 'package:show_time/pages/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +15,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../main.dart';
 
 class AuthController extends GetxController {
   Rx<SessionUser> sessionUser = Rx<SessionUser>();
@@ -217,7 +214,7 @@ class AuthController extends GetxController {
 
   //region BIOMETRIC_LOGIN
   final LocalAuthentication auth = LocalAuthentication();
-  late bool _canCheckBiometrics;
+  bool _canCheckBiometrics = false;
   bool get canCheckBiometrics => _canCheckBiometrics;
 
   late List<BiometricType> _availableBiometrics;

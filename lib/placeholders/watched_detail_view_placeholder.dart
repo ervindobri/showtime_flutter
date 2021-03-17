@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/foundation.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,35 +40,41 @@ class _WatchedDetailViewPlaceholderState extends State<WatchedDetailViewPlacehol
     });
 
 
-    changeColors();
+    // changeColors();
     super.initState();
   }
 
-  Future changeColors() async {
-    while (true) {
-      await new Future.delayed(const Duration(milliseconds: 1690), () async {
-        if (_animationController.status == AnimationStatus.completed) {
-          _animationController.reverse();
-          listControllers[0].reverse();
-          await new Future.delayed(const Duration(milliseconds: 300), () {
-            listControllers[1].reverse();
-          });
-          await new Future.delayed(const Duration(milliseconds: 300), () {
-            listControllers[2].reverse();
-          });
-        } else {
-          _animationController.forward();
-          listControllers[0].forward();
-          await new Future.delayed(const Duration(milliseconds: 300), () {
-            listControllers[1].forward();
-          });
-          await new Future.delayed(const Duration(milliseconds: 300), () {
-            listControllers[2].forward();
-          });
-        }
-      });
-    }
+  @override
+  void dispose(){
+    _animationController.dispose();
+    super.dispose();
   }
+
+  // Future changeColors() async {
+  //   while (mounted) {
+  //     await new Future.delayed(const Duration(milliseconds: 1690), () async {
+  //       if (_animationController.status == AnimationStatus.completed) {
+  //         _animationController.reverse().orCancel;
+  //         listControllers[0].reverse().orCancel;
+  //         await new Future.delayed(const Duration(milliseconds: 300), () {
+  //           listControllers[1].reverse().orCancel;
+  //         });
+  //         await new Future.delayed(const Duration(milliseconds: 300), () {
+  //           listControllers[2].reverse().orCancel;
+  //         });
+  //       } else {
+  //         // _animationController.forward().orCancel;
+  //         listControllers[0].forward().orCancel;
+  //         await new Future.delayed(const Duration(milliseconds: 300), () {
+  //           listControllers[1].forward().orCancel;
+  //         });
+  //         await new Future.delayed(const Duration(milliseconds: 300), () {
+  //           listControllers[2].forward().orCancel;
+  //         });
+  //       }
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -284,10 +289,5 @@ class _WatchedDetailViewPlaceholderState extends State<WatchedDetailViewPlacehol
         ),
       ],
     );
-  }
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<AnimationController>('_animationController', _animationController));
   }
 }

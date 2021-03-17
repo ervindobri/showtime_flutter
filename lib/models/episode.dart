@@ -33,13 +33,12 @@ class Episode{
       this.airTime, this.runtime, this.image, this.summary, this.embedded});
 
   factory Episode.fromJson(Map <String, dynamic> json){
-    // print("episode");
     return Episode(
       id : json['id'] ?? 0,
       season : json['season'] ?? 0 ,
       episode : json['number'] ?? 0 ,
       name : json['name'] ?? "",
-      airDate : json['airdate'] == "" ? (DateTime.now().year+1).toString() + "-" + (DateTime.now().month).toString() + (DateTime.now().day).toString() : json['airdate'],
+      airDate : json['airdate'] == "" ? (DateTime.now().year+69).toString() + "-12-12" : json['airdate'],
       airTime : json['airtime'] == "" ? "12:00" : json['airtime'],
       runtime : json['runtime'] ?? 0,
       image : json['image'] != null ? json['image']['medium'] : GlobalVariables.PLACEHOLDER_IMAGE, //MEDIUM IMAGE
@@ -74,7 +73,6 @@ class Episode{
   String getDifference() {
     if ( this.airDate != null ){
       var airDate = DateTime.parse("${this.airDate} ${this.airTime}:00.000");
-      // print(airDate);
       var diff = airDate.difference(DateTime.now());
 
       return "${diff.inDays.abs()}:${diff.inHours.remainder(24).abs()}:${diff.inMinutes.remainder(60).abs()}:${(diff.inSeconds.remainder(60).abs())}";

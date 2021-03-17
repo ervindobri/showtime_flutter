@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:show_time/components/back.dart';
 import 'package:show_time/components/blurry_header.dart';
@@ -27,50 +26,27 @@ class DiscoverWatchList extends StatefulWidget {
 
 class _DiscoverWatchListState extends State<DiscoverWatchList>
     with SingleTickerProviderStateMixin {
-  List<WatchedTVShow> sortedList = [];
+  ScrollController _scrollController = ScrollController();
+
+  ShowController showController = Get.put(ShowController())!;
 
 
   late bool _sorting;
   String criteria = "Criteria";
-  bool _ascending = false;
   bool isPlaying = false;
   late Animation animation;
   late AnimateIconController controller;
   final TextEditingController _filter = new TextEditingController();
-
-  late String _searchTerm;
-  int _index = 0;
-
-
-  ShowController showController = Get.put(ShowController())!;
-  ScrollController _scrollController = ScrollController();
-
-  late double _scrollPosition;
-
 
 
   @override
   void initState() {
     super.initState();
     _sorting = false;
-    sortedList.clear();
-    showController.initialize();
 
     controller = AnimateIconController();
-    _searchTerm = "";
-    criteria = GlobalVariables.SORT_CATEGORIES[_index];
-
-    // log(sortedList.length.toString());
-    // listController.addListener(onListen);
-
-  }
-  @override
-  void dispose() {
-    // listController.removeListener(onListen);
-    criteria = "";
-    _searchTerm = "";
-    super.dispose();
-  }
+    criteria = GlobalVariables.SORT_CATEGORIES[0];
+}
 
   void onListen() {
     setState(() {});
@@ -90,7 +66,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   Widget _textField() {
     return CupertinoTextField(
           onChanged: (value) {
-            setState(() => _searchTerm = value);
+            setState(() => showController.filter(value));
           },
           controller: _filter,
           clearButtonMode: OverlayVisibilityMode.editing,
@@ -132,6 +108,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     //TODO: set scrolloffset to 0 after sorting
     final double _width = Get.width;
     final double _height = Get.height;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -144,12 +121,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
       body: Container(
         color:  GlobalColors.bgColor,
         child: SafeArea(
-          child: GetX<ShowController>(
-            builder: (showController) {
-               var shows = showController.watched;
-              sortedList = shows.where((e) => e.name!.toLowerCase().contains(_searchTerm.toLowerCase())).toList();
-              print(sortedList.length);
-              return Stack(
+          child:  Stack(
                 children: [
                   // Container(
                   //   width: _width,
@@ -182,7 +154,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                         )
                     ),
                     // ignore: missing_required_param
-                    child: createListView(sortedList),
+                    child: createListView(showController.sortedList),
                   ), //pass title, and get content
                   Positioned(
                     bottom: 50,
@@ -198,7 +170,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                             highlightColor: Colors.blueAccent.shade700,
                             onPressed: () {
                               _onpressed();
-                              _sortWatchList(sortedList, criteria, !_ascending);
+                              showController.sort(criteria);
                               print("sorting!");
                             },
                             child: Container(
@@ -233,28 +205,12 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                                     clockwise: false,
                                     onStartIconPress: () {
                                       _onpressed();
-                                       _sortWatchList(sortedList, criteria, !_ascending);
-
-                                      // if ( listController.hasClients){
-                                      //   listController.animateTo(
-                                      //       0,
-                                      //       duration: Duration(milliseconds: 200),
-                                      //       curve: Curves.ease);
-                                      // }
-
+                                      showController.sort(criteria);
                                       return true;
                                     },
                                     onEndIconPress: () {
                                       _onpressed();
-                                       _sortWatchList(sortedList, criteria, !_ascending);
-
-                                      // if ( listController.hasClients){
-                                      //   listController.animateTo(
-                                      //       0,
-                                      //       duration: Duration(milliseconds: 200),
-                                      //       curve: Curves.easeOut
-                                      //   );
-                                      // }
+                                      showController.sort(criteria);
                                       return true;
                                     },
                                   ),
@@ -278,8 +234,6 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                     ),
                   ),
                 ],
-              );
-            }
           ),
         ),
       ),
@@ -356,31 +310,9 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     );
   }
 
-  getCriteria(WatchedTVShow a, String criteria) {
-    // print(a);
-    Map<String, dynamic> criteriaMap = {
-      "Title": a.name,
-      "Year": a.startDate,
-      "Runtime": a.runtime,
-      "Progress": a.calculateProgress() ?? 0.0,
-      "Rating" : a.rating ?? 0.0
-    };
-    return criteriaMap[criteria];
-  }
-
-  void _sortWatchList(List<dynamic> list, String x, bool ascending) {
-    _ascending = ascending;
-    if (ascending) {
-      list.sort((a, b) => getCriteria(a, x).compareTo(getCriteria(b, x)));
-    } else {
-      list.sort((a, b) => getCriteria(b, x).compareTo(getCriteria(a, x)));
-    }
-  }
-
   Widget createBottomSheet() {
-    double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
-
+    double _width = Get.size.width;
+    double _height = Get.size.height;
     return ClipRRect(
       borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
       child: Column(
@@ -393,7 +325,6 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
               alignment: Alignment.center,
               children: [
                 Row(
-                    // alignment: Alignment.bottomCenter,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                   Padding(
@@ -402,7 +333,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                       color: Colors.transparent,
                       child: InkWell(
                           onTap: () {
-                            Navigator.of(context).pop();
+                            Get.back();
                           },
                           child: Icon(
                             Icons.arrow_back,
@@ -417,9 +348,8 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                         setState(() {
                           _sorting = true;
                         });
-                         _sortWatchList(sortedList, criteria, !_ascending);
-
-                        Navigator.of(context).pop();
+                         showController.sort(criteria);
+                         Get.back();
                       },
                       child: Text(
                           "Confirm",
@@ -457,9 +387,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
               useMagnifier: true,
               onSelectedItemChanged: (int value) {
                 setState(() {
-                  // _sorting = true;
-                  _index = value;
-                  criteria = GlobalVariables.SORT_CATEGORIES[_index];
+                  criteria = GlobalVariables.SORT_CATEGORIES[value];
                 });
               },
               children: new List<Widget>.generate(GlobalVariables.SORT_CATEGORIES.length, (index){
@@ -489,9 +417,11 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
       double _width = MediaQuery.of(context).size.width;
       double _height = MediaQuery.of(context).size.height;
       if ( shows.length > 0){
-        return WatchlistView(
-          list: sortedList,
-          term: _searchTerm,
+        return Obx( () =>
+          WatchlistView(
+            list: showController.sortedList,
+            term: showController.searchTerm.value!,
+          ),
         );
       }
       else{
@@ -529,9 +459,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                   textColor: GlobalVariables.watchlistBlue,
                   color: GlobalColors.bgColor,
                   onPressed: () {
-                    setState(() {
-                      _searchTerm = "";
-                    });
+                      showController.searchTerm.value = "";
                   }, child: Container(
                   width: _width/3.5,
                   child: AutoSizeText(
@@ -567,7 +495,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     return InkWell(
       onTap: (){
         setState(() {
-          _searchTerm = "";
+          showController.searchTerm.value = "";
           _filter.clear();
         });
       },

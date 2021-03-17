@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:show_time/components/back.dart';
 import 'package:show_time/constants/custom_variables.dart';
@@ -6,11 +5,9 @@ import 'package:show_time/models/statistics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class OverallProgress extends StatefulWidget {
@@ -25,7 +22,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
 
   late TabController _controller;
 
-  late int touchedIndex;
+  int touchedIndex = 0;
 
   final Duration animDuration = const Duration(milliseconds: 250);
 
@@ -49,7 +46,6 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
 
     return Scaffold(
         appBar: AppBar(
@@ -128,14 +124,14 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                           },
                           labelColor: Colors.black,
                           unselectedLabelColor: Colors.white,
-                          indicator: RectangularIndicator(
-                            bottomLeftRadius: 25,
-                            bottomRightRadius: 25,
-                            topLeftRadius: 25,
-                            topRightRadius: 25,
-                            color: Colors.white,
-                            paintingStyle: PaintingStyle.fill,
-                          ),
+                          // indicator: RectangularIndicator(
+                          //   bottomLeftRadius: 25,
+                          //   bottomRightRadius: 25,
+                          //   topLeftRadius: 25,
+                          //   topRightRadius: 25,
+                          //   color: Colors.white,
+                          //   paintingStyle: PaintingStyle.fill,
+                          // ),
                         ),
                       ),
                     ),
@@ -729,55 +725,11 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
     );
   }
   List<LineChartBarData> linesBarData1(List<FlSpot> spotList) {
-    // print(spotList[2].y);
     final LineChartBarData lineChartBarData1 = LineChartBarData(
       spots: spotList,
       isCurved: true,
       colors: [
         GlobalColors.greenColor
-      ],
-      barWidth: 8,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(
-        show: false,
-      ),
-    );
-    final LineChartBarData lineChartBarData2 = LineChartBarData(
-      spots: [
-        FlSpot(1, 1),
-        FlSpot(3, 2.8),
-        FlSpot(7, 1.2),
-        FlSpot(10, 2.8),
-        FlSpot(12, 2.6),
-        FlSpot(13, 3.9),
-      ],
-      isCurved: true,
-      colors: [
-        const Color(0xffaa4cfc),
-      ],
-      barWidth: 8,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(show: false, colors: [
-        const Color(0x00aa4cfc),
-      ]),
-    );
-    final LineChartBarData lineChartBarData3 = LineChartBarData(
-      spots: [
-        FlSpot(1, 2.8),
-        FlSpot(3, 1.9),
-        FlSpot(6, 3),
-        FlSpot(10, 1.3),
-        FlSpot(13, 2.5),
-      ],
-      isCurved: true,
-      colors: const [
-        Color(0xff27b6fc),
       ],
       barWidth: 8,
       isStrokeCapRound: true,

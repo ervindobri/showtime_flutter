@@ -35,7 +35,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
   }
   @override
   void dispose() {
-    _timer?.cancel();
+    _timer.cancel();
     _countdownLabel = "";
 
     super.dispose();
@@ -129,7 +129,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                    Padding(
                                      padding: const EdgeInsets.only(bottom: 10.0, right: 20),
                                      child: AutoSizeText(
-                                         widget.episode.name,
+                                         widget.episode.name!,
                                          textAlign: TextAlign.right,
                                          style: GoogleFonts.roboto(
                                            color: Colors.white,
@@ -281,7 +281,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                         width: cardWidth * .65,
                         child: Center(
                           child: AutoSizeText(
-                              widget.episode.getDiffDays() >= 0 ? "Available": widget.episode.airTime,
+                              widget.episode.getDiffDays() >= 0 ? "Available": widget.episode.airTime!,
                               // textAlign: TextAlign.center,
                               minFontSize: 25,
                               style: const TextStyle(

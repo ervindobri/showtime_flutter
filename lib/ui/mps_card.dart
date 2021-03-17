@@ -16,7 +16,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:status_alert/status_alert.dart';
 
 import '../main.dart';
 
@@ -107,7 +106,7 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: AutoSizeText(
-              widget.show.name,
+              widget.show.name!,
               style: TextStyle(
                   fontFamily: 'Raleway',
                   fontSize: _width/20,
@@ -308,14 +307,15 @@ class _PopularCardState extends State<PopularCard>  with AnimationMixin {
                                                     if ( !_added){
                                                       WatchedTVShow show = FirestoreUtils().addToWatchedShows(showDetails);
                                                       GlobalVariables.watchedShowList.add(show);
-                                                      StatusAlert.show(
-                                                        context,
-                                                        duration: Duration(seconds: 2),
-                                                        blurPower: 5.0,
-                                                        title: 'Show added',
-                                                        configuration: IconConfiguration(
-                                                            icon: Icons.done),
-                                                      );
+                                                      //TODO: change status alert
+                                                      // StatusAlert.show(
+                                                      //   context,
+                                                      //   duration: Duration(seconds: 2),
+                                                      //   blurPower: 5.0,
+                                                      //   title: 'Show added',
+                                                      //   configuration: IconConfiguration(
+                                                      //       icon: Icons.done),
+                                                      // );
                                                       setState(() => _added = true );
                                                     }
                                                     else{

@@ -4,24 +4,21 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:show_time/components/custom_elevation.dart';
-import 'package:show_time/components/dialogs.dart';
-import 'package:show_time/components/toast.dart';
 import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/get_controllers/show_controller.dart';
 import 'package:show_time/get_controllers/timer_controller.dart';
+import 'package:show_time/get_controllers/ui_controller.dart';
 import 'package:show_time/models/watched.dart';
 import 'package:show_time/network/firebase_utils.dart';
-import 'package:show_time/network/network.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:status_alert/status_alert.dart';
 
 
 class WatchedDetailView extends StatefulWidget {
@@ -49,7 +46,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   late Animation<double> _containerSizeAnimation;
 
-  late FToast fToast;
 
 
   String countdown = "";
@@ -62,6 +58,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   int _episodeLength = 24;
 
   TimerController timerController = Get.put(TimerController())!;
+  UIController uiController = Get.put(UIController())!;
+  ShowController showController = Get.put(ShowController())!;
 
   @override
   void setState(fn) {
@@ -72,17 +70,14 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   @override
   void initState() {
-    fToast = FToast();
-    fToast.init(context);
-
     controller.duration = Duration(milliseconds: 250);
-// <-- start the animation playback
     timerController.init(widget.show);
 
     super.initState();
 
     //Fetch updated data
-    _getShowData(widget.show);
+    showController.getShowData(widget.show);
+
     _percentage = widget.show.calculateProgress();
     _lastWatchedDay = widget.show.diffDays().abs();
 
@@ -116,8 +111,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
   @override
   void dispose() {
+    timerController.cancelTimer();
     _controller.dispose();
     _reverseController.dispose();
+
     super.dispose();
   }
 
@@ -208,21 +205,16 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 child:
                                 _yourProgress(_percentage, widget.show, _height, _width)
                             ),
-                            if ( this.widget.show.watchedTimes! > 0) Positioned(
+                            if ( this.widget.show.watchedTimes > 0) Positioned(
                               bottom: _height/4.5,
                               right: _width/10,
                               child: InkWell(
                                 onTap:(){
-                                  Widget toast = CustomToast
-                                    (
+                                  uiController.showToast(
+                                    context: context,
                                       color: GlobalColors.blueColor,
                                       icon: FontAwesomeIcons.history,
                                       text: "You rewatched ${widget.show.name} ${widget.show.watchedTimes} time(s)"
-                                  );
-                                  fToast.showToast(
-                                    child: toast,
-                                    gravity: ToastGravity.BOTTOM,
-                                    toastDuration: Duration(seconds: 2),
                                   );
                               },
                                 child: Container(
@@ -340,7 +332,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
                         child: AutoSizeText(
-                            show.name,
+                            show.name!,
                             maxFontSize: (_width/10).roundToDouble(),
                             minFontSize: (_width/15).roundToDouble(),
                             stepGranularity: .1,
@@ -444,26 +436,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
   }
 
 
-  _getShowData(WatchedTVShow show) async {
-    try{
-      List<dynamic> list = await new Network().getDetailUpdates(showID: show.id);
-      // print(list);
-      // print(episodes.length);
-      var snapshots = FirestoreUtils().watchedShows.doc(show.id).snapshots();
-      snapshots.first.then((value) {
-        show.currentSeason = value.data()!['currentSeason'];
-        show.totalSeasons = list[0];
-        show.episodePerSeason = list[1];
-        show.currentEpisode = value.data()!['currentEpisode'];
-        // return show;
-      });
-    }
-    catch(e ){
-      print(e);
-      rethrow;
-    }
 
-  }
 
   Widget displayBadges(double _height, double _width) {
     List<Widget> badges = getBadges();
@@ -600,14 +573,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                           });
                           widget.show.setLastWatchedDate();
                           FirestoreUtils().updateEpisode(widget.show);
-                          Navigator.of(context).pop();
-                          StatusAlert.show(
-                            context,
-                            duration: Duration(seconds: 1),
-                            blurPower: 15.0,
-                            title: 'Updated successfully!',
-                            configuration: IconConfiguration(icon: FontAwesomeIcons.checkCircle),
-                          );
+                          uiController.showAlert(title: 'Updated successfully!', seconds: 1, blurPower:  15, icon: Icons.done);
+                          Get.back();
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -615,7 +582,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             borderRadius: BorderRadius.circular(12)
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12),
+                            padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 12),
                             child: AutoSizeText(
                               "Select",
                               style: TextStyle(
@@ -628,7 +595,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                           ),
                         ),
                       ),
-                    ),
+                        ),
                   ],
                 ),
               ),
@@ -669,7 +636,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                     //selected season
                                   setState(() {
                                     _selectedSeason = value + this.widget.show.currentSeason;
-                                    _episodeLength = this.widget.show.episodePerSeason![_selectedSeason.toString()];
+                                    _episodeLength = this.widget.show.episodePerSeason![_selectedSeason.toString()]!.toInt();
                                   });
                                   print(_episodeLength);
                                 },
@@ -734,28 +701,25 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
     );
   }
   Widget displayActions() {
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
-    // var timerService = Provider.of<TimerService>(context);
+    final _width = Get.size.width;
+    final _height = Get.size.height;
 
     if (this.widget.show.calculateProgress() < 1.0) {
       return widget.show.nextEpisodeAired()
           ? Column(
             children: [
                 Container(
-                // color: Colors.black,
-                child: Row(
+                  child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: OutlineButton(
-                        borderSide: BorderSide(
-                          color: GlobalColors.greenColor
+                      child: OutlinedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.white),
+                          // highlightedBorderColor: GlobalColors.darkGreenColor,
+                          shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
                         ),
-                        color: Colors.white,
-                        highlightedBorderColor: GlobalColors.darkGreenColor,
-                        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0)),
                         clipBehavior: Clip.antiAlias,
                         onPressed: () {
                           showAnimatedDialog(
@@ -764,7 +728,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             barrierDismissible: false,
                             duration: Duration(milliseconds: 100),
                             builder: (BuildContext context) {
-                              return unwatchDialog(context, widget.show.name!, widget.show.id);
+                              return uiController.unwatchDialog(showName: widget.show.name!,showID: widget.show.id);
                             },
                           );
                         },
@@ -788,10 +752,12 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                         color: GlobalColors.greenColor.withOpacity(.3),
                         spreadRadius: 2,
                         blurRadius: 15,
-                        child: FlatButton(
-                          splashColor: GlobalColors.darkGreenColor,
-                          color: GlobalColors.greenColor,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                        child: TextButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(GlobalColors.greenColor),
+                            overlayColor: MaterialStateProperty.all(GlobalColors.darkGreenColor),
+                            shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
+                          ),
                           onLongPress: (){
                             setState(() {
                               _selectedSeason = this.widget.show.currentSeason;
@@ -816,35 +782,10 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 widget.show.setLastWatchedDate();
                               });
                               FirestoreUtils().updateEpisode(widget.show);
-                              StatusAlert.show(
-                                context,
-                                duration:
-                                Duration(
-                                    seconds:
-                                    1),
-                                blurPower: 15.0,
-                                title:
-                                'Episode added',
-                                configuration:
-                                IconConfiguration(
-                                    icon: Icons
-                                        .done),
-                              );
+                              uiController.showAlert(title: 'Episode added!', seconds: 2, blurPower:  15, icon: Icons.done);
                             } catch (e, s) {
-                              // print(s);
-                              StatusAlert.show(
-                                context,
-                                duration:
-                                Duration(
-                                    seconds: 1),
-                                blurPower: 15.0,
-                                title:
-                                '{$e}:Couldn\'t add episode!',
-                                configuration:
-                                IconConfiguration(
-                                    icon: Icons
-                                        .error),
-                              );
+                              print(s);
+                              uiController.showAlert(title: '{$e}:Couldn\'t add episode!', seconds: 2, blurPower:  15, icon: Icons.error);
                             }
 
                           },
@@ -901,9 +842,11 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                       color: GlobalColors.greenColor.withOpacity(.2),
                       spreadRadius: -2,
                       blurRadius: 10,
-                      child: FlatButton(
-                        splashColor: Colors.white,
-                        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
+                      child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.white),
+                          shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
+                        ),
                         clipBehavior: Clip.antiAlias,
                         onPressed: () {
                           showAnimatedDialog(
@@ -911,8 +854,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             animationType: DialogTransitionType.slideFromBottomFade,
                             barrierDismissible: false,
                             duration: Duration(milliseconds: 100),
-                            builder: (BuildContext context) {
-                              return unwatchDialog(context, widget.show.name!, widget.show.id);
+                            builder: (_) {
+                              return uiController.unwatchDialog(showName: widget.show.name!,showID:  widget.show.id);
                             },
                           );
                         },
@@ -936,7 +879,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
-                    width: _width/2.5,
+                    width: _width/3,
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(25.0)),
@@ -946,18 +889,19 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                       color: GlobalColors.fireColor.withOpacity(.3),
                       spreadRadius: 2,
                       blurRadius: 15,
-                      child: FlatButton(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.redAccent,
-                        shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
+                      child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(GlobalColors.fireColor),
+                          overlayColor: MaterialStateProperty.all(Colors.transparent),
+                          shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
+                        ),
                         onPressed: () {
                           print("ep not aired");
-                          Widget toast = CustomToast(color: GlobalColors.fireColor,icon: Icons.timer, text: "Episode air date: ${widget.show.nextEpisodeAirDate()[1]}");
-                          fToast.showToast(
-                            child: toast,
-                            gravity: ToastGravity.TOP,
-                            toastDuration: Duration(seconds: 2),
-                          );
+                          uiController.showToast(
+                              context: context,
+                              color: GlobalColors.fireColor,
+                              icon: Icons.timer,
+                              text: "Episode air date: ${widget.show.nextEpisodeAirDate()[1]}");
                         },
                         child: Center(
                           child: Row(
@@ -967,9 +911,9 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 padding: const EdgeInsets.all(8.0),
                                 child: Obx( () =>
                                   AutoSizeText(
-                                    timerController.countDown ?? "N/A",
-                                    maxFontSize: 20,
-                                    minFontSize: 13,
+                                    timerController.countDown.value!,
+                                    maxFontSize: 25,
+                                    minFontSize: 17,
                                     maxLines: 1,
                                     style: GoogleFonts.lato(
                                         fontWeight: FontWeight.w600,
@@ -997,9 +941,11 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
          padding: const EdgeInsets.all(8.0),
          child: CustomElevation(
            color: GlobalColors.greenColor.withOpacity(.4),
-           child: FlatButton(
-             color: GlobalColors.greenColor,
-             shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0)),
+           child: TextButton(
+             style: ButtonStyle(
+               backgroundColor: MaterialStateProperty.all(GlobalColors.greenColor),
+               shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
+             ),
              clipBehavior: Clip.antiAlias,
              onPressed: () {
                //RESET THE NUMBERS AND INCREMENT
@@ -1014,32 +960,30 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                 //Reset episode counters;
                 FirestoreUtils().incrementWatchedTime(this.widget.show);
              },
-             child: Padding(
-               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-               child: Container(
-                 width: _width/3,
-                 child: Center(
-                   child: Row(
-                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                     children: [
-                       FaIcon(
-                         FontAwesomeIcons.rev,
-                         color: Colors.white,
-                         size: 20,
-                       ),
-                       AutoSizeText(
-                         "Rewatch",
-                         style: GoogleFonts.roboto(
-                           textStyle: TextStyle(
-                               fontSize: 22,
-                               fontFamily: 'Raleway',
-                               fontWeight: FontWeight.w500,
-                               color: Colors.white
-                           ),
+             child: Container(
+               width: _width/3,
+               child: Padding(
+                 padding: const EdgeInsets.all(8.0),
+                 child: Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                   children: [
+                     FaIcon(
+                       FontAwesomeIcons.rev,
+                       color: Colors.white,
+                       size: 20,
+                     ),
+                     AutoSizeText(
+                       "Rewatch",
+                       style: GoogleFonts.roboto(
+                         textStyle: TextStyle(
+                             fontSize: 22,
+                             fontFamily: 'Raleway',
+                             fontWeight: FontWeight.w500,
+                             color: Colors.white
                          ),
                        ),
-                     ],
-                   ),
+                     ),
+                   ],
                  ),
                ),
              ),
@@ -1049,18 +993,4 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
      );
     }
   }
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(DiagnosticsProperty<Timer>('_timer', _timer));
-  }
-  // void startTimer() {
-  //   const oneSec = const Duration(seconds: 1);
-  //   _timer = new Timer.periodic(
-  //       oneSec,
-  //           (Timer timer) {
-  //         setState(() => countdown = widget.show.episodes[widget.show.calculateWatchedEpisodes()].getDifference());
-  //       }
-  //   );
-  // }
 }

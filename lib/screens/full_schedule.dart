@@ -15,7 +15,7 @@ import 'package:show_time/ui/full_schedule_card.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timelines/timelines.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 class FullSchedule extends StatefulWidget {
 
@@ -337,298 +337,298 @@ class _FullScheduleState extends State<FullSchedule> {
     return index == 0 || index == list.length + 1;
   }
 
-   _buildTimeline(double height, double width) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 35),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            FixedTimeline.tileBuilder(
-              theme: TimelineThemeData(
-                nodePosition: 0,
-                color: Color(0xff989898),
-                indicatorTheme: IndicatorThemeData(
-                  position: 0,
-                  size: 20.0,
-                ),
-                connectorTheme: ConnectorThemeData(
-                  thickness: 2.5,
-                ),
-              ),
-              builder: TimelineTileBuilder.connected(
-                connectionDirection: ConnectionDirection.after,
-                itemCount: list.length,
-                contentsBuilder: (_, index) {
-                  Episode episode = latestEpisode(index);
-                  if (list[index].first.aired()){
-                    return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15),
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 100,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [GlobalColors.fireColor, Colors.orangeAccent],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight
-                              ),
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: GlobalColors.greyTextColor.withOpacity(.3),
-                                  spreadRadius: -2,
-                                  blurRadius: 20
-                                )
-                              ]
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        episode.embedded!['show']['name'],
-                                        style: GoogleFonts.openSans(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.white
-                                        ),
-                                      ),
-                                      AutoSizeText(
-                                        episode.name,
-                                        maxLines: 1,
-                                        maxFontSize: 16,
-                                        minFontSize: 12,
-                                        style: GoogleFonts.openSans(
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Row(
-                                          children: [
-                                            FaIcon(
-                                              FontAwesomeIcons.calendarDay,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(left: 8.0),
-                                              child: Text(
-                                                episode.getAirDateLabel(),
-                                                style: GoogleFonts.openSans(
-                                                    fontSize: 18.0,
-                                                    color: Colors.white
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-
-                                      // _InnerTimeline(messages: processes[index].messages),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(right: 8.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                  Text(
-                                                    "Sn",
-                                                    style: GoogleFonts.openSans(
-                                                        fontSize: 15.0,
-                                                        fontWeight: FontWeight.w300,
-                                                        color: Colors.white
-                                                    ),
-                                                  ),
-                                                  AutoSizeText(
-                                                    episode.season.toString(),
-                                                    maxFontSize: 30,
-                                                    minFontSize: 25,
-                                                    maxLines: 1,
-                                                    style: GoogleFonts.openSans(
-                                                        fontWeight: FontWeight.w700,
-                                                        color: Colors.white
-                                                    ),
-                                                  ),
-                                                ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(left:8.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  "Ep",
-                                                  style: GoogleFonts.openSans(
-                                                      fontSize: 15.0,
-                                                      fontWeight: FontWeight.w300,
-                                                      color: Colors.white
-                                                  ),
-                                                ),
-                                                AutoSizeText(
-                                                  episode.episode.toString(),
-                                                  maxFontSize: 30,
-                                                  minFontSize: 25,
-                                                  maxLines: 1,
-                                                  style: GoogleFonts.openSans(
-                                                      fontWeight: FontWeight.w700,
-                                                      color: Colors.white
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15.0, top: 10),
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: GlobalColors.greyTextColor,
-                                  shape: BoxShape.circle
-                              ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: FaIcon(
-                                        FontAwesomeIcons.solidCalendarCheck,
-                                        color: Colors.white,
-                                        size: 13,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 12.0),
-                                    child: Text(
-                                      list[index].first.name!,
-                                      style: GoogleFonts.openSans(
-                                          fontSize: 13.0,
-                                          fontWeight: FontWeight.w700,
-                                          color: GlobalColors.greyTextColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    );
-                  };
-
-                  return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 15),
-                    child: Container(
-                      height: min(120, height*.17),
-                      width: width*.8,
-                      decoration: BoxDecoration(
-                          color: Colors.grey.shade300,
-                          borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AutoSizeText(
-                              episode.embedded!['show']['name'],
-                              maxLines: 1,
-                              style: GoogleFonts.openSans(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w300
-                              ),
-                            ),
-                            AutoSizeText(
-                              episode.name,
-                              maxLines: 1,
-                              softWrap: true,
-                              maxFontSize: 18,
-                              style: GoogleFonts.openSans(
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: Container(
-                                width: double.maxFinite,
-                                decoration: BoxDecoration(
-                                  color: GlobalColors.greenColor,
-                                  borderRadius: BorderRadius.circular(12)
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Center(
-                                    child: AutoSizeText(
-                                      episode.getAirDateLabel(),
-                                      maxLines: 1,
-                                      softWrap: true,
-                                      maxFontSize: 18,
-                                      style: GoogleFonts.openSans(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                            // _InnerTimeline(messages: processes[index].messages),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                indicatorBuilder: (_, index) {
-                  if (list[index].first.aired()) {
-                    return DotIndicator(
-                      color: GlobalColors.fireColor,
-                      child: Icon(
-                        Icons.check,
-                        color: Colors.white,
-                        size: 12.0,
-                      ),
-                    );
-                  } else {
-                    return OutlinedDotIndicator(
-                      borderWidth: 2.5,
-                    );
-                  }
-                },
-                connectorBuilder: (_, index, ___) => SolidLineConnector(
-                  color: list[index].first.aired() ? GlobalColors.fireColor : Colors.grey,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  //  _buildTimeline(double height, double width) {
+  //   return Padding(
+  //     padding: const EdgeInsets.only(left: 35),
+  //     child: SingleChildScrollView(
+  //       child: Column(
+  //         children: [
+  //           FixedTimeline.tileBuilder(
+  //             theme: TimelineThemeData(
+  //               nodePosition: 0,
+  //               color: Color(0xff989898),
+  //               indicatorTheme: IndicatorThemeData(
+  //                 position: 0,
+  //                 size: 20.0,
+  //               ),
+  //               connectorTheme: ConnectorThemeData(
+  //                 thickness: 2.5,
+  //               ),
+  //             ),
+  //             builder: TimelineTileBuilder.connected(
+  //               connectionDirection: ConnectionDirection.after,
+  //               itemCount: list.length,
+  //               contentsBuilder: (_, index) {
+  //                 Episode episode = latestEpisode(index);
+  //                 if (list[index].first.aired()){
+  //                   return Padding(
+  //                     padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15),
+  //                     child: Column(
+  //                       children: [
+  //                         Container(
+  //                           height: 100,
+  //                           decoration: BoxDecoration(
+  //                             gradient: LinearGradient(
+  //                               colors: [GlobalColors.fireColor, Colors.orangeAccent],
+  //                               begin: Alignment.topLeft,
+  //                               end: Alignment.bottomRight
+  //                             ),
+  //                             borderRadius: BorderRadius.circular(12),
+  //                             boxShadow: [
+  //                               BoxShadow(
+  //                                 color: GlobalColors.greyTextColor.withOpacity(.3),
+  //                                 spreadRadius: -2,
+  //                                 blurRadius: 20
+  //                               )
+  //                             ]
+  //                           ),
+  //                           child: Padding(
+  //                             padding: const EdgeInsets.all(8.0),
+  //                             child: Row(
+  //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                               children: [
+  //                                 Column(
+  //                                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                                   children: [
+  //                                     Text(
+  //                                       episode.embedded!['show']['name'],
+  //                                       style: GoogleFonts.openSans(
+  //                                         fontSize: 13.0,
+  //                                         fontWeight: FontWeight.w300,
+  //                                         color: Colors.white
+  //                                       ),
+  //                                     ),
+  //                                     AutoSizeText(
+  //                                       episode.name!,
+  //                                       maxLines: 1,
+  //                                       maxFontSize: 16,
+  //                                       minFontSize: 12,
+  //                                       style: GoogleFonts.openSans(
+  //                                           fontWeight: FontWeight.w500,
+  //                                           color: Colors.white
+  //                                       ),
+  //                                     ),
+  //                                     Padding(
+  //                                       padding: const EdgeInsets.all(8.0),
+  //                                       child: Row(
+  //                                         children: [
+  //                                           FaIcon(
+  //                                             FontAwesomeIcons.calendarDay,
+  //                                             color: Colors.white,
+  //                                             size: 20,
+  //                                           ),
+  //                                           Padding(
+  //                                             padding: const EdgeInsets.only(left: 8.0),
+  //                                             child: Text(
+  //                                               episode.getAirDateLabel(),
+  //                                               style: GoogleFonts.openSans(
+  //                                                   fontSize: 18.0,
+  //                                                   color: Colors.white
+  //                                               ),
+  //                                             ),
+  //                                           ),
+  //                                         ],
+  //                                       ),
+  //                                     ),
+  //
+  //                                     // _InnerTimeline(messages: processes[index].messages),
+  //                                   ],
+  //                                 ),
+  //                                 Padding(
+  //                                   padding: const EdgeInsets.all(8.0),
+  //                                   child: Container(
+  //                                     child: Row(
+  //                                       children: [
+  //                                         Padding(
+  //                                           padding: const EdgeInsets.only(right: 8.0),
+  //                                           child: Column(
+  //                                             mainAxisAlignment: MainAxisAlignment.center,
+  //                                             children: [
+  //                                                 Text(
+  //                                                   "Sn",
+  //                                                   style: GoogleFonts.openSans(
+  //                                                       fontSize: 15.0,
+  //                                                       fontWeight: FontWeight.w300,
+  //                                                       color: Colors.white
+  //                                                   ),
+  //                                                 ),
+  //                                                 AutoSizeText(
+  //                                                   episode.season.toString(),
+  //                                                   maxFontSize: 30,
+  //                                                   minFontSize: 25,
+  //                                                   maxLines: 1,
+  //                                                   style: GoogleFonts.openSans(
+  //                                                       fontWeight: FontWeight.w700,
+  //                                                       color: Colors.white
+  //                                                   ),
+  //                                                 ),
+  //                                               ],
+  //                                           ),
+  //                                         ),
+  //                                         Padding(
+  //                                           padding: const EdgeInsets.only(left:8.0),
+  //                                           child: Column(
+  //                                             mainAxisAlignment: MainAxisAlignment.center,
+  //                                             children: [
+  //                                               Text(
+  //                                                 "Ep",
+  //                                                 style: GoogleFonts.openSans(
+  //                                                     fontSize: 15.0,
+  //                                                     fontWeight: FontWeight.w300,
+  //                                                     color: Colors.white
+  //                                                 ),
+  //                                               ),
+  //                                               AutoSizeText(
+  //                                                 episode.episode.toString(),
+  //                                                 maxFontSize: 30,
+  //                                                 minFontSize: 25,
+  //                                                 maxLines: 1,
+  //                                                 style: GoogleFonts.openSans(
+  //                                                     fontWeight: FontWeight.w700,
+  //                                                     color: Colors.white
+  //                                                 ),
+  //                                               ),
+  //                                             ],
+  //                                           ),
+  //                                         )
+  //                                       ],
+  //                                     ),
+  //                                   ),
+  //                                 )
+  //                               ],
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Padding(
+  //                           padding: const EdgeInsets.only(left: 15.0, top: 10),
+  //                           child: Container(
+  //                             child: Row(
+  //                               mainAxisAlignment: MainAxisAlignment.end,
+  //                               children: [
+  //                                 Container(
+  //                                   decoration: BoxDecoration(
+  //                                     color: GlobalColors.greyTextColor,
+  //                                 shape: BoxShape.circle
+  //                             ),
+  //                                   child: Padding(
+  //                                     padding: const EdgeInsets.all(8.0),
+  //                                     child: FaIcon(
+  //                                       FontAwesomeIcons.solidCalendarCheck,
+  //                                       color: Colors.white,
+  //                                       size: 13,
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                                 Padding(
+  //                                   padding: const EdgeInsets.only(left: 12.0),
+  //                                   child: Text(
+  //                                     list[index].first.name!,
+  //                                     style: GoogleFonts.openSans(
+  //                                         fontSize: 13.0,
+  //                                         fontWeight: FontWeight.w700,
+  //                                         color: GlobalColors.greyTextColor,
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   );
+  //                 };
+  //
+  //                 return Padding(
+  //                   padding: EdgeInsets.symmetric(horizontal: 35.0, vertical: 15),
+  //                   child: Container(
+  //                     height: min(120, height*.17),
+  //                     width: width*.8,
+  //                     decoration: BoxDecoration(
+  //                         color: Colors.grey.shade300,
+  //                         borderRadius: BorderRadius.circular(12),
+  //                     ),
+  //                     child: Padding(
+  //                       padding: const EdgeInsets.all(8.0),
+  //                       child: Column(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         mainAxisSize: MainAxisSize.min,
+  //                         children: [
+  //                           AutoSizeText(
+  //                             episode.embedded!['show']['name'],
+  //                             maxLines: 1,
+  //                             style: GoogleFonts.openSans(
+  //                               fontSize: 12.0,
+  //                               fontWeight: FontWeight.w300
+  //                             ),
+  //                           ),
+  //                           AutoSizeText(
+  //                             episode.name!,
+  //                             maxLines: 1,
+  //                             softWrap: true,
+  //                             maxFontSize: 18,
+  //                             style: GoogleFonts.openSans(
+  //                             ),
+  //                           ),
+  //                           Padding(
+  //                             padding: const EdgeInsets.all(3.0),
+  //                             child: Container(
+  //                               width: double.maxFinite,
+  //                               decoration: BoxDecoration(
+  //                                 color: GlobalColors.greenColor,
+  //                                 borderRadius: BorderRadius.circular(12)
+  //                               ),
+  //                               child: Padding(
+  //                                 padding: const EdgeInsets.all(8.0),
+  //                                 child: Center(
+  //                                   child: AutoSizeText(
+  //                                     episode.getAirDateLabel(),
+  //                                     maxLines: 1,
+  //                                     softWrap: true,
+  //                                     maxFontSize: 18,
+  //                                     style: GoogleFonts.openSans(
+  //                                       color: Colors.white,
+  //                                       fontWeight: FontWeight.w700
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           )
+  //                           // _InnerTimeline(messages: processes[index].messages),
+  //                         ],
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 );
+  //               },
+  //               indicatorBuilder: (_, index) {
+  //                 if (list[index].first.aired()) {
+  //                   return DotIndicator(
+  //                     color: GlobalColors.fireColor,
+  //                     child: Icon(
+  //                       Icons.check,
+  //                       color: Colors.white,
+  //                       size: 12.0,
+  //                     ),
+  //                   );
+  //                 } else {
+  //                   return OutlinedDotIndicator(
+  //                     borderWidth: 2.5,
+  //                   );
+  //                 }
+  //               },
+  //               connectorBuilder: (_, index, ___) => SolidLineConnector(
+  //                 color: list[index].first.aired() ? GlobalColors.fireColor : Colors.grey,
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
 
 
@@ -691,7 +691,8 @@ class _FullScheduleState extends State<FullSchedule> {
         view = buildCarousel(list);
         break;
       case 0:
-        view = _buildTimeline(height,width);
+        view = buildCarousel(list);
+        // view = _buildTimeline(height,width);
         break;
     }
     return view;

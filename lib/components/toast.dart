@@ -5,12 +5,12 @@ import 'package:google_fonts/google_fonts.dart';
 
 class CustomToast extends StatefulWidget {
   final Color color;
-  final IconData icon;
+  final IconData? icon;
   final String text;
 
   const CustomToast({ Key? key,
     required this.color,
-    required this.icon,
+    this.icon,
     required this.text}) : super(key: key);
   @override
   _CustomToastState createState() => _CustomToastState();

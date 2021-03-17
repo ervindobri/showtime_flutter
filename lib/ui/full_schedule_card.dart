@@ -295,7 +295,7 @@ class _FullScheduleCardState extends State<FullScheduleCard> with AnimationMixin
                                                       padding: const EdgeInsets.all(8.0),
                                                       child: Center(
                                                         child: AutoSizeText(
-                                                          latestEpisode(),
+                                                          latestEpisode()!,
                                                           minFontSize: 8,
                                                           maxLines: 2,
                                                           maxFontSize: 20,

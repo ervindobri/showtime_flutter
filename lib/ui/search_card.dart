@@ -1,5 +1,7 @@
 import 'dart:ui';
+import 'package:get/get.dart';
 import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/get_controllers/ui_controller.dart';
 import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/models/tvshow_details.dart';
 import 'package:show_time/network/network.dart';
@@ -9,7 +11,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:status_alert/status_alert.dart';
 
 class ShowCard extends StatefulWidget {
   final TVShow show;
@@ -23,7 +24,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
   late TVShowDetails showDetails;
 
   bool _added = false;
-
+  UIController uiController = Get.put(UIController())!;
   getDetailResults({required TVShow show}) => new Network().getDetailResults(show: show);
 
   @override
@@ -38,8 +39,6 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
     super.initState();
     _checkIfAdded();
     _getShowDetails();
-
-
   }
 
   _checkIfAdded() async {
@@ -255,54 +254,52 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.all(12.0),
-                                            child: FlatButton(
-                                              minWidth: _height / 13,
-                                              height: _height/10,
-                                              color: GlobalColors.blueColor,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(20)),
-                                              ),
-                                              onPressed: () {
-                                                if (!_added) {
-                                                  var show = FirestoreUtils().addToWatchedShows(showDetails);
-                                                  GlobalVariables.watchedShowList.add(show);
-                                                  setState(() {
-                                                    _added = true;
-                                                  });
-                                                  StatusAlert.show(
-                                                    context,
-                                                    duration: Duration(
-                                                        seconds: 2),
-                                                    blurPower: 5.0,
-                                                    title: 'Show added',
-                                                    configuration:
-                                                        IconConfiguration(
-                                                            icon:
-                                                                Icons.done),
-                                                  );
-                                                } else {
-                                                  //FOR UPDATING SHOWS RATING
-                                                  // _updateRating(showDetails);
-                                                  StatusAlert.show(
-                                                    context,
-                                                    duration: Duration(
-                                                        seconds: 2),
-                                                    blurPower: 5.0,
-                                                    title:
-                                                        " ${widget.show.name} already added!",
-                                                    configuration:
-                                                        IconConfiguration(
-                                                            icon:
-                                                                Icons.info),
-                                                  );
-                                                }
-                                              },
-                                              child: FaIcon(
-                                                FontAwesomeIcons.couch,
-                                                color: Colors.white,
-                                                size: _height/17,
-                                              ),
-                                            ),
+                                            child: GetBuilder<UIController>(
+                                              init: uiController,
+                                              builder: (uiController) {
+                                                return FlatButton(
+                                                  minWidth: _height / 13,
+                                                  height: _height / 10,
+                                                  color: GlobalColors.blueColor,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .all(
+                                                        Radius.circular(20)),
+                                                  ),
+                                                  onPressed: () {
+                                                    if (!_added) {
+                                                      var show = FirestoreUtils()
+                                                          .addToWatchedShows(
+                                                          showDetails);
+                                                      GlobalVariables
+                                                          .watchedShowList.add(
+                                                          show);
+                                                      setState(() {
+                                                        _added = true;
+                                                      });
+                                                      uiController.showAlert(
+                                                          title: "Show added!",
+                                                          seconds: 2,
+                                                          blurPower: 5,
+                                                          icon: Icons.done);
+                                                    } else {
+                                                      //FOR UPDATING SHOWS RATING
+                                                      // _updateRating(showDetails);
+                                                      uiController.showAlert(
+                                                          title: "${widget.show
+                                                              .name} already added!",
+                                                          seconds: 2,
+                                                          blurPower: 5,
+                                                          icon: Icons.done);
+                                                    }
+                                                  },
+                                                  child: FaIcon(
+                                                    FontAwesomeIcons.couch,
+                                                    color: Colors.white,
+                                                    size: _height / 17,
+                                                  ),
+                                                );
+                                              }),
                                           ),
                                         ],
                                       ),

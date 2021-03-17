@@ -1,22 +1,17 @@
-import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:show_time/constants/custom_variables.dart';
-import 'package:show_time/database/user_data_dao.dart';
 import 'package:show_time/get_controllers/auth_controller.dart';
 import 'package:show_time/get_controllers/show_controller.dart';
-import 'package:show_time/models/episode.dart';
 import 'package:show_time/pages/login.dart';
 import 'package:show_time/models/user.dart';
 import 'package:show_time/models/watched.dart';
 import 'package:show_time/network/firebase_utils.dart';
-import 'package:show_time/network/network.dart';
-import 'package:show_time/placeholders/watched_detail_view_placeholder.dart';
 import 'package:show_time/screens/browse_shows.dart';
 import 'package:show_time/screens/full_schedule.dart';
-import 'package:show_time/screens/watched_detail_view.dart';
 import 'package:show_time/screens/discover/discover.dart';
 import 'package:show_time/ui/colorful_card_home.dart';
 import 'package:show_time/ui/schedule_card.dart';
@@ -30,11 +25,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:sliding_sheet/sliding_sheet.dart';
 
 class HomeView extends StatefulWidget {
 
@@ -43,12 +37,12 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView>  with AnimationMixin {
-  late PanelState _panelState;
+  // late PanelState _panelState;
   Widget title = Container(
       color: GlobalColors.bgColor,
       child: Image(image: AssetImage('showTIME.png'), height: 50));
   late Widget _customTitle;
-  PanelController _pc = new PanelController();
+  // PanelController _pc = new PanelController();
 
 
   late SessionUser currentUser;
@@ -61,7 +55,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
   void initState() {
     print("home init!");
     super.initState();
-    _panelState = PanelState.CLOSED;
+    // _panelState = PanelState.CLOSED;
     _customTitle = title;
     currentUser = authController.sessionUser.value!;
 
@@ -71,11 +65,13 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
   void dispose() {
     super.dispose();
   }
+  SheetController slidingController = SheetController();
 
   BorderRadiusGeometry radius = BorderRadius.only(
-    topLeft: Radius.circular(50.0),
-    topRight: Radius.circular(50.0),
+    topLeft: Radius.circular(25.0),
+    topRight: Radius.circular(25.0),
   );
+
 
   @override
   Widget build(BuildContext context) {
@@ -401,8 +397,6 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
     Widget homeScreenBody(BuildContext context, GlobalKey<ScaffoldState> _slidingPanelKey) {
     final double _width = Get.size.width;
     final double _height = Get.size.height;
-    final _panelHeightOpen = _height * .80;
-    final _panelHeightClosed = _height / 10;
     return Center(
       child: Stack(
         children: <Widget>[
@@ -549,146 +543,103 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
               ],
             ),
           ),
-          SlidingUpPanel(
-            controller: _pc,
-            maxHeight: _panelHeightOpen,
-            minHeight: _panelHeightClosed,
-            key: _slidingPanelKey,
-            defaultPanelState: _panelState,
-            boxShadow: [
-              BoxShadow(
-                color: GlobalColors.greenColor.withOpacity(0.15),
-                spreadRadius: 10,
-                blurRadius: 25,
-                offset: Offset(0, -10), // changes position of shadow
-              ),
-            ],
-            panelSnapping: true,
-            collapsed: Center(
-              child: Container(
-                height: _height * 0.8,
-                width: _width,
-                decoration: BoxDecoration(
-                  borderRadius: radius,
-                  color: GlobalColors.greenColor,
-                ),
-                child:
-                // Shimmer.fromColors(
-                //   period: const Duration(milliseconds: 3500),
-                //   baseColor: Colors.white54,
-                //   highlightColor: Colors.white,
-                //   child:
-                  kIsWeb && Get.width > 646
-                      ? InkWell(
-                    onTap: () => _pc.open(),
+          SlidingSheet(
+            elevation: 8,
+            cornerRadius: 25,
+            controller: slidingController,
+            scrollSpec: ScrollSpec(
+              overscroll: false,
+              overscrollColor: GlobalColors.greenColor,
+              physics: PageScrollPhysics()
+            ),
+            snapSpec: SnapSpec(
+              snappings: [0.15, 1],
+              positioning: SnapPositioning.relativeToSheetHeight,
+              onSnap: (state, snap) {
+                print('Snapped to $snap');
+              },
+            ),
+            parallaxSpec: const ParallaxSpec(
+              enabled: true,
+              amount: 1,
+              endExtent: 1,
+            ),
+            shadowColor: GlobalColors.greenColor.withOpacity(0.15),
+            extendBody: true,
+            builder: (_, state) {
+              return SheetListenerBuilder(
+                // buildWhen can be used to only rebuild the widget when needed.
+                buildWhen: (oldState, newState) => oldState.progress != newState.progress,
+                builder: (context, state) {
+                  return Container(
+                    height: _height * 0.8,
+                    width: _width,
+                    decoration: BoxDecoration(
+                      // borderRadius: radius,
+                      gradient: const LinearGradient(
+                          stops: [0.6, 5.0],
+                          begin: Alignment.topRight,
+                          end: Alignment.bottomLeft,
+                          colors: [
+                            GlobalColors.greenColor,
+                            GlobalColors.blueColor,
+                          ]),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Stack(
+                            children: [
+                              Opacity(
+                        opacity: 1 - state.progress,
                         child: Center(
                           child: Container(
-                            width: Get.width/3,
-                            height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25)
-                    ),
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          FaIcon(
-                            FontAwesomeIcons.arrowAltCircleUp,
-                            color: GlobalColors.greenColor,
-                          ),
-                          Text(
-                              "Open panel",
-                              style: TextStyle(
-                                color: GlobalColors.greenColor,
-                                fontWeight: FontWeight.w700,
-                                fontSize: Get.height/30
-                              )
-                              ,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                        ),
-                      )
-                      : Container(
-                    height: 30,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: _width * .3,
-                          height: 6,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(25.0))),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              // ),
-            ),
-            panel: Container(
-              height: _height * 0.8,
-              width: _width,
-              decoration: BoxDecoration(
-                borderRadius: radius,
-                gradient: const LinearGradient(
-                    stops: [0.6, 5.0],
-                    begin: Alignment.topRight,
-                    end: Alignment.bottomLeft,
-                    colors: [
-                      GlobalColors.greenColor,
-                      GlobalColors.blueColor,
-                    ]),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 15.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        child: Padding(
-                          padding:
-                          const EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Center(
-                              child:
-                              // Shimmer.fromColors(
-                              //   period: const Duration(milliseconds: 3500),
-                              //   baseColor: Colors.white54,
-                              //   highlightColor: Colors.white,
-                              //   child:
-                                AnimatedSizeAndFade(
-                                  vsync: this,
-                                  child: Container(
-                                    height: 30,
-                                    child: Text(
-                                        "What are we watching today?",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: _height / 30,
-
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: 'Raleway',
-                                        )),
+                                  height: 30,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: _width * .3,
+                                        height: 6,
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                            BorderRadius.all(Radius.circular(25.0))),
+                                      ),
+                                    ],
                                   ),
-                                  fadeDuration:
-                                  const Duration(milliseconds: 100),
-                                  sizeDuration:
-                                  const Duration(milliseconds: 200),
-                                ),
-                              // )
                           ),
                         ),
                       ),
-                      InkWell(
+                              Opacity(
+                                opacity: state.progress,
+                                child: Container(
+                                  child: Padding(
+                                    padding:
+                                    const EdgeInsets.symmetric(horizontal: 25.0),
+                                    child: Container(
+                                      height: 30,
+                                      child: Text(
+                                          "What are we watching today?",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: _height / 30,
+
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Raleway',
+                                          )),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          InkWell(
                             onTap: () {
                               Get.to(() => AllTVShows(), transition: Transition.cupertino);
                             } ,
@@ -701,155 +652,454 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                      ),
-                      SizedBox(
-                        height: _width / 10,
-                      ),
-                      Column(
-                        children: <Widget>[
-                          //Label - LAst watched
-                          Container(
-                            padding: EdgeInsets.only(left: 32, right: 32),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Last watched",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                        shadows: <Shadow>[
-                                          Shadow(
-                                            offset: Offset(0.0, 3.0),
-                                            blurRadius: 6.0,
-                                            color: Colors.black
-                                                .withOpacity(.2),
-                                          ),
-                                        ],
-                                        color: Colors.white,
-                                        fontSize: _height/30,
-                                        fontFamily: "Raleway",
-                                        fontWeight: FontWeight.w900,
-                                      )),
-                                ],
-                              ),
-                            ),
                           ),
-                          // Horizontal scrollview container
-                          Container(
-                            child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: StreamBuilder(
-                                    stream: FirestoreUtils()
-                                        .watchedShows
-                                        .orderBy('lastWatched',
-                                        descending: true)
-                                        .snapshots(),
-                                    builder: (context, AsyncSnapshot snapshot) {
-                                      // print(snapshot.connectionState);
-                                      if (snapshot.hasData && snapshot.data != null) {
-                                        // print("data");
-                                        if (snapshot.data!.docs.length > 0) {
-                                          GlobalVariables.watchedShowList
-                                              .clear();
-                                          // allWatchedShows.clear();
-                                          snapshot.data!.docs
-                                              .forEach((f) {
-                                            WatchedTVShow show =
-                                            new WatchedTVShow
-                                                .fromFirestore(
-                                                f.data(),
-                                                f.id);
-                                            GlobalVariables
-                                                .watchedShowList
-                                                .add(show);
-                                          });
-                                          return createCarouselSlider(
-                                              GlobalVariables
-                                                  .watchedShowList
-                                                  .take(5)
-                                                  .toList());
-                                        } else {
-                                          return Container(
-                                              height: _height / 3,
-                                              child: Center(
-                                                  child: Padding(
-                                                    padding:
-                                                    const EdgeInsets.all(
-                                                        25.0),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .center,
-                                                      children: [
-                                                        AutoSizeText(
-                                                          "Your watchlist is empty",
-                                                          textAlign: TextAlign
+                          SizedBox(
+                            height: _width / 10,
+                          ),
+                          Column(
+                            children: <Widget>[
+                              //Label - LAst watched
+                              Container(
+                                padding: EdgeInsets.only(left: 32, right: 32),
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Last watched",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            shadows: <Shadow>[
+                                              Shadow(
+                                                offset: Offset(0.0, 3.0),
+                                                blurRadius: 6.0,
+                                                color: Colors.black
+                                                    .withOpacity(.2),
+                                              ),
+                                            ],
+                                            color: Colors.white,
+                                            fontSize: _height/30,
+                                            fontFamily: "Raleway",
+                                            fontWeight: FontWeight.w900,
+                                          )),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              // Horizontal scrollview container
+                              Container(
+                                child: Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: StreamBuilder(
+                                        stream: FirestoreUtils()
+                                            .watchedShows
+                                            .orderBy('lastWatched',
+                                            descending: true)
+                                            .snapshots(),
+                                        builder: (context, AsyncSnapshot snapshot) {
+                                          // print(snapshot.connectionState);
+                                          //TODO: change global stuff to show controller
+                                          if (snapshot.hasData && snapshot.data != null) {
+                                            // print("data");
+                                            if (snapshot.data!.docs.length > 0) {
+                                              GlobalVariables.watchedShowList
+                                                  .clear();
+                                              snapshot.data!.docs
+                                                  .forEach((DocumentSnapshot f) {
+                                                WatchedTVShow show = new WatchedTVShow.fromFirestore(f.data()!, f.id);
+                                                GlobalVariables
+                                                    .watchedShowList
+                                                    .add(show);
+                                              });
+                                              return createCarouselSlider(
+                                                  GlobalVariables
+                                                      .watchedShowList
+                                                      .take(5)
+                                                      .toList());
+                                            } else {
+                                              return Container(
+                                                  height: _height / 3,
+                                                  child: Center(
+                                                      child: Padding(
+                                                        padding:
+                                                        const EdgeInsets.all(
+                                                            25.0),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
                                                               .center,
-                                                          style: GoogleFonts
-                                                              .roboto(
-                                                              color: Colors
-                                                                  .white,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w700,
-                                                              fontSize:
-                                                              _height /
-                                                                  25),
+                                                          children: [
+                                                            AutoSizeText(
+                                                              "Your watchlist is empty",
+                                                              textAlign: TextAlign
+                                                                  .center,
+                                                              style: GoogleFonts
+                                                                  .roboto(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w700,
+                                                                  fontSize:
+                                                                  _height /
+                                                                      25),
+                                                            ),
+                                                            AutoSizeText(
+                                                              "Press the eye above for magic",
+                                                              textAlign: TextAlign
+                                                                  .center,
+                                                              style: GoogleFonts
+                                                                  .roboto(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontWeight:
+                                                                  FontWeight
+                                                                      .w100,
+                                                                  fontSize:
+                                                                  _height /
+                                                                      25),
+                                                            ),
+                                                          ],
                                                         ),
-                                                        AutoSizeText(
-                                                          "Press the eye above for magic",
-                                                          textAlign: TextAlign
-                                                              .center,
-                                                          style: GoogleFonts
-                                                              .roboto(
-                                                              color: Colors
-                                                                  .white,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w100,
-                                                              fontSize:
-                                                              _height /
-                                                                  25),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )));
-                                        }
-                                      } else {
-                                        // print("no stream");
-                                        return Container(
-                                            height: _height / 3,
-                                            child: Center(
-                                                child: Padding(
-                                                  padding:
-                                                  const EdgeInsets.all(
-                                                      25.0),
-                                                  child: Text(
-                                                    "Press the eye above for magic",
-                                                    textAlign:
-                                                    TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: Colors
-                                                            .white,
-                                                        fontFamily: 'Raleway',
-                                                        fontSize:
-                                                        _height / 25),
-                                                  ),
-                                                )));
-                                      }
-                                    })),
+                                                      )));
+                                            }
+                                          } else {
+                                            // print("no stream");
+                                            return Container(
+                                                height: _height / 3,
+                                                child: Center(
+                                                    child: Padding(
+                                                      padding:
+                                                      const EdgeInsets.all(
+                                                          25.0),
+                                                      child: Text(
+                                                        "Press the eye above for magic",
+                                                        textAlign:
+                                                        TextAlign.center,
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .white,
+                                                            fontFamily: 'Raleway',
+                                                            fontSize:
+                                                            _height / 25),
+                                                      ),
+                                                    )));
+                                          }
+                                        })),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            borderRadius: radius,
+                    ),
+                  );
+                },
+              );
+            },
           ),
+
+          // SlidingUpPanel(
+          //   controller: _pc,
+          //   maxHeight: _panelHeightOpen,
+          //   minHeight: _panelHeightClosed,
+          //   key: _slidingPanelKey,
+          //   defaultPanelState: _panelState,
+          //   boxShadow: [
+          //     BoxShadow(
+          //       color: GlobalColors.greenColor.withOpacity(0.15),
+          //       spreadRadius: 10,
+          //       blurRadius: 25,
+          //       offset: Offset(0, -10), // changes position of shadow
+          //     ),
+          //   ],
+          //   panelSnapping: true,
+          //   collapsed: Center(
+          //     child: Container(
+          //       height: _height * 0.8,
+          //       width: _width,
+          //       decoration: BoxDecoration(
+          //         borderRadius: radius,
+          //         color: GlobalColors.greenColor,
+          //       ),
+          //       child:
+          //       // Shimmer.fromColors(
+          //       //   period: const Duration(milliseconds: 3500),
+          //       //   baseColor: Colors.white54,
+          //       //   highlightColor: Colors.white,
+          //       //   child:
+          //         kIsWeb && Get.width > 646
+          //             ? InkWell(
+          //           onTap: () => _pc.open(),
+          //               child: Center(
+          //                 child: Container(
+          //                   width: Get.width/3,
+          //                   height: 50,
+          //           decoration: BoxDecoration(
+          //             color: Colors.white,
+          //             borderRadius: BorderRadius.circular(25)
+          //           ),
+          //           child: Center(
+          //             child: Row(
+          //               mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //               children: [
+          //                 FaIcon(
+          //                   FontAwesomeIcons.arrowAltCircleUp,
+          //                   color: GlobalColors.greenColor,
+          //                 ),
+          //                 Text(
+          //                     "Open panel",
+          //                     style: TextStyle(
+          //                       color: GlobalColors.greenColor,
+          //                       fontWeight: FontWeight.w700,
+          //                       fontSize: Get.height/30
+          //                     )
+          //                     ,
+          //                 ),
+          //               ],
+          //             ),
+          //           ),
+          //         ),
+          //               ),
+          //             )
+          //             : Container(
+          //           height: 30,
+          //           child: Row(
+          //             mainAxisAlignment: MainAxisAlignment.center,
+          //             crossAxisAlignment: CrossAxisAlignment.center,
+          //             children: [
+          //               Container(
+          //                 width: _width * .3,
+          //                 height: 6,
+          //                 decoration: BoxDecoration(
+          //                     color: Colors.white,
+          //                     borderRadius:
+          //                     BorderRadius.all(Radius.circular(25.0))),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //       ),
+          //     // ),
+          //   ),
+          //   panel: Container(
+          //     height: _height * 0.8,
+          //     width: _width,
+          //     decoration: BoxDecoration(
+          //       borderRadius: radius,
+          //       gradient: const LinearGradient(
+          //           stops: [0.6, 5.0],
+          //           begin: Alignment.topRight,
+          //           end: Alignment.bottomLeft,
+          //           colors: [
+          //             GlobalColors.greenColor,
+          //             GlobalColors.blueColor,
+          //           ]),
+          //     ),
+          //     child: Padding(
+          //       padding: const EdgeInsets.only(top: 15.0),
+          //       child: SingleChildScrollView(
+          //         child: Column(
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           crossAxisAlignment: CrossAxisAlignment.center,
+          //           children: <Widget>[
+          //             Container(
+          //               child: Padding(
+          //                 padding:
+          //                 const EdgeInsets.symmetric(horizontal: 25.0),
+          //                 child: Center(
+          //                     child:
+          //                     // Shimmer.fromColors(
+          //                     //   period: const Duration(milliseconds: 3500),
+          //                     //   baseColor: Colors.white54,
+          //                     //   highlightColor: Colors.white,
+          //                     //   child:
+          //                       AnimatedSizeAndFade(
+          //                         vsync: this,
+          //                         child: Container(
+          //                           height: 30,
+          //                           child: Text(
+          //                               "What are we watching today?",
+          //                               textAlign: TextAlign.center,
+          //                               style: TextStyle(
+          //                                 color: Colors.white,
+          //                                 fontSize: _height / 30,
+          //
+          //                                 fontWeight: FontWeight.bold,
+          //                                 fontFamily: 'Raleway',
+          //                               )),
+          //                         ),
+          //                         fadeDuration:
+          //                         const Duration(milliseconds: 100),
+          //                         sizeDuration:
+          //                         const Duration(milliseconds: 200),
+          //                       ),
+          //                     // )
+          //                 ),
+          //               ),
+          //             ),
+          //             InkWell(
+          //                   onTap: () {
+          //                     Get.to(() => AllTVShows(), transition: Transition.cupertino);
+          //                   } ,
+          //                   child: SizedBox(
+          //                     width: kIsWeb ? 150 : min(_width * 0.6, 90),
+          //                     height: kIsWeb ? 150 : min(_width * 0.6, 90),
+          //                     child: FlareActor(
+          //                       'assets/blink.flr',
+          //                       animation: 'Blink',
+          //                       fit: BoxFit.cover,
+          //                     ),
+          //                   ),
+          //             ),
+          //             SizedBox(
+          //               height: _width / 10,
+          //             ),
+          //             Column(
+          //               children: <Widget>[
+          //                 //Label - LAst watched
+          //                 Container(
+          //                   padding: EdgeInsets.only(left: 32, right: 32),
+          //                   child: Align(
+          //                     alignment: Alignment.centerLeft,
+          //                     child: Row(
+          //                       mainAxisAlignment:
+          //                       MainAxisAlignment.spaceBetween,
+          //                       children: [
+          //                         Text("Last watched",
+          //                             textAlign: TextAlign.left,
+          //                             style: TextStyle(
+          //                               shadows: <Shadow>[
+          //                                 Shadow(
+          //                                   offset: Offset(0.0, 3.0),
+          //                                   blurRadius: 6.0,
+          //                                   color: Colors.black
+          //                                       .withOpacity(.2),
+          //                                 ),
+          //                               ],
+          //                               color: Colors.white,
+          //                               fontSize: _height/30,
+          //                               fontFamily: "Raleway",
+          //                               fontWeight: FontWeight.w900,
+          //                             )),
+          //                       ],
+          //                     ),
+          //                   ),
+          //                 ),
+          //                 // Horizontal scrollview container
+          //                 Container(
+          //                   child: Align(
+          //                       alignment: Alignment.bottomCenter,
+          //                       child: StreamBuilder(
+          //                           stream: FirestoreUtils()
+          //                               .watchedShows
+          //                               .orderBy('lastWatched',
+          //                               descending: true)
+          //                               .snapshots(),
+          //                           builder: (context, AsyncSnapshot snapshot) {
+          //                             // print(snapshot.connectionState);
+          //                             if (snapshot.hasData && snapshot.data != null) {
+          //                               // print("data");
+          //                               if (snapshot.data!.docs.length > 0) {
+          //                                 GlobalVariables.watchedShowList
+          //                                     .clear();
+          //                                 // allWatchedShows.clear();
+          //                                 snapshot.data!.docs
+          //                                     .forEach((f) {
+          //                                   WatchedTVShow show =
+          //                                   new WatchedTVShow
+          //                                       .fromFirestore(
+          //                                       f.data(),
+          //                                       f.id);
+          //                                   GlobalVariables
+          //                                       .watchedShowList
+          //                                       .add(show);
+          //                                 });
+          //                                 return createCarouselSlider(
+          //                                     GlobalVariables
+          //                                         .watchedShowList
+          //                                         .take(5)
+          //                                         .toList());
+          //                               } else {
+          //                                 return Container(
+          //                                     height: _height / 3,
+          //                                     child: Center(
+          //                                         child: Padding(
+          //                                           padding:
+          //                                           const EdgeInsets.all(
+          //                                               25.0),
+          //                                           child: Column(
+          //                                             mainAxisAlignment:
+          //                                             MainAxisAlignment
+          //                                                 .center,
+          //                                             children: [
+          //                                               AutoSizeText(
+          //                                                 "Your watchlist is empty",
+          //                                                 textAlign: TextAlign
+          //                                                     .center,
+          //                                                 style: GoogleFonts
+          //                                                     .roboto(
+          //                                                     color: Colors
+          //                                                         .white,
+          //                                                     fontWeight:
+          //                                                     FontWeight
+          //                                                         .w700,
+          //                                                     fontSize:
+          //                                                     _height /
+          //                                                         25),
+          //                                               ),
+          //                                               AutoSizeText(
+          //                                                 "Press the eye above for magic",
+          //                                                 textAlign: TextAlign
+          //                                                     .center,
+          //                                                 style: GoogleFonts
+          //                                                     .roboto(
+          //                                                     color: Colors
+          //                                                         .white,
+          //                                                     fontWeight:
+          //                                                     FontWeight
+          //                                                         .w100,
+          //                                                     fontSize:
+          //                                                     _height /
+          //                                                         25),
+          //                                               ),
+          //                                             ],
+          //                                           ),
+          //                                         )));
+          //                               }
+          //                             } else {
+          //                               // print("no stream");
+          //                               return Container(
+          //                                   height: _height / 3,
+          //                                   child: Center(
+          //                                       child: Padding(
+          //                                         padding:
+          //                                         const EdgeInsets.all(
+          //                                             25.0),
+          //                                         child: Text(
+          //                                           "Press the eye above for magic",
+          //                                           textAlign:
+          //                                           TextAlign.center,
+          //                                           style: TextStyle(
+          //                                               color: Colors
+          //                                                   .white,
+          //                                               fontFamily: 'Raleway',
+          //                                               fontSize:
+          //                                               _height / 25),
+          //                                         ),
+          //                                       )));
+          //                             }
+          //                           })),
+          //                 ),
+          //               ],
+          //             ),
+          //           ],
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          //   borderRadius: radius,
+          // ),
         ],
       ),
     );
@@ -884,10 +1134,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
                   show: data[itemIndex],
                 ),
           options: CarouselOptions(
-            height: MediaQuery
-                .of(context)
-                .size
-                .width * .7,
+            height: Get.size.width * .7,
             enableInfiniteScroll: false,
           ),
         ),

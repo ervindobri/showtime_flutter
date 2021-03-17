@@ -3,25 +3,25 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/constants/theme_utils.dart';
+import 'package:show_time/get_controllers/ui_controller.dart';
 import 'package:show_time/models/watched.dart';
 import 'package:show_time/network/firebase_utils.dart';
-import 'package:show_time/network/network.dart';
-import 'package:show_time/placeholders/watched_detail_view_placeholder.dart';
-import 'package:show_time/screens/watched_detail_view.dart';
 import 'package:show_time/ui/watchlist_card.dart';
-import 'package:status_alert/status_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:flip_card/flip_card.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 
+// ignore: must_be_immutable
 class WatchedCard extends StatelessWidget {
   final WatchedTVShow show;
+  WatchedCard({Key? key, required this.show}) : super(key: key);
 
-  const WatchedCard({Key? key, required this.show}) : super(key: key);
+
+
+  UIController? uiController = Get.put(UIController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +29,9 @@ class WatchedCard extends StatelessWidget {
   }
 
   Widget buildWatchedCard(BuildContext context) {
-    GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
     double _percentage = show.calculateProgress();
     double _height = Get.height;
     double _width = Get.width;
-    print(_percentage);
     return InkWell(
         onTap: () {
       showModalBottomSheet<dynamic>(
@@ -49,265 +47,204 @@ class WatchedCard extends StatelessWidget {
           isScrollControlled: true);
       // Navigator.push(context, _createRouteShowDetail(data, itemIndex)),
     },
-    child: GestureDetector(
-      onVerticalDragStart: (details) => cardKey.currentState!.toggleCard(),
-      child: Container(
-        padding: const EdgeInsets.only(
-          top: 15,
-          // bottom: 10,
-            right: 15,
-            left: 15
-        ),
-        decoration: BoxDecoration(
-          // color: Colors.black,
-        ),
-        child: Center(
-            child: Stack(
-              children: <Widget>[
-                FlipCard(
-                  direction: FlipDirection.VERTICAL,
-                  flipOnTouch: false,
-                  key: cardKey,
-                  front: InkWell(
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned(
-                          top: 15,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            // height: ,
-                            height: _width/2.1,
-                            width: _width,
-                            decoration: BoxDecoration(
-                              color:Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.0),
-                                topRight: Radius.circular(85.0),
-                                bottomLeft: Radius.circular(50.0),
-                                bottomRight: Radius.circular(50.0),
-                              ),
-                              boxShadow: [
-                                new BoxShadow(
-                                    color: Colors.black.withOpacity(.2),
-                                    blurRadius: 15.0,
-                                    spreadRadius: -2,
-                                    offset: Offset(2, -2)),
-                              ],
+    child: Container(
+      padding: const EdgeInsets.only(
+        top: 15,
+        // bottom: 10,
+          right: 15,
+          left: 15
+      ),
+      decoration: BoxDecoration(
+        // color: Colors.black,
+      ),
+      child: Center(
+          child: InkWell(
+                  child: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        top: 15,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          // height: ,
+                          height: _width/2.1,
+                          width: _width,
+                          decoration: BoxDecoration(
+                            color:Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25.0),
+                              topRight: Radius.circular(85.0),
+                              bottomLeft: Radius.circular(50.0),
+                              bottomRight: Radius.circular(50.0),
                             ),
-                            child: Column(
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Flexible(
-                                            child: Padding(
-                                              padding: EdgeInsets.only(right:50, left: 12, top: 5),
-                                                child: AutoSizeText(
-                                                      this.show.name,
-                                                      minFontSize: (_width/20).roundToDouble(),
-                                                      maxFontSize: (_width/10).roundToDouble(),
-                                                      stepGranularity: .1,
-                                                      maxLines: 1,
-                                                      style: ShowTheme.watchCardTitleStyle,
-                                                ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  // height: 300,
-                                  child: Row(
+                            boxShadow: [
+                              new BoxShadow(
+                                  color: Colors.black.withOpacity(.2),
+                                  blurRadius: 15.0,
+                                  spreadRadius: -2,
+                                  offset: Offset(2, -2)),
+                            ],
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Column(
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
-                                      Container(
-                                        width: _width * .35,
-                                        padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
-                                        child: Center(
-                                          child: Column(
-                                            children: <Widget>[
-                                              //Season
-                                              Container(
-                                                padding: EdgeInsets.only(left: 10, right: 10),
-                                                width: _width/3.5,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(25.0),
-                                                  border:
-                                                      Border.all(color: GlobalColors.greenColor),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      "S",
-                                                      style: TextStyle(
-                                                        color: GlobalColors.greenColor,
-                                                        fontSize: Get.width / 12,
-                                                        fontWeight: FontWeight.w900,
-                                                      ),
-                                                    ),
-                                                    Center(
-                                                      child: Text(
-                                                        "${this.show.currentSeason}",
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize: Get.width / 15,
-                                                          color: GlobalColors.greyTextColor,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                      Flexible(
+                                          child: Padding(
+                                            padding: EdgeInsets.only(right:50, left: 12, top: 5),
+                                              child: AutoSizeText(
+                                                    this.show.name!,
+                                                    minFontSize: (_width/20).roundToDouble(),
+                                                    maxFontSize: (_width/10).roundToDouble(),
+                                                    stepGranularity: .1,
+                                                    maxLines: 1,
+                                                    style: ShowTheme.watchCardTitleStyle,
                                               ),
-                                              //Episode
-                                              SizedBox(
-                                                height: 10,
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(left: 10, right: 10),
-                                                width:  _width/3.5,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:BorderRadius.circular(25.0),
-                                                  border:
-                                                      Border.all(color: GlobalColors.greenColor),
-                                                ),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      "Ep",
-                                                      style: TextStyle(
-                                                        color: GlobalColors.greenColor,
-                                                        fontSize:
-                                                            MediaQuery.of(context)
-                                                                    .size
-                                                                    .width /
-                                                                12,
-                                                        fontWeight: FontWeight.w900,
-                                                      ),
-                                                    ),
-                                                    Center(
-                                                      child: Text(
-                                                        "${this.show.currentEpisode}",
-                                                        style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w300,
-                                                          fontSize:
-                                                              MediaQuery.of(context)
-                                                                      .size
-                                                                      .width /
-                                                                  15,
-                                                          color: GlobalColors.greyTextColor,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
-                                        child: new CircularPercentIndicator(
-                                          radius: _width/4,
-                                          lineWidth: 12.0,
-                                          circularStrokeCap:
-                                              CircularStrokeCap.round,
-                                          percent: _percentage,
-                                          center: AutoSizeText(
-                                            "${(_percentage * 100).floor()} %",
-                                            // maxFontSize: _width / 15,
-                                            // minFontSize: _width / 23,
-                                            style: TextStyle(
-                                                fontFamily: 'Raleway',
-                                                fontSize: _width / 15,
-                                                fontWeight: FontWeight.w700,
-                                                color: GlobalColors.blueColor),
-                                          ),
-                                          progressColor: GlobalColors.blueColor,
                                         ),
                                       ),
                                     ],
                                   ),
-                                )
-                              ],
-                            ),
+                                ],
+                              ),
+                              Container(
+                                // height: 300,
+                                child: Row(
+                                  children: <Widget>[
+                                    Container(
+                                      width: _width * .35,
+                                      padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
+                                      child: Center(
+                                        child: Column(
+                                          children: <Widget>[
+                                            //Season
+                                            Container(
+                                              padding: EdgeInsets.only(left: 10, right: 10),
+                                              width: _width/3.5,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(25.0),
+                                                border:
+                                                    Border.all(color: GlobalColors.greenColor),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                  Text(
+                                                    "S",
+                                                    style: TextStyle(
+                                                      color: GlobalColors.greenColor,
+                                                      fontSize: Get.width / 12,
+                                                      fontWeight: FontWeight.w900,
+                                                    ),
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                      "${this.show.currentSeason}",
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w300,
+                                                        fontSize: Get.width / 15,
+                                                        color: GlobalColors.greyTextColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            //Episode
+                                            SizedBox(
+                                              height: 10,
+                                            ),
+                                            Container(
+                                              padding: EdgeInsets.only(left: 10, right: 10),
+                                              width:  _width/3.5,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                borderRadius:BorderRadius.circular(25.0),
+                                                border:
+                                                    Border.all(color: GlobalColors.greenColor),
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  Text(
+                                                    "Ep",
+                                                    style: TextStyle(
+                                                      color: GlobalColors.greenColor,
+                                                      fontSize:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width /
+                                                              12,
+                                                      fontWeight: FontWeight.w900,
+                                                    ),
+                                                  ),
+                                                  Center(
+                                                    child: Text(
+                                                      "${this.show.currentEpisode}",
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w300,
+                                                        fontSize:
+                                                            MediaQuery.of(context)
+                                                                    .size
+                                                                    .width /
+                                                                15,
+                                                        color: GlobalColors.greyTextColor,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                                      child: new CircularPercentIndicator(
+                                        radius: _width/4,
+                                        lineWidth: 12.0,
+                                        circularStrokeCap:
+                                            CircularStrokeCap.round,
+                                        percent: _percentage,
+                                        center: AutoSizeText(
+                                          "${(_percentage * 100).floor()} %",
+                                          // maxFontSize: _width / 15,
+                                          // minFontSize: _width / 23,
+                                          style: TextStyle(
+                                              fontFamily: 'Raleway',
+                                              fontSize: _width / 15,
+                                              fontWeight: FontWeight.w700,
+                                              color: GlobalColors.blueColor),
+                                        ),
+                                        progressColor: GlobalColors.blueColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                        _checkFireDisplay(context, _percentage, show.lastWatchDate!),
-                        floatingActions(context, _percentage, _width/2.5),
+                      ),
+                      _checkFireDisplay(context, _percentage, show.lastWatchDate!),
+                      floatingActions(context, _percentage, _width/2.5),
 
-                      ],
-                    ),
-                    splashColor: Colors.blue.withAlpha(30),
+                    ],
                   ),
-                  back: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                        color: Colors.white,
-                      ),
-                      child: Center(
-                        child: Stack(
-                          children: [
-                            CachedNetworkImage(
-                              imageUrl: show.imageThumbnailPath!,
-                              imageBuilder: (context, image){
-                                return Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(.5),
-                                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                                    image: DecorationImage(
-                                      image: image,
-                                      fit: BoxFit.cover
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            ClipRRect(
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 25.0),
-                                child: CachedNetworkImage(
-                                  imageUrl: show.imageThumbnailPath!,
-                                  imageBuilder: (context, image){
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: image,
-                                        ),
-                                        borderRadius: BorderRadius.circular(50)
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  splashColor: Colors.blue.withAlpha(30),
                 ),
-
-              ],
-            ),
-          ),
         ),
-    )
+      )
     );
   }
   Widget _checkFireDisplay(BuildContext context, double percentage, String lastWatchDate){
@@ -401,50 +338,38 @@ class WatchedCard extends StatelessWidget {
                   offset: Offset(2, 0)),
             ],
           ),
-          child: FlatButton(
-            highlightColor: Colors.black,
-            // color: GlobalColors.greenColor,
-            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-            onPressed: (){
-              try {
-                show.incrementEpisodeWatch();
-                show.setLastWatchedDate();
-                FirestoreUtils().updateEpisode(show);
-                StatusAlert.show(context,
-                  duration:
-                  Duration(
-                      seconds:
-                      2),
-                  blurPower: 15.0,
-                  title:
-                  'Episode added',
-                  configuration:
-                  IconConfiguration(
-                      icon: Icons
-                          .done),
-                );
-              } catch (e) {
-                StatusAlert.show(
-                  context,
-                  duration:
-                  Duration(
-                      seconds:
-                      2),
-                  blurPower: 15.0,
-                  title:
-                  '{$e}:Couldn\'t add episode!',
-                  configuration:
-                  IconConfiguration(
-                      icon: Icons
-                          .error),
-                );
-              }
-            },
-            child: FaIcon(
-              Icons.add_to_queue,
-              color: Colors.white,
-              size: 40,
-            ),
+          child: GetBuilder<UIController>(
+            init: uiController,
+            builder: (controller) {
+              return TextButton(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.black),
+                  shape: MaterialStateProperty.
+                  all<RoundedRectangleBorder>(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0))),
+                ),
+                onPressed: (){
+                  try {
+                    show.incrementEpisodeWatch();
+                    show.setLastWatchedDate();
+                    FirestoreUtils().updateEpisode(show);
+                    controller.showAlert(title: "Episode added!",
+                        seconds: 2,
+                        blurPower: 15,
+                        icon: Icons.done);
+                  } catch (e) {
+                    controller.showAlert(title: "Couldn\'t add episode!",
+                        seconds: 2,
+                        blurPower: 15,
+                        icon: Icons.error);
+                  }
+                },
+                child: FaIcon(
+                  Icons.add_to_queue,
+                  color: Colors.white,
+                  size: 40,
+                ),
+              );
+            }
           ),
         ),
       );
@@ -460,7 +385,9 @@ class WatchedCardWeb extends StatelessWidget {
   final double maxWidth;
   final double maxHeight;
 
-  const WatchedCardWeb({Key? key, required this.show, required this.maxWidth, required this.maxHeight}) : super(key: key);
+  WatchedCardWeb({Key? key, required this.show, required this.maxWidth, required this.maxHeight}) : super(key: key);
+
+  UIController? uiController = Get.put(UIController());
 
   @override
   Widget build(BuildContext context) {
@@ -468,13 +395,11 @@ class WatchedCardWeb extends StatelessWidget {
   }
 
   Widget buildWatchedCard(BuildContext context) {
-    final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
     final double _percentage = show.calculateProgress();
     final double _width = Get.width;
     final double _height = Get.height;
 
     return GestureDetector(
-      onVerticalDragStart: (details) => cardKey.currentState!.toggleCard(),
       onTap: (){
         showModalBottomSheet<dynamic>(
             shape: const RoundedRectangleBorder(
@@ -535,7 +460,7 @@ class WatchedCardWeb extends StatelessWidget {
                                     child: Padding(
                                       padding: EdgeInsets.only(right:50, left: 12, top: 5),
                                       child: AutoSizeText(
-                                        this.show.name,
+                                        this.show.name!,
                                         minFontSize: (maxWidth/10).roundToDouble(),
                                         maxFontSize: (maxWidth/5).roundToDouble(),
                                         stepGranularity: 1,
@@ -775,50 +700,32 @@ class WatchedCardWeb extends StatelessWidget {
                   offset: Offset(2, 0)),
             ],
           ),
-          child: FlatButton(
-            highlightColor: Colors.black,
-            // color: GlobalColors.greenColor,
-            shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
-            onPressed: (){
-              try {
-                show.incrementEpisodeWatch();
-                show.setLastWatchedDate();
-                FirestoreUtils().updateEpisode(show);
-                StatusAlert.show(context,
-                  duration:
-                  Duration(
-                      seconds:
-                      2),
-                  blurPower: 15.0,
-                  title:
-                  'Episode added',
-                  configuration:
-                  IconConfiguration(
-                      icon: Icons
-                          .done),
-                );
-              } catch (e) {
-                StatusAlert.show(
-                  context,
-                  duration:
-                  Duration(
-                      seconds:
-                      2),
-                  blurPower: 15.0,
-                  title:
-                  '{$e}:Couldn\'t add episode!',
-                  configuration:
-                  IconConfiguration(
-                      icon: Icons
-                          .error),
-                );
-              }
-            },
-            child: FaIcon(
-              Icons.add_to_queue,
-              color: Colors.white,
-              size: 40,
-            ),
+          child: GetBuilder<UIController>(
+              init: uiController,
+              builder: (controller) {
+              return TextButton(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.all(Colors.black),
+                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0))),
+                ),
+                onPressed: (){
+                  try {
+                    show.incrementEpisodeWatch();
+                    show.setLastWatchedDate();
+                    FirestoreUtils().updateEpisode(show);
+                    controller.showAlert(title:"Episode added!", seconds: 2, blurPower: 15, icon: Icons.done);
+
+                  } catch (e) {
+                    controller.showAlert(title:"Couldn\'t add episode!", seconds: 2, blurPower: 15, icon: Icons.error);
+                  }
+                },
+                child: FaIcon(
+                  Icons.add_to_queue,
+                  color: Colors.white,
+                  size: 40,
+                ),
+              );
+            }
           ),
         ),
       );

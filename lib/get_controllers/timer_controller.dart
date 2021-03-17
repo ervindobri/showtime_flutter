@@ -5,8 +5,7 @@ import 'dart:async';
 
 class TimerController extends GetxController{
   late Timer _timer;
-  late String _countDown;
-  String get countDown => _countDown;
+  RxString countDown = ''.obs;
 
   late WatchedTVShow _show;
   WatchedTVShow get show => _show;
@@ -14,7 +13,7 @@ class TimerController extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    _countDown = "00:00:00";
+    countDown = "00:00:00".obs;
     // init(show);
   }
 
@@ -28,8 +27,11 @@ class TimerController extends GetxController{
     _timer = new Timer.periodic(
         oneSec,
             (Timer timer) {
-          _countDown = _show.newestEpisodeDifference();
+              countDown.value = _show.newestEpisodeDifference();
         }
     );
+  }
+  void cancelTimer(){
+    _timer.cancel();
   }
 }
