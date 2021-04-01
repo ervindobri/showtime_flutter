@@ -16,8 +16,6 @@ class UIController extends GetxController{
 
   @override
   void onInit() {
-
-    print("Toast: $fToast");
     super.onInit();
   }
   void showAlert({required String title, required int seconds, required double blurPower, required IconData icon}) {

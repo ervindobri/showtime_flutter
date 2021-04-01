@@ -706,122 +706,103 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
 
     if (this.widget.show.calculateProgress() < 1.0) {
       return widget.show.nextEpisodeAired()
-          ? Column(
-            children: [
-                Container(
-                  child: Row(
+          ? Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.white),
+                  // highlightedBorderColor: GlobalColors.darkGreenColor,
+                  shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
+                ),
+                clipBehavior: Clip.antiAlias,
+                onPressed: () {
+                  showAnimatedDialog(
+                    context: context,
+                    animationType: DialogTransitionType.slideFromBottomFade,
+                    barrierDismissible: false,
+                    duration: Duration(milliseconds: 100),
+                    builder: (BuildContext context) {
+                      return uiController.unwatchDialog(showName: widget.show.name!,showID: widget.show.id);
+                    },
+                  );
+                },
+                child: Center(
+                  child: Text(
+                    "Unwatch",
+                    style: TextStyle(
+                      color: GlobalColors.greenColor,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            CustomElevation(
+              color: GlobalColors.greenColor.withOpacity(.3),
+              spreadRadius: 2,
+              blurRadius: 15,
+              child: TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(GlobalColors.greenColor),
+                  overlayColor: MaterialStateProperty.all(GlobalColors.darkGreenColor),
+                  shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
+                ),
+                onLongPress: (){
+                  setState(() {
+                    _selectedSeason = this.widget.show.currentSeason;
+                    _selectedEpisode = this.widget.show.currentEpisode;
+                  });
+                  showModalBottomSheet(
+                      backgroundColor: Colors.white,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25.0),
+                            topRight: Radius.circular(25.0)),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return createBottomSheet();
+                      });
+                },
+                onPressed: () {
+                  try {
+                    setState(() {
+                      widget.show.incrementEpisodeWatch();
+                      widget.show.setLastWatchedDate();
+                    });
+                    FirestoreUtils().updateEpisode(widget.show);
+                    uiController.showAlert(title: 'Episode added!', seconds: 2, blurPower:  15, icon: Icons.done);
+                  } catch (e, s) {
+                    print(s);
+                    uiController.showAlert(title: '{$e}:Couldn\'t add episode!', seconds: 2, blurPower:  15, icon: Icons.error);
+                  }
+
+                },
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: OutlinedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.white),
-                          // highlightedBorderColor: GlobalColors.darkGreenColor,
-                          shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        onPressed: () {
-                          showAnimatedDialog(
-                            context: context,
-                            animationType: DialogTransitionType.slideFromBottomFade,
-                            barrierDismissible: false,
-                            duration: Duration(milliseconds: 100),
-                            builder: (BuildContext context) {
-                              return uiController.unwatchDialog(showName: widget.show.name!,showID: widget.show.id);
-                            },
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Center(
-                            child: Text(
-                              "Unwatch",
-                              style: TextStyle(
-                                color: GlobalColors.greenColor,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
+                      child: Text(
+                        "Next",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CustomElevation(
-                        color: GlobalColors.greenColor.withOpacity(.3),
-                        spreadRadius: 2,
-                        blurRadius: 15,
-                        child: TextButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(GlobalColors.greenColor),
-                            overlayColor: MaterialStateProperty.all(GlobalColors.darkGreenColor),
-                            shape: MaterialStateProperty.all(new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(12.0))),
-                          ),
-                          onLongPress: (){
-                            setState(() {
-                              _selectedSeason = this.widget.show.currentSeason;
-                              _selectedEpisode = this.widget.show.currentEpisode;
-                            });
-                            showModalBottomSheet(
-                                backgroundColor: Colors.white,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(25.0),
-                                      topRight: Radius.circular(25.0)),
-                                ),
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return createBottomSheet();
-                                });
-                          },
-                          onPressed: () {
-                            try {
-                              setState(() {
-                                widget.show.incrementEpisodeWatch();
-                                widget.show.setLastWatchedDate();
-                              });
-                              FirestoreUtils().updateEpisode(widget.show);
-                              uiController.showAlert(title: 'Episode added!', seconds: 2, blurPower:  15, icon: Icons.done);
-                            } catch (e, s) {
-                              print(s);
-                              uiController.showAlert(title: '{$e}:Couldn\'t add episode!', seconds: 2, blurPower:  15, icon: Icons.error);
-                            }
-
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      "Next",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    child: FaIcon(
-                                      Icons.add_to_queue,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    FaIcon(
+                      Icons.add_to_queue,
+                      color: Colors.white,
                     )
                   ],
                 ),
               ),
-            ],
+            )
+          ],
           )
           : Column(
             children: [
@@ -913,7 +894,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                   AutoSizeText(
                                     timerController.countDown.value!,
                                     maxFontSize: 25,
-                                    minFontSize: 17,
+                                    minFontSize: 15,
                                     maxLines: 1,
                                     style: GoogleFonts.lato(
                                         fontWeight: FontWeight.w600,

@@ -392,7 +392,7 @@ packages:
       name: flare_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0-nullsafety.0"
+    version: "3.0.0-nullsafety.1"
   flip_panel:
     dependency: "direct main"
     description:

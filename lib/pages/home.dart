@@ -550,7 +550,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
             scrollSpec: ScrollSpec(
               overscroll: false,
               overscrollColor: GlobalColors.greenColor,
-              physics: PageScrollPhysics()
+              physics: AlwaysScrollableScrollPhysics()
             ),
             snapSpec: SnapSpec(
               snappings: [0.15, 1],
@@ -558,11 +558,6 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
               onSnap: (state, snap) {
                 print('Snapped to $snap');
               },
-            ),
-            parallaxSpec: const ParallaxSpec(
-              enabled: true,
-              amount: 1,
-              endExtent: 1,
             ),
             shadowColor: GlobalColors.greenColor.withOpacity(0.15),
             extendBody: true,
