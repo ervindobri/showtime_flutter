@@ -1,3 +1,4 @@
+import 'package:show_time/pages/splash.dart';
 import 'package:show_time/screens/browse_shows.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ class RouteGenerator {
     final args = settings.arguments;
 
     switch (settings.name) {
+      case '/splash':
+        return MaterialPageRoute(builder: (_) => SplashScreen());
       case '/login':
         // if ( args is UserDao){
         //   return MaterialPageRoute(builder: (_) => LoginScreen());

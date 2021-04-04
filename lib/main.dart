@@ -1,5 +1,8 @@
 import 'package:show_time/get_controllers/auth_controller.dart';
 import 'package:get/get.dart';
+import 'package:show_time/pages/home.dart';
+import 'package:show_time/screens/browse_shows.dart';
+import 'package:show_time/screens/discover/discover.dart';
 import 'components/route_generator.dart';
 import 'constants/custom_variables.dart';
 import 'package:show_time/pages/splash.dart';
@@ -80,6 +83,13 @@ Future<void> main() async {
           bottomSheetTheme: BottomSheetThemeData(
               backgroundColor: Colors.black.withOpacity(0)),
         ),
+          getPages: [
+          GetPage(name: '/home', page: () => HomeView()),
+          GetPage(name: '/splash', page: () => SplashScreen()),
+            GetPage(name: '/login', page: () => LoginScreen()),
+            GetPage(name: '/search', page: () => AllTVShows()),
+            GetPage(name: '/discover', page: () => DiscoverRoute(), binding: DiscoverBinding() ),
+        ],
         title: 'showTIME',
         home: Router(),
       )

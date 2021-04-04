@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
-import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:show_time/components/sign_out_dialog.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/get_controllers/auth_controller.dart';
 import 'package:show_time/get_controllers/show_controller.dart';
@@ -51,11 +52,12 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
   ShowController showController = Get.put(ShowController())!;
   AuthController authController = Get.put(AuthController())!;
 
+  ScrollController  _scheduleScrollController = ScrollController();
+
   @override
   void initState() {
     print("home init!");
     super.initState();
-    // _panelState = PanelState.CLOSED;
     _customTitle = title;
     currentUser = authController.sessionUser.value!;
 
@@ -296,83 +298,86 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
         actions: [
           InkWell(
             onTap: () async {
-              showAnimatedDialog(
-                context: context,
-                animationType: DialogTransitionType.slideFromTopFade,
-                barrierDismissible: true,
-                duration: Duration(milliseconds: 100),
-                builder: (BuildContext context) {
-                  return CustomDialogWidget(
-                    backgroundColor: Colors.grey.shade100,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(25)),
-                    ),
-                    title: Center(
-                      child: AutoSizeText(
-                        'Are you sure you want to sign out?',
-                        maxLines: 2,
-                        maxFontSize: 20,
-                        minFontSize: 13,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    titleTextStyle: TextStyle(
-                        fontFamily: 'Raleway',
-                        fontSize: 25,
-                        fontWeight: FontWeight.w700,
-                        color: GlobalColors.greyTextColor),
-                    titlePadding: EdgeInsets.only(
-                        top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
-                    //TODO content add rive animation
-                    content: AutoSizeText(
-                      "You will be redirected to the login screen.",
-                      maxLines: 2,
-                      minFontSize: 10,
-                      maxFontSize: 20,
-                      style: TextStyle(
-                          fontFamily: 'Raleway',
-                          // fontSize: 15,
-                          fontWeight: FontWeight.w300,
-                          color: GlobalColors.greyTextColor),
-                    ),
-                    elevation: 5,
-                    actions: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10, bottom: 10),
-                        child: InkWell(
-                          onTap: () => Navigator.pop(context),
-                          child: Text(
-                            'Close',
-                            style: TextStyle(
-                                color: GlobalColors.greenColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w300),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 25.0, bottom: 10),
-                        child: InkWell(
-                          onTap: () async {
-                            GlobalVariables.clearAll();
-                            // await authService.signOut();
-                            authController.signOut();
-                            await authController.signOutGoogle();
-                            Get.offAll(() => LoginScreen());
-                          },
-                          child: Text(
-                            'Sign Out',
-                            style: TextStyle(
-                                color: GlobalColors.greenColor,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w900),
-                          ),
-                        ),
-                      )
-                    ],
-                  );
-                },
-              );
+              Get.dialog(
+                  SignOutDialog(),
+                  barrierColor: Colors.white.withOpacity(.2));
+              // showAnimatedDialog(
+              //   context: context,
+              //   animationType: DialogTransitionType.slideFromTopFade,
+              //   barrierDismissible: true,
+              //   duration: Duration(milliseconds: 100),
+              //   builder: (BuildContext context) {
+              //     return CustomDialogWidget(
+              //       backgroundColor: Colors.grey.shade100,
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.all(Radius.circular(25)),
+              //       ),
+              //       title: Center(
+              //         child: AutoSizeText(
+              //           'Are you sure you want to sign out?',
+              //           maxLines: 2,
+              //           maxFontSize: 20,
+              //           minFontSize: 13,
+              //           textAlign: TextAlign.center,
+              //         ),
+              //       ),
+              //       titleTextStyle: TextStyle(
+              //           fontFamily: 'Raleway',
+              //           fontSize: 25,
+              //           fontWeight: FontWeight.w700,
+              //           color: GlobalColors.greyTextColor),
+              //       titlePadding: EdgeInsets.only(
+              //           top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
+              //       //TODO content add rive animation
+              //       content: AutoSizeText(
+              //         "You will be redirected to the login screen.",
+              //         maxLines: 2,
+              //         minFontSize: 10,
+              //         maxFontSize: 20,
+              //         style: TextStyle(
+              //             fontFamily: 'Raleway',
+              //             // fontSize: 15,
+              //             fontWeight: FontWeight.w300,
+              //             color: GlobalColors.greyTextColor),
+              //       ),
+              //       elevation: 5,
+              //       actions: [
+              //         Padding(
+              //           padding: const EdgeInsets.only(right: 10, bottom: 10),
+              //           child: InkWell(
+              //             onTap: () => Navigator.pop(context),
+              //             child: Text(
+              //               'Close',
+              //               style: TextStyle(
+              //                   color: GlobalColors.greenColor,
+              //                   fontSize: 20,
+              //                   fontWeight: FontWeight.w300),
+              //             ),
+              //           ),
+              //         ),
+              //         Padding(
+              //           padding: const EdgeInsets.only(right: 25.0, bottom: 10),
+              //           child: InkWell(
+              //             onTap: () async {
+              //               GlobalVariables.clearAll();
+              //               // await authService.signOut();
+              //               authController.signOut();
+              //               await authController.signOutGoogle();
+              //               Get.offAll(() => LoginScreen());
+              //             },
+              //             child: Text(
+              //               'Sign Out',
+              //               style: TextStyle(
+              //                   color: GlobalColors.greenColor,
+              //                   fontSize: 20,
+              //                   fontWeight: FontWeight.w900),
+              //             ),
+              //           ),
+              //         )
+              //       ],
+              //     );
+              //   },
+              // );
             },
             child: Container(
               // color: CupertinoColors.black,
@@ -397,6 +402,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
     Widget homeScreenBody(BuildContext context, GlobalKey<ScaffoldState> _slidingPanelKey) {
     final double _width = Get.size.width;
     final double _height = Get.size.height;
+
     return Center(
       child: Stack(
         children: <Widget>[
@@ -404,143 +410,145 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
             width: _width,
             height: _height,
             color: GlobalColors.bgColor,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Center(
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        //TODO: shimmer not working on web
-                        // Shimmer.fromColors(
-                        //   highlightColor: GlobalColors.greenColor,
-                        //   baseColor: GlobalColors.blueColor,
-                        //   direction: ShimmerDirection.ltr,
-                        //   period: const Duration(seconds: 10),
-                        //   child:
-                          Container(
-                            height: _height * 0.07,
-                            width: _width * .8,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                              gradient: LinearGradient(
-                                  begin: Alignment.topRight,
-                                  end: Alignment.bottomLeft,
-                                  colors: [
-                                    GlobalColors.greenColor,
-                                    GlobalColors.blueColor,
-                                  ]),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Center(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          //TODO: shimmer not working on web
+                          // Shimmer.fromColors(
+                          //   highlightColor: GlobalColors.greenColor,
+                          //   baseColor: GlobalColors.blueColor,
+                          //   direction: ShimmerDirection.ltr,
+                          //   period: const Duration(seconds: 10),
+                          //   child:
+                            Container(
+                              height: _height * 0.07,
+                              width: _width * .8,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                                gradient: LinearGradient(
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
+                                    colors: [
+                                      GlobalColors.greenColor,
+                                      GlobalColors.blueColor,
+                                    ]),
+                              ),
+                            ),
+                          // ),
+                          Center(
+                            child: Text(
+                              showGreetings(),
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Raleway',
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700),
                             ),
                           ),
-                        // ),
-                        Center(
-                          child: Text(
-                            showGreetings(),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Raleway',
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Container(
+                      height: _height * .25,
+                      color: GlobalColors.bgColor,
+                      width: _width,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                            child: Text("Discover",
+                                style: TextStyle(
+                                  fontSize: _height / 30,
+                                  color: GlobalColors.greyTextColor,
+                                  fontFamily: 'Raleway',
+                                  fontWeight: FontWeight.w900,
+                                )),
                           ),
-                        ),
-                      ],
+                          Container(
+                            width: _width,
+                            height: _height * .21,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: GlobalVariables.DISCOVER_DATA.length,
+                                shrinkWrap: true,
+                                itemBuilder: (context, int index) {
+                                  return ColorfulCard(
+                                      index: index,
+                                      data: GlobalVariables.DISCOVER_DATA[index],
+                                    maxWidth: kIsWeb ? 200 : _width/3,
+                                    maxHeight: kIsWeb ? 200 : _width/3,
+                                  );
+                                }),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: Container(
-                    height: _height * .25,
-                    color: GlobalColors.bgColor,
-                    width: _width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Text("Discover",
-                              style: TextStyle(
-                                fontSize: _height / 30,
-                                color: GlobalColors.greyTextColor,
-                                fontFamily: 'Raleway',
-                                fontWeight: FontWeight.w900,
-                              )),
-                        ),
-                        Container(
-                          width: _width,
-                          height: _height * .21,
-                          child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: GlobalVariables.DISCOVER_DATA.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, int index) {
-                                return ColorfulCard(
-                                    index: index,
-                                    data: GlobalVariables.DISCOVER_DATA[index],
-                                  maxWidth: kIsWeb ? 200 : _width/3,
-                                  maxHeight: kIsWeb ? 200 : _width/3,
-                                );
-                              }),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: _width,
-                    color: GlobalColors.bgColor,
-                    // color: Colors.black,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Schedule",
-                                  style: TextStyle(
-                                    fontSize: _height / 30,
-                                    color: GlobalColors.greyTextColor,
-                                    fontFamily: 'Raleway',
-                                    fontWeight: FontWeight.w900,
-                                  )),
-                              InkWell(
-                                onTap: () =>
-                                    Navigator.of(context).push(
-                                        CupertinoPageRoute(
-                                            builder: (builder) =>
-                                                FullSchedule( ))),
-                                child: Container(
-                                  width: 70,
-                                  height: 30,
-                                  child: Center(
-                                    child: Text("All",
-                                        style: TextStyle(
-                                          fontSize: _height / 35,
-                                          color: GlobalColors.greenColor,
-                                          fontFamily: 'Raleway',
-                                          fontWeight: FontWeight.w500,
-                                        )),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      width: _width,
+                      color: GlobalColors.bgColor,
+                      // color: Colors.black,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("Schedule",
+                                    style: TextStyle(
+                                      fontSize: _height / 30,
+                                      color: GlobalColors.greyTextColor,
+                                      fontFamily: 'Raleway',
+                                      fontWeight: FontWeight.w900,
+                                    )),
+                                InkWell(
+                                  onTap: () =>
+                                      Navigator.of(context).push(
+                                          CupertinoPageRoute(
+                                              builder: (builder) =>
+                                                  FullSchedule( ))),
+                                  child: Container(
+                                    width: 70,
+                                    height: 30,
+                                    child: Center(
+                                      child: Text("All",
+                                          style: TextStyle(
+                                            fontSize: _height / 35,
+                                            color: GlobalColors.greenColor,
+                                            fontFamily: 'Raleway',
+                                            fontWeight: FontWeight.w500,
+                                          )),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        _buildScheduledShowView(context),
-                      ],
+                          _buildScheduledShowView(context),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           SlidingSheet(
@@ -555,9 +563,6 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
             snapSpec: SnapSpec(
               snappings: [0.15, 1],
               positioning: SnapPositioning.relativeToSheetHeight,
-              onSnap: (state, snap) {
-                print('Snapped to $snap');
-              },
             ),
             shadowColor: GlobalColors.greenColor.withOpacity(0.15),
             extendBody: true,
@@ -636,7 +641,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
                           ),
                           InkWell(
                             onTap: () {
-                              Get.to(() => AllTVShows(), transition: Transition.cupertino);
+                              Get.to('/search', transition: Transition.cupertino);
                             } ,
                             child: SizedBox(
                               width: kIsWeb ? 150 : min(_width * 0.6, 90),
@@ -1101,8 +1106,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
   }
 
     Widget createCarouselSlider(List<WatchedTVShow> data) {
-    if ( kIsWeb && Get.width > 646){
-      print("is web ${Get.width}");
+    if ( kIsWeb){
       return Center(
         child: Container(
           width: Get.width,
@@ -1144,7 +1148,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
           ? const EdgeInsets.only(left: 25.0)
           : const EdgeInsets.symmetric(horizontal: 25.0),
       child: InkWell(
-        onTap: () => Get.to(SecondPageRoute(list: data),),
+        onTap: () => Get.toNamed('/discover', arguments: data),
         child: Align(
           alignment: Alignment.center,
           child: Container(
@@ -1225,18 +1229,40 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
 
     return Obx( () {
       if ( showController.notAired.length > 0){
-        return Container(
+        return kIsWeb
+          ? Container(
+            width: _width,
+            height: _height,
+            child: StaggeredGridView.countBuilder(
+              physics: NeverScrollableScrollPhysics(),
+                staggeredTileBuilder: (int index) =>
+                new StaggeredTile.count(1, 1),
+                mainAxisSpacing: 4.0,
+                crossAxisSpacing: 2.0,
+              itemCount: showController.notAired.length,
+              itemBuilder: (context, int index) {
+                return Center(
+                    child: ScheduleCard(episode: showController.notAired[index]));
+              }, crossAxisCount: 4,
+        ),
+          )
+          : Container(
             width: _width,
             height: _height * .41,
             color: GlobalColors.bgColor,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                physics: AlwaysScrollableScrollPhysics(),
-                itemCount: showController.notAired.length,
-                itemBuilder: (context, int index) {
-                  return Center(
-                      child: ScheduleCard(episode: showController.notAired[index]));
-                })
+            child: Scrollbar(
+              controller: _scheduleScrollController,
+              thickness: 20,
+              isAlwaysShown: true,
+              child: ListView.builder(
+                controller: _scheduleScrollController,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: showController.notAired.length,
+                  itemBuilder: (context, int index) {
+                    return Center(
+                        child: ScheduleCard(episode: showController.notAired[index]));
+                  }),
+            )
       );
       }
       else{

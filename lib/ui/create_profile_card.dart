@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/get_controllers/auth_controller.dart';
 import 'package:show_time/get_controllers/ui_controller.dart';
 import 'package:show_time/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -55,413 +55,339 @@ class _CreateProfileState extends State<CreateProfile> with TickerProviderStateM
     final _width = Get.width;
     final _height = Get.height;
     final node = FocusScope.of(context);
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: Offset(0, 1),
-        end: Offset.zero,
-      ).animate(animation),
-      child: Center(
-        child: Container(
-          width: _width * .81,
-          height: _height * .7,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25.0),
-            boxShadow: [
-              BoxShadow(
-                color: GlobalColors.greyTextColor.withOpacity(0.3),
-                spreadRadius: 10,
-                blurRadius: 25,
-                offset: Offset(0, 5), // changes position of shadow
-              ),
-            ],
-          ),
-          child: FadeTransition(
-            opacity: Tween<double>(
-              begin: 0,
-              end: 1,
-            ).animate(animation),
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: Offset(0, 0.1),
-                end: Offset.zero,
+    //TODO: web UI
+    if ( kIsWeb){
+      return Container();
+    }
+    else{
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: Offset(0, 1),
+          end: Offset.zero,
+        ).animate(animation),
+        child: Center(
+          child: Container(
+            width: _width * .81,
+            height: _height * .7,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25.0),
+              boxShadow: [
+                BoxShadow(
+                  color: GlobalColors.greyTextColor.withOpacity(0.3),
+                  spreadRadius: 10,
+                  blurRadius: 25,
+                  offset: Offset(0, 5), // changes position of shadow
+                ),
+              ],
+            ),
+            child: FadeTransition(
+              opacity: Tween<double>(
+                begin: 0,
+                end: 1,
               ).animate(animation),
-              child: Center(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: AutoSizeText(
-                        "Complete your profile",
-                        maxLines: 2,
-                        style: GoogleFonts.roboto(
-                          fontSize: 20,
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset(0, 0.1),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: AutoSizeText(
+                          "Complete your profile",
+                          maxLines: 2,
+                          style: GoogleFonts.roboto(
+                            fontSize: 20,
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 30.0),
-                      child: Container(
-                        // height: _height*.7,
-                        // width: _width,
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              //TODO: ADD AVATARS FOR USERS
-                              // Padding(
-                              //   padding: const EdgeInsets.all(8.0),
-                              //   child: CircleAvatar(
-                              //     backgroundColor: GlobalColors.greyTextColor,
-                              //     minRadius: 40,
-                              //     maxRadius: 40,
-                              //     backgroundImage: AssetImage(
-                              //         "assets/showtime-avatar.png"
-                              //     ),
-                              //   ),
-                              // ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      "first Name",
-                                      style: GoogleFonts.roboto(
-                                          color: GlobalColors.greyTextColor,
-                                          fontSize: _width / 20,
-                                          fontWeight: FontWeight.w300
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 30.0),
-                                      child: Container(
-                                        width: _width / 3,
-                                        height: _width / 6,
-                                        child: TextFormField(
-                                          controller: firstNameController,
-                                          keyboardType: TextInputType.name,
-                                          textCapitalization: TextCapitalization
-                                              .words,
-
-                                          autofocus: false,
-                                          validator: (val) {
-                                            if (val == "") {
-                                              return "Your first name!";
-                                            }
-                                            else {
-                                              return null;
-                                            }
-                                          },
-                                          decoration: const InputDecoration(
-                                            errorStyle: TextStyle(
-                                                fontFamily: 'Raleway',
-                                                color: GlobalColors.orangeColor
-                                            ),
-                                            hintStyle: TextStyle(
-                                                fontFamily: 'Raleway',
-                                                color: GlobalColors
-                                                    .greyTextColor,
-                                                fontWeight: FontWeight.w300
-                                            ),
-                                            contentPadding: EdgeInsets
-                                                .symmetric(vertical: 10.0,
-                                                horizontal: 10.0),
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            hintText: 'John',
-                                            focusColor: GlobalColors.greenColor,
-                                            enabledBorder: const OutlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: GlobalColors
-                                                  .blueColor),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50.0)),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: GlobalColors
-                                                  .blueColor),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50.0)),
-                                            ),
-                                            focusedBorder: const OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: GlobalColors
-                                                      .greenColor, width: 2),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50.0)),
-                                            ),
-                                            errorBorder: const OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: GlobalColors
-                                                      .orangeColor, width: 2),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50.0)),
-                                            ),
-                                          ),
-                                          style: GoogleFonts.roboto(
-                                              color: GlobalColors.greyTextColor,
-                                              fontSize: _width / 20,
-                                              fontWeight: FontWeight.w500
-                                          ),
-                                          onEditingComplete: () =>
-                                              node
-                                                  .nextFocus(), // Move focus to next
-
+                      Padding(
+                        padding: const EdgeInsets.only(top: 30.0),
+                        child: Container(
+                          // height: _height*.7,
+                          // width: _width,
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                //TODO: ADD AVATARS FOR USERS
+                                // Padding(
+                                //   padding: const EdgeInsets.all(8.0),
+                                //   child: CircleAvatar(
+                                //     backgroundColor: GlobalColors.greyTextColor,
+                                //     minRadius: 40,
+                                //     maxRadius: 40,
+                                //     backgroundImage: AssetImage(
+                                //         "assets/showtime-avatar.png"
+                                //     ),
+                                //   ),
+                                // ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        "first Name",
+                                        style: GoogleFonts.roboto(
+                                            color: GlobalColors.greyTextColor,
+                                            fontSize: _width / 20,
+                                            fontWeight: FontWeight.w300
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .end,
-                                  children: [
-                                    Text(
-                                      "last Name",
-                                      style: GoogleFonts.roboto(
-                                          color: GlobalColors.greyTextColor,
-                                          fontSize: _width / 20,
-                                          fontWeight: FontWeight.w300
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 30.0),
-                                      child: Container(
-                                        width: _width / 3,
-                                        height: _width / 6,
-                                        child: TextFormField(
-                                          controller: lastNameController,
-                                          autofocus: false,
-                                          textCapitalization: TextCapitalization
-                                              .words,
-                                          validator: (val) {
-                                            if (val == "") {
-                                              return "Your last name!";
-                                            }
-                                            else {
-                                              return null;
-                                            }
-                                          },
-                                          decoration: const InputDecoration(
-                                            errorStyle: TextStyle(
-                                                fontFamily: 'Raleway',
-                                                color: GlobalColors.orangeColor
-                                            ),
-                                            contentPadding: EdgeInsets
-                                                .symmetric(vertical: 10.0,
-                                                horizontal: 10.0),
-                                            filled: true,
-                                            fillColor: Colors.white,
-                                            hintText: 'Doe',
-                                            hintStyle: TextStyle(
-                                                fontFamily: 'Raleway',
-                                                color: GlobalColors
-                                                    .greyTextColor,
-                                                fontWeight: FontWeight.w300
-                                            ),
-                                            focusColor: GlobalColors.greenColor,
-                                            enabledBorder: const OutlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: GlobalColors
-                                                  .blueColor),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50.0)),
-                                            ),
-                                            border: const OutlineInputBorder(
-                                              borderSide:
-                                              BorderSide(color: GlobalColors
-                                                  .blueColor),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50.0)),
-                                            ),
-                                            focusedBorder: const OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: GlobalColors
-                                                      .greenColor, width: 2),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50.0)),
-                                            ),
-                                            errorBorder: const OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: GlobalColors
-                                                      .orangeColor, width: 2),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50.0)),
-                                            ),
-                                          ),
-                                          style: GoogleFonts.roboto(
-                                              color: GlobalColors.greyTextColor,
-                                              fontSize: _width / 20,
-                                              fontWeight: FontWeight.w500
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 30.0),
+                                        child: Container(
+                                          width: _width / 3,
+                                          height: _width / 6,
+                                          child: TextFormField(
+                                            controller: firstNameController,
+                                            keyboardType: TextInputType.name,
+                                            textCapitalization: TextCapitalization
+                                                .words,
 
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .end,
-
-                                  children: [
-                                    Text(
-                                      "age",
-                                      style: GoogleFonts.roboto(
-                                          color: GlobalColors.greyTextColor,
-                                          fontSize: _width / 20,
-                                          fontWeight: FontWeight.w300
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 30.0),
-                                      child: Container(
-                                        width: _width / 3,
-                                        height: _width / 10,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(50.0)),
-                                          border: Border.all(
-                                              color: GlobalColors.blueColor
-                                          ),
-                                        ),
-                                        child: CupertinoTheme(
-                                          data: CupertinoThemeData(
-                                            scaffoldBackgroundColor: Colors
-                                                .transparent,
-                                            primaryColor: Colors.transparent,
-                                            primaryContrastingColor: Colors
-                                                .transparent,
-                                            barBackgroundColor: Colors
-                                                .transparent,
-                                            textTheme: CupertinoTextThemeData(
-
-                                              pickerTextStyle: GoogleFonts
-                                                  .roboto(
+                                            autofocus: false,
+                                            validator: (val) {
+                                              if (val == "") {
+                                                return "Your first name!";
+                                              }
+                                              else {
+                                                return null;
+                                              }
+                                            },
+                                            decoration: const InputDecoration(
+                                              errorStyle: TextStyle(
+                                                  fontFamily: 'Raleway',
+                                                  color: GlobalColors.orangeColor
+                                              ),
+                                              hintStyle: TextStyle(
+                                                  fontFamily: 'Raleway',
                                                   color: GlobalColors
                                                       .greyTextColor,
-                                                  fontSize: 25
+                                                  fontWeight: FontWeight.w300
+                                              ),
+                                              contentPadding: EdgeInsets
+                                                  .symmetric(vertical: 10.0,
+                                                  horizontal: 10.0),
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                              hintText: 'John',
+                                              focusColor: GlobalColors.greenColor,
+                                              enabledBorder: const OutlineInputBorder(
+                                                borderSide:
+                                                BorderSide(color: GlobalColors
+                                                    .blueColor),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0)),
+                                              ),
+                                              border: const OutlineInputBorder(
+                                                borderSide:
+                                                BorderSide(color: GlobalColors
+                                                    .blueColor),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0)),
+                                              ),
+                                              focusedBorder: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: GlobalColors
+                                                        .greenColor, width: 2),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0)),
+                                              ),
+                                              errorBorder: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: GlobalColors
+                                                        .orangeColor, width: 2),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0)),
                                               ),
                                             ),
+                                            style: GoogleFonts.roboto(
+                                                color: GlobalColors.greyTextColor,
+                                                fontSize: _width / 20,
+                                                fontWeight: FontWeight.w500
+                                            ),
+                                            onEditingComplete: () =>
+                                                node
+                                                    .nextFocus(), // Move focus to next
+
                                           ),
-                                          child: CupertinoPicker(
-                                            looping: true,
-                                            backgroundColor: Colors.transparent,
-                                            // selectionOverlay: Container(
-                                            //     child: Padding(
-                                            //       padding: const EdgeInsets.only(left: 10.0),
-                                            //       child: Row(
-                                            //         children: [
-                                            //           FaIcon(
-                                            //             FontAwesomeIcons.sort,
-                                            //             color: GlobalColors.blueColor,
-                                            //           )
-                                            //         ],
-                                            //       ),
-                                            //     )
-                                            // ),
-                                            itemExtent: 50,
-                                            onSelectedItemChanged: (int value) {
-                                              ageController.text =
-                                                  (value + 1).toString();
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .end,
+                                    children: [
+                                      Text(
+                                        "last Name",
+                                        style: GoogleFonts.roboto(
+                                            color: GlobalColors.greyTextColor,
+                                            fontSize: _width / 20,
+                                            fontWeight: FontWeight.w300
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 30.0),
+                                        child: Container(
+                                          width: _width / 3,
+                                          height: _width / 6,
+                                          child: TextFormField(
+                                            controller: lastNameController,
+                                            autofocus: false,
+                                            textCapitalization: TextCapitalization
+                                                .words,
+                                            validator: (val) {
+                                              if (val == "") {
+                                                return "Your last name!";
+                                              }
+                                              else {
+                                                return null;
+                                              }
                                             },
-                                            children: List.generate(
-                                                100, (index) =>
-                                                Center(
-                                                  child: Text(
-                                                    (index + 1).toString(),
-                                                    style: GoogleFonts.roboto(
-                                                        color: GlobalColors
-                                                            .greyTextColor,
-                                                        fontSize: _width / 20,
-                                                        fontWeight: FontWeight
-                                                            .w500
-                                                    ),
-                                                  ),
-                                                )
+                                            decoration: const InputDecoration(
+                                              errorStyle: TextStyle(
+                                                  fontFamily: 'Raleway',
+                                                  color: GlobalColors.orangeColor
+                                              ),
+                                              contentPadding: EdgeInsets
+                                                  .symmetric(vertical: 10.0,
+                                                  horizontal: 10.0),
+                                              filled: true,
+                                              fillColor: Colors.white,
+                                              hintText: 'Doe',
+                                              hintStyle: TextStyle(
+                                                  fontFamily: 'Raleway',
+                                                  color: GlobalColors
+                                                      .greyTextColor,
+                                                  fontWeight: FontWeight.w300
+                                              ),
+                                              focusColor: GlobalColors.greenColor,
+                                              enabledBorder: const OutlineInputBorder(
+                                                borderSide:
+                                                BorderSide(color: GlobalColors
+                                                    .blueColor),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0)),
+                                              ),
+                                              border: const OutlineInputBorder(
+                                                borderSide:
+                                                BorderSide(color: GlobalColors
+                                                    .blueColor),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0)),
+                                              ),
+                                              focusedBorder: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: GlobalColors
+                                                        .greenColor, width: 2),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0)),
+                                              ),
+                                              errorBorder: const OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    color: GlobalColors
+                                                        .orangeColor, width: 2),
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(50.0)),
+                                              ),
+                                            ),
+                                            style: GoogleFonts.roboto(
+                                                color: GlobalColors.greyTextColor,
+                                                fontSize: _width / 20,
+                                                fontWeight: FontWeight.w500
+                                            ),
+
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .end,
+
+                                    children: [
+                                      Text(
+                                        "age",
+                                        style: GoogleFonts.roboto(
+                                            color: GlobalColors.greyTextColor,
+                                            fontSize: _width / 20,
+                                            fontWeight: FontWeight.w300
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 30.0),
+                                        child: Container(
+                                          width: _width / 3,
+                                          height: _width / 10,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(50.0)),
+                                            border: Border.all(
+                                                color: GlobalColors.blueColor
                                             ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment
-                                      .end,
-                                  children: [
-                                    Text(
-                                      "sex",
-                                      style: GoogleFonts.roboto(
-                                          fontSize: _width / 20,
-                                          fontWeight: FontWeight.w300,
-                                          color: GlobalColors.greyTextColor
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 30.0),
-                                      child: Container(
-                                        width: _width / 3,
-                                        height: _width / 10,
+                                          child: CupertinoTheme(
+                                            data: CupertinoThemeData(
+                                              scaffoldBackgroundColor: Colors
+                                                  .transparent,
+                                              primaryColor: Colors.transparent,
+                                              primaryContrastingColor: Colors
+                                                  .transparent,
+                                              barBackgroundColor: Colors
+                                                  .transparent,
+                                              textTheme: CupertinoTextThemeData(
 
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(50.0)),
-                                          border: Border.all(
-                                              color: GlobalColors.blueColor
-                                          ),
-                                        ),
-                                        child: CupertinoPicker(
-                                          // controller: sexController,
-                                          looping: true,
-                                          // selectionOverlay: Container(
-                                          //   child: Padding(
-                                          //     padding: const EdgeInsets.only(left: 10.0),
-                                          //     child: Row(
-                                          //       children: [
-                                          //         FaIcon(
-                                          //           FontAwesomeIcons.sort,
-                                          //           color: GlobalColors.blueColor,
-                                          //         )
-                                          //       ],
-                                          //     ),
-                                          //   )
-                                          // ),
-                                          itemExtent: 50,
-                                          onSelectedItemChanged: (int value) {
-                                            sexController.text = GlobalVariables
-                                                .sexCategories[value];
-                                          },
-                                          children: List.generate(
-                                              GlobalVariables.sexCategories
-                                                  .length, (index) =>
-                                              Align(
-                                                  alignment: Alignment
-                                                      .centerRight,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .only(right: 15.0),
+                                                pickerTextStyle: GoogleFonts
+                                                    .roboto(
+                                                    color: GlobalColors
+                                                        .greyTextColor,
+                                                    fontSize: 25
+                                                ),
+                                              ),
+                                            ),
+                                            child: CupertinoPicker(
+                                              looping: true,
+                                              backgroundColor: Colors.transparent,
+                                              // selectionOverlay: Container(
+                                              //     child: Padding(
+                                              //       padding: const EdgeInsets.only(left: 10.0),
+                                              //       child: Row(
+                                              //         children: [
+                                              //           FaIcon(
+                                              //             FontAwesomeIcons.sort,
+                                              //             color: GlobalColors.blueColor,
+                                              //           )
+                                              //         ],
+                                              //       ),
+                                              //     )
+                                              // ),
+                                              itemExtent: 50,
+                                              onSelectedItemChanged: (int value) {
+                                                ageController.text =
+                                                    (value + 1).toString();
+                                              },
+                                              children: List.generate(
+                                                  100, (index) =>
+                                                  Center(
                                                     child: Text(
-                                                      GlobalVariables
-                                                          .sexCategories[index],
+                                                      (index + 1).toString(),
                                                       style: GoogleFonts.roboto(
                                                           color: GlobalColors
                                                               .greyTextColor,
@@ -471,115 +397,196 @@ class _CreateProfileState extends State<CreateProfile> with TickerProviderStateM
                                                       ),
                                                     ),
                                                   )
-                                              )
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Container(
-                                    child: GetBuilder<AuthController>(
-                                      init: authController,
-                                      builder: (_){
-                                        return TextButton(
-                                          // maxWidth: _width / 3,
-                                          // minWidth: _width / 3,
-                                          // state: buttonState,
-                                          onPressed: () {
-                                            // setState(() {
-                                            //   buttonState = ButtonState.loading;
-                                            // });
-                                            Future.delayed(
-                                                Duration(seconds: 1), () {
-                                              setState(() {
-                                                if (_formKey.currentState!.validate()) {
-                                                  // print("validated");
-                                                  authController.updateUserInfo(
-                                                    firstNameController.text,
-                                                    lastNameController.text,
-                                                    int.parse(ageController.text),
-                                                    sexController.text
-                                                  );
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment
+                                        .end,
+                                    children: [
+                                      Text(
+                                        "sex",
+                                        style: GoogleFonts.roboto(
+                                            fontSize: _width / 20,
+                                            fontWeight: FontWeight.w300,
+                                            color: GlobalColors.greyTextColor
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 30.0),
+                                        child: Container(
+                                          width: _width / 3,
+                                          height: _width / 10,
 
-                                                  // buttonState = ButtonState.success;
-                                                  // if (buttonState ==
-                                                  //     ButtonState.success) {
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(50.0)),
+                                            border: Border.all(
+                                                color: GlobalColors.blueColor
+                                            ),
+                                          ),
+                                          child: CupertinoPicker(
+                                            // controller: sexController,
+                                            looping: true,
+                                            // selectionOverlay: Container(
+                                            //   child: Padding(
+                                            //     padding: const EdgeInsets.only(left: 10.0),
+                                            //     child: Row(
+                                            //       children: [
+                                            //         FaIcon(
+                                            //           FontAwesomeIcons.sort,
+                                            //           color: GlobalColors.blueColor,
+                                            //         )
+                                            //       ],
+                                            //     ),
+                                            //   )
+                                            // ),
+                                            itemExtent: 50,
+                                            onSelectedItemChanged: (int value) {
+                                              sexController.text = GlobalVariables
+                                                  .sexCategories[value];
+                                            },
+                                            children: List.generate(
+                                                GlobalVariables.sexCategories
+                                                    .length, (index) =>
+                                                Align(
+                                                    alignment: Alignment
+                                                        .centerRight,
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                          .only(right: 15.0),
+                                                      child: Text(
+                                                        GlobalVariables
+                                                            .sexCategories[index],
+                                                        style: GoogleFonts.roboto(
+                                                            color: GlobalColors
+                                                                .greyTextColor,
+                                                            fontSize: _width / 20,
+                                                            fontWeight: FontWeight
+                                                                .w500
+                                                        ),
+                                                      ),
+                                                    )
+                                                )
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Container(
+                                      child: GetBuilder<AuthController>(
+                                        init: authController,
+                                        builder: (_){
+                                          return TextButton(
+                                            // maxWidth: _width / 3,
+                                            // minWidth: _width / 3,
+                                            // state: buttonState,
+                                            onPressed: () {
+                                              // setState(() {
+                                              //   buttonState = ButtonState.loading;
+                                              // });
+                                              Future.delayed(
+                                                  Duration(seconds: 1), () {
+                                                setState(() {
+                                                  if (_formKey.currentState!.validate()) {
+                                                    // print("validated");
+                                                    authController.updateUserInfo(
+                                                        firstNameController.text,
+                                                        lastNameController.text,
+                                                        int.parse(ageController.text),
+                                                        sexController.text
+                                                    );
+
+                                                    // buttonState = ButtonState.success;
+                                                    // if (buttonState ==
+                                                    //     ButtonState.success) {
                                                     Timer.run((){
                                                       Get.to(HomeView());
                                                     });
-                                                }
-                                                // else {
-                                                //   buttonState = ButtonState.fail;
-                                                // }
+                                                  }
+                                                  // else {
+                                                  //   buttonState = ButtonState.fail;
+                                                  // }
+                                                });
                                               });
-                                            });
-                                          },
-                                          child: Text(
-                                            "Save",
-                                            style: GoogleFonts.roboto(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: _width / 20
+                                            },
+                                            child: Text(
+                                              "Save",
+                                              style: GoogleFonts.roboto(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: _width / 20
+                                              ),
                                             ),
-                                          ),
-                                          // padding: const EdgeInsets.all(8.0),
-                                          // progressIndicatorAligment: MainAxisAlignment
-                                          //     .center,
-                                          // radius: 25.0,
-                                          // stateWidgets: {
-                                          //   ButtonState.idle: Text(
-                                          //     "Save",
-                                          //     style: GoogleFonts.roboto(
-                                          //         color: Colors.white,
-                                          //         fontWeight: FontWeight.w500,
-                                          //         fontSize: _width / 20
-                                          //     ),
-                                          //   ),
-                                          //   ButtonState.loading: Container(),
-                                          //   ButtonState.fail: Text(
-                                          //     "Submit Failed",
-                                          //     style: GoogleFonts.roboto(
-                                          //         color: Colors.white,
-                                          //         fontWeight: FontWeight.w500),
-                                          //   ),
-                                          //   ButtonState.success: FaIcon(
-                                          //     FontAwesomeIcons.check,
-                                          //     color: Colors.white,
-                                          //   )
-                                          // },
-                                          // stateColors: {
-                                          //   ButtonState.idle: GlobalColors
-                                          //       .blueColor,
-                                          //   ButtonState.loading: GlobalColors
-                                          //       .blueColor,
-                                          //   ButtonState.fail: GlobalColors
-                                          //       .fireColor,
-                                          //   ButtonState.success: GlobalColors
-                                          //       .greenColor,
-                                          // },
+                                            // padding: const EdgeInsets.all(8.0),
+                                            // progressIndicatorAligment: MainAxisAlignment
+                                            //     .center,
+                                            // radius: 25.0,
+                                            // stateWidgets: {
+                                            //   ButtonState.idle: Text(
+                                            //     "Save",
+                                            //     style: GoogleFonts.roboto(
+                                            //         color: Colors.white,
+                                            //         fontWeight: FontWeight.w500,
+                                            //         fontSize: _width / 20
+                                            //     ),
+                                            //   ),
+                                            //   ButtonState.loading: Container(),
+                                            //   ButtonState.fail: Text(
+                                            //     "Submit Failed",
+                                            //     style: GoogleFonts.roboto(
+                                            //         color: Colors.white,
+                                            //         fontWeight: FontWeight.w500),
+                                            //   ),
+                                            //   ButtonState.success: FaIcon(
+                                            //     FontAwesomeIcons.check,
+                                            //     color: Colors.white,
+                                            //   )
+                                            // },
+                                            // stateColors: {
+                                            //   ButtonState.idle: GlobalColors
+                                            //       .blueColor,
+                                            //   ButtonState.loading: GlobalColors
+                                            //       .blueColor,
+                                            //   ButtonState.fail: GlobalColors
+                                            //       .fireColor,
+                                            //   ButtonState.success: GlobalColors
+                                            //       .greenColor,
+                                            // },
 
-                                        );
-                                      },
+                                          );
+                                        },
 
-                                    )
-                                ),
-                              )
-                            ],
+                                      )
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
+
   }
 }

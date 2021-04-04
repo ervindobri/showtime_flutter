@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'custom_variables.dart';
@@ -16,9 +17,8 @@ abstract class ShowTheme{
     );
 
   static var listWatchCardSubStyle = TextStyle(
-    color: GlobalColors.watchCardFontColor,
+    color: GlobalColors.white,
     fontFamily: 'Raleway',
-    fontSize: width / 20,
   );
 
   static var listWatchCardPercentStyle = TextStyle(
@@ -31,7 +31,7 @@ abstract class ShowTheme{
     color: Colors.white,
     fontFamily: 'Raleway',
     fontWeight: FontWeight.w700,
-    fontSize: width / 25,
+    fontSize: height / 30,
   );
 
   static const radius25 = const BorderRadius.all(Radius.circular(25));
@@ -42,17 +42,16 @@ abstract class ShowTheme{
     }
 
   static TextStyle listWatchCardTitleStyle = TextStyle(
-    color: GlobalColors.watchCardFontColor,
+    color: GlobalColors.greyTextColor,
     fontFamily: 'Raleway',
     fontWeight: FontWeight.w700,
     // fontSize: _width / 15,
   );
 
   static var listWatchCardDaysStyle = TextStyle(
-    color: GlobalColors.watchCardFontColor,
+    color: GlobalColors.white,
     fontFamily: 'Raleway',
     fontWeight: FontWeight.w700,
-    fontSize: width / 10,
   );
 
     static const radius50 = BorderRadius.all(Radius.circular(50.0));

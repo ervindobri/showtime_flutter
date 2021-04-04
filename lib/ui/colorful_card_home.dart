@@ -16,7 +16,7 @@ class ColorfulCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Get.to(() => DiscoverRoute(list: data),),
+      onTap: () => Get.toNamed('/discover', arguments: data),
       child: Padding(
         padding: index != GlobalVariables.DISCOVER_DATA.length - 1
             ? const EdgeInsets.only(left: 25.0)

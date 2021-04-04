@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:show_time/database/database.dart';
@@ -40,15 +41,20 @@ class AuthController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    final database = await $FloorAppDatabase.databaseBuilder('users.db').build();
-    _dao = database.userDao;
     getUserData();
-    fetchAccounts();
-    getSavedData();
 
-    _checkBiometrics();
-    print(_canCheckBiometrics);
-    _getAvailableBiometrics();
+    if ( !kIsWeb){
+      final database = await $FloorAppDatabase.databaseBuilder('users.db').build();
+      _dao = database.userDao;
+      fetchAccounts();
+      getSavedData();
+      _checkBiometrics();
+      _getAvailableBiometrics();
+    }
+    nameController.text = "dobriervin@yahoo.com";
+    passwordController.text = "djcaponegood";
+    print("Set default login data!");
+
   }
 
   void getSavedData() async {

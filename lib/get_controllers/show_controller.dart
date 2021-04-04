@@ -25,6 +25,7 @@ class ShowController extends GetxController{
 
 
   RxString searchTerm = ''.obs;
+  RxBool loaded = false.obs;
 
   @override
   void onInit() {
@@ -37,6 +38,7 @@ class ShowController extends GetxController{
     fetchWatchedShows();
     fetchScheduledEpisodes();
     sortedList = watched.where((e) => e.name!.toLowerCase().contains(searchTerm.toLowerCase())).toList();
+    loaded.value = true;
   }
 
   void fetchWatchedShows() async {

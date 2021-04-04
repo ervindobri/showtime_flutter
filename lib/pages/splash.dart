@@ -15,7 +15,6 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:simple_animations/simple_animations.dart';
-import 'home.dart';
 
 class SplashScreen extends StatefulWidget {
 
@@ -39,6 +38,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
 
   ShowController showController = Get.put(ShowController())!;
   AuthController authController = Get.put(AuthController())!;
+
 
   @override
   void initState() {
@@ -102,8 +102,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                 child: Hero(
                   tag: 'logo',
                   child: Container(
-                    width: _width / 2,
-                    height: _height*.15,
+                    width: kIsWeb ? 200 : _width / 2,
+                    height: kIsWeb? 150 : _height*.15,
                     decoration: BoxDecoration(
                         image: DecorationImage(
                             image: AssetImage("assets/showTIMEsmall.png"),
@@ -170,8 +170,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
             builder: (_){
               if (showController.notAired.isNotEmpty) {
                 Timer.run(() {
-                  print("go to home!");
-                  Get.offAll(() => HomeView());
+                  Get.offAllNamed('/home');
+                  print("Timer run!");
                 });
                 return loadingCouch();
               }
