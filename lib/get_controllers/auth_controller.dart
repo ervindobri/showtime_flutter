@@ -18,7 +18,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 
 class AuthController extends GetxController {
-  Rx<SessionUser> sessionUser = Rx<SessionUser>();
+  Rx<SessionUser> sessionUser = Rx<SessionUser>(new SessionUser(id:0,firstName:"",lastName: "",emailAddress: "", age:0,sex:""));
   //TODO: resolve floor dependency issue
   var usersWithBiometricAuth = <UserData>[].obs;
   late UserDao _dao;

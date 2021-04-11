@@ -88,7 +88,7 @@ Future<void> main() async {
           GetPage(name: '/splash', page: () => SplashScreen()),
             GetPage(name: '/login', page: () => LoginScreen()),
             GetPage(name: '/search', page: () => AllTVShows()),
-            GetPage(name: '/discover', page: () => DiscoverRoute(), binding: DiscoverBinding() ),
+            GetPage(name: '/discover', page: () => DiscoverRoute(),transition: Transition.fade, binding: DiscoverBinding() ),
         ],
         title: 'showTIME',
         home: Router(),
@@ -101,7 +101,7 @@ class Router extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx((){
-      return Get.find<AuthController>().user?.firstName != null ? SplashScreen() : LoginScreen();
+      return Get.find<AuthController>().user?.firstName != "" ? SplashScreen() : LoginScreen();
     });
   }
 }

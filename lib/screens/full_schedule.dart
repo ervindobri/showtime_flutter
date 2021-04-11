@@ -76,7 +76,12 @@ class _FullScheduleState extends State<FullSchedule> {
                   delegate: PopularSliverDelegate(
                     // hideTitleWhenExpanded: true,
                     expandedHeight: _height*.15,
-                    back: back(context),
+                    back: CustomBackButton(
+                      backPage: 'Home',
+                      itemColor: GlobalColors.white,
+                      backgroundColor: GlobalColors.greenColor,
+
+                    ),
                     actions: getActions(),
                     child: Container(
                       width: _width,

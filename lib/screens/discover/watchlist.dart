@@ -2,12 +2,18 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:show_time/components/back.dart';
 import 'package:show_time/components/blurry_header.dart';
 import 'package:show_time/components/custom_elevation.dart';
+import 'package:show_time/components/loading_couch.dart';
+import 'package:show_time/components/sort_button.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/get_controllers/show_controller.dart';
 import 'package:show_time/models/watched.dart';
+import 'package:show_time/ui/filter_bottom_sheet.dart';
+import 'package:show_time/ui/sort_bottom_sheet.dart';
 import 'package:show_time/ui/watchlist_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,6 +42,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   late Animation animation;
   late AnimateIconController controller;
   final TextEditingController _filter = new TextEditingController();
+  final FloatingSearchBarController _searchBarController = new FloatingSearchBarController();
 
 
   @override
@@ -60,34 +67,106 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
 
   Widget _textField() {
 
-    return Container(
-      width: kIsWeb? Get.width/3 : Get.width,
-      child: CupertinoSearchTextField(
-            onChanged: (value) {
-              setState(() => showController.filter(value));
-            },
-            controller: _filter,
-            // keyboardType: TextInputType.text,
-            placeholder: "Search watchlist",
-            placeholderStyle: TextStyle(
-              color: GlobalColors.greyTextColor.withOpacity(.5),
-              fontSize: 20.0,
-              fontFamily: 'Raleway',
+    if (kIsWeb){
+    return FloatingSearchBar(
+      hint: 'Search...',
+        controller: _searchBarController,
+        scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
+        transitionDuration: const Duration(milliseconds: 400),
+        transitionCurve: Curves.easeInOut,
+        physics: const BouncingScrollPhysics(),
+        axisAlignment: 0.0,
+        borderRadius: BorderRadius.circular(12),
+        openAxisAlignment: 0.0,
+        backdropColor: Colors.transparent,
+        automaticallyImplyBackButton: false,
+        leadingActions: [],
+        width: 70,
+      openWidth: 250,
+        debounceDelay: const Duration(milliseconds: 500),
+        onQueryChanged: (query) {
+          showController.filter(query);
+        },
+        transition: CircularFloatingSearchBarTransition(),
+        actions: [
+          FloatingSearchBarAction(
+            showIfClosed: true,
+            showIfOpened: false,
+            child: CircularButton(
+              icon: const FaIcon(
+                  FontAwesomeIcons.search,
+                color: GlobalColors.greyTextColor,
+              ),
+              onPressed: () {
+                //open search bar
+                if ( _searchBarController.isClosed)
+                _searchBarController.open();
+              },
             ),
-            itemColor: GlobalColors.greyTextColor,
-            style: TextStyle(
-              color: GlobalColors.greyTextColor,
-              fontSize: 20.0,
-              fontFamily: 'Raleway',
+          ),
+          FloatingSearchBarAction(
+            showIfClosed: false,
+            showIfOpened: true,
+            child: CircularButton(
+              icon: const FaIcon(
+                FontAwesomeIcons.times,
+                color: GlobalColors.greyTextColor,
+              ),
+              onPressed: () {
+                //open search bar
+                if ( _searchBarController.isOpen)
+                _searchBarController.clear();
+                  _searchBarController.close();
+              },
             ),
-            // prefix: Padding(
-            //   padding: const EdgeInsets.only(left: 8.0),
-            //   child: Icon(
-            //     Icons.search,
-            //     color: GlobalColors.greyTextColor,
-            //   ),
-            // ),
-            decoration: BoxDecoration(
+          ),
+        ],
+        builder: (context, transition) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Material(
+              color: Colors.white,
+              elevation: 4.0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: Colors.accents.map((color) {
+                  return Container(height: 112, color: color);
+                }).toList(),
+              ),
+            ),
+          );
+        },
+      );
+    }
+    else{
+      return Container(
+        width: Get.width,
+        child: CupertinoSearchTextField(
+          onChanged: (value) {
+            showController.filter(value);
+          },
+          controller: _filter,
+          // keyboardType: TextInputType.text,
+          placeholder: "Search watchlist",
+          placeholderStyle: TextStyle(
+            color: GlobalColors.greyTextColor.withOpacity(.5),
+            fontSize: 20.0,
+            fontFamily: 'Raleway',
+          ),
+          itemColor: GlobalColors.greyTextColor,
+          style: TextStyle(
+            color: GlobalColors.greyTextColor,
+            fontSize: 20.0,
+            fontFamily: 'Raleway',
+          ),
+          // prefix: Padding(
+          //   padding: const EdgeInsets.only(left: 8.0),
+          //   child: Icon(
+          //     Icons.search,
+          //     color: GlobalColors.greyTextColor,
+          //   ),
+          // ),
+          decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),
               boxShadow: [ new BoxShadow(
                   color: Colors.grey.withOpacity(.2),
@@ -96,9 +175,11 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                   offset: Offset(0, 5)),
               ],
               color: Colors.white
-            ),
-      ),
-    );
+          ),
+        ),
+      );
+    }
+
   }
 
   Widget build(BuildContext context) {
@@ -112,7 +193,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
       appBar: AppBar(
         brightness: Brightness.dark,
         shadowColor: Colors.transparent,
-        backgroundColor: GlobalVariables.watchlistBlue,
+        backgroundColor: GlobalColors.watchlistBlue,
         toolbarHeight: 0,
       ),
       body: Container(
@@ -123,27 +204,6 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
             builder: (_showController) {
               return Stack(
                     children: [
-                      // Container(
-                      //   width: _width,
-                      //   height: _height*.16,
-                      //   decoration: BoxDecoration(
-                      //     color: GlobalVariables.watchlistBlue,
-                      //     borderRadius: BorderRadius.only(
-                      //       bottomLeft: Radius.circular(25.0),
-                      //       bottomRight: Radius.circular(25.0),
-                      //     )
-                      //   ),
-                      //   // color: Colors.black,
-                      //   child: Column(
-                      //       mainAxisAlignment: MainAxisAlignment.center,
-                      //       children: [
-                      //         Padding(
-                      //           padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 0),
-                      //           child: _textField(),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
                       Container(
                         height: _height,
                         decoration: BoxDecoration(
@@ -154,7 +214,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                             )
                         ),
                         // ignore: missing_required_param
-                        child: createListView(_showController.watchedShows.value),
+                        child: Obx( () => createListView(showController.sortedList.value)),
                       ), //pass title, and get content
                       Positioned(
                         bottom: 50,
@@ -166,7 +226,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(25)),
                                 ),
-                                color: GlobalVariables.watchlistBlue,
+                                color: GlobalColors.watchlistBlue,
                                 highlightColor: Colors.blueAccent.shade700,
                                 onPressed: () {
                                   _onpressed();
@@ -243,57 +303,6 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
   }
 
 
-  sortButton(){
-    return InkWell(
-      onTap: () async {
-        showModalBottomSheet(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(25.0),
-                  topRight: Radius.circular(25.0)),
-            ),
-            context: context,
-            builder: (BuildContext context) {
-              return createBottomSheet();
-            });
-      },
-      child: Container(
-        child: Row(
-          children: [
-            Text(
-              "Sort",
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Raleway',
-                fontSize: 20,
-              ),
-            ),
-            IconButton(
-              icon: Icon(Icons.sort),
-              color: Colors.white,
-              iconSize: 25,
-              onPressed: () async {
-                showModalBottomSheet(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(25.0),
-                          topRight: Radius.circular(25.0)),
-                    ),
-                    context: context,
-                    builder: (BuildContext context) {
-                      return createBottomSheet();
-                    });
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-
   sliverHeader() {
     final _height = Get.height;
     final _width = Get.width;
@@ -302,128 +311,114 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
       pinned: true,
       floating: true,
       delegate: BlurrySliverDelegate(
-        backgroundColor: GlobalVariables.watchlistBlue,
+        backgroundColor: GlobalColors.watchlistBlue,
         expandedHeight: kIsWeb ? _height*.1 : _height*.2,
-        back: back(context),
-        actions: sortButton(),
+        back: CustomBackButton(
+          backPage: "Home",
+          itemColor: GlobalColors.white,
+          backgroundColor: GlobalColors.watchlistBlue,
+        ),
+        actions:  [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: CustomButton(
+                title: 'Filter',
+                icon: FontAwesomeIcons.filter,
+                itemColor: GlobalColors.white,
+                backgroundColor: GlobalColors.watchlistBlue,
+                onTap: () {
+                  if ( !kIsWeb) {
+                    showModalBottomSheet(
+                        backgroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25.0),
+                              topRight: Radius.circular(25.0)),
+                        ),
+                        context: context,
+                        builder: (_) {
+                          return FilterMenuSheet(
+                            onFilter: () {
+                              // showController.filter(criteria);
+                              // Get.back();
+                            },
+                          );
+                        });
+                  }
+                  else{
+                    Get.dialog(FilterMenuSheet(
+                      onFilter: () {
+                        // showController.filter(criteria);
+                        // Get.back();
+                      },
+                    )
+                        ,transitionDuration: Duration(milliseconds: 300));
+                  }
+
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: CustomButton(
+              title: 'Sort',
+              icon: FontAwesomeIcons.sort,
+              itemColor: GlobalColors.white,
+              backgroundColor: GlobalColors.watchlistBlue,
+                onTap: () {
+                  showModalBottomSheet(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25.0),
+                            topRight: Radius.circular(25.0)),
+                      ),
+                      context: context,
+                      builder: (_) {
+                        return SortMenu(
+                          onTap: () {
+                            setState(() {
+                              _sorting = true;
+                            });
+                            showController.sort(criteria);
+                            Get.back();
+                          },
+                          onSelectItemChanged: (value) {
+                            setState(() {
+                              criteria = GlobalVariables.SORT_CATEGORIES[value];
+                            });
+                          },
+                        );
+                      });
+                },
+          ),
+            ),
+        ],
         cancel: _cancelButton(),
         child: _textField(),
       ),
     );
   }
 
-  Widget createBottomSheet() {
-    double _width = Get.size.width;
-    double _height = Get.size.height;
-    return ClipRRect(
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            height: _height / 8,
-            color: Colors.white,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                          onTap: () {
-                            Get.back();
-                          },
-                          child: Icon(
-                            Icons.arrow_back,
-                            size: 30,) // the arrow back icon
-                          ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          _sorting = true;
-                        });
-                         showController.sort(criteria);
-                         Get.back();
-                      },
-                      child: Text(
-                          "Confirm",
-                          style: TextStyle(
-                            color: GlobalColors.greyTextColor,
-                            decoration: TextDecoration.underline,
-                            fontSize: 20,
-                            fontFamily: 'Raleway',
-                          ),
-                      ),
-                    ),
-                  )
-                ]),
-                Center(
-                    child: Text(
-                      "Sort",
-                      style: TextStyle(
-                          fontFamily: 'Raleway',
-                          fontWeight: FontWeight.w700,
-                          fontSize: 30,
-                          color: GlobalColors.greyTextColor),
-                    ) // Your desired title
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: _height / 2.4,
-            color: Colors.white,
-            child: CupertinoPicker(
-              backgroundColor: Colors.white,
-              itemExtent: 50,
-              diameterRatio: 1,
-              looping: true,
-              useMagnifier: true,
-              onSelectedItemChanged: (int value) {
-                setState(() {
-                  criteria = GlobalVariables.SORT_CATEGORIES[value];
-                });
-              },
-              children: new List<Widget>.generate(GlobalVariables.SORT_CATEGORIES.length, (index){
-                return Container(
-                  width: _width,
-                  color: Colors.white,
-                  child: Center(
-                      child: Text(
-                        GlobalVariables.SORT_CATEGORIES[index],
-                        style: TextStyle(
-                          color: GlobalColors.greyTextColor,
-                          fontSize: 25,
-                          fontFamily: 'Raleway',
-                        ),
-                      )),
-                );
-              }),
-
-            ),
-          )
-        ],
+  Widget progressLoading(){
+    return Container(
+      width: Get.width,
+      height: Get.height,
+      child: Center(
+        child: loadingCouch(),
       ),
     );
   }
 
-  Widget createListView(List<WatchedTVShow> shows) {
+  Widget createListView(list) {
       final double _width = Get.size.width;
       final double _height = Get.size.height;
-      if ( shows.length > 0){
-        return Obx( () =>
-          WatchlistView(
-            list: shows,
-            term: showController.searchTerm.value!,
-          ),
+      if ( showController.searchInProgress.value == true){
+        return progressLoading();
+      }
+      if ( list.length > 0){
+        return WatchlistView(
+          list: list,
         );
       }
       else{
@@ -434,7 +429,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 40.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 30),
@@ -445,7 +440,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                     maxLines: 3,
                     textAlign: TextAlign.center,
                     style: GoogleFonts.roboto(
-                        color: GlobalVariables.watchlistBlue,
+                        color: GlobalColors.watchlistBlue,
                         fontSize: 25,
                         fontWeight: FontWeight.w700
                     ),
@@ -455,7 +450,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                   style: ButtonStyle(
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                       side: BorderSide(
-                          color: GlobalVariables.watchlistBlue
+                          color: GlobalColors.watchlistBlue
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(15)),
                     )),
@@ -517,11 +512,10 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
 
 class WatchlistView extends StatelessWidget {
   final List list;
-  final String term;
 
   final ScrollController scrollController = new ScrollController();
 
-  WatchlistView({Key? key, required this.list, required this.term}) : super(key: key);
+  WatchlistView({Key? key, required this.list}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -536,7 +530,7 @@ class WatchlistView extends StatelessWidget {
         staggeredTileBuilder: (int index) {
           return new StaggeredTile.count(1, index < Get.width~/(Get.width/5) ? .5 : 1);
         },
-        mainAxisSpacing: 4.0,
+        mainAxisSpacing: 2.0,
         crossAxisSpacing: 2.0,
         itemCount: list.length +  5, //4 dummy
         itemBuilder: (_, index) {

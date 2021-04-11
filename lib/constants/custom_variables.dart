@@ -32,6 +32,9 @@ class GlobalColors{
   static Color watchCardFontColor = greyTextColor;
   static Color watchCardShadowColor = Colors.black;
 
+  static const watchlistBlue = const Color(0xFF59b4ff);
+
+
 
 }
 
@@ -98,7 +101,6 @@ class GlobalVariables{
   };
 
 
-  static const watchlistBlue = const Color(0xFF59b4ff);
 
   static const  List DISCOVER_DATA = [ ["Overall Progress", 0xFF595959, 0xFFB1B1B1, FontAwesomeIcons.spinner], ["Most popular shows",0xFFFF006F, 0xFFFFDBE2, FontAwesomeIcons.fire], ["Watchlist", 0xFF59b4ff, 0xffbfe2ff, FontAwesomeIcons.binoculars] ,["Favorites", 0xFFFFAEB4, 0xfffff5e2,FontAwesomeIcons.solidHeart]];
   static  List<String> searchHistory = [];

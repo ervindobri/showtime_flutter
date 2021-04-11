@@ -11,9 +11,12 @@ class ShowController extends GetxController{
   var scheduledEpisodes = <List<Episode>>[].obs;
   var notAiredList = <Episode>[].obs;
 
-  List<WatchedTVShow> sortedList = [];
+  var sortedList = <WatchedTVShow>[].obs;
 
   RxBool isAscending = true.obs;
+
+
+  RxBool searchInProgress = false.obs;
 
 
   // ignore: invalid_use_of_protected_member
@@ -37,7 +40,6 @@ class ShowController extends GetxController{
     watchedShowIds.clear();
     fetchWatchedShows();
     fetchScheduledEpisodes();
-    sortedList = watched.where((e) => e.name!.toLowerCase().contains(searchTerm.toLowerCase())).toList();
     loaded.value = true;
   }
 
@@ -55,32 +57,20 @@ class ShowController extends GetxController{
           result.add(show);
         })});
       watchedShows.assignAll(result);
-
+      sortedList.addAll(watchedShows);
   }
 
 
-  getCriteria(WatchedTVShow a, String criteria) {
-    // print(a);
-    Map<String, dynamic> criteriaMap = {
-      "Title": a.name,
-      "Year": a.startDate,
-      "Runtime": a.runtime,
-      "Progress": a.calculateProgress(),
-      "Rating" : a.rating ?? 0.0
-    };
-    return criteriaMap[criteria];
-  }
 
-  //TODO: scheduled episodes
 
-  @override
-  void onClose() {
-    watchedShows.close();
-    watchedShowIds.clear();
-    scheduledEpisodes.close();
-    notAiredList.close();
-    super.onClose();
-  }
+  // @override
+  // void onClose() {
+  //   watchedShows.close();
+  //   watchedShowIds.clear();
+  //   scheduledEpisodes.close();
+  //   notAiredList.close();
+  //   super.onClose();
+  // }
 
   void fetchScheduledEpisodes() async {
     print("Fetching scheduled episodes! ${watchedShowIds.length}");
@@ -126,16 +116,35 @@ class ShowController extends GetxController{
     }
   }
 
-  sort(String x){
-    isAscending.value = !isAscending.value!;
-    if (isAscending.value!){
+  getCriteria(WatchedTVShow a, String criteria) {
+    // print(a);
+    Map<String, dynamic> criteriaMap = {
+      "Title": a.name,
+      "Year": a.startDate,
+      "Runtime": a.runtime,
+      "Progress": a.calculateProgress(),
+      "Rating" : a.rating ?? 0.0
+    };
+    return criteriaMap[criteria];
+  }
+
+  sort(String x) async{
+    searchInProgress.value = true;
+    isAscending.value = !isAscending.value;
+    if (isAscending.value){
       sortedList.sort((a, b) => getCriteria(a, x).compareTo(getCriteria(b, x)));
     }
     else{
       sortedList.sort((a, b) => getCriteria(b, x).compareTo(getCriteria(a, x)));
     }
+    await Future.delayed(Duration(milliseconds: 500),(){});
+    searchInProgress.value = false;
   }
-  filter(String value) {
-    sortedList = watched.where((e) => e.name!.toLowerCase().contains(value.toLowerCase())).toList();
+
+  filter(String value) async {
+    searchInProgress.value = true;
+    sortedList.value = watched.where((e) => e.name!.toLowerCase().contains(value.toLowerCase())).toList();
+    await Future.delayed(Duration(milliseconds: 500),(){});
+    searchInProgress.value = false;
   }
 }

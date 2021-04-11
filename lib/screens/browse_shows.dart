@@ -225,7 +225,12 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
                             ),
                             expandedHeight: _height*.15,
                             hideTitleWhenExpanded: false,
-                            back: back(context),
+                            back: CustomBackButton(
+                              backPage: 'Home',
+                              itemColor: GlobalColors.white,
+                              backgroundColor: GlobalColors.blueColor,
+
+                            ),
 
                           ),
                         ),
@@ -562,7 +567,12 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin{
       delegate: PopularSliverDelegate(
         // hideTitleWhenExpanded: true,
         expandedHeight: _height*.15,
-        back: back(context),
+        back: CustomBackButton(
+          backPage: 'Home',
+          itemColor: GlobalColors.white,
+          backgroundColor: GlobalColors.blueColor,
+
+        ),
         // actions: getActions(),
         child: Container(
           width: _width,

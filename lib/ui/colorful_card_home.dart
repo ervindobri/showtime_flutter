@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:hovering/hovering.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/screens/discover/discover.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -23,9 +24,28 @@ class ColorfulCard extends StatelessWidget {
             : const EdgeInsets.symmetric(horizontal: 25.0),
         child: Align(
           alignment: Alignment.center,
-          child: Container(
+          child: HoverAnimatedContainer(
             width: Get.size.height / 4.5,
             height: Get.size.height * .18,
+            hoverWidth: Get.size.height/4.5 + 15,
+            hoverHeight: Get.size.height * .18 + 15,
+            hoverDecoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.bottomRight,
+                  end: Alignment.topLeft,
+                  colors: [
+                    new Color(data[1]),
+                    new Color(data[2]),
+                  ]),
+              borderRadius: const BorderRadius.all(Radius.circular(25.0)),
+              boxShadow: [
+                new BoxShadow(
+                    color: new Color(data[1]).withOpacity(.3),
+                    blurRadius: 25.0,
+                    spreadRadius: -1,
+                    offset: Offset(0, 3)),
+              ],
+            ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.bottomRight,

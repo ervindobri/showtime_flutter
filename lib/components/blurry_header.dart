@@ -10,7 +10,7 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
   final bool hideTitleWhenExpanded;
   final Widget child;
   final Widget back;
-  final Widget? actions;
+  final List<Widget>? actions;
   final Widget? cancel;
   final Color backgroundColor;
 
@@ -34,32 +34,35 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
 
     return kIsWeb
       ? ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          height: expandedHeight,
-          color: backgroundColor.withOpacity(.4),
-          child: Padding(
-            padding: const EdgeInsets.all(25),
-            child: Container(
+      child: Container(
+        height: expandedHeight,
+        color: Colors.transparent,
+        child: Padding(
+          padding: const EdgeInsets.all(25),
+          child: Container(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     back,
-                    Container(
-                        width: Get.width*.7,
-                        child: child),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(child: cancel),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 15.0),
-                      child: actions ?? Container(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Container(
+                          width: Get.width*.2,
+                            child: child),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0),
+                          child: Row(
+                            children: actions ?? [],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
-                )
-            ),
+                ),
+              )
           ),
         ),
       ),
@@ -100,7 +103,9 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
                         back,
                         Padding(
                           padding: const EdgeInsets.only(right: 15.0),
-                          child: actions ?? Container(),
+                          child: Row(
+                            children: actions ?? [],
+                          ),
                         )
                       ],
                     )

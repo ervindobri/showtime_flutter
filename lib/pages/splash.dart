@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
+import 'package:show_time/components/loading_couch.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/get_controllers/auth_controller.dart';
 import 'package:show_time/get_controllers/show_controller.dart';
@@ -184,24 +185,5 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
       },
     );
 
-  }
-
-  Widget loadingCouch() {
-    return Center(
-      child: Container(
-        width: Get.width * .5,
-        height: Get.height * .2,
-        // color: Colors.black,
-        child: SizedBox(
-          child: Center(
-            child: FlareActor(
-                "assets/loadingcouch.flr",
-                alignment: Alignment.bottomCenter,
-                fit: BoxFit.contain,
-                animation: "load"),
-          ),
-        ),
-      ),
-    );
   }
 }

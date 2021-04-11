@@ -872,7 +872,12 @@ class _MostPopularShowsState extends State<MostPopularShows>
           ),
         ),
         expandedHeight: _height * .15,
-        back: back(context),
+        back: CustomBackButton(
+          backPage: 'Home',
+          itemColor: GlobalColors.white,
+          backgroundColor: GlobalColors.pinkColor,
+
+        ),
       ),
     );
   }

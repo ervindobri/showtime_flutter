@@ -669,6 +669,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                             child: Center(
                               child: StatefulBuilder(
                                 builder: (BuildContext context, StateSetter setState){
+                                  //TODO: fix episode selecter with getx
                                   return CupertinoPicker(
                                     itemExtent: 30,
                                     useMagnifier: false,
@@ -892,7 +893,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView> with AnimationMix
                                 padding: const EdgeInsets.all(8.0),
                                 child: Obx( () =>
                                   AutoSizeText(
-                                    timerController.countDown.value!,
+                                    timerController.countDown.value,
                                     maxFontSize: 25,
                                     minFontSize: 15,
                                     maxLines: 1,

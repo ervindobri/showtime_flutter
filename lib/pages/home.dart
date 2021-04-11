@@ -43,10 +43,6 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
       color: GlobalColors.bgColor,
       child: Image(image: AssetImage('showTIME.png'), height: 50));
   late Widget _customTitle;
-  // PanelController _pc = new PanelController();
-
-
-  late SessionUser currentUser;
 
   //GetX
   ShowController showController = Get.put(ShowController())!;
@@ -59,7 +55,6 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
     print("home init!");
     super.initState();
     _customTitle = title;
-    currentUser = authController.sessionUser.value!;
 
   }
 
@@ -153,7 +148,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
                                         color: GlobalColors.greyTextColor),
                                   ),
                                   Text(
-                                    "${currentUser.firstName}",
+                                    "${authController.sessionUser.value.firstName}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -178,7 +173,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
                                         color: GlobalColors.greyTextColor),
                                   ),
                                   Text(
-                                    "${currentUser.lastName}",
+                                    "${authController.sessionUser.value.lastName}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -203,7 +198,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
                                         color: GlobalColors.greyTextColor),
                                   ),
                                   Text(
-                                    "${currentUser.age}",
+                                    "${authController.sessionUser.value.age}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -228,7 +223,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
                                         color: GlobalColors.greyTextColor),
                                   ),
                                   Text(
-                                    "${currentUser.sex}",
+                                    "${authController.sessionUser.value.sex}",
                                     style: TextStyle(
                                         fontFamily: 'Raleway',
                                         fontSize: 20,
@@ -410,144 +405,148 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
             width: _width,
             height: _height,
             color: GlobalColors.bgColor,
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Center(
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          //TODO: shimmer not working on web
-                          // Shimmer.fromColors(
-                          //   highlightColor: GlobalColors.greenColor,
-                          //   baseColor: GlobalColors.blueColor,
-                          //   direction: ShimmerDirection.ltr,
-                          //   period: const Duration(seconds: 10),
-                          //   child:
-                            Container(
-                              height: _height * 0.07,
-                              width: _width * .8,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                                gradient: LinearGradient(
-                                    begin: Alignment.topRight,
-                                    end: Alignment.bottomLeft,
-                                    colors: [
-                                      GlobalColors.greenColor,
-                                      GlobalColors.blueColor,
-                                    ]),
+            child: Scrollbar(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Center(
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            //TODO: shimmer not working on web
+                            // Shimmer.fromColors(
+                            //   highlightColor: GlobalColors.greenColor,
+                            //   baseColor: GlobalColors.blueColor,
+                            //   direction: ShimmerDirection.ltr,
+                            //   period: const Duration(seconds: 10),
+                            //   child:
+                              Container(
+                                height: _height * 0.07,
+                                width: kIsWeb? _width *.5 :_width * .8,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
+                                  gradient: LinearGradient(
+                                      begin: Alignment.topRight,
+                                      end: Alignment.bottomLeft,
+                                      colors: [
+                                        GlobalColors.greenColor,
+                                        GlobalColors.blueColor,
+                                      ]),
+                                ),
+                              ),
+                            // ),
+                            Center(
+                              child: Obx(
+                                () => Text(
+                                  showGreetings(authController.sessionUser.value.firstName),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Raleway',
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700),
+                                ),
                               ),
                             ),
-                          // ),
-                          Center(
-                            child: Text(
-                              showGreetings(),
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Raleway',
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w700),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Container(
+                        height: _height * .25,
+                        color: GlobalColors.bgColor,
+                        width: _width,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                              child: Text("Discover",
+                                  style: TextStyle(
+                                    fontSize: _height / 30,
+                                    color: GlobalColors.greyTextColor,
+                                    fontFamily: 'Raleway',
+                                    fontWeight: FontWeight.w900,
+                                  )),
                             ),
-                          ),
-                        ],
+                            Container(
+                              width: _width,
+                              height: _height * .21,
+                              child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: GlobalVariables.DISCOVER_DATA.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, int index) {
+                                    return ColorfulCard(
+                                        index: index,
+                                        data: GlobalVariables.DISCOVER_DATA[index],
+                                      maxWidth: kIsWeb ? 200 : _width/3,
+                                      maxHeight: kIsWeb ? 200 : _width/3,
+                                    );
+                                  }),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: Container(
-                      height: _height * .25,
-                      color: GlobalColors.bgColor,
-                      width: _width,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                            child: Text("Discover",
-                                style: TextStyle(
-                                  fontSize: _height / 30,
-                                  color: GlobalColors.greyTextColor,
-                                  fontFamily: 'Raleway',
-                                  fontWeight: FontWeight.w900,
-                                )),
-                          ),
-                          Container(
-                            width: _width,
-                            height: _height * .21,
-                            child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: GlobalVariables.DISCOVER_DATA.length,
-                                shrinkWrap: true,
-                                itemBuilder: (context, int index) {
-                                  return ColorfulCard(
-                                      index: index,
-                                      data: GlobalVariables.DISCOVER_DATA[index],
-                                    maxWidth: kIsWeb ? 200 : _width/3,
-                                    maxHeight: kIsWeb ? 200 : _width/3,
-                                  );
-                                }),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      width: _width,
-                      color: GlobalColors.bgColor,
-                      // color: Colors.black,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("Schedule",
-                                    style: TextStyle(
-                                      fontSize: _height / 30,
-                                      color: GlobalColors.greyTextColor,
-                                      fontFamily: 'Raleway',
-                                      fontWeight: FontWeight.w900,
-                                    )),
-                                InkWell(
-                                  onTap: () =>
-                                      Navigator.of(context).push(
-                                          CupertinoPageRoute(
-                                              builder: (builder) =>
-                                                  FullSchedule( ))),
-                                  child: Container(
-                                    width: 70,
-                                    height: 30,
-                                    child: Center(
-                                      child: Text("All",
-                                          style: TextStyle(
-                                            fontSize: _height / 35,
-                                            color: GlobalColors.greenColor,
-                                            fontFamily: 'Raleway',
-                                            fontWeight: FontWeight.w500,
-                                          )),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        width: _width,
+                        color: GlobalColors.bgColor,
+                        // color: Colors.black,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Schedule",
+                                      style: TextStyle(
+                                        fontSize: _height / 30,
+                                        color: GlobalColors.greyTextColor,
+                                        fontFamily: 'Raleway',
+                                        fontWeight: FontWeight.w900,
+                                      )),
+                                  InkWell(
+                                    onTap: () =>
+                                        Navigator.of(context).push(
+                                            CupertinoPageRoute(
+                                                builder: (builder) =>
+                                                    FullSchedule( ))),
+                                    child: Container(
+                                      width: 70,
+                                      height: 30,
+                                      child: Center(
+                                        child: Text("All",
+                                            style: TextStyle(
+                                              fontSize: _height / 35,
+                                              color: GlobalColors.greenColor,
+                                              fontFamily: 'Raleway',
+                                              fontWeight: FontWeight.w500,
+                                            )),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          _buildScheduledShowView(context),
-                        ],
+                            _buildScheduledShowView(context),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -1284,7 +1283,7 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
 
 
 
-    String showGreetings() {
+    String showGreetings(String name) {
     var timeNow = DateTime
         .now()
         .hour;
@@ -1299,6 +1298,6 @@ class _HomeViewState extends State<HomeView>  with AnimationMixin {
       greetings = 'Good Night';
     }
     // print(firstName);
-    return greetings + ", ${currentUser.firstName}!";
+    return greetings + ", ${name}!";
   }
 }

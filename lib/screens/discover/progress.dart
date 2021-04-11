@@ -70,7 +70,13 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                       child: Row
                         (
                         children: [
-                          back(context),
+                        CustomBackButton(
+                        backPage: 'Home',
+                        itemColor: GlobalColors.white,
+                        backgroundColor: grey,
+
+
+                        ),
                         ],
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hovering/hovering.dart';
 import 'package:show_time/components/badge.dart';
 import 'package:show_time/constants/custom_variables.dart';
 import 'package:show_time/constants/theme_utils.dart';
@@ -83,16 +84,26 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                         },
                         isScrollControlled: true);
                   },
-                  child: Container(
+                  child: HoverAnimatedContainer(
                     width: cardWidth,
-                    // height: cardHeight,
-                    decoration: const BoxDecoration(
+                    hoverDecoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.all(Radius.circular(25)),
                       boxShadow: [
-                        const BoxShadow(
-                            color: Colors.grey,
+                        BoxShadow(
+                            color: Colors.grey.withOpacity(.3),
                             blurRadius: 30.0,
+                            spreadRadius: -2,
+                            offset: Offset(0, 3)),
+                      ],
+                    ),
+                    decoration:  BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(25)),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.grey.withOpacity(.4),
+                            blurRadius: 10.0,
                             spreadRadius: -2,
                             offset: Offset(0, 3)),
                       ],
@@ -142,15 +153,15 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                             width: cardWidth,
                             height: cardHeight*.3 - 24 - 15,
                             child: Center(
-                              child: Column(
+                              child: Stack(
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(bottom: 5.0),
                                     child: Container(
                                       child: AutoSizeText(
                                         widget.show.name!,
-                                        minFontSize: 10.roundToDouble(),
-                                        maxFontSize: 20.roundToDouble(),
+                                        minFontSize: 20.roundToDouble(),
+                                        maxFontSize: 30.roundToDouble(),
                                         stepGranularity: 2,
                                         maxLines: 2,
                                         textAlign: TextAlign.center,
@@ -158,7 +169,9 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                       ),
                                     ),
                                   ),
-                                  _checkFinishedShow(cardWidth),
+                                  // Positioned(
+                                  //     bottom: 0,
+                                  //     child: _checkFinishedShow(cardWidth)),
                                 ],
                               ),
                             ),
