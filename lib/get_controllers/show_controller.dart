@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:show_time/models/episode.dart';
-import 'package:show_time/models/watched.dart';
+import 'package:show_time/features/home/data/models/episode.dart';
+import 'package:show_time/features/home/data/models/watched.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:get/get.dart';
 import 'package:show_time/network/network.dart';
 
-class ShowController extends GetxController{
+class ShowController extends GetxController {
   var watchedShows = <WatchedTVShow>[].obs;
   List<int> watchedShowIds = [];
   var scheduledEpisodes = <List<Episode>>[].obs;
@@ -15,17 +15,14 @@ class ShowController extends GetxController{
 
   RxBool isAscending = true.obs;
 
-
   RxBool searchInProgress = false.obs;
 
-
   // ignore: invalid_use_of_protected_member
-  List<Episode> get notAired  => notAiredList.value;
+  List<Episode> get notAired => notAiredList.value;
   // ignore: invalid_use_of_protected_member
-  List<List<Episode>> get scheduled  => scheduledEpisodes.value;
+  List<List<Episode>> get scheduled => scheduledEpisodes.value;
   // ignore: invalid_use_of_protected_member
   List<WatchedTVShow> get watched => watchedShows.value;
-
 
   RxString searchTerm = ''.obs;
   RxBool loaded = false.obs;
@@ -36,7 +33,7 @@ class ShowController extends GetxController{
     initialize();
   }
 
-  void initialize(){
+  void initialize() {
     watchedShowIds.clear();
     fetchWatchedShows();
     fetchScheduledEpisodes();
@@ -44,24 +41,25 @@ class ShowController extends GetxController{
   }
 
   void fetchWatchedShows() async {
-      watchedShows.clear();
-      List<WatchedTVShow> result = [];
-      await FirestoreUtils().watchedShows
-          .get()
-          .then((QuerySnapshot querySnapshot) => {
-        querySnapshot.docs.forEach((doc) {
-          if ( !watchedShowIds.contains(doc.id)){ //somehow duplicates get in FFS
-            watchedShowIds.add(int.parse(doc.id));
-          }
-          WatchedTVShow show = new WatchedTVShow.fromFirestore(doc.data()!, doc.id);
-          result.add(show);
-        })});
-      watchedShows.assignAll(result);
-      sortedList.addAll(watchedShows);
+    watchedShows.clear();
+    List<WatchedTVShow> result = [];
+    await FirestoreUtils()
+        .watchedShows
+        .get()
+        .then((QuerySnapshot querySnapshot) => {
+              querySnapshot.docs.forEach((doc) {
+                if (!watchedShowIds.contains(doc.id)) {
+                  //somehow duplicates get in FFS
+                  watchedShowIds.add(int.parse(doc.id));
+                }
+                WatchedTVShow show =
+                    new WatchedTVShow.fromFirestore((doc.data() as Map<String, dynamic>), doc.id);
+                result.add(show);
+              })
+            });
+    watchedShows.assignAll(result);
+    sortedList.addAll(watchedShows);
   }
-
-
-
 
   // @override
   // void onClose() {
@@ -78,39 +76,38 @@ class ShowController extends GetxController{
       scheduledEpisodes.assignAll(value);
     });
     getNotAired();
-
   }
 
   void getNotAired() {
     List<Episode> episodes = [];
-      for(int index=0 ; index < scheduled.length; index++){
-        int notAired = scheduled[index].length - 1;
-          for(int i=0; i< scheduled[index].length ; i++){
-              if ( !scheduled[index][i].aired()){
-                  notAired = i;
-                  break;
-              }
-          }
-        episodes.add(scheduled[index][notAired]);
-
+    for (int index = 0; index < scheduled.length; index++) {
+      int notAired = scheduled[index].length - 1;
+      for (int i = 0; i < scheduled[index].length; i++) {
+        if (!scheduled[index][i].aired()) {
+          notAired = i;
+          break;
+        }
       }
-    episodes.sort( (a,b) => a.airDate!.compareTo(b.airDate!));
+      episodes.add(scheduled[index][notAired]);
+    }
+    episodes.sort((a, b) => a.airDate!.compareTo(b.airDate!));
     episodes = episodes.toSet().toList();
     notAiredList.assignAll(episodes);
   }
+
   getShowData(WatchedTVShow show) async {
-    try{
-      List<dynamic> list = await new Network().getDetailUpdates(showID: show.id);
+    try {
+      List<dynamic> list =
+          await new Network().getDetailUpdates(showID: show.id);
       var snapshots = FirestoreUtils().watchedShows.doc(show.id).snapshots();
       snapshots.first.then((value) {
-        show.currentSeason = value.data()!['currentSeason'];
+        show.currentSeason = (value.data() as Map<String, dynamic>)['currentSeason'];
         show.totalSeasons = list[0];
         show.episodePerSeason = Map<String, int>.from(list[1]);
-        show.currentEpisode = value.data()!['currentEpisode'];
+        show.currentEpisode = (value.data()as Map<String, dynamic>)['currentEpisode'];
         // return show;
       });
-    }
-    catch(e ){
+    } catch (e) {
       print(e);
       rethrow;
     }
@@ -123,28 +120,29 @@ class ShowController extends GetxController{
       "Year": a.startDate,
       "Runtime": a.runtime,
       "Progress": a.calculateProgress(),
-      "Rating" : a.rating ?? 0.0
+      "Rating": a.rating ?? 0.0
     };
     return criteriaMap[criteria];
   }
 
-  sort(String x) async{
+  sort(String x) async {
     searchInProgress.value = true;
     isAscending.value = !isAscending.value;
-    if (isAscending.value){
+    if (isAscending.value) {
       sortedList.sort((a, b) => getCriteria(a, x).compareTo(getCriteria(b, x)));
-    }
-    else{
+    } else {
       sortedList.sort((a, b) => getCriteria(b, x).compareTo(getCriteria(a, x)));
     }
-    await Future.delayed(Duration(milliseconds: 500),(){});
+    await Future.delayed(Duration(milliseconds: 500), () {});
     searchInProgress.value = false;
   }
 
   filter(String value) async {
     searchInProgress.value = true;
-    sortedList.value = watched.where((e) => e.name!.toLowerCase().contains(value.toLowerCase())).toList();
-    await Future.delayed(Duration(milliseconds: 500),(){});
+    sortedList.value = watched
+        .where((e) => e.name!.toLowerCase().contains(value.toLowerCase()))
+        .toList();
+    await Future.delayed(Duration(milliseconds: 500), () {});
     searchInProgress.value = false;
   }
 }

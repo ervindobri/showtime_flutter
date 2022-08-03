@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:show_time/models/episode.dart';
+import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/models/tvshow_details.dart';
 import 'package:show_time/models/user.dart';
-import 'package:show_time/models/watched.dart';
+import 'package:show_time/features/home/data/models/watched.dart';
 
 import '../main.dart';
 import 'network.dart';

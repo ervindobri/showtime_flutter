@@ -1,9 +1,7 @@
 import 'dart:convert';
-
-import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/models/tvshow.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 
 class APIService {
   // API key

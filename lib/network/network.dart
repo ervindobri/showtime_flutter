@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:show_time/constants/custom_variables.dart';
-import 'package:show_time/models/episode.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/models/tvshow_details.dart';
 import 'package:http/http.dart';

@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
-import 'package:show_time/models/episode.dart';
+import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,7 +17,6 @@ class EpisodeCard extends StatefulWidget {
 }
 
 class _EpisodeCardState extends State<EpisodeCard> {
-
   late bool _tapped;
 
   @override
@@ -28,8 +27,8 @@ class _EpisodeCardState extends State<EpisodeCard> {
 
   @override
   Widget build(BuildContext context) {
-    double _width = Get.size.width;
-    double _height = Get.size.height;
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
 
     const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
 
@@ -74,142 +73,133 @@ class _EpisodeCardState extends State<EpisodeCard> {
                 },
               ),
               widget.episode.aired()
-                  ?  Visibility(
-                visible: !_tapped,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(25.0),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                    child: Container(
-                      width: _width / 1.4,
-                      height: _height / 3,
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(.4),
-                        borderRadius:_radius,
-                      ),
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: AutoSizeText(
-                                widget.episode.name!,
-                                maxLines: 2,
-                                maxFontSize: 20,
-                                minFontSize: 2,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontFamily: 'Raleway',
-                                  fontSize: _width/3
-                                ),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      AutoSizeText(
-                                        widget.episode.season.toString(),
-                                        maxLines: 3,
-                                        maxFontSize: 30,
-                                        minFontSize: 2,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: _width/3,
-                                            fontFamily: 'Raleway',
-                                            fontWeight: FontWeight.w700
-
-                                        ),
-                                      ),
-                                      AutoSizeText(
-                                        "Season",
-                                        maxLines: 3,
-                                        maxFontSize: 22,
-                                        minFontSize: 2,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: _width/3,
-                                            fontWeight: FontWeight.w100,
-                                          fontFamily: 'Raleway',
-
-
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      AutoSizeText(
-                                        widget.episode.episode.toString(),
-                                        maxLines: 3,
-                                        maxFontSize: 30,
-                                        minFontSize: 2,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: _width/3,
-                                            fontWeight: FontWeight.w700,
-                                          fontFamily: 'Raleway'
-
-                                        ),
-                                      ),
-                                      AutoSizeText(
-                                        "Episode",
-                                        maxLines: 3,
-                                        maxFontSize: 22,
-                                        minFontSize: 2,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: _width/3,
-                                            fontFamily: 'Raleway',
-                                            fontWeight: FontWeight.w100
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(top: 15.0),
-                              child: AutoSizeText(
-                                widget.episode.airDate!,
-                                maxLines: 1,
-                                maxFontSize: 15,
-                                minFontSize: 2,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Raleway',
-                                    fontSize: _width/3
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              )
-                  :  ClipRRect(
-                    borderRadius: BorderRadius.circular(25.0),
-                    child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                        child: Container(
+                  ? Visibility(
+                      visible: !_tapped,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(25.0),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child: Container(
                             width: _width / 1.4,
                             height: _height / 3,
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(.4),
+                              borderRadius: _radius,
+                            ),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: AutoSizeText(
+                                      widget.episode.name!,
+                                      maxLines: 2,
+                                      maxFontSize: 20,
+                                      minFontSize: 2,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Raleway',
+                                          fontSize: _width / 3),
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: [
+                                            AutoSizeText(
+                                              widget.episode.season.toString(),
+                                              maxLines: 3,
+                                              maxFontSize: 30,
+                                              minFontSize: 2,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: _width / 3,
+                                                  fontFamily: 'Raleway',
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                            AutoSizeText(
+                                              "Season",
+                                              maxLines: 3,
+                                              maxFontSize: 22,
+                                              minFontSize: 2,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: _width / 3,
+                                                fontWeight: FontWeight.w100,
+                                                fontFamily: 'Raleway',
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: [
+                                            AutoSizeText(
+                                              widget.episode.episode.toString(),
+                                              maxLines: 3,
+                                              maxFontSize: 30,
+                                              minFontSize: 2,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: _width / 3,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontFamily: 'Raleway'),
+                                            ),
+                                            AutoSizeText(
+                                              "Episode",
+                                              maxLines: 3,
+                                              maxFontSize: 22,
+                                              minFontSize: 2,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: _width / 3,
+                                                  fontFamily: 'Raleway',
+                                                  fontWeight: FontWeight.w100),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 15.0),
+                                    child: AutoSizeText(
+                                      widget.episode.airDate!,
+                                      maxLines: 1,
+                                      maxFontSize: 15,
+                                      minFontSize: 2,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Raleway',
+                                          fontSize: _width / 3),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(25.0),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                        child: Container(
+                          width: _width / 1.4,
+                          height: _height / 3,
                           decoration: BoxDecoration(
                             color: Colors.black.withOpacity(.66),
                             borderRadius: _radius,
@@ -224,7 +214,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Raleway',
-                                    fontSize: _width/25,
+                                    fontSize: _width / 25,
                                   ),
                                 ),
                               ),
@@ -236,13 +226,12 @@ class _EpisodeCardState extends State<EpisodeCard> {
                             ],
                           ),
                         ),
+                      ),
                     ),
-                  ),
             ],
           ),
         ),
       ),
     );
-
   }
 }

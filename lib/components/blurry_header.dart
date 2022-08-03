@@ -1,22 +1,17 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
   final bool hideTitleWhenExpanded;
-  final Widget child;
+  final Widget? child;
   final Widget back;
   final List<Widget>? actions;
   final Widget? cancel;
   final Color backgroundColor;
 
-  BlurrySliverDelegate(  {
+  BlurrySliverDelegate({
     required this.backgroundColor,
-    required this.child,
+    this.child,
     required this.back,
     required this.expandedHeight,
     this.hideTitleWhenExpanded = true,
@@ -24,97 +19,47 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
     this.cancel,
   });
 
-
-
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    final appBarSize = expandedHeight - (shrinkOffset);
-    final proportion = 2 - (expandedHeight / appBarSize);
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // final appBarSize = expandedHeight - (shrinkOffset);
+    // final proportion = 2 - (expandedHeight / appBarSize);
 
-
-    return kIsWeb
-      ? ClipRRect(
-      child: Container(
-        height: expandedHeight,
-        color: Colors.transparent,
-        child: Padding(
-          padding: const EdgeInsets.all(25),
-          child: Container(
+    return LayoutBuilder(
+      builder: (_, constraints) {
+        if (constraints.maxWidth > 600) {
+          return ClipRRect(
+            child: Container(
+              height: expandedHeight,
+              color: Colors.transparent,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    back,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: Get.width*.2,
-                            child: child),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0),
-                          child: Row(
-                            children: actions ?? [],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-          ),
-        ),
-      ),
-    )
-      : ClipRRect(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          height: expandedHeight,
-          color: backgroundColor.withOpacity(.4),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 5.0, right: 5, left: 5),
+                padding: const EdgeInsets.all(24),
                 child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                            width: Get.width*.7,
-                            child: child),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Center(child: cancel),
-                        )
-                      ],
-                    )
-                ),
+                    child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      back,
+                      if (actions != null) ...actions!,
+                    ],
+                  ),
+                )),
               ),
-              Visibility(
-                visible: proportion >= 0.0 ? true : false,
-                child: Opacity(
-                    opacity: proportion >= 0.0 && proportion <= 1.0 ? proportion : 0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        back,
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15.0),
-                          child: Row(
-                            children: actions ?? [],
-                          ),
-                        )
-                      ],
-                    )
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
+            ),
+          );
+        } else {
+          return Container(
+              width: constraints.maxWidth,
+              height: expandedHeight,
+              child: Row(
+                children: [
+                  back,
+                  if (actions != null) ...actions!,
+                ],
+              ));
+        }
+      },
     );
   }
 

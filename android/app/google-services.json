@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:897799355695:android:cbd47e31d82fce2601b5da",
+        "mobilesdk_app_id": "1:897799355695:android:2e8e0d4452b3489001b5da",
         "android_client_info": {
-          "package_name": "com.winterprod.eWoke"
+          "package_name": "com.winterprod.showtime"
         }
       },
       "oauth_client": [
@@ -30,6 +30,49 @@
             {
               "client_id": "897799355695-4pdk6ir0u77nvbtqedjur2hu2hui6hlv.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "897799355695-g9erdt7ktvevogvunb87b3saavq0ihhq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.winterprod.eWoke"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897799355695:android:6f1677fd1b42a2b901b5da",
+        "android_client_info": {
+          "package_name": "ro.appforte.showtime_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897799355695-4pdk6ir0u77nvbtqedjur2hu2hui6hlv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBV0sMnasf79Hs2VUfaB16S2_vub2b-jwo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897799355695-4pdk6ir0u77nvbtqedjur2hu2hui6hlv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "897799355695-g9erdt7ktvevogvunb87b3saavq0ihhq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.winterprod.eWoke"
+              }
             }
           ]
         }

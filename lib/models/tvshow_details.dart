@@ -1,8 +1,8 @@
-import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/models/tvshow.dart';
 import 'package:html/parser.dart';
 
-import 'episode.dart';
+import '../features/home/data/models/episode.dart';
 
 class AllTVShowDetailsList{
   final String total;

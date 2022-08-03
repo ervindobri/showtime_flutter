@@ -1,4 +1,4 @@
-import 'package:show_time/models/watched.dart';
+import 'package:show_time/features/home/data/models/watched.dart';
 import 'package:get/get.dart';
 import 'dart:async';
 

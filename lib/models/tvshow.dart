@@ -1,7 +1,7 @@
 //region LISTS
 
 
-import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
 
 class AllTVShowList{
   final List showList;

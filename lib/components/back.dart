@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:show_time/core/utils/navigation.dart';
 
 class CustomBackButton extends StatelessWidget {
   final Color itemColor;
@@ -16,7 +16,7 @@ class CustomBackButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
       child: InkWell(
-        onTap: Get.back,
+        onTap: () => NavUtils.back(context),
         child: Container(
           decoration: BoxDecoration(
             color: backgroundColor,
@@ -34,7 +34,7 @@ class CustomBackButton extends StatelessWidget {
               children: [
                 FaIcon(
                   Icons.arrow_back_ios,
-                  size: 25,
+                  size: 23,
                   color: itemColor,
                 ),
                 Text(
@@ -42,7 +42,7 @@ class CustomBackButton extends StatelessWidget {
                   style: GoogleFonts.raleway(
                     decoration: TextDecoration.underline,
                     color: itemColor,
-                    fontSize: 20,
+                    fontSize: 15,
                   ),
                 ),
               ],

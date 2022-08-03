@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:show_time/get_controllers/show_controller.dart';

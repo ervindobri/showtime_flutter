@@ -1,107 +1,59 @@
-import 'package:show_time/get_controllers/auth_controller.dart';
-import 'package:get/get.dart';
-import 'package:show_time/pages/home.dart';
-import 'package:show_time/screens/browse_shows.dart';
-import 'package:show_time/screens/discover/discover.dart';
-import 'components/route_generator.dart';
-import 'constants/custom_variables.dart';
-import 'package:show_time/pages/splash.dart';
+import 'package:flutter_bloc/flutter_bloc.dart' as bloc;
+import 'package:google_fonts/google_fonts.dart';
+import 'package:show_time/core/constants/theme_utils.dart';
+import 'package:show_time/features/authentication/presentation/pages/login.dart';
+import 'package:show_time/features/splash/bloc/splash_bloc.dart';
+import 'core/utils/route_generator.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/features/splash/presentation/pages/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:show_time/pages/login.dart';
-import 'get_bindings/instance_binding.dart';
-
-
-
-TextTheme buildAppTextTheme( TextTheme base){
-  return base.copyWith(
-      headline1: base.headline1!.copyWith(
-        fontWeight: FontWeight.w500,
-        color: GlobalColors.greyTextColor,
-
-      ),
-      headline6: base.headline6!.copyWith(
-        fontSize: 18,
-        color: GlobalColors.greyTextColor,
-
-      ),
-      caption: base.caption!.copyWith(
-        fontWeight: FontWeight.w400,
-        color: GlobalColors.greyTextColor,
-
-      ),
-      bodyText1: base.bodyText1!.copyWith(
-        fontSize: 17,
-        color: GlobalColors.greyTextColor,
-
-
-      ),
-      button: base.button!.copyWith(
-        letterSpacing: 3.0,
-        color: GlobalColors.greyTextColor,
-
-      ),
-      bodyText2: base.bodyText2!.copyWith(
-        color: GlobalColors.greyTextColor,
-
-      )
-  ).apply(
-    fontFamily: "Raleway",
-  );
-}
-
+import 'injection_container.dart' as di;
+import 'firebase_options.dart';
 
 FirebaseAuth auth = FirebaseAuth.instance;
 
-
-ThemeData buildAppTheme(){
-  final ThemeData base = ThemeData.dark();
-
-
-  return base.copyWith(
-    brightness: Brightness.light,
-    accentColor: GlobalColors.greenColor,
-    primaryColor: GlobalColors.greenColor,
-    scaffoldBackgroundColor: Colors.blueGrey.shade300,
-    backgroundColor: Colors.white70,
-    textTheme: buildAppTextTheme(base.textTheme),
-  );
-}
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await di.init();
 
-  //TODO: integrate GETX to EVERY screen/page
-  runApp(
-      GetMaterialApp(
-        initialBinding: InstanceBinding(),
-        onGenerateRoute: RouteGenerator.generateRoute,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          bottomSheetTheme: BottomSheetThemeData(
-              backgroundColor: Colors.black.withOpacity(0)),
+  runApp(MaterialApp(
+    onGenerateRoute: RouteGenerator.generateRoute,
+    debugShowCheckedModeBanner: false,
+    theme: appTheme(),
+    title: 'showTIME',
+    home: Router(),
+  ));
+}
+
+appTheme() {
+  return ThemeData(
+    primaryColor: GlobalColors.greenColor,
+    fontFamily: ShowTheme.defaultFontFamily,
+    textTheme: TextTheme(
+        bodyText1: GoogleFonts.raleway(
+          color: GlobalColors.greyTextColor,
+          fontSize: 16,
+          fontWeight: FontWeight.w300,
         ),
-          getPages: [
-          GetPage(name: '/home', page: () => HomeView()),
-          GetPage(name: '/splash', page: () => SplashScreen()),
-            GetPage(name: '/login', page: () => LoginScreen()),
-            GetPage(name: '/search', page: () => AllTVShows()),
-            GetPage(name: '/discover', page: () => DiscoverRoute(),transition: Transition.fade, binding: DiscoverBinding() ),
-        ],
-        title: 'showTIME',
-        home: Router(),
-      )
+        bodyText2: GoogleFonts.raleway(color: GlobalColors.greyTextColor)),
+    bottomSheetTheme:
+        BottomSheetThemeData(backgroundColor: Colors.black.withOpacity(0)),
   );
 }
 
+//TODO: change get stuff to bloc
 class Router extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
-    return Obx((){
-      return Get.find<AuthController>().user?.firstName != "" ? SplashScreen() : LoginScreen();
-    });
+    return LoginScreen();
+    return bloc.BlocProvider<SplashBloc>(
+      create: (BuildContext context) => SplashBloc()..add(GetSplashEvent(true)),
+      child: SplashScreen(),
+    );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:intl/intl.dart';

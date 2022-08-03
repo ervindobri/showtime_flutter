@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 
@@ -24,7 +24,7 @@ class _RadialRangeSliderState  extends State<RadialRangeSlider> {
   double _markerSize = 25;
   final double _annotationFontSize = 20;
   String _annotationValue1 = '0';
-  String _annotationValue2 = '30%';
+  String _annotationValue2 = '3.0';
 
   @override
   void initState() {
@@ -34,70 +34,75 @@ class _RadialRangeSliderState  extends State<RadialRangeSlider> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SfRadialGauge(
-        axes: <RadialAxis>[
-          RadialAxis(
-              radiusFactor: widget.radiusFactor,
-              axisLineStyle: AxisLineStyle(
-                  color: widget.textColor,
-                  thickness: 0.05,
-                  thicknessUnit: GaugeSizeUnit.factor),
-              showLabels: false,
-              showTicks: false,
-              startAngle: 90,
-              endAngle: 90,
-              ranges: <GaugeRange>[
-                GaugeRange(
-                  endValue: _secondMarkerValue,
-                  startValue: _firstMarkerValue,
-                  sizeUnit: GaugeSizeUnit.factor,
-                  color: widget.backgroundColor,
-                  endWidth: 0.05,
-                  startWidth: 0.05,
-                )
-              ],
-              pointers: <GaugePointer>[
-                MarkerPointer(
-                  value: _firstMarkerValue,
-                  elevation: 5,
-                  onValueChanged: handleFirstPointerValueChanged,
-                  onValueChanging: handleFirstPointerValueChanging,
-                  enableDragging: _enableDragging,
-                  color: _enableDragging
-                      ? widget.backgroundColor
-                      : GlobalColors.greyTextColor,
-                  markerHeight: _markerSize,
-                  markerWidth: _markerSize,
-                  markerType: MarkerType.circle,
-                ),
-                MarkerPointer(
-                  value: _secondMarkerValue,
-                  elevation: 5,
-                  onValueChanged: handleSecondPointerValueChanged,
-                  onValueChanging: handleSecondPointerValueChanging,
-                  enableDragging: _enableDragging,
-                  color: _enableDragging
-                      ? widget.backgroundColor
-                      : GlobalColors.greyTextColor,
-                  markerHeight: _markerSize,
-                  markerWidth: _markerSize,
-                  markerType: MarkerType.circle,
-                ),
-              ],
-              annotations: <GaugeAnnotation>[
-                GaugeAnnotation(
-                  widget: Text(
-                    '$_annotationValue1 - $_annotationValue2',
-                    style: TextStyle(
-                      fontSize: _annotationFontSize,
-                      fontFamily: 'Raleway',
-                      fontWeight: FontWeight.bold,
-                    ),
+      child: Container(
+        width: 150,
+        height: 150,
+        child: SfRadialGauge(
+          axes: <RadialAxis>[
+            RadialAxis(
+                radiusFactor: widget.radiusFactor,
+                axisLineStyle: AxisLineStyle(
+                    color: widget.textColor,
+                    thickness: 0.05,
+                    thicknessUnit: GaugeSizeUnit.factor),
+                showLabels: false,
+                showTicks: false,
+                startAngle: 90,
+                endAngle: 90,
+                ranges: <GaugeRange>[
+                  GaugeRange(
+                    endValue: _secondMarkerValue,
+                    startValue: _firstMarkerValue,
+                    sizeUnit: GaugeSizeUnit.factor,
+                    color: widget.backgroundColor,
+                    endWidth: 0.05,
+                    startWidth: 0.05,
+                  )
+                ],
+                pointers: <GaugePointer>[
+                  MarkerPointer(
+                    value: _firstMarkerValue,
+                    elevation: 5,
+                    onValueChanged: handleFirstPointerValueChanged,
+                    onValueChanging: handleFirstPointerValueChanging,
+                    enableDragging: _enableDragging,
+                    color: _enableDragging
+                        ? widget.backgroundColor
+                        : GlobalColors.greyTextColor,
+                    markerHeight: _markerSize,
+                    markerWidth: _markerSize,
+                    markerType: MarkerType.circle,
                   ),
-                  positionFactor: 0.05,
-                )
-              ])
-        ],
+                  MarkerPointer(
+                    value: _secondMarkerValue,
+                    elevation: 5,
+                    onValueChanged: handleSecondPointerValueChanged,
+                    onValueChanging: handleSecondPointerValueChanging,
+                    enableDragging: _enableDragging,
+                    color: _enableDragging
+                        ? widget.backgroundColor
+                        : GlobalColors.greyTextColor,
+                    markerHeight: _markerSize,
+                    markerWidth: _markerSize,
+                    markerType: MarkerType.circle,
+                  ),
+                ],
+                annotations: <GaugeAnnotation>[
+                  GaugeAnnotation(
+                    widget: Text(
+                      '$_annotationValue1 - $_annotationValue2',
+                      style: TextStyle(
+                        fontSize: _annotationFontSize,
+                        fontFamily: 'Raleway',
+                        color: GlobalColors.greyTextColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    positionFactor: 0.05,
+                  )
+                ])
+          ],
+        ),
       ),
     );
   }
@@ -107,8 +112,8 @@ class _RadialRangeSliderState  extends State<RadialRangeSlider> {
   void handleSecondPointerValueChanged(double value) {
     setState(() {
       _secondMarkerValue = value;
-      final int _value = _secondMarkerValue.abs().toInt();
-      _annotationValue2 = '$_value%';
+      final double _value = (_secondMarkerValue.abs().toInt()/10);
+      _annotationValue2 = '$_value';
     });
   }
 
@@ -124,7 +129,7 @@ class _RadialRangeSliderState  extends State<RadialRangeSlider> {
   void handleFirstPointerValueChanged(double value) {
     setState(() {
       _firstMarkerValue = value;
-      final int _value = _firstMarkerValue.abs().toInt();
+      final double _value = _firstMarkerValue.abs().toInt()/10;
       _annotationValue1 = '$_value';
     });
   }

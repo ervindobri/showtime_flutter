@@ -8,17 +8,17 @@ import 'package:show_time/database/user_data.dart';
 import 'package:show_time/database/user_data_dao.dart';
 import 'package:show_time/models/user.dart';
 import 'package:show_time/network/firebase_utils.dart';
-import 'package:show_time/pages/login.dart';
-import 'package:show_time/pages/splash.dart';
+import 'package:show_time/features/authentication/presentation/pages/login.dart';
+import 'package:show_time/features/splash/presentation/pages/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-
 class AuthController extends GetxController {
-  Rx<SessionUser> sessionUser = Rx<SessionUser>(new SessionUser(id:0,firstName:"",lastName: "",emailAddress: "", age:0,sex:""));
+  Rx<SessionUser> sessionUser = Rx<SessionUser>(new SessionUser(
+      id: 0, firstName: "", lastName: "", emailAddress: "", age: 0, sex: ""));
   //TODO: resolve floor dependency issue
   var usersWithBiometricAuth = <UserData>[].obs;
   late UserDao _dao;
@@ -27,7 +27,6 @@ class AuthController extends GetxController {
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   SessionUser? get user => sessionUser.value;
-
 
   final Duration _loginTime = Duration(milliseconds: 500);
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -43,8 +42,9 @@ class AuthController extends GetxController {
     super.onInit();
     getUserData();
 
-    if ( !kIsWeb){
-      final database = await $FloorAppDatabase.databaseBuilder('users.db').build();
+    if (!kIsWeb) {
+      final database =
+          await $FloorAppDatabase.databaseBuilder('users.db').build();
       _dao = database.userDao;
       fetchAccounts();
       getSavedData();
@@ -54,18 +54,18 @@ class AuthController extends GetxController {
     nameController.text = "dobriervin@yahoo.com";
     passwordController.text = "djcaponegood";
     print("Set default login data!");
-
   }
 
   void getSavedData() async {
     try {
       nameController.text = (await _storage.read(key: 'email'))!;
       passwordController.text = (await _storage.read(key: 'password'))!;
-    } catch (e) {
-    }
+    } catch (e) {}
   }
+
   void getUserData() {
-    SessionUser user = SessionUser(firstName: '', emailAddress: '', lastName: '', age: 0, sex: '');
+    SessionUser user = SessionUser(
+        firstName: '', emailAddress: '', lastName: '', age: 0, sex: '');
     FirebaseFirestore.instance
         .doc("${_auth.currentUser?.email}/user")
         .snapshots()
@@ -87,7 +87,8 @@ class AuthController extends GetxController {
     // print('Name: ${userName}, Password: ${password}');
     return Future.delayed(_loginTime).then((_) async {
       try {
-        await _auth.signInWithEmailAndPassword(email: userName, password: password);
+        await _auth.signInWithEmailAndPassword(
+            email: userName, password: password);
         return '';
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
@@ -101,12 +102,13 @@ class AuthController extends GetxController {
     });
   }
 
-   register(String userName, String password) {
+  register(String userName, String password) {
     // print('Name: ${data.name}, Password: ${data.password}');
 
     return Future.delayed(_loginTime).then((_) async {
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: userName, password: password);
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+            email: userName, password: password);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           return 'The password provided is too weak.';
@@ -124,16 +126,13 @@ class AuthController extends GetxController {
     await _auth.signOut().then((value) => Get.offAll(LoginScreen()));
   }
 
-
-
-
-
   void signInWithGoogle() async {
     await Firebase.initializeApp();
 
-    final GoogleSignInAccount googleSignInAccount = (await googleSignIn.signIn())!;
-    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount
-        .authentication;
+    final GoogleSignInAccount googleSignInAccount =
+        (await googleSignIn.signIn())!;
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
 
     final AuthCredential credential = GoogleAuthProvider.credential(
       accessToken: googleSignInAuthentication.accessToken,
@@ -153,27 +152,34 @@ class AuthController extends GetxController {
     print("User Signed Out");
   }
 
-
-
-
   Future<void> fetchAccounts() async {
     await Future.delayed(Duration(seconds: 1));
     List<UserData> users = (await dao.fetchEnabledBiometricUsers())!;
     usersWithBiometricAuth.addAll(users);
     print("Accounts with biometric: ${usersWithBiometricAuth.length}");
   }
+
   Future<void> addUser(String email, String password) async {
-    if (_dao != null && usersWithBiometricAuth.where((user) => user.email == email).toList().isEmpty) {
-      final temp = UserData(
-          0,
-          user!.id,
-          email,
-          password,
-          true);
+    if (_dao != null &&
+        usersWithBiometricAuth
+            .where((user) => user.email == email)
+            .toList()
+            .isEmpty) {
+      final temp = UserData(0, user!.id, email, password, true);
       print(temp);
       await _dao.insertUser(temp); //no error
       print("User inserted!");
     }
+  }
+
+// /password validator possible structure
+  passwordValidator(String password) {
+    if (password.isEmpty) {
+      return 'Password empty';
+    } else if (password.length < 3) {
+      return 'PasswordShort';
+    }
+    return null;
   }
 
   deleteUser(String email, String password) async {
@@ -181,6 +187,7 @@ class AuthController extends GetxController {
     await _dao.deleteUser(temp);
     print("User deleted!");
   }
+
   void setDao(UserDao userDao) {
     this._dao = userDao;
   }
@@ -188,20 +195,14 @@ class AuthController extends GetxController {
   void rememberInfo(String email, String password) {
     //Save login data
     if (selected) {
-      _storage.write(
-          key: 'email',
-          value: email);
-      _storage.write(
-          key: 'password',
-          value: password);
+      _storage.write(key: 'email', value: email);
+      _storage.write(key: 'password', value: password);
       // print("saved");
     } else {
       _storage.delete(key: 'email');
       _storage.delete(key: 'password');
     }
   }
-
-
 
   void updateUserInfo(String firstName, String lastName, int age, String sex) {
     user!.id = _auth.currentUser!.uid;
@@ -213,6 +214,7 @@ class AuthController extends GetxController {
     // print(currentUser);
     FirestoreUtils().updateUserInfo(user!);
   }
+
   @override
   void onClose() {
     super.onClose();
@@ -227,7 +229,6 @@ class AuthController extends GetxController {
   String _authorized = 'Not Authorized';
   bool _isAuthenticating = false;
 
-
   Future<void> _checkBiometrics() async {
     bool canCheck = false;
     try {
@@ -235,11 +236,7 @@ class AuthController extends GetxController {
     } on PlatformException catch (e) {
       print(e);
     }
-    // if (!mounted) return;
-
-    // setState(() {
-      _canCheckBiometrics = canCheck;
-    // });
+    _canCheckBiometrics = canCheck;
   }
 
   Future<void> _getAvailableBiometrics() async {
@@ -249,11 +246,8 @@ class AuthController extends GetxController {
     } on PlatformException catch (e) {
       print(e);
     }
-    // if (!mounted) return;
-
-    // setState(() {
-      _availableBiometrics = availableBiometrics;
-    // });
+    _availableBiometrics = availableBiometrics;
+    print(_availableBiometrics);
   }
 
   Future<String> _authenticate() async {
@@ -261,7 +255,7 @@ class AuthController extends GetxController {
     try {
       // setState(() {
       //   _isAuthenticating = true;
-        _authorized = 'Authenticating';
+      _authorized = 'Authenticating';
       // });
       authenticated = await auth.authenticate(
           biometricOnly: true,
@@ -269,8 +263,8 @@ class AuthController extends GetxController {
           useErrorDialogs: true,
           stickyAuth: true);
       // setState(() {
-        _isAuthenticating = false;
-        _authorized = 'Authenticating';
+      _isAuthenticating = false;
+      _authorized = 'Authenticating';
       // });
     } on PlatformException catch (e) {
       print(e);
@@ -279,7 +273,7 @@ class AuthController extends GetxController {
 
     final String message = authenticated ? 'Authorized' : 'Not Authorized';
     // setState(() {
-      _authorized = message;
+    _authorized = message;
     // });
     return _authorized;
   }
@@ -289,7 +283,7 @@ class AuthController extends GetxController {
   }
 
   bool _fingerprintAnimStopped = true;
-  bool get fingerprintAnimStopped  => _fingerprintAnimStopped;
+  bool get fingerprintAnimStopped => _fingerprintAnimStopped;
 
   void authenticateUserWithFingerprint() {
     _authenticate().then((value) async {
@@ -303,23 +297,22 @@ class AuthController extends GetxController {
                   title: const Text('Account'),
                   message: const Text(
                       'Choose in which account would you like to sign-in'),
-                  cancelButton:
-                  CupertinoActionSheetAction(
+                  cancelButton: CupertinoActionSheetAction(
                     child: const Text('Cancel'),
                     isDefaultAction: true,
                     onPressed: () {
-                      Navigator.pop(
-                          context, 'Cancel');
+                      Navigator.pop(context, 'Cancel');
                     },
                   ),
-                  actions: List.generate(
-                      usersWithBiometricAuth.length, (index) {
+                  actions:
+                      List.generate(usersWithBiometricAuth.length, (index) {
                     return CupertinoActionSheetAction(
-                        child: Text(
-                            usersWithBiometricAuth[index].email),
+                        child: Text(usersWithBiometricAuth[index].email),
                         onPressed: () async {
                           //log-in with the biometric account
-                          String auth = await login(usersWithBiometricAuth[index].email, usersWithBiometricAuth[index].password);
+                          String auth = await login(
+                              usersWithBiometricAuth[index].email,
+                              usersWithBiometricAuth[index].password);
                           if (auth == '') {
                             Get.off(SplashScreen());
                           }
@@ -327,18 +320,19 @@ class AuthController extends GetxController {
                   }),
                 );
               });
-        }
-        else if (usersWithBiometricAuth.length == 1){
+        } else if (usersWithBiometricAuth.length == 1) {
           print("logging in! ${usersWithBiometricAuth.first.password}");
-          String auth = await login(usersWithBiometricAuth.first.email, usersWithBiometricAuth.first.password);
+          String auth = await login(usersWithBiometricAuth.first.email,
+              usersWithBiometricAuth.first.password);
           if (auth == '') {
             Get.off(() => SplashScreen(), transition: Transition.fadeIn);
           }
-        }
-        else{
+        } else {
           print(usersWithBiometricAuth.length);
         }
       }
     });
   }
+
+  
 }

@@ -1,6 +1,8 @@
 import 'dart:ui';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/get_controllers/ui_controller.dart';
 import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/models/tvshow_details.dart';
@@ -25,7 +27,8 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
 
   bool _added = false;
   UIController uiController = Get.put(UIController())!;
-  getDetailResults({required TVShow show}) => new Network().getDetailResults(show: show);
+  getDetailResults({required TVShow show}) =>
+      new Network().getDetailResults(show: show);
 
   @override
   void setState(fn) {
@@ -71,250 +74,176 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
       bottomRight: Radius.circular(25.0),
     );
 
-    return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 50.0, vertical: 25),
-        child: InkWell(
-          onTap: () {
-            showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25.0),
-                      topRight: Radius.circular(25.0)),
-                ),
-                context: context,
-                builder: (BuildContext context) {
-                  return DetailView(show: showDetails);
-                },
-                isScrollControlled: true);
-          },
-          child: Hero(
-              tag: 'thumbnailPhoto${widget.show.id}',
-              child: Container(
-                width: _width * .3,
-                height: _height / 1.7,
-                constraints: BoxConstraints(
-                    maxWidth: _width * 0.7, maxHeight: _height / 1.7),
-                decoration: BoxDecoration(
-                  color: GlobalColors.bgColor,
-                  image: DecorationImage(
-                      image: NetworkImage(widget.show.imageThumbnailPath!),
-                      fit: BoxFit.fill),
-                  borderRadius: _radius,
-                  boxShadow: [
-                    new BoxShadow(
-                        color: Colors.black.withOpacity(.5),
-                        blurRadius: 5.0,
-                        spreadRadius: -2,
-                        offset: Offset(2, 5)),
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Stack(
-                      children: [
-                        new ClipRRect(
-                          borderRadius: _bottomRadius,
-                          child: new BackdropFilter(
-                            filter: new ImageFilter.blur(
-                                sigmaX: 10.0, sigmaY: 10.0),
-                            child: new Container(
-                              width: _width,
-                              height: _height / 6,
-                              decoration: new BoxDecoration(
-                                color: Colors.black.withOpacity(0.5),
-                                borderRadius: _bottomRadius,
+    return InkWell(
+        onTap: () {
+          showModalBottomSheet(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25.0),
+                    topRight: Radius.circular(25.0)),
+              ),
+              context: context,
+              builder: (BuildContext context) {
+                return DetailView(show: showDetails);
+              },
+              isScrollControlled: true);
+        },
+        child: Column(
+          children: [
+            Container(
+              height: 110,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Hero(
+                    tag: 'thumbnail-${widget.show.name}',
+                    child: Container(
+                      width: 80,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: GlobalColors.bgColor,
+                        image: DecorationImage(
+                            image:
+                                NetworkImage(widget.show.imageThumbnailPath!),
+                            fit: BoxFit.fill),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 100,
+                    child: new Center(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 150,
+                              child: AutoSizeText(
+                                widget.show.name!,
+                                maxLines: 2,
+                                style: Get.textTheme.bodyText1!.copyWith(
+                                    color: GlobalColors.greyTextColor),
                               ),
-                              child: new Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 18.0),
-                                  child: Column(
-                                    children: [
-                                      Row(
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Container(
+                                      margin: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(8.0),
+                                      decoration: BoxDecoration(
+                                          color: GlobalColors.greyTextColor,
+                                          borderRadius:
+                                              BorderRadius.circular(24)),
+                                      child: Text(
+                                        "${widget.show.runtime}",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Raleway',
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: _width / 25,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.all(8.0),
+                                      padding: const EdgeInsets.all(8.0),
+                                      decoration: BoxDecoration(
+                                        color: GlobalColors.fireColor,
+                                        borderRadius: BorderRadius.circular(24),
+                                      ),
+                                      child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                            MainAxisAlignment.spaceAround,
                                         children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  width: _width / 4,
-                                                  height: _height / 25,
-                                                  decoration: BoxDecoration(
-                                                    color: GlobalColors.greyTextColor,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(25.0),
-                                                      topRight:
-                                                          Radius.circular(25.0),
-                                                      bottomLeft:
-                                                          Radius.circular(25.0),
-                                                      bottomRight:
-                                                          Radius.circular(25.0),
-                                                    ),
-                                                    boxShadow: [
-                                                      new BoxShadow(
-                                                          color: Colors.black
-                                                              .withOpacity(.1),
-                                                          blurRadius: 15.0,
-                                                          spreadRadius: 3,
-                                                          offset: Offset(0, 0)),
-                                                    ],
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceAround,
-                                                    children: [
-                                                      Text(
-                                                        "Runtime",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontFamily: 'Raleway',
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          fontSize: _width/ 25,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        "${widget.show.runtime}",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontFamily: 'Raleway',
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          fontSize: _width/ 25,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
+                                          Center(
+                                            child: Text(
+                                              "${widget.show.rating == 0 ? r"N\A" : widget.show.rating}",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'Raleway',
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: _width / 25,
                                               ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  width: _width/4,
-                                                  height: _height/25,
-                                                  decoration: BoxDecoration(
-                                                    color: GlobalColors.fireColor,
-                                                    borderRadius: BorderRadius.only(
-                                                      topLeft: Radius.circular(25.0),
-                                                      topRight:Radius.circular(25.0),
-                                                      bottomLeft:Radius.circular(25.0),
-                                                      bottomRight:Radius.circular(25.0),
-                                                    ),
-                                                    boxShadow: [
-                                                      new BoxShadow(
-                                                          color: Colors.black.withOpacity(.1),
-                                                          blurRadius: 15.0,
-                                                          spreadRadius: 3,
-                                                          offset: Offset(0, 0)),
-                                                    ],
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                    children: [
-                                                      Center(
-                                                        child: Text(
-                                                          "Rating",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                'Raleway',
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            fontSize: _width / 25,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Center(
-                                                        child: Text(
-                                                          "${widget.show.rating == 0 ? r"N\A" : widget.show.rating}",
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                'Raleway',
-                                                            fontWeight:
-                                                                FontWeight.w700,
-                                                            fontSize: _width/ 25,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(12.0),
-                                            child: GetBuilder<UIController>(
-                                              init: uiController,
-                                              builder: (uiController) {
-                                                return FlatButton(
-                                                  minWidth: _height / 13,
-                                                  height: _height / 10,
-                                                  color: GlobalColors.blueColor,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius
-                                                        .all(
-                                                        Radius.circular(20)),
-                                                  ),
-                                                  onPressed: () {
-                                                    if (!_added) {
-                                                      var show = FirestoreUtils()
-                                                          .addToWatchedShows(
-                                                          showDetails);
-                                                      GlobalVariables
-                                                          .watchedShowList.add(
-                                                          show);
-                                                      setState(() {
-                                                        _added = true;
-                                                      });
-                                                      uiController.showAlert(
-                                                          title: "Show added!",
-                                                          seconds: 2,
-                                                          blurPower: 5,
-                                                          icon: Icons.done);
-                                                    } else {
-                                                      //FOR UPDATING SHOWS RATING
-                                                      // _updateRating(showDetails);
-                                                      uiController.showAlert(
-                                                          title: "${widget.show
-                                                              .name} already added!",
-                                                          seconds: 2,
-                                                          blurPower: 5,
-                                                          icon: Icons.done);
-                                                    }
-                                                  },
-                                                  child: FaIcon(
-                                                    FontAwesomeIcons.couch,
-                                                    color: Colors.white,
-                                                    size: _height / 17,
-                                                  ),
-                                                );
-                                              }),
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 20.0),
+                                  child: GetBuilder<UIController>(
+                                      init: uiController,
+                                      builder: (uiController) {
+                                        return TextButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    GlobalColors.blueColor),
+                                            shape: MaterialStateProperty.all(
+                                              RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(20)),
+                                              ),
+                                            ),
+                                          ),
+                                          onPressed: () {
+                                            print(_added);
+                                            if (!_added) {
+                                              var show = FirestoreUtils()
+                                                  .addToWatchedShows(
+                                                      showDetails);
+                                              GlobalVariables.watchedShowList
+                                                  .add(show);
+                                              setState(() {
+                                                _added = true;
+                                              });
+                                              uiController.showToast(
+                                                  context: context,
+                                                  text: "Show added!",
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  color: GlobalColors.blueColor,
+                                                  icon: Icons.done);
+                                            } else {
+                                              //FOR UPDATING SHOWS RATING
+                                              // _updateRating(showDetails);
+                                              uiController.showToast(
+                                                  context: context,
+                                                  text:
+                                                      "${widget.show.name} already added!",
+                                                  gravity: ToastGravity.BOTTOM,
+                                                  icon: Icons.info,
+                                                  color:
+                                                      GlobalColors.blueColor);
+                                            }
+                                          },
+                                          child: FaIcon(
+                                            FontAwesomeIcons.couch,
+                                            color: Colors.white,
+                                            size: _height / 17,
+                                          ),
+                                        );
+                                      }),
+                                ),
+                              ],
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 1, color: GlobalColors.greyTextColor),
+          ],
         ));
   }
 

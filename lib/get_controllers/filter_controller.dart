@@ -13,7 +13,7 @@ class FilterController extends GetxController{
 
   late List<String?> selectedGenres;
 
-  Rx<SfRangeValues> runtimeRangeValues = Rx<SfRangeValues>(SfRangeValues(0, 60));
+  Rx<SfRangeValues> runtimeRangeValues = Rx<SfRangeValues>(SfRangeValues(20.0, 60.0));
   late SfRangeValues selectedRuntimeRangeValues;
 
 

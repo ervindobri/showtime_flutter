@@ -1,11 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:hovering/hovering.dart';
-import 'package:show_time/constants/custom_variables.dart';
-import 'package:show_time/screens/discover/discover.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/core/utils/navigation.dart';
 
 class ColorfulCard extends StatelessWidget {
   final int index;
@@ -13,11 +11,20 @@ class ColorfulCard extends StatelessWidget {
   final double maxWidth;
   final double maxHeight;
 
-  const ColorfulCard({Key? key, required this.index, required this.data, required this.maxWidth, required this.maxHeight}) : super(key: key);
+  const ColorfulCard(
+      {Key? key,
+      required this.index,
+      required this.data,
+      required this.maxWidth,
+      required this.maxHeight})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Get.toNamed('/discover', arguments: data),
+      onTap: () {
+        print("navigating - $index");
+        NavUtils.navigate(context, '/discover_$index', arguments: data);
+      },
       child: Padding(
         padding: index != GlobalVariables.DISCOVER_DATA.length - 1
             ? const EdgeInsets.only(left: 25.0)
@@ -25,10 +32,10 @@ class ColorfulCard extends StatelessWidget {
         child: Align(
           alignment: Alignment.center,
           child: HoverAnimatedContainer(
-            width: Get.size.height / 4.5,
-            height: Get.size.height * .18,
-            hoverWidth: Get.size.height/4.5 + 15,
-            hoverHeight: Get.size.height * .18 + 15,
+            width: MediaQuery.of(context).size.height / 4.5,
+            height: MediaQuery.of(context).size.height * .18,
+            hoverWidth: MediaQuery.of(context).size.height / 4.5 + 15,
+            hoverHeight: MediaQuery.of(context).size.height * .18 + 15,
             hoverDecoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.bottomRight,

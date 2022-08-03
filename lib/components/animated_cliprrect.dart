@@ -23,7 +23,7 @@ class AnimatedClipRRect extends StatelessWidget {
     return TweenAnimationBuilder<BorderRadius>(
       duration: duration,
       curve: curve,
-      tween: BorderRadiusTween(begin: BorderRadius.zero, end: borderRadius),
+      tween: Tween<BorderRadius>(begin: BorderRadius.zero, end: borderRadius),
       builder: _builder,
       child: child,
     );

@@ -4,7 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:show_time/components/badge.dart';
 import 'package:show_time/components/image_sliver_delegate.dart';
 import 'package:show_time/components/latest_ep_carousel.dart';
-import 'package:show_time/constants/custom_variables.dart';
+import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/models/tvshow_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -114,60 +114,63 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                   expandedHeight: _height,
                                   show: widget.show)), //TOP IMAGES and title
                           SliverToBoxAdapter(
-                            child: AnimationLimiter(
-                              child: Column(
-                                // physics: PageScrollPhysics(),
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets
-                                        .symmetric(
-                                        horizontal: 25.0,
-                                        vertical: 10.0),
-                                    child: Container(
-                                      height: _height / 20,
-                                      width: _width,
-                                      child: ListView(
-                                        scrollDirection: Axis.horizontal,
-                                        children: List.generate(
-                                            widget.show.genres!.length,
-                                                (index) {
-                                          return AnimationConfiguration
-                                              .staggeredList(
-                                            duration: Duration(
-                                                milliseconds:
-                                                200),
-                                            position: index,
-                                            child:
-                                            FadeInAnimation(
-                                              delay: Duration(milliseconds: 250 * index+1),
-                                              child: SlideTransition(
-                                                position: Tween<Offset>(
-                                                  begin: Offset(0, 0.1),
-                                                  end: Offset.zero,
-                                                ).animate(animation),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                                  child:
-                                                  Container(
-                                                    height: _height / 20,
-                                                    decoration: BoxDecoration(
-                                                      color: GlobalColors.blueColor,
-                                                      borderRadius: _radius,
-                                                    ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(5.0),
-                                                      child:
-                                                      Center(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 58.0),
+                              child: AnimationLimiter(
+                                child: Column(
+                                  // physics: PageScrollPhysics(),
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets
+                                          .symmetric(
+                                          horizontal: 25.0,
+                                          vertical: 10.0),
+                                      child: Container(
+                                        height: _height / 20,
+                                        width: _width,
+                                        child: ListView(
+                                          scrollDirection: Axis.horizontal,
+                                          children: List.generate(
+                                              widget.show.genres!.length,
+                                                  (index) {
+                                            return AnimationConfiguration
+                                                .staggeredList(
+                                              duration: Duration(
+                                                  milliseconds:
+                                                  200),
+                                              position: index,
+                                              child:
+                                              FadeInAnimation(
+                                                delay: Duration(milliseconds: 250 * index+1),
+                                                child: SlideTransition(
+                                                  position: Tween<Offset>(
+                                                    begin: Offset(0, 0.1),
+                                                    end: Offset.zero,
+                                                  ).animate(animation),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                                    child:
+                                                    Container(
+                                                      height: _height / 20,
+                                                      decoration: BoxDecoration(
+                                                        color: GlobalColors.blueColor,
+                                                        borderRadius: _radius,
+                                                      ),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(5.0),
                                                         child:
-                                                        AutoSizeText(
-                                                          widget.show.genres![index],
-                                                          maxFontSize: 16,
-                                                          minFontSize: 13,
-                                                          maxLines: 1,
-                                                          style: GoogleFonts.roboto(
-                                                                color: Colors.white,
-                                                                fontWeight: FontWeight.w700,
-                                                                fontSize: _width/20
+                                                        Center(
+                                                          child:
+                                                          AutoSizeText(
+                                                            widget.show.genres![index],
+                                                            maxFontSize: 16,
+                                                            minFontSize: 13,
+                                                            maxLines: 1,
+                                                            style: GoogleFonts.roboto(
+                                                                  color: Colors.white,
+                                                                  fontWeight: FontWeight.w700,
+                                                                  fontSize: _width/20
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
@@ -175,30 +178,114 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        }),
+                                            );
+                                          }),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  FadeTransition(
-                                      opacity: Tween<double>(
-                                        begin: 0,
-                                        end: 1,
-                                      ).animate(animation),
-                                      child: displayBadges(
-                                          _height, _width)),
-                                  if (isExpanded)
                                     FadeTransition(
-                                      opacity: Tween<double>(
-                                        begin: 0,
-                                        end: 1,
-                                      ).animate(animation),
-                                      child: Padding(
-                                        padding: const EdgeInsets
-                                            .symmetric(
-                                            horizontal: 25.0,
-                                            vertical: 15.0),
+                                        opacity: Tween<double>(
+                                          begin: 0,
+                                          end: 1,
+                                        ).animate(animation),
+                                        child: displayBadges(
+                                            _height, _width)),
+                                    if (isExpanded)
+                                      FadeTransition(
+                                        opacity: Tween<double>(
+                                          begin: 0,
+                                          end: 1,
+                                        ).animate(animation),
+                                        child: Padding(
+                                          padding: const EdgeInsets
+                                              .symmetric(
+                                              horizontal: 25.0,
+                                              vertical: 15.0),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .start,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 15.0),
+                                                child: Text(
+                                                  "Summary",
+                                                  style: TextStyle(
+                                                    fontSize:
+                                                    _width / 20,
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .w700,
+                                                    color:
+                                                    GlobalColors.greyTextColor,
+                                                    fontFamily:
+                                                    'Raleway',
+                                                  ),
+                                                ),
+                                              ),
+                                              AnimatedSizeAndFade(
+                                                  vsync: this,
+                                                  child: _tapped
+                                                      ? Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        widget.show.parseHtmlString().substring(0, 100) + "...",
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: (){
+                                                          setState(() {
+                                                            _tapped = !_tapped;
+                                                          });
+                                                        },
+                                                        textColor: GlobalColors.greenColor,
+                                                        child: Center(
+                                                          child: Text(
+                                                            "Show More"
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )
+                                                      :Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: [
+                                                      Text(
+                                                        widget.show.parseHtmlString(),
+                                                        style: GoogleFonts.roboto(
+                                                          fontSize: _width/26,
+                                                          color: GlobalColors.greyTextColor
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: (){
+                                                          setState(() {
+                                                            _tapped = !_tapped;
+                                                          });
+                                                        },
+                                                        textColor: GlobalColors.greenColor,
+                                                        child: Center(
+                                                          child: Text(
+                                                              "Show Less"
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    if (isExpanded)
+                                      FadeTransition(
+                                        opacity: Tween<double>(
+                                          begin: 0,
+                                          end: 1,
+                                        ).animate(animation),
                                         child: Column(
                                           mainAxisAlignment:
                                           MainAxisAlignment
@@ -208,9 +295,15 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                               .start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.only(bottom: 15.0),
+                                              padding:
+                                              const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal:
+                                                  25.0,
+                                                  vertical:
+                                                  5.0),
                                               child: Text(
-                                                "Summary",
+                                                "Latest episodes",
                                                 style: TextStyle(
                                                   fontSize:
                                                   _width / 20,
@@ -224,102 +317,12 @@ class _WatchedDetailViewState extends State<DetailView> with TickerProviderState
                                                 ),
                                               ),
                                             ),
-                                            AnimatedSizeAndFade(
-                                                vsync: this,
-                                                child: _tapped
-                                                    ? Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      widget.show.parseHtmlString().substring(0, 100) + "...",
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: (){
-                                                        setState(() {
-                                                          _tapped = !_tapped;
-                                                        });
-                                                      },
-                                                      textColor: GlobalColors.greenColor,
-                                                      child: Center(
-                                                        child: Text(
-                                                          "Show More"
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                )
-                                                    :Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      widget.show.parseHtmlString(),
-                                                      style: GoogleFonts.roboto(
-                                                        fontSize: _width/26,
-                                                        color: GlobalColors.greyTextColor
-                                                      ),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: (){
-                                                        setState(() {
-                                                          _tapped = !_tapped;
-                                                        });
-                                                      },
-                                                      textColor: GlobalColors.greenColor,
-                                                      child: Center(
-                                                        child: Text(
-                                                            "Show Less"
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                            ),
+                                            LatestEpisodesCarousel(show: widget.show),
                                           ],
                                         ),
                                       ),
-                                    ),
-                                  if (isExpanded)
-                                    FadeTransition(
-                                      opacity: Tween<double>(
-                                        begin: 0,
-                                        end: 1,
-                                      ).animate(animation),
-                                      child: Column(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .start,
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment
-                                            .start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets
-                                                .symmetric(
-                                                horizontal:
-                                                25.0,
-                                                vertical:
-                                                5.0),
-                                            child: Text(
-                                              "Latest episodes",
-                                              style: TextStyle(
-                                                fontSize:
-                                                _width / 20,
-                                                fontWeight:
-                                                FontWeight
-                                                    .w700,
-                                                color:
-                                                GlobalColors.greyTextColor,
-                                                fontFamily:
-                                                'Raleway',
-                                              ),
-                                            ),
-                                          ),
-                                          LatestEpisodesCarousel(show: widget.show),
-                                        ],
-                                      ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
