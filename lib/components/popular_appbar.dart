@@ -25,38 +25,36 @@ class PopularSliverDelegate extends SliverPersistentHeaderDelegate {
     final appBarSize = expandedHeight - (shrinkOffset);
     final proportion = 2 - (expandedHeight / appBarSize);
 
-    return Container(
+    return SizedBox(
+      height: expandedHeight,
       child: SizedBox(
-        height: expandedHeight,
-        child: SizedBox(
-          height: appBarSize < minExtent*.6 ? minExtent*.6 : appBarSize,
+        height: appBarSize < minExtent*.6 ? minExtent*.6 : appBarSize,
 //            height: appBarSize,
-          child: Column(
-            children: [
-              child,
-              Visibility(
-                visible: proportion >= 0.0 ? true : false,
-                child: Opacity(
-                    opacity: proportion >= 0.0 && proportion <= 1.0 ? proportion : 0,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          back,
-                          Padding(
-                            padding: const EdgeInsets.only(right: 15.0),
-                            child: actions ?? Container(),
-                          )
-                        ],
-                      ),
-                    )
-                ),
-              )
-            ],
-          )
-          ),
-      ),
+        child: Column(
+          children: [
+            child,
+            Visibility(
+              visible: proportion >= 0.0 ? true : false,
+              child: Opacity(
+                  opacity: proportion >= 0.0 && proportion <= 1.0 ? proportion : 0,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        back,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15.0),
+                          child: actions ?? Container(),
+                        )
+                      ],
+                    ),
+                  )
+              ),
+            )
+          ],
+        )
+        ),
     );
   }
 

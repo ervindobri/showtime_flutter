@@ -19,7 +19,7 @@ class MostPopularShows extends StatefulWidget {
   @override
   _MostPopularShowsState createState() => _MostPopularShowsState();
 
-  MostPopularShows();
+  const MostPopularShows({Key? key}) : super(key: key);
 }
 
 class _MostPopularShowsState extends State<MostPopularShows>
@@ -28,9 +28,9 @@ class _MostPopularShowsState extends State<MostPopularShows>
   APIService apiService = APIService();
   // You future
   late Future future;
-  ScrollController _controller = new ScrollController(initialScrollOffset: 0);
+  final ScrollController _controller = ScrollController(initialScrollOffset: 0);
 
-  double _offset = 1.0;
+  final double _offset = 1.0;
 
   String mostPopularLabel = "The 10 most popular shows right now";
 
@@ -124,7 +124,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                   if (GlobalVariables.limitedShows.isNotEmpty) {
                     return CustomScrollView(
                         // key: UniqueKey(),
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         controller: _controller,
                         slivers: [
                           getSliverHeader(_width, _height),
@@ -132,7 +132,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                             child: Stack(
                               children: [
                                 ListView(
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
                                   // direction: Axis.vertical,
                                   children: [
                                     if (!animationController.isCompleted)
@@ -144,7 +144,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                           height: _height / 2,
                                           decoration: BoxDecoration(
                                               color: pink,
-                                              borderRadius: BorderRadius.only(
+                                              borderRadius: const BorderRadius.only(
                                                 topLeft: Radius.circular(
                                                     GlobalVariables
                                                         .sliverRadius),
@@ -166,15 +166,12 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               // print(snapshot.hasData);
 
                                               if (GlobalVariables
-                                                          .limitedShows !=
-                                                      null &&
-                                                  GlobalVariables
                                                           .limitedShows.length >
                                                       index) {
                                                 // print("already got this batch ! - ${GlobalVariables.limitedShows.length} / ${index}");
                                                 return Container(
                                                     // height: _height,
-                                                    decoration: BoxDecoration(
+                                                    decoration: const BoxDecoration(
                                                         color: GlobalColors
                                                             .bgColor,
                                                         borderRadius:
@@ -204,7 +201,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                     return Container(
                                                         // height: _height,
                                                         decoration:
-                                                            BoxDecoration(
+                                                            const BoxDecoration(
                                                                 color:
                                                                     GlobalColors
                                                                         .bgColor,
@@ -236,7 +233,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                   return Container();
                                                 } else {
                                                   return Container(
-                                                    decoration: BoxDecoration(
+                                                    decoration: const BoxDecoration(
                                                         color: GlobalColors
                                                             .bgColor,
                                                         borderRadius:
@@ -293,7 +290,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                           ShowTheme
                                                                               .radius24,
                                                                       boxShadow: [
-                                                                        new BoxShadow(
+                                                                        BoxShadow(
                                                                             color: Colors.black.withOpacity(
                                                                                 .3),
                                                                             blurRadius:
@@ -301,7 +298,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                             spreadRadius:
                                                                                 -4,
                                                                             offset:
-                                                                                Offset(0, 5)),
+                                                                                const Offset(0, 5)),
                                                                       ],
                                                                     ),
                                                                   ),
@@ -328,7 +325,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                           ShowTheme
                                                                               .radius24,
                                                                       boxShadow: [
-                                                                        new BoxShadow(
+                                                                        BoxShadow(
                                                                             color: Colors.black.withOpacity(
                                                                                 .3),
                                                                             blurRadius:
@@ -336,7 +333,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                             spreadRadius:
                                                                                 -4,
                                                                             offset:
-                                                                                Offset(0, 5)),
+                                                                                const Offset(0, 5)),
                                                                       ],
                                                                     ),
                                                                   ),
@@ -348,7 +345,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                         crossAxisCount: 4,
                                                         staggeredTileBuilder:
                                                             (int index) =>
-                                                                new StaggeredTile
+                                                                StaggeredTile
                                                                         .count(
                                                                     2,
                                                                     index.isEven
@@ -397,20 +394,20 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                           gap: 8,
                                           iconSize: 20,
                                           selectedIndex: _selectedIndex,
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 3),
-                                          duration: Duration(milliseconds: 500),
+                                          duration: const Duration(milliseconds: 500),
                                           color: Colors.grey[800],
                                           activeColor: pink,
                                           backgroundColor: pink,
                                           tabBackgroundColor: Colors.white,
-                                          tabMargin: EdgeInsets.all(5),
+                                          tabMargin: const EdgeInsets.all(5),
                                           textStyle: GoogleFonts.roboto(
                                             fontSize: 15,
                                             color: pink,
                                           ),
                                           tabs: [
-                                            GButton(
+                                            const GButton(
                                               iconColor: Colors.white,
                                               icon: FontAwesomeIcons
                                                   .chevronCircleLeft,
@@ -422,7 +419,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               icon:
                                                   Icons.queue_play_next_rounded,
                                             ),
-                                            GButton(
+                                            const GButton(
                                                 text: '91-100',
                                                 iconColor: Colors.white,
                                                 icon: FontAwesomeIcons
@@ -445,7 +442,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                       getShowLinks(snapshot.data!.take(maxShows));
                       return CustomScrollView(
                           // key: UniqueKey(),
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           controller: _controller,
                           slivers: [
                             getSliverHeader(_width, _height),
@@ -464,7 +461,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                             height: _height / 2,
                                             decoration: BoxDecoration(
                                                 color: pink,
-                                                borderRadius: BorderRadius.only(
+                                                borderRadius: const BorderRadius.only(
                                                   topLeft: Radius.circular(
                                                       GlobalVariables
                                                           .sliverRadius),
@@ -483,15 +480,12 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               builder: (context,
                                                   AsyncSnapshot snapshot) {
                                                 // print(GlobalVariables.limitedShows.length);
-                                                if (GlobalVariables
-                                                            .limitedShows !=
-                                                        null &&
-                                                    GlobalVariables.limitedShows
+                                                if (GlobalVariables.limitedShows
                                                             .length >
                                                         index) {
                                                   return Container(
                                                       // height: _height,
-                                                      decoration: BoxDecoration(
+                                                      decoration: const BoxDecoration(
                                                           color: GlobalColors
                                                               .bgColor,
                                                           borderRadius:
@@ -522,7 +516,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                     return Container(
                                                         // height: _height,
                                                         decoration:
-                                                            BoxDecoration(
+                                                            const BoxDecoration(
                                                                 color:
                                                                     GlobalColors
                                                                         .bgColor,
@@ -552,7 +546,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                   } else {
                                                     // print("fetching data;");
                                                     return Container(
-                                                      decoration: BoxDecoration(
+                                                      decoration: const BoxDecoration(
                                                           color: GlobalColors
                                                               .bgColor,
                                                           borderRadius:
@@ -607,11 +601,11 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                         borderRadius:
                                                                             ShowTheme.radius24,
                                                                         boxShadow: [
-                                                                          new BoxShadow(
+                                                                          BoxShadow(
                                                                               color: Colors.black.withOpacity(.3),
                                                                               blurRadius: 15.0,
                                                                               spreadRadius: -4,
-                                                                              offset: Offset(0, 5)),
+                                                                              offset: const Offset(0, 5)),
                                                                         ],
                                                                       ),
                                                                     ),
@@ -636,11 +630,11 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                         borderRadius:
                                                                             ShowTheme.radius24,
                                                                         boxShadow: [
-                                                                          new BoxShadow(
+                                                                          BoxShadow(
                                                                               color: Colors.black.withOpacity(.3),
                                                                               blurRadius: 15.0,
                                                                               spreadRadius: -4,
-                                                                              offset: Offset(0, 5)),
+                                                                              offset: const Offset(0, 5)),
                                                                         ],
                                                                       ),
                                                                     ),
@@ -652,7 +646,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                           crossAxisCount: 4,
                                                           staggeredTileBuilder: (int
                                                                   index) =>
-                                                              new StaggeredTile
+                                                              StaggeredTile
                                                                       .count(
                                                                   2,
                                                                   index.isEven
@@ -701,21 +695,21 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                             gap: 8,
                                             iconSize: 20,
                                             selectedIndex: _selectedIndex,
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                                 horizontal: 10, vertical: 3),
                                             duration:
-                                                Duration(milliseconds: 500),
+                                                const Duration(milliseconds: 500),
                                             color: Colors.grey[800],
                                             activeColor: pink,
                                             backgroundColor: pink,
                                             tabBackgroundColor: Colors.white,
-                                            tabMargin: EdgeInsets.all(5),
+                                            tabMargin: const EdgeInsets.all(5),
                                             textStyle: GoogleFonts.roboto(
                                               fontSize: 15,
                                               color: pink,
                                             ),
                                             tabs: [
-                                              GButton(
+                                              const GButton(
                                                 iconColor: Colors.white,
                                                 icon: Icons
                                                     .queue_play_next_rounded,
@@ -727,7 +721,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                 icon: Icons
                                                     .queue_play_next_rounded,
                                               ),
-                                              GButton(
+                                              const GButton(
                                                 text: '91-100',
                                                 iconColor: Colors.white,
                                                 icon: Icons
@@ -756,7 +750,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                           // displayLabel(_width),
                           SliverFillRemaining(
                             child: Container(
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     color: GlobalColors.bgColor,
                                     borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(
@@ -791,6 +785,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
     return CupertinoTextField(
       onSubmitted: (value) {
         //TODO: implement SEARCH in MPS
+        
         // setState(() {
         //   _searchTerm = value;
         // });
@@ -799,20 +794,20 @@ class _MostPopularShowsState extends State<MostPopularShows>
       clearButtonMode: OverlayVisibilityMode.editing,
       keyboardType: TextInputType.text,
       placeholder: "Search..",
-      placeholderStyle: TextStyle(
+      placeholderStyle: const TextStyle(
         color: GlobalColors.greyTextColor,
         fontSize: 20.0,
         fontFamily: 'Raleway',
       ),
       cursorColor: GlobalColors.greyTextColor,
       cursorWidth: 3,
-      style: TextStyle(
+      style: const TextStyle(
         color: GlobalColors.greyTextColor,
         fontSize: 20.0,
         fontFamily: 'Raleway',
       ),
-      prefix: Padding(
-        padding: const EdgeInsets.only(left: 8.0),
+      prefix: const Padding(
+        padding: EdgeInsets.only(left: 8.0),
         child: Icon(
           Icons.search,
           color: GlobalColors.greyTextColor,
@@ -821,11 +816,11 @@ class _MostPopularShowsState extends State<MostPopularShows>
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
-            new BoxShadow(
+            BoxShadow(
                 color: Colors.grey.withOpacity(.2),
                 blurRadius: 25.0,
                 spreadRadius: -25,
-                offset: Offset(0, 5)),
+                offset: const Offset(0, 5)),
           ],
           color: Colors.white),
     );
@@ -844,11 +839,9 @@ class _MostPopularShowsState extends State<MostPopularShows>
     for (String show in GlobalVariables.showLinks.skip(limits[0]).take(10)) {
       TVShow tvshow = (await apiService.getShowResults(imdbLink: show))!;
       // print(tvshow);
-      if (tvshow != null) {
-        data.add(tvshow);
-      }
+      data.add(tvshow);
     }
-    return await new Future(() => data);
+    return await Future(() => data);
   }
 
   Widget mostPopularList(List<TVShow> data) {
@@ -870,7 +863,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
       },
       crossAxisCount: 4,
       staggeredTileBuilder: (int index) =>
-          new StaggeredTile.count(2, index.isEven ? 3.5 : 3.5),
+          StaggeredTile.count(2, index.isEven ? 3.5 : 3.5),
     );
   }
 
@@ -881,29 +874,27 @@ class _MostPopularShowsState extends State<MostPopularShows>
           : _offset <= 0
               ? 0.0
               : _offset,
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
-          child: Column(
-            children: [
-              Text(
-                mostPopularLabel,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: GlobalColors.greyTextColor,
-                    fontFamily: 'Raleway',
-                    fontSize: _width / 15,
-                    fontWeight: FontWeight.w700),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+        child: Column(
+          children: [
+            Text(
+              mostPopularLabel,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: GlobalColors.greyTextColor,
+                  fontFamily: 'Raleway',
+                  fontSize: _width / 15,
+                  fontWeight: FontWeight.w700),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Divider(
+                height: 1.2,
+                color: GlobalColors.pinkColor,
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Divider(
-                  height: 1.2,
-                  color: GlobalColors.pinkColor,
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
@@ -916,7 +907,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
           width: _width,
           decoration: BoxDecoration(
               color: pink,
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(GlobalVariables.sliverRadius),
                 bottomRight: Radius.circular(GlobalVariables.sliverRadius),
               )),
@@ -933,7 +924,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
           ),
         ),
         expandedHeight: _height * .15,
-        back: CustomBackButton(
+        back: const CustomBackButton(
           backPage: 'Home',
           itemColor: GlobalColors.white,
           backgroundColor: GlobalColors.pinkColor,

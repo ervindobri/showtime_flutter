@@ -1,12 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/chip_field/multi_select_chip_field.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:show_time/components/radial_range_slider.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/utils/navigation.dart';
@@ -20,19 +17,20 @@ class FilterMenuSheet extends StatelessWidget {
   FilterMenuSheet({Key? key, required this.onFilter}) : super(key: key);
 
   FilterController filterController = Get.put(FilterController());
-  List<Object?> _selectedGenres = [];
+  // List<Object?> _selectedGenres = [];
 
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
+    // final _height = MediaQuery.of(context).size.height;
     return Center(
-      child: Container(
+      child: SizedBox(
         width: _width,
         child: GetBuilder<FilterController>(
-            init: filterController,
-            builder: (controller) {
-              return LayoutBuilder(builder: (_, constraints) {
+          init: filterController,
+          builder: (controller) {
+            return LayoutBuilder(
+              builder: (_, constraints) {
                 if (constraints.maxWidth > 600) {
                   return Column(
                     children: [
@@ -64,7 +62,7 @@ class FilterMenuSheet extends StatelessWidget {
                           Column(
                             //rating
                             children: [
-                              Container(
+                              SizedBox(
                                 height: 200,
                                 width: 350,
                                 child: Column(
@@ -78,7 +76,7 @@ class FilterMenuSheet extends StatelessWidget {
                                     ),
                                     // Obx(
                                     //       () =>
-                                    RadialRangeSlider(
+                                    const RadialRangeSlider(
                                       textColor: GlobalColors.primaryGreen,
                                       backgroundColor:
                                           GlobalColors.primaryGreen,
@@ -93,7 +91,7 @@ class FilterMenuSheet extends StatelessWidget {
                           Column(
                             children: [
                               //runtime
-                              Container(
+                              SizedBox(
                                 height: 200,
                                 width: 350,
                                 child: Column(
@@ -128,7 +126,7 @@ class FilterMenuSheet extends StatelessWidget {
                                 ),
                               ),
                               //genres
-                              Container(
+                              SizedBox(
                                 height: 300,
                                 width: 350,
                                 child: Column(
@@ -217,96 +215,87 @@ class FilterMenuSheet extends StatelessWidget {
                           //first watch date
                           //last watch date
 
-                          Container(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Rating",
-                                  style: GoogleFonts.raleway(
-                                      color: GlobalColors.primaryGreen,
-                                      fontSize: 25),
-                                ),
-                                // Obx(
-                                //       () =>
-                                RadialRangeSlider(
-                                  textColor: GlobalColors.primaryGreen,
-                                  backgroundColor: GlobalColors.primaryGreen,
-                                  radiusFactor: .65,
-                                )
-                                // ),
-                              ],
-                            ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Rating",
+                                style: GoogleFonts.raleway(
+                                    color: GlobalColors.primaryGreen,
+                                    fontSize: 25),
+                              ),
+                              // Obx(
+                              //       () =>
+                              const RadialRangeSlider(
+                                textColor: GlobalColors.primaryGreen,
+                                backgroundColor: GlobalColors.primaryGreen,
+                                radiusFactor: .65,
+                              )
+                              // ),
+                            ],
                           ),
                           Column(
                             children: [
                               //runtime
-                              Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Runtime",
-                                      style: GoogleFonts.raleway(
-                                          color: GlobalColors.primaryGreen,
-                                          fontSize: 25),
-                                    ),
-                                    Obx(
-                                      () => SfRangeSlider(
-                                        min: 0.0,
-                                        max: 60.0,
-                                        stepSize: 5,
-                                        activeColor: GlobalColors.primaryGreen,
-                                        showLabels: true,
-                                        showTicks: true,
-                                        enableIntervalSelection: true,
-                                        enableTooltip: true,
-                                        labelPlacement: LabelPlacement.onTicks,
-                                        values: filterController
-                                            .runtimeRangeValues.value,
-                                        onChanged: (values) {
-                                          filterController.runtimeRangeValues
-                                              .value = values;
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //genres
-                              Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Genres",
-                                      style: GoogleFonts.raleway(
-                                          color: GlobalColors.primaryGreen,
-                                          fontSize: 25),
-                                    ),
-                                    MultiSelectChipField<String?>(
-                                      items: filterController.genreItems,
-                                      initialValue: [
-                                        FilterController.genres[0]
-                                      ],
-                                      scroll: false,
-                                      headerColor: Colors.transparent,
-                                      textStyle: GoogleFonts.raleway(
-                                          color: GlobalColors.greyTextColor),
-                                      selectedChipColor:
-                                          GlobalColors.primaryGreen,
-                                      selectedTextStyle: GoogleFonts.raleway(
-                                          color: GlobalColors.white),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      onTap: (values) {
-                                        filterController.selectedGenres =
-                                            values;
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Runtime",
+                                    style: GoogleFonts.raleway(
+                                        color: GlobalColors.primaryGreen,
+                                        fontSize: 25),
+                                  ),
+                                  Obx(
+                                    () => SfRangeSlider(
+                                      min: 0.0,
+                                      max: 60.0,
+                                      stepSize: 5,
+                                      activeColor: GlobalColors.primaryGreen,
+                                      showLabels: true,
+                                      showTicks: true,
+                                      enableIntervalSelection: true,
+                                      enableTooltip: true,
+                                      labelPlacement: LabelPlacement.onTicks,
+                                      values: filterController
+                                          .runtimeRangeValues.value,
+                                      onChanged: (values) {
+                                        filterController
+                                            .runtimeRangeValues.value = values;
                                       },
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
+                              ),
+                              //genres
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Genres",
+                                    style: GoogleFonts.raleway(
+                                        color: GlobalColors.primaryGreen,
+                                        fontSize: 25),
+                                  ),
+                                  MultiSelectChipField<String?>(
+                                    items: filterController.genreItems,
+                                    initialValue: [FilterController.genres[0]],
+                                    scroll: false,
+                                    headerColor: Colors.transparent,
+                                    textStyle: GoogleFonts.raleway(
+                                        color: GlobalColors.greyTextColor),
+                                    selectedChipColor:
+                                        GlobalColors.primaryGreen,
+                                    selectedTextStyle: GoogleFonts.raleway(
+                                        color: GlobalColors.white),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    onTap: (values) {
+                                      filterController.selectedGenres = values;
+                                    },
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -319,16 +308,18 @@ class FilterMenuSheet extends StatelessWidget {
                             child: TextButton(
                               onPressed: onFilter,
                               style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      GlobalColors.primaryGreen)),
+                                backgroundColor: MaterialStateProperty.all(
+                                    GlobalColors.primaryGreen),
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   "Apply filters",
                                   style: GoogleFonts.raleway(
-                                      color: GlobalColors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20),
+                                    color: GlobalColors.white,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
                             ),
@@ -338,8 +329,10 @@ class FilterMenuSheet extends StatelessWidget {
                     ),
                   );
                 }
-              });
-            }),
+              },
+            );
+          },
+        ),
       ),
     );
   }

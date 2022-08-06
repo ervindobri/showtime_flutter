@@ -8,7 +8,6 @@ import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:show_time/network/network.dart';
 import 'package:show_time/ui/search_card.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,6 +18,8 @@ import 'package:flare_flutter/flare_actor.dart';
 /// Search for TV shows not in your watchlist.
 class AllTVShows extends StatefulWidget {
   static const String routeName = "/browse";
+
+  const AllTVShows({Key? key}) : super(key: key);
   @override
   _AllTVShowsState createState() => _AllTVShowsState();
 }
@@ -27,22 +28,19 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
   String _showName = "";
   late Future<AllTVShowList> showSearchObject;
   late bool _searched;
-  var _icon = Icon(
+  var _icon = const Icon(
     Icons.search,
     color: Colors.white,
   );
   bool isSearchClicked = false;
-  final TextEditingController _filter = new TextEditingController();
+  final TextEditingController _filter = TextEditingController();
   final bgColor = GlobalColors.primaryBlue;
 
   Widget _textField() {
     return CupertinoTextField(
       onSubmitted: (value) {
         if (value != "") {
-          print("searching");
-          setState(() {
-            _searchShows(value);
-          });
+          setState(() => _searchShows(value));
         } else {
           Fluttertoast.showToast(
               msg: "Search failed!",
@@ -56,20 +54,20 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
       clearButtonMode: OverlayVisibilityMode.editing,
       keyboardType: TextInputType.text,
       placeholder: "Search..",
-      placeholderStyle: TextStyle(
+      placeholderStyle: const TextStyle(
         color: GlobalColors.greyTextColor,
         fontSize: 20.0,
         fontFamily: 'Raleway',
       ),
       cursorColor: GlobalColors.greyTextColor,
       cursorWidth: 3,
-      style: TextStyle(
+      style: const TextStyle(
         color: GlobalColors.greyTextColor,
         fontSize: 20.0,
         fontFamily: 'Raleway',
       ),
-      prefix: Padding(
-        padding: const EdgeInsets.only(left: 8.0),
+      prefix: const Padding(
+        padding: EdgeInsets.only(left: 8.0),
         child: Icon(
           Icons.search,
           color: GlobalColors.greyTextColor,
@@ -78,11 +76,11 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           boxShadow: [
-            new BoxShadow(
+            BoxShadow(
                 color: Colors.grey.withOpacity(.2),
                 blurRadius: 25.0,
                 spreadRadius: -25,
-                offset: Offset(0, 5)),
+                offset: const Offset(0, 5)),
           ],
           color: Colors.white),
     );
@@ -121,7 +119,6 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                     builder: (context, AsyncSnapshot<AllTVShowList> snapshot) {
 //            print(snapshot.connectionState);
                       if (!snapshot.hasData) {
-                        print("nodata");
                         return CustomScrollView(
                             // physics: NeverScrollableScrollPhysics(),
                             slivers: [
@@ -130,7 +127,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                                   child: Container(
                                 height: _height,
                                 width: _width,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                     color: GlobalColors.bgColor,
                                     borderRadius: BorderRadius.only(
                                       topLeft: Radius.circular(
@@ -146,8 +143,8 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                               ))
                             ]);
                       } else {
-                        print(snapshot.data!.showList.length);
-                        if (snapshot.data!.showList.length > 0) {
+                        // print(snapshot.data!.showList.length);
+                        if (snapshot.data!.showList.isNotEmpty) {
                           var tags = GlobalVariables.searchHistory.firstWhere(
                               (search) => search == _showName,
                               orElse: () => '');
@@ -156,14 +153,14 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                             FirestoreUtils().setSearchHistory(_showName);
                           }
                           return CustomScrollView(
-                            physics: ClampingScrollPhysics(),
+                            physics: const ClampingScrollPhysics(),
                             slivers: [
                               sliverHeader(_width, _height),
                               SliverFillRemaining(
                                 child: Container(
                                   height: _height,
                                   width: _width,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color: GlobalColors.bgColor,
                                       // color: CupertinoColors.black,
                                       borderRadius: BorderRadius.only(
@@ -200,8 +197,8 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                                   child: Container(
                                     width: _width,
                                     height: _height * .15,
-                                    decoration: BoxDecoration(
-                                        color: const Color(0xFFFF006F),
+                                    decoration: const BoxDecoration(
+                                        color: Color(0xFFFF006F),
                                         borderRadius: BorderRadius.only(
                                           bottomLeft: Radius.circular(25.0),
                                           bottomRight: Radius.circular(25.0),
@@ -221,7 +218,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                                   ),
                                   expandedHeight: _height * .15,
                                   hideTitleWhenExpanded: false,
-                                  back: CustomBackButton(
+                                  back: const CustomBackButton(
                                     backPage: 'Home',
                                     itemColor: GlobalColors.white,
                                     backgroundColor: GlobalColors.primaryBlue,
@@ -241,7 +238,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                       }
                     })
                 : CustomScrollView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     slivers: [
                       sliverHeader(_width, _height),
                       SliverFillRemaining(
@@ -250,7 +247,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                         child: Container(
                           height: _height,
                           width: _width,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                               color: GlobalColors.bgColor,
                               borderRadius: BorderRadius.only(
                                 topLeft: Radius.circular(
@@ -280,12 +277,12 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
   }
 
   Future<AllTVShowList> getSearchResults({required String showName}) =>
-      new Network().getShowResults(showName: showName);
+      Network().getShowResults(showName: showName);
 
   Widget displaySearchHistory(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    return Container(
+    return SizedBox(
         width: _width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -311,7 +308,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                     //   print(element.data());
                     // });
                     return AnimationLimiter(
-                      child: Container(
+                      child: SizedBox(
                         width: _width,
                         height: _height * .4,
                         // color: CupertinoColors.black,
@@ -331,15 +328,15 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                                     padding: const EdgeInsets.all(10.0),
                                     child: CustomElevation(
                                       color: Colors.grey.withOpacity(.2),
-                                      child: FlatButton(
-                                        color: Colors.white,
-                                        highlightColor:
-                                            Colors.greenAccent.shade200,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(25.0),
-                                          ),
-                                        ),
+                                      child: TextButton(
+                                        // color: Colors.white,
+                                        // highlightColor:
+                                            // Colors.greenAccent.shade200,
+                                        // shape: const RoundedRectangleBorder(
+                                        //   borderRadius: BorderRadius.all(
+                                        //     Radius.circular(25.0),
+                                        //   ),
+                                        // ),
                                         onPressed: () {
                                           setState(() {
                                             _searchShows(snapshot
@@ -347,20 +344,18 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                                                 .data()['term']);
                                           });
                                         },
-                                        child: Container(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(
-                                              snapshot.data.docs[index]
-                                                  .data()['term'],
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                  color: bgColor,
-                                                  fontFamily: 'Raleway',
-                                                  fontSize: _width / 20),
-                                            ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            snapshot.data.docs[index]
+                                                .data()['term'],
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                color: bgColor,
+                                                fontFamily: 'Raleway',
+                                                fontSize: _width / 20),
                                           ),
                                         ),
                                       ),
@@ -374,7 +369,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                       ),
                     );
                   } else {
-                    return Container(
+                    return SizedBox(
                       width: _width,
                       height: _height * .3,
                       child: Center(
@@ -399,21 +394,19 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
             future: showSearchObject,
             builder: (context, AsyncSnapshot<AllTVShowList> snapshot) {
               if (!snapshot.hasData) {
-                return Container(
+                return SizedBox(
                   height: MediaQuery.of(context).size.height * 0.6,
                   child: Center(
                     child: Theme(
-                      data: Theme.of(context).copyWith(accentColor: bgColor),
-                      child: CircularProgressIndicator(
+                      data: Theme.of(context).copyWith(colorScheme: ColorScheme.fromSwatch().copyWith(secondary: bgColor)),
+                      child: const CircularProgressIndicator(
                         strokeWidth: 6.5,
                       ),
                     ),
                   ),
                 );
               } else {
-                if (snapshot.data!.showList.length > 0) {
-                  print("not empty");
-
+                if (snapshot.data!.showList.isNotEmpty) {
                   //If the tag is not added, add to search history
                   var tags = GlobalVariables.searchHistory.firstWhere(
                       (search) => search == _showName,
@@ -433,8 +426,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                     ],
                   );
                 } else {
-                  print("empty");
-                  return CustomScrollView(
+                  return const CustomScrollView(
                     slivers: [
                       SliverFillRemaining(
                         child: FlareActor("assets/notfound.flr",
@@ -450,30 +442,28 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
       );
     } else {
       //TODO: change for smooth animation
-      return Container(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                FaIcon(
-                  FontAwesomeIcons.tv,
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FaIcon(
+                FontAwesomeIcons.tv,
+                color: bgColor,
+                size: _width / 3,
+              ),
+              Text(
+                "Search for a show you want to watch",
+                textAlign: TextAlign.center,
+                style: TextStyle(
                   color: bgColor,
-                  size: _width / 3,
+                  fontFamily: 'Raleway',
+                  fontSize: _height / 25,
                 ),
-                Text(
-                  "Search for a show you want to watch",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: bgColor,
-                    fontFamily: 'Raleway',
-                    fontSize: _height / 25,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );
@@ -496,7 +486,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
       child: Container(
         width: MediaQuery.of(context).size.width * .8,
         height: MediaQuery.of(context).size.height * .05,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(25.0)),
           color: GlobalColors.lightGreenColor,
         ),
@@ -510,12 +500,12 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
               fontFamily: 'Raleway',
               fontSize: MediaQuery.of(context).size.width / 30,
             ),
-            onTap: () => _icon = Icon(
+            onTap: () => _icon = const Icon(
               Icons.clear,
               color: Colors.white,
             ),
             onChanged: (_) {
-              _icon = Icon(
+              _icon = const Icon(
                 Icons.clear,
                 color: Colors.white,
               );
@@ -523,16 +513,16 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
             onSubmitted: (value) {
               if (value != "") {
                 _searchShows(value);
-                _icon = Icon(
+                _icon = const Icon(
                   Icons.search,
                   color: Colors.white,
                 );
                 FirestoreUtils().setSearchHistory(value);
               }
             },
-            decoration: new InputDecoration(
-                border: new UnderlineInputBorder(
-                    borderSide: new BorderSide(color: bgColor)),
+            decoration: InputDecoration(
+                border: UnderlineInputBorder(
+                    borderSide: BorderSide(color: bgColor)),
                 errorBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: bgColor),
                 ),
@@ -550,7 +540,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                         if (_controller.text != "") _controller.clear();
                       }
                     }),
-                hintText: GlobalVariables.searchHistory.length > 0
+                hintText: GlobalVariables.searchHistory.isNotEmpty
                     ? GlobalVariables
                         .searchHistory[GlobalVariables.searchHistory.length - 1]
                     : "Search...",
@@ -575,7 +565,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
       delegate: PopularSliverDelegate(
         // hideTitleWhenExpanded: true,
         expandedHeight: _height * .15,
-        back: CustomBackButton(
+        back: const CustomBackButton(
           backPage: 'Home',
           itemColor: GlobalColors.white,
           backgroundColor: GlobalColors.primaryBlue,
@@ -583,7 +573,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
         // actions: getActions(),
         child: Container(
           width: _width,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: GlobalColors.primaryBlue,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(GlobalVariables.sliverRadius),

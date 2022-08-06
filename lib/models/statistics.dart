@@ -61,7 +61,7 @@ class Statistics {
       12: 0,
     };
     List<FlSpot> spots = [];
-    weekly.docs.forEach((show) {
+    for (var show in weekly.docs) {
       // print(getWeekOfShow(show['lastWatched']));
       if (watchedPerWeek
           .containsKey(weeksAsX()[getWeekOfShow(show['lastWatched'])])) {
@@ -73,7 +73,7 @@ class Statistics {
         // print("no contains");
         // watchedPerWeek[getWeekOfShow(show['lastWatched'])] = 1;
       }
-    });
+    }
     // print(watchedPerWeek);
     watchedPerWeek.forEach((key, value) {
       spots.add(FlSpot(key.toDouble(), value.toDouble()));
@@ -93,13 +93,13 @@ class Statistics {
       12: 0,
     };
     List<FlSpot> spots = [];
-    weekly.docs.forEach((show) {
+    for (var show in weekly.docs) {
       if (watchedPerMonth
           .containsKey(monthsAsX[getMonthOfShow(show['lastWatched'])])) {
         watchedPerMonth.update(monthsAsX[getMonthOfShow(show['lastWatched'])]!,
             (value) => value + 1);
       }
-    });
+    }
     watchedPerMonth.forEach((key, value) {
       spots.add(FlSpot(key.toDouble(), value.toDouble()));
     });
@@ -120,13 +120,13 @@ class Statistics {
       13: 0,
     };
     List<FlSpot> spots = [];
-    weekly.docs.forEach((show) {
+    for (var show in weekly.docs) {
       if (watchedPerYear
           .containsKey(yearAsX[getYearOfShow(show['lastWatched'])])) {
         watchedPerYear.update(
             yearAsX[getYearOfShow(show['lastWatched'])]!, (value) => value + 1);
       } else {}
-    });
+    }
     watchedPerYear.forEach((key, value) {
       spots.add(FlSpot(key.toDouble(), value.toDouble()));
     });
@@ -184,10 +184,10 @@ class Statistics {
 
   double getOverallPercent() {
     double progress = 0.0;
-    if (GlobalVariables.watchedShowList.length > 0) {
-      GlobalVariables.watchedShowList.forEach((element) {
+    if (GlobalVariables.watchedShowList.isNotEmpty) {
+      for (var element in GlobalVariables.watchedShowList) {
         progress += element.calculatedProgress;
-      });
+      }
       progress /= GlobalVariables.watchedShowList.length;
     }
     return progress;
@@ -198,12 +198,12 @@ class Statistics {
         .watchedShows
         .orderBy('lastWatched', descending: true)
         .get();
-    weekly.docs.forEach((show) {
+    for (var show in weekly.docs) {
       if (weekDayWatches.containsKey(getDayOfShow(show['lastWatched']))) {
         weekDayWatches.update(
             getDayOfShow(show['lastWatched']), (value) => value + 1);
       }
-    });
+    }
     return weekDayWatches;
   }
 

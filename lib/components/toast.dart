@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,10 +7,9 @@ class CustomToast extends StatefulWidget {
   final IconData? icon;
   final String text;
 
-  const CustomToast({ Key? key,
-    required this.color,
-    this.icon,
-    required this.text}) : super(key: key);
+  const CustomToast(
+      {Key? key, required this.color, this.icon, required this.text})
+      : super(key: key);
   @override
   _CustomToastState createState() => _CustomToastState();
 }
@@ -28,20 +26,22 @@ class _CustomToastState extends State<CustomToast> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if( widget.icon != null) Icon(widget.icon, color: Colors.white,),
-          SizedBox(
-            width: 12.0,
-          ),
+          if (widget.icon != null)
+            Icon(
+              widget.icon,
+              color: Colors.white,
+            ),
+          const SizedBox(width: 12.0),
           AutoSizeText(
             widget.text,
             maxLines: 2,
             maxFontSize: 25,
             minFontSize: 10,
             style: GoogleFonts.lato(
-            color: Colors.white,
-            // fontFamily: FONTFAMILY,
-            fontWeight: FontWeight.w500
-          ),),
+                color: Colors.white,
+                // fontFamily: FONTFAMILY,
+                fontWeight: FontWeight.w500),
+          ),
         ],
       ),
     );

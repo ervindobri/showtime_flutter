@@ -70,16 +70,17 @@ class TVShowDetails extends TVShow{
 
   String? countryCode(){
     // print(countryCodes[0]["name"]);
-    print(this.language);
-    if ( this.language!.isNotEmpty){
-        var x  = GlobalVariables.countryCodes.firstWhere((element) => element["name"] == this.language);
+    print(language);
+    if ( language!.isNotEmpty){
+        var x  = GlobalVariables.countryCodes.firstWhere((element) => element["name"] == language);
         return x["code"].toString().toUpperCase();
     }
+    return null;
   }
 
   String parseHtmlString() {
     try {
-      var document = parse(this.summary);
+      var document = parse(summary);
       String parsedString = parse(document.body!.text).documentElement!.text;
       return parsedString;
     } catch (e) {
@@ -91,12 +92,12 @@ class TVShowDetails extends TVShow{
 
     List<Episode> episodes;
     episodes = json.map((i) => Episode.fromJson(i)).toList();
-    Map<String, int> episodePerSeason = new Map<String, int>();
-    int totalSeasons = json.length>0 ? json[json.length - 1]['season'] : 0;
+    Map<String, int> episodePerSeason = <String, int>{};
+    int totalSeasons = json.isNotEmpty ? json[json.length - 1]['season'] : 0;
     if(totalSeasons > 0){
       for(int i = 1 ; i<=totalSeasons; ++i){
         int max = 1;
-        json.forEach((element){
+        for (var element in json) {
           if ( element['season'] == i){
             if ( max < element['number']){
               max = element['number'];
@@ -104,7 +105,7 @@ class TVShowDetails extends TVShow{
             else{
             }
           }
-        });
+        }
         episodePerSeason.putIfAbsent(i.toString(),() => max);
       }
     }
@@ -127,7 +128,7 @@ class TVShowDetails extends TVShow{
   }
 
   bool isSafe() {
-    if ( this.name != null && this.episodePerSeason != null){
+    if ( name != null && episodePerSeason != null){
       return true;
     }
     return false;

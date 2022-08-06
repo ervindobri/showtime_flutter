@@ -1,5 +1,4 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:get/get.dart';
 import 'package:show_time/models/tvshow_details.dart';
 import 'package:show_time/ui/episode_card.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +7,8 @@ import 'package:flutter/material.dart';
 class LatestEpisodesCarousel extends StatefulWidget {
   final TVShowDetails show;
 
-  LatestEpisodesCarousel({required this.show});
+  const LatestEpisodesCarousel({Key? key, required this.show})
+      : super(key: key);
 
   @override
   _LatestEpisodesCarouselState createState() => _LatestEpisodesCarouselState();
@@ -22,7 +22,7 @@ class _LatestEpisodesCarouselState extends State<LatestEpisodesCarousel> {
     return Center(
         child: Padding(
       padding: const EdgeInsets.only(bottom: 20.0),
-      child: Container(
+      child: SizedBox(
         height: _width * .58,
         child: CarouselSlider.builder(
           itemCount: widget.show.episodes!.reversed.toList().take(10).length,

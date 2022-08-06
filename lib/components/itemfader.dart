@@ -19,7 +19,7 @@ class _ItemFaderState extends State<ItemFader> with SingleTickerProviderStateMix
     super.initState();
     _animationController = AnimationController(
       vsync: this,
-      duration: Duration(milliseconds: 600)
+      duration: const Duration(milliseconds: 600)
     );
     _animation = CurvedAnimation(
       parent: _animationController,

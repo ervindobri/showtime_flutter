@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -76,7 +78,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
   }
 
   getDetailResults({required TVShow show}) =>
-      new Network().getDetailResults(show: show);
+      Network().getDetailResults(show: show);
 
   _getShowDetails() async {
 //    print("getting details: ${widget.show.name}");
@@ -87,7 +89,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
-    const _radius = BorderRadius.all(Radius.circular(25.0));
+    const _radius = BorderRadius.all(Radius.circular(24));
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -127,19 +129,20 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                         backgroundBlendMode: BlendMode.multiply,
                         borderRadius: _radius,
                         boxShadow: [
-                          new BoxShadow(
+                          BoxShadow(
                               color: Colors.black.withOpacity(.2),
                               blurRadius: 10.0,
                               spreadRadius: 2,
-                              offset: Offset(0, 0)),
+                              offset: const Offset(0, 0)),
                         ],
                       ),
                     );
                   },
-                  placeholder: (context, url) => CircularProgressIndicator(
+                  placeholder: (context, url) =>
+                      const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation(Colors.white),
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
                 Visibility(
                   visible: _tapped ? true : false,
@@ -168,132 +171,114 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(top: 18.0),
-                                    child: Container(
-                                      // color: Colors.black,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Text(
-                                                  "Rating",
-                                                  textAlign: TextAlign.left,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontFamily: 'Raleway',
-                                                      fontWeight:
-                                                          FontWeight.w300),
-                                                ),
-                                                Container(
-                                                  child: Container(
-                                                    height: 30,
-                                                    width: 50,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    10)),
-                                                        boxShadow: [
-                                                          new BoxShadow(
-                                                              color: GlobalColors
-                                                                  .goldColor
-                                                                  .withOpacity(
-                                                                      .3),
-                                                              blurRadius: 15.0,
-                                                              spreadRadius: -2,
-                                                              offset:
-                                                                  Offset(2, 2)),
-                                                        ],
-                                                        color: GlobalColors
-                                                            .goldColor),
-                                                    child: Center(
-                                                      child: AutoSizeText(
-                                                        "${widget.show.rating}",
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                'Raleway',
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize:
-                                                                _width / 20),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Container(
-                                                  child: Text(
-                                                    "Year",
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              const Text(
+                                                "Rating",
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Raleway',
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                              Container(
+                                                height: 30,
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                10)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: GlobalColors
+                                                              .goldColor
+                                                              .withOpacity(.3),
+                                                          blurRadius: 15.0,
+                                                          spreadRadius: -2,
+                                                          offset: const Offset(
+                                                              2, 2)),
+                                                    ],
+                                                    color:
+                                                        GlobalColors.goldColor),
+                                                child: Center(
+                                                  child: AutoSizeText(
+                                                    "${widget.show.rating}",
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontFamily: 'Raleway',
                                                         fontWeight:
-                                                            FontWeight.w300),
+                                                            FontWeight.w600,
+                                                        fontSize: _width / 20),
                                                   ),
                                                 ),
-                                                Container(
-                                                  child: Container(
-                                                    height: 30,
-                                                    width: 50,
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    10)),
-                                                        boxShadow: [
-                                                          new BoxShadow(
-                                                              color: GlobalColors
-                                                                  .pinkColor
-                                                                  .withOpacity(
-                                                                      .3),
-                                                              blurRadius: 15.0,
-                                                              spreadRadius: -2,
-                                                              offset:
-                                                                  Offset(0, 3)),
-                                                        ],
-                                                        shape:
-                                                            BoxShape.rectangle,
-                                                        color: GlobalColors
-                                                            .pinkColor),
-                                                    child: Center(
-                                                      child: AutoSizeText(
-                                                        "${widget.show.startDate!.split('-')[0]}",
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                'Raleway',
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            fontSize:
-                                                                _width / 20),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              const Text(
+                                                "Year",
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Raleway',
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                              Container(
+                                                height: 30,
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        const BorderRadius.all(
+                                                            Radius.circular(
+                                                                10)),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          color: GlobalColors
+                                                              .pinkColor
+                                                              .withOpacity(.3),
+                                                          blurRadius: 15.0,
+                                                          spreadRadius: -2,
+                                                          offset: const Offset(
+                                                              0, 3)),
+                                                    ],
+                                                    shape: BoxShape.rectangle,
+                                                    color:
+                                                        GlobalColors.pinkColor),
+                                                child: Center(
+                                                  child: AutoSizeText(
+                                                    widget.show.startDate!
+                                                        .split('-')[0],
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontFamily: 'Raleway',
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        fontSize: _width / 20),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Padding(
@@ -304,7 +289,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                         right: 3),
                                     child: SlideTransition(
                                       position: Tween<Offset>(
-                                        begin: Offset(0, 0.1),
+                                        begin: const Offset(0, 0.1),
                                         end: Offset.zero,
                                       ).animate(animation),
                                       child: Row(
@@ -312,13 +297,13 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                             MainAxisAlignment.center,
                                         children: [
                                           Expanded(
-                                            child: FlatButton(
-                                              highlightColor: Colors.black,
-                                              color: GlobalColors.primaryBlue,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          25.0)),
+                                            child: TextButton(
+                                              // highlightColor: Colors.black,
+                                              // color: GlobalColors.primaryBlue,
+                                              // shape: RoundedRectangleBorder(
+                                              //     borderRadius:
+                                              //         BorderRadius.circular(
+                                              //             24)),
                                               onPressed: () {
                                                 // print(widget.show.id);
                                                 _checkIfAdded().then(
@@ -332,6 +317,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                       .watchedShowList
                                                       .add(show);
                                                   //TODO: change status alert
+                                                  
                                                   // StatusAlert.show(
                                                   //   context,
                                                   //   duration: Duration(seconds: 2),
@@ -347,15 +333,16 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
 
                                                   showModalBottomSheet<dynamic>(
                                                       shape:
-                                                          RoundedRectangleBorder(
+                                                          const RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius.only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        25.0),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        25.0)),
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  24),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  24),
+                                                        ),
                                                       ),
                                                       context: context,
                                                       builder: (BuildContext
@@ -374,18 +361,19 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                                       widget
                                                                           .show
                                                                           .id);
-                                                          episodes = new Network()
+                                                          episodes = Network()
                                                               .getEpisodes(
                                                                   showID:
                                                                       show.id);
                                                           return ClipRRect(
-                                                            borderRadius: BorderRadius.only(
+                                                            borderRadius: const BorderRadius
+                                                                    .only(
                                                                 topLeft: Radius
                                                                     .circular(
-                                                                        25.0),
+                                                                        24),
                                                                 topRight: Radius
                                                                     .circular(
-                                                                        25.0)),
+                                                                        24)),
                                                             child: FutureBuilder<
                                                                     Object>(
                                                                 future:
@@ -417,12 +405,12 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                                         mainAxisAlignment:
                                                                             MainAxisAlignment.center,
                                                                         children: [
-                                                                          Container(
+                                                                          SizedBox(
                                                                             width:
                                                                                 _width,
                                                                             // color: Colors.black,
                                                                             child:
-                                                                                Center(
+                                                                                const Center(
                                                                               child: CircularProgressIndicator(
                                                                                 valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.primaryGreen),
                                                                                 // backgroundColor: GlobalColors.greenColor,
@@ -437,7 +425,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                           );
                                                         } catch (e) {
                                                           print(
-                                                              "No such show: ${e}");
+                                                              "No such show: $e");
                                                           Navigator.pop(
                                                               context);
                                                           return Container();
@@ -446,7 +434,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                       isScrollControlled: true);
                                                 }
                                               },
-                                              child: Center(
+                                              child: const Center(
                                                 child: Icon(
                                                   FontAwesomeIcons.couch,
                                                   size: 20.0,
@@ -456,25 +444,26 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                             ),
                                           ),
                                           Expanded(
-                                            child: FlatButton(
-                                              highlightColor: Colors.black,
-                                              color: GlobalColors.primaryGreen,
-                                              shape: CircleBorder(),
+                                            child: TextButton(
+                                              // highlightColor: Colors.black,
+                                              // color: GlobalColors.primaryGreen,
+                                              // shape: const CircleBorder(),
                                               onPressed: () {
                                                 setState(() {
                                                   _tapped = false;
                                                 });
                                                 showModalBottomSheet(
                                                     shape:
-                                                        RoundedRectangleBorder(
+                                                        const RoundedRectangleBorder(
                                                       borderRadius:
                                                           BorderRadius.only(
-                                                              topLeft: Radius
-                                                                  .circular(
-                                                                      25.0),
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      25.0)),
+                                                        topLeft:
+                                                            Radius.circular(
+                                                                24),
+                                                        topRight:
+                                                            Radius.circular(
+                                                                24),
+                                                      ),
                                                     ),
                                                     context: context,
                                                     builder:
@@ -487,13 +476,13 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                               child: Container(
                                                 width: _width / 8,
                                                 height: _width / 8,
-                                                decoration: BoxDecoration(
+                                                decoration: const BoxDecoration(
                                                   shape: BoxShape.circle,
                                                 ),
-                                                child: Center(
+                                                child: const Center(
                                                   child: FaIcon(
                                                     FontAwesomeIcons.infoCircle,
-                                                    size: 25.0,
+                                                    size: 24,
                                                     color:
                                                         CupertinoColors.white,
                                                   ),

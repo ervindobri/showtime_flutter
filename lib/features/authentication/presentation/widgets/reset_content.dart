@@ -19,8 +19,8 @@ class _ResetContentState extends State<ResetContent> {
 
   @override
   Widget build(BuildContext context) {
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
+    // final _width = MediaQuery.of(context).size.width;
+    // final _height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -59,7 +59,9 @@ class _ResetContentState extends State<ResetContent> {
                   //   FirestoreUtils().resetPassword(
                   //       authController.resetController.text);
                   // }
-                  //TODO: show success/failure
+                  // ignore: todo
+                  // TODO: show success/failure
+
                 },
                 child: Center(
                   child: Text(

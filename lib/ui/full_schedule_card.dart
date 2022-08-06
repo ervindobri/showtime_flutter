@@ -32,8 +32,8 @@ class _FullScheduleCardState extends State<FullScheduleCard>
   late Timer _timer;
 
   var countDownStyle = GoogleFonts.roboto(
-      textStyle: TextStyle(
-          fontSize: 25,
+      textStyle: const TextStyle(
+          fontSize: 24,
           fontFamily: 'Raleway',
           fontWeight: FontWeight.w200,
           color: Colors.white));
@@ -77,7 +77,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
   }
 
   getDetailResults({required TVShow show}) =>
-      new Network().getDetailResults(show: show);
+      Network().getDetailResults(show: show);
 
   _getShowDetails() async {
     TVShow show = await Network().getShowInfo(
@@ -86,8 +86,8 @@ class _FullScheduleCardState extends State<FullScheduleCard>
   }
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(oneSec, (Timer timer) {
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(oneSec, (Timer timer) {
       setState(() => countdown = widget.episodes[0].getDifference().split(':'));
     });
   }
@@ -102,10 +102,10 @@ class _FullScheduleCardState extends State<FullScheduleCard>
   Widget build(BuildContext context) {
     double _height = MediaQuery.of(context).size.height;
     double _width = MediaQuery.of(context).size.width;
-    const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
+    const BorderRadius _radius = BorderRadius.all(Radius.circular(24.0));
     const BorderRadius _smallRadius = BorderRadius.all(Radius.circular(12.0));
 
-    final Future<List<dynamic>> episodesObject = new Network().getEpisodes(
+    final Future<List<dynamic>> episodesObject = Network().getEpisodes(
         showID: widget.episodes[0].embedded!['show']['id'].toString());
 
     final _cardHeight = _height * .45;
@@ -136,7 +136,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
         child: Container(
           height: _height * .6,
           width: _width * .8,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             borderRadius: _radius,
             // color: Colors.blueAccent,
           ),
@@ -145,7 +145,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
             alignment: AlignmentDirectional.bottomCenter,
             children: [
               Positioned(
-                top: 25,
+                top: 24,
                 child: Stack(
                   children: [
                     CachedNetworkImage(
@@ -157,22 +157,26 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                         decoration: BoxDecoration(
                           color: GlobalColors.primaryBlue,
                           image: DecorationImage(
-                              image: imageProvider, fit: BoxFit.fill),
+                            image: imageProvider,
+                            fit: BoxFit.fill,
+                          ),
                           borderRadius: _radius,
                           boxShadow: [
-                            new BoxShadow(
-                                color: int.parse(countdown[0]) <= 3
-                                    ? GlobalColors.fireColor.withOpacity(.3)
-                                    : GlobalColors.primaryGreen.withOpacity(.3),
-                                blurRadius: 15.0,
-                                spreadRadius: -4,
-                                offset: Offset(0, 5)),
+                            BoxShadow(
+                              color: int.parse(countdown[0]) <= 3
+                                  ? GlobalColors.fireColor.withOpacity(.3)
+                                  : GlobalColors.primaryGreen.withOpacity(.3),
+                              blurRadius: 15.0,
+                              spreadRadius: -4,
+                              offset: const Offset(0, 5),
+                            ),
                           ],
                         ),
                       ),
                       placeholder: (context, url) =>
-                          CircularProgressIndicator(),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
+                          const CircularProgressIndicator(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                     Visibility(
                       visible: _tapped,
@@ -191,10 +195,11 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                               decoration: BoxDecoration(
                                 color: CupertinoColors.black.withOpacity(.4),
                                 borderRadius: _tapped
-                                    ? BorderRadius.all(Radius.circular(25.0))
-                                    : BorderRadius.only(
-                                        bottomLeft: Radius.circular(25.0),
-                                        topRight: Radius.circular(25.0),
+                                    ? const BorderRadius.all(
+                                        Radius.circular(24.0))
+                                    : const BorderRadius.only(
+                                        bottomLeft: Radius.circular(24.0),
+                                        topRight: Radius.circular(24.0),
                                       ),
                               ),
                               child: Padding(
@@ -228,7 +233,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 20.0,
                                                       vertical: 10),
-                                              child: new SizedBox(
+                                              child: SizedBox(
                                                 height: 1.5,
                                                 width: double.infinity,
                                                 child: Container(
@@ -241,10 +246,10 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            vertical: 10.0, horizontal: 25),
+                                            vertical: 10.0, horizontal: 24),
                                         child: Container(
                                           height: _width / 4,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                             borderRadius: _smallRadius,
                                             color: Colors.white,
                                           ),
@@ -274,7 +279,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                         style:
                                                             GoogleFonts.roboto(
                                                                 fontSize:
-                                                                    _width / 25,
+                                                                    _width / 24,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w500,
@@ -287,7 +292,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                         style:
                                                             GoogleFonts.roboto(
                                                                 fontSize:
-                                                                    _width / 25,
+                                                                    _width / 24,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w700,
@@ -321,7 +326,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                       maxFontSize: 20,
                                                       textAlign:
                                                           TextAlign.center,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                           // fontSize: _width/23,
                                                           fontWeight:
                                                               FontWeight.w600,
@@ -344,7 +349,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                             right: 3),
                                         child: SlideTransition(
                                           position: Tween<Offset>(
-                                            begin: Offset(0, 0.1),
+                                            begin: const Offset(0, 0.1),
                                             end: Offset.zero,
                                           ).animate(animation),
                                           child: Row(
@@ -352,38 +357,40 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                 MainAxisAlignment.center,
                                             children: [
                                               Expanded(
-                                                child: FlatButton(
-                                                  highlightColor: Colors.black,
-                                                  color:
-                                                      GlobalColors.primaryBlue,
-                                                  shape: CircleBorder(),
+                                                child: TextButton(
+                                                  // highlightColor: Colors.black,
+                                                  // color:
+                                                  //     GlobalColors.primaryBlue,
+                                                  // shape: const CircleBorder(),
                                                   onPressed: () {
                                                     // setState(() => _tapped = !_tapped);
                                                     showModalBottomSheet<
                                                             dynamic>(
                                                         shape:
-                                                            RoundedRectangleBorder(
+                                                            const RoundedRectangleBorder(
                                                           borderRadius:
                                                               BorderRadius.only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          25.0),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          25.0)),
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    24.0),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    24.0),
+                                                          ),
                                                         ),
                                                         context: context,
                                                         builder: (BuildContext
                                                             context) {
                                                           // print(widget.episodes[0].embedded['show']['id']);
                                                           return ClipRRect(
-                                                            borderRadius: BorderRadius.only(
+                                                            borderRadius: const BorderRadius
+                                                                    .only(
                                                                 topLeft: Radius
                                                                     .circular(
-                                                                        25.0),
+                                                                        24.0),
                                                                 topRight: Radius
                                                                     .circular(
-                                                                        25.0)),
+                                                                        24.0)),
                                                             child:
                                                                 FutureBuilder(
                                                                     future: FirestoreUtils().getWatchedShowData(widget
@@ -410,10 +417,10 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                                             mainAxisAlignment:
                                                                                 MainAxisAlignment.center,
                                                                             children: [
-                                                                              Container(
+                                                                              SizedBox(
                                                                                 width: _width,
                                                                                 // color: Colors.black,
-                                                                                child: Center(
+                                                                                child: const Center(
                                                                                   child: CircularProgressIndicator(
                                                                                     valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.primaryGreen),
                                                                                     // backgroundColor: GlobalColors.greenColor,
@@ -426,10 +433,10 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                                       } else {
                                                                         WatchedTVShow
                                                                             show =
-                                                                            new WatchedTVShow.fromFirestore(snapshot.data!.data(),
+                                                                            WatchedTVShow.fromFirestore(snapshot.data!.data(),
                                                                                 widget.episodes[0].embedded!['show']['id'].toString());
-                                                                        print(
-                                                                            "fetching episode data");
+                                                                        // print(
+                                                                        //     "fetching episode data");
                                                                         return FutureBuilder<
                                                                                 Object>(
                                                                             future:
@@ -437,7 +444,6 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                                             builder:
                                                                                 (context, AsyncSnapshot snapshot) {
                                                                               if (snapshot.hasData) {
-                                                                                print("data");
                                                                                 show.episodes = snapshot.data as List<Episode>;
                                                                                 return WatchedDetailView(show: show);
                                                                               } else {
@@ -448,10 +454,10 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                                                   child: Column(
                                                                                     mainAxisAlignment: MainAxisAlignment.center,
                                                                                     children: [
-                                                                                      Container(
+                                                                                      SizedBox(
                                                                                         width: _width,
                                                                                         // color: Colors.black,
-                                                                                        child: Center(
+                                                                                        child: const Center(
                                                                                           child: CircularProgressIndicator(
                                                                                             valueColor: AlwaysStoppedAnimation<Color>(GlobalColors.primaryGreen),
                                                                                             // backgroundColor: GlobalColors.greenColor,
@@ -473,10 +479,11 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                   child: Container(
                                                     width: 50.0,
                                                     height: 50.0,
-                                                    decoration: BoxDecoration(
+                                                    decoration:
+                                                        const BoxDecoration(
                                                       shape: BoxShape.circle,
                                                     ),
-                                                    child: Center(
+                                                    child: const Center(
                                                       child: FaIcon(
                                                         FontAwesomeIcons.couch,
                                                         size: 30.0,
@@ -488,24 +495,24 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                 ),
                                               ),
                                               Expanded(
-                                                child: FlatButton(
-                                                  highlightColor: Colors.black,
-                                                  color:
-                                                      GlobalColors.primaryGreen,
-                                                  shape: CircleBorder(),
+                                                child: TextButton(
+                                                  // highlightColor: Colors.black,
+                                                  // color:
+                                                  //     GlobalColors.primaryGreen,
+                                                  // shape: const CircleBorder(),
                                                   onPressed: () {
                                                     // print(showDetails.toString());
                                                     showModalBottomSheet(
                                                         shape:
-                                                            RoundedRectangleBorder(
+                                                            const RoundedRectangleBorder(
                                                           borderRadius:
                                                               BorderRadius.only(
                                                                   topLeft: Radius
                                                                       .circular(
-                                                                          25.0),
+                                                                          24.0),
                                                                   topRight: Radius
                                                                       .circular(
-                                                                          25.0)),
+                                                                          24.0)),
                                                         ),
                                                         context: context,
                                                         builder: (BuildContext
@@ -520,10 +527,11 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                   child: Container(
                                                     width: 50.0,
                                                     height: 50.0,
-                                                    decoration: BoxDecoration(
+                                                    decoration:
+                                                        const BoxDecoration(
                                                       shape: BoxShape.circle,
                                                     ),
-                                                    child: Center(
+                                                    child: const Center(
                                                       child: FaIcon(
                                                         FontAwesomeIcons
                                                             .infoCircle,
@@ -554,9 +562,9 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                         right: 0,
                         child: int.parse(countdown[0]) > 0
                             ? ClipRRect(
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(25.0),
-                                  topRight: Radius.circular(25.0),
+                                borderRadius: const BorderRadius.only(
+                                  bottomLeft: Radius.circular(24.0),
+                                  topRight: Radius.circular(24.0),
                                 ),
                                 child: BackdropFilter(
                                   filter: ImageFilter.blur(
@@ -568,11 +576,11 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                       color:
                                           CupertinoColors.black.withOpacity(.4),
                                       borderRadius: _tapped
-                                          ? BorderRadius.all(
-                                              Radius.circular(25.0))
-                                          : BorderRadius.only(
-                                              bottomLeft: Radius.circular(25.0),
-                                              topRight: Radius.circular(25.0),
+                                          ? const BorderRadius.all(
+                                              Radius.circular(24.0))
+                                          : const BorderRadius.only(
+                                              bottomLeft: Radius.circular(24.0),
+                                              topRight: Radius.circular(24.0),
                                             ),
                                     ),
                                     child: Padding(
@@ -592,7 +600,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(3.0),
-                                              child: new SizedBox(
+                                              child: SizedBox(
                                                 height: 2,
                                                 width: 30,
                                                 child: Container(
@@ -607,7 +615,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(3.0),
-                                              child: new SizedBox(
+                                              child: SizedBox(
                                                 height: 2,
                                                 width: 30,
                                                 child: Container(
@@ -622,7 +630,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                             Padding(
                                               padding:
                                                   const EdgeInsets.all(3.0),
-                                              child: new SizedBox(
+                                              child: SizedBox(
                                                 height: 2,
                                                 width: 30,
                                                 child: Container(
@@ -661,7 +669,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                 GlobalColors.primaryGreen,
                                 GlobalColors.lightGreenColor
                               ],
-                        stops: [.01, 20],
+                        stops: const [.01, 20],
                       )),
                   child: Center(
                       child: Text(getTopLabel(countdown[0]),

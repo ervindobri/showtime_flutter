@@ -4,11 +4,13 @@ import 'package:show_time/core/constants/styles.dart';
 import 'package:show_time/ui/colorful_card_home.dart';
 
 class DiscoverContent extends StatelessWidget {
+  const DiscoverContent({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
-    const items = GlobalVariables.DISCOVER_DATA;
+    // final double height = MediaQuery.of(context).size.height;
+    const items = GlobalVariables.discoverData;
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,

@@ -3,11 +3,9 @@ import 'package:show_time/core/error/exceptions.dart';
 import 'package:show_time/core/error/failures.dart';
 import 'package:show_time/core/network/network_info.dart';
 import 'package:show_time/features/home/data/datasources/show_remote_datasource.dart';
-import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/features/home/domain/repositories/show_repository.dart';
-import 'package:show_time/features/home/data/models/watched.dart';
 
-typedef Future<dynamic> _UsecaseChooserWatched();
+typedef _UsecaseChooserWatched = Future<dynamic> Function();
 
 class ShowRepositoryImpl extends ShowRepository {
   final ShowRemoteDataSource remoteDataSource;

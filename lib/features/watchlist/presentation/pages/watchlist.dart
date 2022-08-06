@@ -37,7 +37,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
     super.initState();
     _sorting = false;
     controller = AnimateIconController();
-    criteria = GlobalVariables.SORT_CATEGORIES[0];
+    criteria = GlobalVariables.sortCategories[0];
   }
 
   _onpressed() {
@@ -52,8 +52,8 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
 
   @override
   Widget build(BuildContext context) {
-    final double _width = MediaQuery.of(context).size.width;
-    final double _height = MediaQuery.of(context).size.height;
+    // final double _width = MediaQuery.of(context).size.width;
+    // final double _height = MediaQuery.of(context).size.height;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: GlobalColors.bgColor,
@@ -108,7 +108,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                       onPressed: () {
                         _onpressed();
                         // showController.sort(criteria);
-                        print("sorting!");
+                        // print("sorting!");
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,

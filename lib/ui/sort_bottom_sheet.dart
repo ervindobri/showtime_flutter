@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/utils/navigation.dart';
 
-typedef void ItemCallback(int value);
+typedef ItemCallback = void Function(int value);
 
 class SortMenu extends StatelessWidget {
   final VoidCallback onTap;
@@ -19,7 +18,7 @@ class SortMenu extends StatelessWidget {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     return ClipRRect(
-      borderRadius: BorderRadius.only(
+      borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -39,9 +38,9 @@ class SortMenu extends StatelessWidget {
                           color: Colors.transparent,
                           child: InkWell(
                               onTap: () {
-                            NavUtils.back(context);
+                                NavUtils.back(context);
                               },
-                              child: Icon(
+                              child: const Icon(
                                 Icons.arrow_back,
                                 size: 30,
                               ) // the arrow back icon
@@ -52,7 +51,7 @@ class SortMenu extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 25.0),
                         child: InkWell(
                           onTap: onTap,
-                          child: Text(
+                          child: const Text(
                             "Confirm",
                             style: TextStyle(
                               color: GlobalColors.greyTextColor,
@@ -64,7 +63,7 @@ class SortMenu extends StatelessWidget {
                         ),
                       )
                     ]),
-                Center(
+                const Center(
                     child: Text(
                   "Sort",
                   style: TextStyle(
@@ -89,15 +88,15 @@ class SortMenu extends StatelessWidget {
               onSelectedItemChanged: (int value) {
                 onSelectItemChanged(value);
               },
-              children: new List<Widget>.generate(
-                  GlobalVariables.SORT_CATEGORIES.length, (index) {
+              children: List<Widget>.generate(
+                  GlobalVariables.sortCategories.length, (index) {
                 return Container(
                   width: _width,
                   color: Colors.white,
                   child: Center(
                       child: Text(
-                    GlobalVariables.SORT_CATEGORIES[index],
-                    style: TextStyle(
+                    GlobalVariables.sortCategories[index],
+                    style: const TextStyle(
                       color: GlobalColors.greyTextColor,
                       fontSize: 25,
                       fontFamily: 'Raleway',

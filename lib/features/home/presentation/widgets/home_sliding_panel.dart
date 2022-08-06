@@ -4,7 +4,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
@@ -17,6 +16,8 @@ import 'package:show_time/features/home/presentation/widgets/watched_card.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class HomeSlidingPanel extends StatefulWidget {
+  const HomeSlidingPanel({Key? key}) : super(key: key);
+
   @override
   State<HomeSlidingPanel> createState() => _HomeSlidingPanelState();
 }

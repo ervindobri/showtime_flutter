@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -9,7 +8,6 @@ import 'package:show_time/models/tvshow_details.dart';
 import 'package:show_time/network/network.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:show_time/screens/detail_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -28,7 +26,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
   bool _added = false;
   UIController uiController = Get.put(UIController())!;
   getDetailResults({required TVShow show}) =>
-      new Network().getDetailResults(show: show);
+      Network().getDetailResults(show: show);
 
   @override
   void setState(fn) {
@@ -68,16 +66,10 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
 
-    const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
-    const BorderRadius _bottomRadius = BorderRadius.only(
-      bottomLeft: Radius.circular(25.0),
-      bottomRight: Radius.circular(25.0),
-    );
-
     return InkWell(
         onTap: () {
           showModalBottomSheet(
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(25.0),
                     topRight: Radius.circular(25.0)),
@@ -90,7 +82,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
         },
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 110,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -110,14 +102,14 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     height: 100,
-                    child: new Center(
+                    child: Center(
                       child: Padding(
                         padding: const EdgeInsets.only(left: 18.0),
                         child: Column(
                           children: [
-                            Container(
+                            SizedBox(
                               width: 150,
                               child: AutoSizeText(
                                 widget.show.name!,
@@ -188,14 +180,15 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                 MaterialStateProperty.all(
                                                     GlobalColors.primaryBlue),
                                             shape: MaterialStateProperty.all(
-                                              RoundedRectangleBorder(
+                                              const RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
+                                                  Radius.circular(20),
+                                                ),
                                               ),
                                             ),
                                           ),
                                           onPressed: () {
-                                            print(_added);
+                                            // print(_added);
                                             if (!_added) {
                                               var show = FirestoreUtils()
                                                   .addToWatchedShows(
@@ -243,7 +236,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                 ],
               ),
             ),
-            Divider(height: 1, color: GlobalColors.greyTextColor),
+            const Divider(height: 1, color: GlobalColors.greyTextColor),
           ],
         ));
   }

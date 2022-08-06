@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
-import 'package:show_time/components/custom_elevation.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
 import 'package:show_time/core/utils/navigation.dart';
@@ -231,6 +230,8 @@ class _LoginSheetState extends State<LoginSheet> with TickerProviderStateMixin {
                                               children: [
                                                 TextFormField(
                                                   validator: (value) {
+                                                    return null;
+                                                  
                                                     // if (value !=
                                                     //     authController
                                                     //         .passwordController
@@ -383,7 +384,7 @@ class _LoginSheetState extends State<LoginSheet> with TickerProviderStateMixin {
           //     _state = 2;
           //   });
           //   //TODO: add biometric switch
-          //   // await authController.addUser(authController.nameController.text, authController.passwordController.text);
+            // await authController.addUser(authController.nameController.text, authController.passwordController.text);
           //   authController.rememberInfo(authController.nameController.text,
           //       authController.passwordController.text);
           //   Get.off(() => BlocProvider<SplashBloc>(

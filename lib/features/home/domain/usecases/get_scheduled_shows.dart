@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:show_time/core/error/failures.dart';
 import 'package:dartz/dartz.dart';
 import 'package:show_time/core/usecases/usecase.dart';

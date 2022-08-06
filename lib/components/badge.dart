@@ -31,7 +31,7 @@ class Badge extends StatelessWidget {
           height: 54,
           decoration: BoxDecoration(
               gradient: LinearGradient(
-                  stops: [.33, 1],
+                  stops: const [.33, 1],
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                   colors: [
@@ -65,16 +65,16 @@ class DetailBadge extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-              stops: [.33, 1],
+              stops: const [.33, 1],
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
                 colors[0],
                 colors[1],
               ]),
-          borderRadius: BorderRadius.all(Radius.circular(50.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(50.0)),
           boxShadow: [
-            new BoxShadow(
+            BoxShadow(
               color: colors[0].withOpacity(.3),
               blurRadius: 5,
               spreadRadius: 1,
@@ -85,8 +85,8 @@ class DetailBadge extends StatelessWidget {
           child: Container(
             width: MediaQuery.of(context).size.height / 11,
             height: MediaQuery.of(context).size.height / 11,
-            padding: EdgeInsets.all(7),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(7),
+            decoration: const BoxDecoration(
               shape: BoxShape.circle,
             ),
             child: Center(

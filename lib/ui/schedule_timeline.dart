@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
@@ -17,9 +16,8 @@ class ScheduleTimeline extends StatefulWidget {
 }
 
 class _ScheduleTimelineState extends State<ScheduleTimeline> {
-  var itemsCopy;
-
-  var _scrollController = ScrollController();
+  final _scrollController = ScrollController();
+  late List<List<Episode>> itemsCopy;
 
   @override
   void initState() {
@@ -31,15 +29,15 @@ class _ScheduleTimelineState extends State<ScheduleTimeline> {
 
   @override
   Widget build(BuildContext context) {
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
+    // final _width = MediaQuery.of(context).size.width;
+    // final _height = MediaQuery.of(context).size.height;
     return Padding(
       padding: const EdgeInsets.only(left: 35, bottom: 50),
-      child: Container(
+      child: SizedBox(
         height: itemsCopy.length * 200.0,
         child: ListView.builder(
             controller: _scrollController,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: itemsCopy.length,
             itemBuilder: (_, index) => EpisodeTile(
@@ -78,14 +76,17 @@ class EpisodeTile extends StatelessWidget {
         indicatorXY: 0.0,
       ),
       endChild: Container(
-        decoration: BoxDecoration(boxShadow: [
-          new BoxShadow(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
               color: episodes.first.getDiffDays() < 0
                   ? GlobalColors.primaryGreen.withOpacity(.2)
                   : GlobalColors.fireColor.withOpacity(.2),
               blurRadius: 15,
-              spreadRadius: -2)
-        ]),
+              spreadRadius: -2,
+            )
+          ],
+        ),
         constraints: const BoxConstraints(
           minHeight: 80,
         ),
@@ -102,24 +103,22 @@ class EpisodeTile extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 100,
-                          child: Text(episodes.first.name!,
-                              style: ShowTheme.listWatchCardSubStyle),
-                        ),
-                        Text(episodes.first.getAirDateLabel(),
-                            maxLines: 1,
-                            style: GoogleFonts.raleway(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w700,
-                                color: GlobalColors.white)),
-                      ],
-                    ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        child: Text(episodes.first.name!,
+                            style: ShowTheme.listWatchCardSubStyle),
+                      ),
+                      Text(episodes.first.getAirDateLabel(),
+                          maxLines: 1,
+                          style: GoogleFonts.raleway(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700,
+                              color: GlobalColors.white)),
+                    ],
                   ),
                   Container(
                     height: 100,
@@ -129,7 +128,8 @@ class EpisodeTile extends StatelessWidget {
                             image: NetworkImage(episodes.first.embedded!['show']
                                 ['image']['medium']!),
                             fit: BoxFit.cover),
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(12.0)),
                         shape: BoxShape.rectangle),
                   ),
                 ],

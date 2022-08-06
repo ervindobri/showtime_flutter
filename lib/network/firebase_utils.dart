@@ -14,7 +14,7 @@ class FirestoreUtils{
    CollectionReference favorites = FirebaseFirestore.instance.collection("${auth.currentUser?.email}/shows/favorites");
    CollectionReference searchHistory = FirebaseFirestore.instance.collection("${auth.currentUser?.email}/shows/search_history");
    DocumentReference userProfile = FirebaseFirestore.instance.doc("${auth.currentUser?.email}/user");
-  final Duration loginTime = Duration(milliseconds: 600);
+  final Duration loginTime = const Duration(milliseconds: 600);
 
 
   void addToFavorites(WatchedTVShow show){
@@ -41,7 +41,7 @@ class FirestoreUtils{
       var lastWatchDate = DateTime.now().year.toString() + "-" + mZero + DateTime.now().month.toString() +
           "-" + dZero + DateTime.now().day.toString();
 
-      WatchedTVShow watchedShow = new WatchedTVShow(
+      WatchedTVShow watchedShow = WatchedTVShow(
           id: show.id,
           name : show.name,
           startDate : show.startDate,
@@ -132,12 +132,12 @@ class FirestoreUtils{
     //to avoid duplicates
     watchedShowIdList.toSet().toList().forEach((id) {
       List<Episode> current = [];
-      episodes.episodes.forEach((episode) {
+      for (var episode in episodes.episodes) {
         if (episode.embedded!['show']['id'] == id) {
           current.add(episode);
         }
-      });
-      if (current.length > 0) {
+      }
+      if (current.isNotEmpty) {
         list.add(current);
       }
     });

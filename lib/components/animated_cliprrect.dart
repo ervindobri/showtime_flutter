@@ -2,11 +2,12 @@ import 'package:flutter/widgets.dart';
 
 class AnimatedClipRRect extends StatelessWidget {
   const AnimatedClipRRect({
+    Key? key,
     required this.duration,
     this.curve = Curves.linear,
     required this.borderRadius,
     required this.child,
-  });
+  }) : super(key: key);
 
   final Duration duration;
   final Curve curve;

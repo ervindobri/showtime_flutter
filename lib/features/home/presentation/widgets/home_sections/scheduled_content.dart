@@ -1,9 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:get/get.dart';
 import 'package:show_time/components/loading_couch.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
@@ -12,13 +9,13 @@ import 'package:show_time/features/home/presentation/bloc/scheduledshows_bloc.da
 import 'package:show_time/ui/schedule_card.dart';
 
 class ScheduledContent extends StatelessWidget {
-  ScheduledContent({Key? key}) : super(key: key);
-  final ScrollController _scheduleScrollController = ScrollController();
+  const ScheduledContent({Key? key}) : super(key: key);
+  // final ScrollController _scheduleScrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
-    final double _width = MediaQuery.of(context).size.width;
-    final double _height = MediaQuery.of(context).size.height;
+    // final double _width = MediaQuery.of(context).size.width;
+    // final double _height = MediaQuery.of(context).size.height;
     return Column(
       children: [
         Padding(
@@ -65,7 +62,7 @@ class ScheduledContent extends StatelessWidget {
 
   Widget _buildScheduledShowView(BuildContext context, List shows) {
     double _width = MediaQuery.of(context).size.width;
-    double _height = MediaQuery.of(context).size.height;
+    // double _height = MediaQuery.of(context).size.height;
     return
         // kIsWeb
         //     ? SizedBox(

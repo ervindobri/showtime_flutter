@@ -17,8 +17,8 @@ class SplashBloc extends Bloc<SplashEvent, SplashState> {
         yield SplashLoading();
         //fetch shows and stuff
         yield SplashLoaded(event.successful);
-      } catch (Exception) {
-        yield SplashError("Fetching stuff failed!");
+      } catch (exception) {
+        yield const SplashError("Fetching stuff failed!");
       }
     }
   }

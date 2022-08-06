@@ -23,8 +23,8 @@ class TimerController extends GetxController{
   }
 
   void startTimer() {
-    const oneSec = const Duration(seconds: 1);
-    _timer = new Timer.periodic(
+    const oneSec = Duration(seconds: 1);
+    _timer = Timer.periodic(
         oneSec,
             (Timer timer) {
               countDown.value = _show.newestEpisodeDifference();

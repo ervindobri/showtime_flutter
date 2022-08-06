@@ -2,16 +2,14 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:get/get.dart';
 import 'package:show_time/features/home/data/models/episode.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EpisodeCard extends StatefulWidget {
   final Episode episode;
 
-  EpisodeCard({required this.episode});
+  const EpisodeCard({Key? key, required this.episode}) : super(key: key);
   @override
   _EpisodeCardState createState() => _EpisodeCardState();
 }
@@ -54,7 +52,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                     color: Colors.black.withOpacity(.3),
                     blurRadius: 5,
                     spreadRadius: -2,
-                    offset: Offset(2, 3)),
+                    offset: const Offset(2, 3)),
               ]),
           child: Stack(
             children: [
@@ -218,7 +216,7 @@ class _EpisodeCardState extends State<EpisodeCard> {
                                   ),
                                 ),
                               ),
-                              FaIcon(
+                              const FaIcon(
                                 FontAwesomeIcons.exclamationCircle,
                                 color: Colors.white,
                                 size: 50,

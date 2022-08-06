@@ -4,7 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:show_time/components/toast.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
-import 'package:show_time/core/constants/theme_utils.dart';
 import 'package:show_time/core/utils/navigation.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
 import 'package:show_time/network/firebase_utils.dart';
@@ -17,15 +16,11 @@ class UIController extends GetxController {
 
   int hoverTimeout = 0;
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   unwatchDialog(context, {required String showName, required String showID}) {
     return CustomDialogWidget(
       backgroundColor: Colors.grey.shade100,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(25)),
       ),
       title: Center(
@@ -33,28 +28,28 @@ class UIController extends GetxController {
           'Sure you want to unwatch $showName?',
         ),
       ),
-      content: Text('Show content will be lost.'),
-      contentTextStyle: TextStyle(
+      content: const Text('Show content will be lost.'),
+      contentTextStyle: const TextStyle(
           fontFamily: 'Raleway',
           fontSize: 15,
           fontWeight: FontWeight.w300,
           color: GlobalColors.greyTextColor),
       contentPadding:
-          EdgeInsets.only(top: 5.0, bottom: 1.0, left: 25.0, right: 25.0),
-      titleTextStyle: TextStyle(
+          const EdgeInsets.only(top: 5.0, bottom: 1.0, left: 25.0, right: 25.0),
+      titleTextStyle: const TextStyle(
           fontFamily: 'Raleway',
           fontSize: 17,
           fontWeight: FontWeight.w700,
           color: GlobalColors.greyTextColor),
       titlePadding:
-          EdgeInsets.only(top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
+          const EdgeInsets.only(top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
       elevation: 5,
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 10, bottom: 5),
           child: InkWell(
             onTap: () => Get.back(),
-            child: Container(
+            child: const SizedBox(
               width: 60,
               height: 30,
               // color: Colors.grey,
@@ -96,7 +91,7 @@ class UIController extends GetxController {
                 Get.back();
               }
             },
-            child: Container(
+            child: const SizedBox(
               width: 100,
               height: 30,
               // color: Colors.grey,
@@ -129,7 +124,7 @@ class UIController extends GetxController {
     fToast.showToast(
       child: toast,
       gravity: gravity,
-      toastDuration: Duration(seconds: 2),
+      toastDuration: const Duration(seconds: 2),
     );
   }
 

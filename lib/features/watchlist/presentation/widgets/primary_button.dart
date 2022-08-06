@@ -30,8 +30,8 @@ class PrimaryButton extends StatelessWidget {
                 MaterialStateProperty.all(GlobalColors.primaryGreen),
             overlayColor:
                 MaterialStateProperty.all(GlobalColors.darkGreenColor),
-            shape: MaterialStateProperty.all(new RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(12.0))),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0))),
           ),
           onLongPress: onLongPress,
           onPressed: onPressed,
@@ -42,13 +42,13 @@ class PrimaryButton extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   text,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16,
                   ),
                 ),
               ),
-              icon != null ? icon! : SizedBox()
+              icon != null ? icon! : const SizedBox()
             ],
           ),
         ),

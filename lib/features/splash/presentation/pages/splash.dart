@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,12 +15,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
-  var connectionStatus;
+  ConnectivityStatus connectionStatus = ConnectivityStatus.wiFi;
   bool allDone = false;
   List<Episode> notAiredList = [];
 
@@ -76,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
             //ANIMATE IN LOGO
             SlideTransition(
               position: Tween<Offset>(
-                begin: Offset(0, -1),
+                begin: const Offset(0, -1),
                 end: Offset.zero,
               ).animate(animation),
               child: Padding(
@@ -92,10 +96,12 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                     child: Container(
                       width: kIsWeb ? 200 : _width / 2,
                       height: kIsWeb ? 150 : _height * .15,
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage("assets/showTIMEsmall.png"),
-                              fit: BoxFit.cover)),
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("assets/showTIMEsmall.png"),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -110,8 +116,8 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
   }
 
   Widget splashBody(double _width, double _height, BuildContext context) {
-    if (connectionStatus == ConnectivityStatus.Offline) {
-      return Container(
+    if (connectionStatus == ConnectivityStatus.offline) {
+      return SizedBox(
         width: _width,
         height: _height * .6,
         child: Center(
@@ -120,9 +126,9 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: FaIcon(
                       FontAwesomeIcons.exclamationCircle,
                       color: Colors.white,
@@ -130,7 +136,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     child: Text(
                       "No internet connection",
                       style: TextStyle(
@@ -159,16 +165,14 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
     }, builder: (context, SplashState state) {
       print(state);
       if (state is SplashInitial) {
-        return LoadingCouch();
+        return const LoadingCouch();
       } else if (state is SplashLoading) {
-        return LoadingCouch();
+        return const LoadingCouch();
       } else if (state is SplashLoaded) {
-        return LoadingCouch();
+        return const LoadingCouch();
       } else {
         //todo: ERROR
-        return Container(
-          child: Text("Could not fetch show datas!"),
-        );
+        return const Text("Could not fetch show datas!");
       }
     });
   }

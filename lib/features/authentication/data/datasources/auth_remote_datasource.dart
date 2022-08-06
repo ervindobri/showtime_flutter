@@ -17,14 +17,14 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
     switch (type) {
       case LoginType.email:
         return _postEmailLogin(email, password);
-        break;
+        // break;
       // case LoginType.google:
       //   return _postEmailLogin(email, password);
 
       //   break;
       default:
         return _postEmailLogin(email, password);
-        break;
+        // break;
     }
   }
 
@@ -32,7 +32,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
     try {
       final uc = await firebase.signInWithEmailAndPassword(
           email: email, password: password);
-      print("User credential: $uc");
+      // print("User credential: $uc");
       return uc;
     } on FirebaseAuthException catch (e) {
       throw CustomServerException(e.code);

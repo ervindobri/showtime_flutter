@@ -2,10 +2,8 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:get/get.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/models/tvshow_details.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -35,7 +33,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
     return SafeArea(
       child: SizedBox(
         height: expandedHeight,
-        child: Container(
+        child: SizedBox(
           height: (_height) * percentage,
           child: Stack(
             children: <Widget>[
@@ -46,7 +44,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                     child: Opacity(
                       opacity: percentage,
                       child: CachedNetworkImage(
-                        imageUrl: this.show.imageThumbnailPath!,
+                        imageUrl: show.imageThumbnailPath!,
                         width: _width,
                         fit: BoxFit.cover,
                       ),
@@ -63,14 +61,14 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                   )
                 ],
               ),
-              Container(
+              SizedBox(
                 // height: _height * .45,
                 height: _height,
                 width: _width,
                 child: Opacity(
                   opacity: percentage,
                   child: CachedNetworkImage(
-                    imageUrl: this.show.imageThumbnailPath!,
+                    imageUrl: show.imageThumbnailPath!,
                     width: _width,
                     fit: BoxFit.scaleDown,
                   ),
@@ -86,7 +84,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12)),
                     child: IconButton(
-                        icon: FaIcon(FontAwesomeIcons.times),
+                        icon: const FaIcon(FontAwesomeIcons.times),
                         color: GlobalColors.greyTextColor,
                         onPressed: () => Navigator.of(context).pop()),
                   ),
@@ -141,26 +139,23 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10, right: 30.0),
                     child: Center(
-                      child: Container(
-                        // height: 25,
-                        child: AutoSizeText(show.name!,
-                            maxLines: 3,
-                            maxFontSize: 28.0,
-                            minFontSize: 13,
-                            style: TextStyle(
-                                fontSize: _width / 15,
-                                fontFamily: 'Raleway',
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                                // color: GlobalColors.greyTextColor,
+                      child: AutoSizeText(show.name!,
+                          maxLines: 3,
+                          maxFontSize: 28.0,
+                          minFontSize: 13,
+                          style: TextStyle(
+                              fontSize: _width / 15,
+                              fontFamily: 'Raleway',
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              // color: GlobalColors.greyTextColor,
 
-                                shadows: [
-                                  new BoxShadow(
-                                      color: Colors.black.withOpacity(.3),
-                                      blurRadius: 10.0,
-                                      spreadRadius: 2)
-                                ])),
-                      ), //TITLE-YEAR
+                              shadows: [
+                                BoxShadow(
+                                    color: Colors.black.withOpacity(.3),
+                                    blurRadius: 10.0,
+                                    spreadRadius: 2)
+                              ])), //TITLE-YEAR
                     ),
                   ),
                 ),

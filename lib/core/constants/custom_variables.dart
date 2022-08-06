@@ -35,20 +35,20 @@ class GlobalColors {
 }
 
 class GlobalVariables {
-  static const FONTFAMILY = 'Raleway';
-  static const EPISODES_URL = "https://api.tvmaze.com/shows/";
-  static const SEARCH_URL = "https://api.tvmaze.com/search/shows?q=";
-  static const FULL_SCHEDULE_URL = "https://api.tvmaze.com/schedule/full";
+  static const fontFamily = 'Raleway';
+  static const episodesUrl = "https://api.tvmaze.com/shows/";
+  static const searchUrl = "https://api.tvmaze.com/search/shows?q=";
+  static const fullScheduleUrl = "https://api.tvmaze.com/schedule/full";
 
   //Concat these two to get episodes by date
-  static const SHOW_URL = "https://api.tvmaze.com/shows/";
-  static const SCHEDULE_URL = "/episodesbydate?date=";
+  static const showUrl = "https://api.tvmaze.com/shows/";
+  static const scheduleUrl = "/episodesbydate?date=";
 
-  static const IMDBSHOW_URL = "https://api.tvmaze.com/lookup/shows?imdb=";
+  static const imdbShowUrl = "https://api.tvmaze.com/lookup/shows?imdb=";
 
   static const double sliverRadius = 35.0;
 
-  static const PLACEHOLDER_IMAGE =
+  static const placeholderImageUrl =
       "https://wolper.com.au/wp-content/uploads/2017/10/image-placeholder.jpg";
 
   static const List<String> sexCategories = ["Female", "Male"];
@@ -67,10 +67,10 @@ class GlobalVariables {
   static List<String> showLinks = [];
 
   static final Map<String, dynamic> discoverMap = {
-    "Overall Progress": OverallProgress(),
-    "Most popular shows": MostPopularShows(),
-    "Watchlist": DiscoverWatchList(),
-    "Favorites": MostPopularShows()
+    "Overall Progress": const OverallProgress(),
+    "Most popular shows": const MostPopularShows(),
+    "Watchlist": const DiscoverWatchList(),
+    "Favorites": const MostPopularShows()
   };
 
   static void clearAll() {
@@ -117,7 +117,7 @@ class GlobalVariables {
         colors: [GlobalColors.pinkColor, GlobalColors.lightPinkColor]),
   };
 
-  static const List DISCOVER_DATA = [
+  static const List discoverData = [
     ["Overall Progress", 0xFF595959, 0xFFB1B1B1, FontAwesomeIcons.spinner],
     ["Most popular shows", 0xFFFF006F, 0xFFFFDBE2, FontAwesomeIcons.fire],
     ["Watchlist", 0xFF59b4ff, 0xffbfe2ff, FontAwesomeIcons.binoculars],
@@ -125,7 +125,7 @@ class GlobalVariables {
   ];
   static List<String> searchHistory = [];
 
-  static const List SORT_CATEGORIES = [
+  static const List sortCategories = [
     "Title",
     "Year",
     "Runtime",

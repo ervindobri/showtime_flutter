@@ -6,85 +6,82 @@ import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/models/tvshow_details.dart';
 import 'package:http/http.dart';
 
-class Network{
-
-  Future<AllTVShowList> getShowResults({required String showName}) async{
-    var searchURL = GlobalVariables.SEARCH_URL + showName;
+class Network {
+  Future<AllTVShowList> getShowResults({required String showName}) async {
+    var searchURL = GlobalVariables.searchUrl + showName;
     final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return AllTVShowList.fromJson(json.decode(response.body));
-    }
-    else {
+    } else {
       throw Exception("Error getting show data!");
     }
   }
 
-  Future<TVShowDetails> getDetailResults({required TVShow show}) async{
-    var searchURL = GlobalVariables.EPISODES_URL + show.id + '/episodes';
+  Future<TVShowDetails> getDetailResults({required TVShow show}) async {
+    var searchURL = GlobalVariables.episodesUrl + show.id + '/episodes';
     final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return TVShowDetails.fromJson(show, json.decode(response.body));
-    }
-    else {
+    } else {
       throw Exception("Error getting show data!");
     }
   }
 
-  Future<TVShow> getShowInfo({required String showID}) async{
-    var searchURL = GlobalVariables.SHOW_URL + showID;
+  Future<TVShow> getShowInfo({required String showID}) async {
+    var searchURL = GlobalVariables.showUrl + showID;
     final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return TVShow.fromJson(json.decode(response.body));
-    }
-    else {
+    } else {
       throw Exception("Error getting show data!");
     }
   }
 
-  Future<List<Episode>> getEpisodes({required String showID}) async{
-    var searchURL = GlobalVariables.EPISODES_URL + showID + '/episodes';
+  Future<List<Episode>> getEpisodes({required String showID}) async {
+    var searchURL = GlobalVariables.episodesUrl + showID + '/episodes';
     final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
-      List<Episode> list = json.decode(response.body).map<Episode>((i) => Episode.fromJson(i)).toList();
+      List<Episode> list = json
+          .decode(response.body)
+          .map<Episode>((i) => Episode.fromJson(i))
+          .toList();
       return list;
-    }
-    else {
+    } else {
       throw Exception("Error getting episode data!");
     }
   }
-  Future<List<dynamic>> getDetailUpdates({required String showID}) async{
+
+  Future<List<dynamic>> getDetailUpdates({required String showID}) async {
     // print(showID);
-    var searchURL = GlobalVariables.EPISODES_URL+ showID + "/episodes";
+    var searchURL = GlobalVariables.episodesUrl + showID + "/episodes";
     final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return getUpdates(json.decode(response.body));
-    }
-    else {
+    } else {
       throw Exception("Error getting show data!");
     }
   }
-  List<dynamic> getUpdates(List <dynamic> json){
+
+  List<dynamic> getUpdates(List<dynamic> json) {
     List<dynamic> result = [];
-    Map<String, dynamic> episodePerSeason = new Map<String, dynamic>();
-    int totalSeasons = json.length>0 ? json[json.length - 1]['season'] : 0;
-    if(totalSeasons > 0){
-      for(int i = 1 ; i<=totalSeasons; ++i){
+    Map<String, dynamic> episodePerSeason = <String, dynamic>{};
+    int totalSeasons = json.isNotEmpty ? json[json.length - 1]['season'] : 0;
+    if (totalSeasons > 0) {
+      for (int i = 1; i <= totalSeasons; ++i) {
         int max = 1;
-        json.forEach((element){
-          if ( element['season'] == i){
-            if ( max < element['number']){
+        for (var element in json) {
+          if (element['season'] == i) {
+            if (max < element['number']) {
               max = element['number'];
-            }
-            else{
-            }
+            } else {}
           }
-        });
-        episodePerSeason.putIfAbsent(i.toString(),() => max);
+        }
+        episodePerSeason.putIfAbsent(i.toString(), () => max);
       }
     }
     result.add(totalSeasons);
@@ -92,18 +89,14 @@ class Network{
     return result;
   }
 
-  Future<EpisodeList> getScheduledEpisodes() async{
-    var searchURL = GlobalVariables.FULL_SCHEDULE_URL;
+  Future<EpisodeList> getScheduledEpisodes() async {
+    var searchURL = GlobalVariables.fullScheduleUrl;
     final response = await get(Uri.parse(searchURL));
 
     if (response.statusCode == 200) {
       return EpisodeList.fromJson(json.decode(response.body));
-    }
-    else {
+    } else {
       throw Exception("Error getting show data!");
     }
   }
-
-
 }
-

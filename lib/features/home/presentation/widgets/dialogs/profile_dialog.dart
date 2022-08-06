@@ -1,38 +1,39 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 
 class ProfileDialog extends StatelessWidget {
+  const ProfileDialog({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return CustomDialogWidget(
       backgroundColor: Colors.grey.shade100,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(25)),
       ),
-      title: Center(
+      title: const Center(
         child: Text(
           'Profile',
         ),
       ),
-      titleTextStyle: TextStyle(
+      titleTextStyle: const TextStyle(
           fontFamily: 'Raleway',
           fontSize: 25,
           fontWeight: FontWeight.w700,
           color: GlobalColors.greyTextColor),
-      titlePadding: EdgeInsets.only(
+      titlePadding: const EdgeInsets.only(
           top: 5.0,
           // bottom: 10.0,
           left: 25.0,
           right: 25.0),
-      content: Container(
+      content: SizedBox(
         height: 260,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: CircleAvatar(
                 backgroundColor: GlobalColors.greyTextColor,
                 minRadius: 40,
@@ -44,7 +45,7 @@ class ProfileDialog extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
+                children: const [
                   Text(
                     "First Name : ",
                     style: TextStyle(
@@ -69,7 +70,7 @@ class ProfileDialog extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
+                children: const [
                   Text(
                     "Last Name : ",
                     style: TextStyle(
@@ -94,7 +95,7 @@ class ProfileDialog extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
+                children: const [
                   Text(
                     "Age : ",
                     style: TextStyle(
@@ -119,7 +120,7 @@ class ProfileDialog extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
+                children: const [
                   Text(
                     "Sex : ",
                     style: TextStyle(
@@ -152,7 +153,7 @@ class ProfileDialog extends StatelessWidget {
               padding: const EdgeInsets.only(right: 20, bottom: 10),
               child: InkWell(
                 onTap: () => Navigator.pop(context),
-                child: Text(
+                child: const Text(
                   'Edit',
                   style: TextStyle(
                       color: GlobalColors.primaryGreen,
@@ -165,7 +166,7 @@ class ProfileDialog extends StatelessWidget {
               padding: const EdgeInsets.only(right: 10, bottom: 10),
               child: InkWell(
                 onTap: () => Navigator.pop(context),
-                child: Text(
+                child: const Text(
                   'Close',
                   style: TextStyle(
                       color: GlobalColors.primaryGreen,

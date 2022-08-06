@@ -46,17 +46,20 @@ class ShowController extends GetxController {
     await FirestoreUtils()
         .watchedShows
         .get()
-        .then((QuerySnapshot querySnapshot) => {
-              querySnapshot.docs.forEach((doc) {
-                if (!watchedShowIds.contains(doc.id)) {
-                  //somehow duplicates get in FFS
-                  watchedShowIds.add(int.parse(doc.id));
-                }
-                WatchedTVShow show = new WatchedTVShow.fromFirestore(
-                    (doc.data() as Map<String, dynamic>), doc.id);
-                result.add(show);
-              })
-            });
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        if (!watchedShowIds.contains(int.tryParse(doc.id))) {
+          // somehow duplicates get in FFS
+          watchedShowIds.add(int.parse(doc.id));
+        } else {
+          final show = WatchedTVShow.fromFirestore(
+              (doc.data() as Map<String, dynamic>), doc.id);
+
+          result.add(show);
+        }
+      }
+      return;
+    });
     watchedShows.assignAll(result);
     sortedList.addAll(watchedShows);
   }
@@ -97,8 +100,7 @@ class ShowController extends GetxController {
 
   getShowData(WatchedTVShow show) async {
     try {
-      List<dynamic> list =
-          await new Network().getDetailUpdates(showID: show.id);
+      List<dynamic> list = await Network().getDetailUpdates(showID: show.id);
       var snapshots = FirestoreUtils().watchedShows.doc(show.id).snapshots();
       snapshots.first.then((value) {
         show.currentSeason =

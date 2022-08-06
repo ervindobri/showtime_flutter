@@ -1,23 +1,18 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ScheduleCardPlaceholder extends StatelessWidget {
+  const ScheduleCardPlaceholder({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
     const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
-    const BorderRadius _leftRadius = BorderRadius.only(
-      topLeft:  Radius.circular(75.0),
-      bottomRight: Radius.circular(25.0),
-      bottomLeft: Radius.circular(25.0),
-      topRight: Radius.circular(25.0),
-    );
 
     return Padding(
       padding: const EdgeInsets.only(top: 25.0),
-      child: Container(
+      child: SizedBox(
           width: _width / 1.7,
           height: _height / 2.3,
           // color: CupertinoColors.black,
@@ -31,11 +26,11 @@ class ScheduleCardPlaceholder extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: _radius,
-                    boxShadow: [ new BoxShadow(
+                    boxShadow: [ BoxShadow(
                         color: Colors.black.withOpacity(.3),
                         blurRadius: 15.0,
                         spreadRadius:-4,
-                        offset: Offset(0, 5)),
+                        offset: const Offset(0, 5)),
                     ],
                   ),
                 ),
@@ -48,11 +43,11 @@ class ScheduleCardPlaceholder extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: _radius,
-                    boxShadow: [ new BoxShadow(
+                    boxShadow: [ BoxShadow(
                         color: Colors.black.withOpacity(.3),
                         blurRadius: 15.0,
                         spreadRadius:-4,
-                        offset: Offset(0, 5)),
+                        offset: const Offset(0, 5)),
                     ],
                   ),
                 ),
@@ -70,11 +65,11 @@ class ScheduleCardPlaceholder extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: _radius,
-                          boxShadow: [ new BoxShadow(
+                          boxShadow: [ BoxShadow(
                               color: Colors.black.withOpacity(.3),
                               blurRadius: 15.0,
                               spreadRadius:-4,
-                              offset: Offset(0, 5)),
+                              offset: const Offset(0, 5)),
                           ],
                         ),
                       ),
@@ -87,11 +82,11 @@ class ScheduleCardPlaceholder extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: _radius,
-                          boxShadow: [ new BoxShadow(
+                          boxShadow: [ BoxShadow(
                               color: Colors.black.withOpacity(.3),
                               blurRadius: 15.0,
                               spreadRadius:-4,
-                              offset: Offset(0, 5)),
+                              offset: const Offset(0, 5)),
                           ],
                         ),
                       ),
@@ -107,11 +102,11 @@ class ScheduleCardPlaceholder extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: _radius,
-                    boxShadow: [ new BoxShadow(
+                    boxShadow: [ BoxShadow(
                         color: Colors.black.withOpacity(.3),
                         blurRadius: 15.0,
                         spreadRadius:-4,
-                        offset: Offset(0, 5)),
+                        offset: const Offset(0, 5)),
                     ],
                   ),
                 ),

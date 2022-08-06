@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:dartz/dartz.dart';
 import 'package:show_time/core/error/failures.dart';
 import 'package:show_time/features/home/domain/usecases/get_watched_shows.dart';
 part 'watched_shows_event.dart';
@@ -17,18 +16,15 @@ class WatchedShowsBloc extends Bloc<WatchedShowsEvent, WatchedShowsState> {
         if (event.email != null) {
           final failureOrScheduled =
               await getWatchedShows(Params(email: event.email!));
-          _eitherLoadedOrErrorState(failureOrScheduled);
+          emit(failureOrScheduled.fold(
+            (failure) => WatchedShowsError(_mapFailureToMessage(failure)),
+            (shows) => WatchedShowsLoaded(shows),
+          ));
         } else {
           emit(WatchedShowsError("No user info"));
         }
       }
     });
-  }
-  void _eitherLoadedOrErrorState(Either<Failure, dynamic> failureOrLogin) {
-    emit(failureOrLogin.fold(
-      (failure) => WatchedShowsError(_mapFailureToMessage(failure)),
-      (shows) => WatchedShowsLoaded(shows),
-    ));
   }
 
   String _mapFailureToMessage(Failure failure) {

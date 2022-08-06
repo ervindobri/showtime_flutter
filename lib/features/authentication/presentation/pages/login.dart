@@ -8,7 +8,6 @@ import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/strings.dart';
 import 'package:show_time/core/constants/styles.dart';
 import 'package:show_time/features/home/presentation/widgets/home_web.dart';
-import 'package:show_time/features/watchlist/presentation/widgets/secondary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -17,6 +16,8 @@ import 'package:show_time/injection_container.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -64,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
 
   initialTimer() async {
     if (!kIsWeb) {
-      await new Future.delayed(const Duration(milliseconds: 1000));
+      await Future.delayed(const Duration(milliseconds: 1000));
       // if (!controller.)
       setState(() {
         startAnimation = true;
@@ -72,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
       });
     }
 
-    await new Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     _controller.forward();
   }
 
@@ -82,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
     final _height = MediaQuery.of(context).size.height;
 
     if (kIsWeb) {
-      return HomeWeb();
+      return const HomeWeb();
     } else {
       return Scaffold(
         resizeToAvoidBottomInset: false,

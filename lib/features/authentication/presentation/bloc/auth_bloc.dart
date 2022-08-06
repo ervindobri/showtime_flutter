@@ -1,6 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:show_time/core/error/failures.dart';
 import 'package:show_time/features/authentication/domain/usecases/post_login.dart';
@@ -19,15 +17,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             email: event.username,
             password: event.password));
 
-        _eitherLoadedOrErrorState(failureOrLogin);
+        emit(failureOrLogin.fold(
+          (failure) => Error(_mapFailureToMessage(failure)),
+          (userInfo) => LoginSuccessful(userInfo),
+        ));
       }
     });
-  }
-  void _eitherLoadedOrErrorState(Either<Failure, UserCredential> failureOrLogin) {
-    emit(failureOrLogin.fold(
-      (failure) => Error(_mapFailureToMessage(failure)),
-      (userInfo) => LoginSuccessful(userInfo),
-    ));
   }
 
   String _mapFailureToMessage(Failure failure) {

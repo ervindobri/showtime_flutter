@@ -30,12 +30,12 @@ class ShowRemoteDataSourceImpl extends ShowRemoteDataSource {
       //to avoid duplicates
       watchedShowIds!.toList().forEach((id) {
         List<Episode> current = [];
-        allEpisodes.episodes.forEach((episode) {
+        for (var episode in allEpisodes.episodes) {
           if (episode.embedded!['show']['id'] == id) {
             current.add(episode);
           }
-        });
-        if (current.length > 0) {
+        }
+        if (current.isNotEmpty) {
           list.add(current);
         }
       });
@@ -93,7 +93,7 @@ class ShowRemoteDataSourceImpl extends ShowRemoteDataSource {
   void getNotAired() {}
 
   _getScheduledEpisodesFromUrl() async {
-    var searchURL = GlobalVariables.FULL_SCHEDULE_URL;
+    var searchURL = GlobalVariables.fullScheduleUrl;
     final response = await get(Uri.parse(searchURL));
     if (response.statusCode == 200) {
       return EpisodeList.fromJson(json.decode(response.body));

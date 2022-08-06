@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dartz/dartz.dart';
 import 'package:meta/meta.dart';
 import 'package:show_time/core/error/failures.dart';
 import 'package:show_time/features/home/domain/usecases/get_scheduled_shows.dart';
@@ -18,15 +17,12 @@ class ScheduledShowsBloc
         emit(ScheduledShowsLoading());
 
         final failureOrScheduled = await getScheduledShows(Params());
-        _eitherLoadedOrErrorState(failureOrScheduled);
-      }
-    });
-  }
-  void _eitherLoadedOrErrorState(Either<Failure, dynamic> failureOrLogin) {
-    emit(failureOrLogin.fold(
+       emit(failureOrScheduled.fold(
       (failure) => ScheduledShowsError(_mapFailureToMessage(failure)),
       (shows) => ScheduledShowsLoaded(shows),
     ));
+      }
+    });
   }
 
   String _mapFailureToMessage(Failure failure) {

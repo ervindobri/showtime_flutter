@@ -22,7 +22,7 @@ class WatchedCardWeb extends StatelessWidget {
       required this.maxHeight})
       : super(key: key);
 
-  UIController? uiController = Get.put(UIController());
+  final UIController? uiController = Get.put(UIController());
 
   @override
   Widget build(BuildContext context) {
@@ -66,18 +66,18 @@ class WatchedCardWeb extends StatelessWidget {
                       height: maxHeight,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.only(
+                        borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(25.0),
                           topRight: Radius.circular(85.0),
                           bottomLeft: Radius.circular(50.0),
                           bottomRight: Radius.circular(50.0),
                         ),
                         boxShadow: [
-                          new BoxShadow(
+                          BoxShadow(
                               color: Colors.black.withOpacity(.2),
                               blurRadius: 15.0,
                               spreadRadius: -2,
-                              offset: Offset(2, -2)),
+                              offset: const Offset(2, -2)),
                         ],
                       ),
                       child: Column(
@@ -89,10 +89,10 @@ class WatchedCardWeb extends StatelessWidget {
                                 children: <Widget>[
                                   Flexible(
                                     child: Padding(
-                                      padding: EdgeInsets.only(
+                                      padding: const EdgeInsets.only(
                                           right: 50, left: 12, top: 5),
                                       child: AutoSizeText(
-                                        this.show.name!,
+                                        show.name!,
                                         minFontSize:
                                             (maxWidth / 10).roundToDouble(),
                                         maxFontSize:
@@ -107,128 +107,125 @@ class WatchedCardWeb extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Container(
-                            // height: 300,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                Container(
-                                  width: maxWidth * .35,
-                                  padding: EdgeInsets.only(
-                                      left: 10, right: 10, top: 10, bottom: 20),
-                                  child: Center(
-                                    child: Column(
-                                      children: <Widget>[
-                                        //Season
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10, right: 10),
-                                          width: maxWidth / 3.5,
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                            border: Border.all(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Container(
+                                width: maxWidth * .35,
+                                padding: const EdgeInsets.only(
+                                    left: 10, right: 10, top: 10, bottom: 20),
+                                child: Center(
+                                  child: Column(
+                                    children: <Widget>[
+                                      //Season
+                                      Container(
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        width: maxWidth / 3.5,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          border: Border.all(
+                                              color:
+                                                  GlobalColors.primaryGreen),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              "S",
+                                              style: TextStyle(
                                                 color:
-                                                    GlobalColors.primaryGreen),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Text(
-                                                "S",
+                                                    GlobalColors.primaryGreen,
+                                                fontSize: maxWidth / 12,
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
+                                            Center(
+                                              child: Text(
+                                                "${show.currentSeason}",
                                                 style: TextStyle(
-                                                  color:
-                                                      GlobalColors.primaryGreen,
-                                                  fontSize: maxWidth / 12,
-                                                  fontWeight: FontWeight.w900,
+                                                  fontWeight: FontWeight.w300,
+                                                  fontSize: maxWidth / 15,
+                                                  color: GlobalColors
+                                                      .greyTextColor,
                                                 ),
                                               ),
-                                              Center(
-                                                child: Text(
-                                                  "${this.show.currentSeason}",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-                                                    fontSize: maxWidth / 15,
-                                                    color: GlobalColors
-                                                        .greyTextColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                        //Episode
-                                        SizedBox(
-                                          height: 10,
+                                      ),
+                                      //Episode
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        width: maxWidth / 3.5,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0),
+                                          border: Border.all(
+                                              color:
+                                                  GlobalColors.primaryGreen),
                                         ),
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              left: 10, right: 10),
-                                          width: maxWidth / 3.5,
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0),
-                                            border: Border.all(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Text(
+                                              "Ep",
+                                              style: TextStyle(
                                                 color:
-                                                    GlobalColors.primaryGreen),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Text(
-                                                "Ep",
+                                                    GlobalColors.primaryGreen,
+                                                fontSize: maxWidth / 12,
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
+                                            Center(
+                                              child: Text(
+                                                "${show.currentEpisode}",
                                                 style: TextStyle(
-                                                  color:
-                                                      GlobalColors.primaryGreen,
-                                                  fontSize: maxWidth / 12,
-                                                  fontWeight: FontWeight.w900,
+                                                  fontWeight: FontWeight.w300,
+                                                  fontSize: maxWidth / 15,
+                                                  color: GlobalColors
+                                                      .greyTextColor,
                                                 ),
                                               ),
-                                              Center(
-                                                child: Text(
-                                                  "${this.show.currentEpisode}",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w300,
-                                                    fontSize: maxWidth / 15,
-                                                    color: GlobalColors
-                                                        .greyTextColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 10),
-                                  child: new CircularPercentIndicator(
-                                    radius: maxWidth / 3,
-                                    lineWidth: 12.0,
-                                    circularStrokeCap: CircularStrokeCap.round,
-                                    percent: _percentage,
-                                    center: AutoSizeText(
-                                      "${(_percentage * 100).floor()} %",
-                                      // maxFontSize: _width / 15,
-                                      // minFontSize: _width / 23,
-                                      style: TextStyle(
-                                          fontFamily: 'Raleway',
-                                          fontSize: maxWidth / 10,
-                                          fontWeight: FontWeight.w700,
-                                          color: GlobalColors.primaryBlue),
-                                    ),
-                                    progressColor: GlobalColors.primaryBlue,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 10),
+                                child: CircularPercentIndicator(
+                                  radius: maxWidth / 3,
+                                  lineWidth: 12.0,
+                                  circularStrokeCap: CircularStrokeCap.round,
+                                  percent: _percentage,
+                                  center: AutoSizeText(
+                                    "${(_percentage * 100).floor()} %",
+                                    // maxFontSize: _width / 15,
+                                    // minFontSize: _width / 23,
+                                    style: TextStyle(
+                                        fontFamily: 'Raleway',
+                                        fontSize: maxWidth / 10,
+                                        fontWeight: FontWeight.w700,
+                                        color: GlobalColors.primaryBlue),
                                   ),
+                                  progressColor: GlobalColors.primaryBlue,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           )
                         ],
                       ),
@@ -247,7 +244,7 @@ class WatchedCardWeb extends StatelessWidget {
 
   Widget _checkFireDisplay(double percentage, String lastWatchDate) {
     var lastWatched = DateTime.parse("$lastWatchDate 00:00:00.000");
-    var prevMonth = new DateTime(
+    var prevMonth = DateTime(
         DateTime.now().year, DateTime.now().month, DateTime.now().day);
     int diffDays = lastWatched.difference(prevMonth).inDays;
     // print(percentage);
@@ -259,7 +256,7 @@ class WatchedCardWeb extends StatelessWidget {
           child: Container(
             width: maxWidth / 6,
             height: maxWidth / 6,
-            padding: EdgeInsets.all(5),
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.topRight,
@@ -275,7 +272,7 @@ class WatchedCardWeb extends StatelessWidget {
               color: percentage == 1.0
                   ? GlobalColors.primaryGreen
                   : GlobalColors.fireColor,
-              borderRadius: BorderRadius.all(Radius.circular(50.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(50.0)),
             ),
             child: Center(
               child: FaIcon(
@@ -298,8 +295,8 @@ class WatchedCardWeb extends StatelessWidget {
             child: Container(
               width: maxHeight / 10,
               height: maxHeight / 10,
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(5),
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
@@ -335,13 +332,13 @@ class WatchedCardWeb extends StatelessWidget {
           width: maxWidth * .5,
           decoration: BoxDecoration(
             color: GlobalColors.pinkColor,
-            borderRadius: BorderRadius.all(Radius.circular(50.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(50.0)),
             boxShadow: [
-              new BoxShadow(
+              BoxShadow(
                   color: GlobalColors.pinkColor.withOpacity(.3),
                   blurRadius: 15.0,
                   spreadRadius: -2,
-                  offset: Offset(2, 0)),
+                  offset: const Offset(2, 0)),
             ],
           ),
           child: GetBuilder<UIController>(
@@ -351,7 +348,7 @@ class WatchedCardWeb extends StatelessWidget {
                   style: ButtonStyle(
                     overlayColor: MaterialStateProperty.all(Colors.black),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(25.0))),
+                        borderRadius: BorderRadius.circular(25.0))),
                   ),
                   onPressed: () {
                     try {
@@ -367,11 +364,11 @@ class WatchedCardWeb extends StatelessWidget {
                       controller.showToast(
                           context: context,
                           color: GlobalColors.primaryGreen,
-                          text: "Couldn\'t add episode!",
+                          text: "Couldn't add episode!",
                           icon: Icons.error);
                     }
                   },
-                  child: FaIcon(
+                  child: const FaIcon(
                     Icons.add_to_queue,
                     color: Colors.white,
                     size: 40,

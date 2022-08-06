@@ -13,6 +13,8 @@ class DiscoverBinding extends Bindings{
 class DiscoverRoute extends StatelessWidget {
   final List? list = Get.arguments ?? [];
 
+  DiscoverRoute({Key? key}) : super(key: key);
+
   _selectDiscoverContent(data) {
     return GlobalVariables.discoverMap[data];
   }

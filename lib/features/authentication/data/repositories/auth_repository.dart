@@ -7,7 +7,7 @@ import 'package:show_time/features/authentication/data/datasources/auth_remote_d
 import 'package:show_time/features/authentication/domain/repositories/auth_repo.dart';
 import 'package:show_time/features/authentication/domain/usecases/post_login.dart';
 
-typedef Future<UserCredential> _UsecaseChooser();
+typedef _UsecaseChooser = Future<UserCredential> Function();
 
 class AuthRepositoryImpl extends AuthRepository {
   final AuthRemoteDataSource remoteDataSource;

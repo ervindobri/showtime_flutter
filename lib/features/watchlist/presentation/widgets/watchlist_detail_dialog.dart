@@ -17,14 +17,13 @@ class WatchlistDetailDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double dialogWidth = 600;
-    final double dialogHeight = 450;
-    print(show);
+    const double dialogWidth = 600;
+    const double dialogHeight = 450;
     return MouseRegion(
       onExit: (event) {
         NavUtils.back(context);
       },
-      child: Container(
+      child: SizedBox(
         width: dialogWidth,
         height: dialogHeight,
         child: Padding(
@@ -50,7 +49,7 @@ class WatchlistDetailDialog extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.all(15.0),
-                child: Container(
+                child: SizedBox(
                   width: dialogWidth / 2,
                   height: dialogHeight * .8,
                   child: Column(
@@ -62,8 +61,8 @@ class WatchlistDetailDialog extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
                                   child: FaIcon(
                                     FontAwesomeIcons.clock,
                                     color: GlobalColors.greyTextColor,
@@ -88,8 +87,8 @@ class WatchlistDetailDialog extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                const Padding(
+                                  padding: EdgeInsets.all(8.0),
                                   child: FaIcon(
                                     FontAwesomeIcons.star,
                                     color: GlobalColors.greyTextColor,

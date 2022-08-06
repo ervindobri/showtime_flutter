@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:show_time/components/badge.dart';
@@ -6,7 +5,6 @@ import 'package:show_time/components/image_sliver_delegate.dart';
 import 'package:show_time/components/latest_ep_carousel.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/models/tvshow_details.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -49,7 +47,7 @@ class _WatchedDetailViewState extends State<DetailView>
 //    print(widget.tvshow.name);
 
     _controller.reset();
-    _controller.duration = Duration(milliseconds: 500);
+    _controller.duration = const Duration(milliseconds: 500);
     _controller.forward();
 
     badges = getBadges();
@@ -95,7 +93,7 @@ class _WatchedDetailViewState extends State<DetailView>
                 return Container(
                     width: _width,
                     height: _height,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: GlobalColors.bgColor,
                     ),
                     child: CustomScrollView(
@@ -118,7 +116,7 @@ class _WatchedDetailViewState extends State<DetailView>
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 25.0, vertical: 10.0),
-                                      child: Container(
+                                      child: SizedBox(
                                         height: _height / 20,
                                         width: _width,
                                         child: ListView(
@@ -129,7 +127,7 @@ class _WatchedDetailViewState extends State<DetailView>
                                             return AnimationConfiguration
                                                 .staggeredList(
                                               duration:
-                                                  Duration(milliseconds: 200),
+                                                  const Duration(milliseconds: 200),
                                               position: index,
                                               child: FadeInAnimation(
                                                 delay: Duration(
@@ -137,7 +135,7 @@ class _WatchedDetailViewState extends State<DetailView>
                                                         250 * index + 1),
                                                 child: SlideTransition(
                                                   position: Tween<Offset>(
-                                                    begin: Offset(0, 0.1),
+                                                    begin: const Offset(0, 0.1),
                                                     end: Offset.zero,
                                                   ).animate(animation),
                                                   child: Padding(
@@ -146,7 +144,7 @@ class _WatchedDetailViewState extends State<DetailView>
                                                         horizontal: 5.0),
                                                     child: Container(
                                                       height: _height / 20,
-                                                      decoration: BoxDecoration(
+                                                      decoration: const BoxDecoration(
                                                         color: GlobalColors
                                                             .primaryBlue,
                                                         borderRadius: _radius,
@@ -235,17 +233,17 @@ class _WatchedDetailViewState extends State<DetailView>
                                                                         100) +
                                                                 "...",
                                                           ),
-                                                          FlatButton(
+                                                          TextButton(
                                                             onPressed: () {
                                                               setState(() {
                                                                 _tapped =
                                                                     !_tapped;
                                                               });
                                                             },
-                                                            textColor:
-                                                                GlobalColors
-                                                                    .primaryGreen,
-                                                            child: Center(
+                                                            // textColor:
+                                                                // GlobalColors
+                                                                    // .primaryGreen,
+                                                            child: const Center(
                                                               child: Text(
                                                                   "Show More"),
                                                             ),
@@ -266,17 +264,17 @@ class _WatchedDetailViewState extends State<DetailView>
                                                                 color: GlobalColors
                                                                     .greyTextColor),
                                                           ),
-                                                          FlatButton(
+                                                          TextButton(
                                                             onPressed: () {
                                                               setState(() {
                                                                 _tapped =
                                                                     !_tapped;
                                                               });
                                                             },
-                                                            textColor:
-                                                                GlobalColors
-                                                                    .primaryGreen,
-                                                            child: Center(
+                                                            // textColor:
+                                                                // GlobalColors
+                                                                    // .primaryGreen,
+                                                            child: const Center(
                                                               child: Text(
                                                                   "Show Less"),
                                                             ),
@@ -334,22 +332,22 @@ class _WatchedDetailViewState extends State<DetailView>
   getBadges() {
     List<DetailBadge> badges = [];
 
-    badges.add(new DetailBadge(
+    badges.add(DetailBadge(
       text: widget.show.rating != 0 ? widget.show.rating.toString() : r"N\A",
-      colors: [GlobalColors.pinkColor, GlobalColors.lightPinkColor],
+      colors: const [GlobalColors.pinkColor, GlobalColors.lightPinkColor],
     ));
-    badges.add(new DetailBadge(
+    badges.add(DetailBadge(
       text: widget.show.runtime != 0 ? widget.show.runtime.toString() : r"N\A",
-      colors: [GlobalColors.goldColor, GlobalColors.lightGoldColor],
+      colors: const [GlobalColors.goldColor, GlobalColors.lightGoldColor],
     ));
-    badges.add(new DetailBadge(
+    badges.add(DetailBadge(
       text:
           GlobalVariables.statusCodes[widget.show.status.toString()].toString(),
-      colors: [GlobalColors.primaryBlue, Colors.lightBlue],
+      colors: const [GlobalColors.primaryBlue, Colors.lightBlue],
     ));
-    badges.add(new DetailBadge(
+    badges.add(DetailBadge(
       text: widget.show.countryCode() ?? "",
-      colors: [GlobalColors.orangeColor, Colors.orangeAccent],
+      colors: const [GlobalColors.orangeColor, Colors.orangeAccent],
     ));
     return badges;
   }
@@ -361,11 +359,11 @@ class _WatchedDetailViewState extends State<DetailView>
           // color: Colors.grey,
           decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(25.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(25.0)),
               boxShadow: [
                 BoxShadow(
                     color: Colors.grey.withOpacity(.3),
-                    offset: Offset(2, 3),
+                    offset: const Offset(2, 3),
                     blurRadius: 10,
                     spreadRadius: 2)
               ]),
@@ -410,7 +408,7 @@ class _WatchedDetailViewState extends State<DetailView>
               Padding(
                 padding:
                     const EdgeInsets.only(left: 10, right: 10, bottom: 15.0),
-                child: Container(
+                child: SizedBox(
                   width: _width,
                   height: _height / 9,
                   child: AnimationLimiter(
@@ -419,13 +417,13 @@ class _WatchedDetailViewState extends State<DetailView>
                         shrinkWrap: true,
                         itemCount: badges.length,
                         scrollDirection: Axis.horizontal,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (BuildContext context, int index) {
                           return AnimationConfiguration.staggeredList(
                             position: index,
                             duration: const Duration(milliseconds: 375),
                             child: FadeInAnimation(
-                              duration: Duration(milliseconds: 350),
+                              duration: const Duration(milliseconds: 350),
                               child: SlideAnimation(
                                 horizontalOffset: 30.0,
                                 child: badges[index],

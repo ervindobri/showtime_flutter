@@ -18,10 +18,10 @@ class RadialRangeSlider extends StatefulWidget{
 class _RadialRangeSliderState  extends State<RadialRangeSlider> {
   _RadialRangeSliderState();
 
-  bool _enableDragging = true;
+  final bool _enableDragging = true;
   double _secondMarkerValue = 30;
   double _firstMarkerValue = 0;
-  double _markerSize = 25;
+  final double _markerSize = 25;
   final double _annotationFontSize = 20;
   String _annotationValue1 = '0';
   String _annotationValue2 = '3.0';
@@ -34,7 +34,7 @@ class _RadialRangeSliderState  extends State<RadialRangeSlider> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: 150,
         height: 150,
         child: SfRadialGauge(

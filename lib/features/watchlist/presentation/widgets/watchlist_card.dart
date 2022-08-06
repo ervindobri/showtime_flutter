@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:hovering/hovering.dart';
-import 'package:show_time/components/badge.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
 import 'package:show_time/get_controllers/ui_controller.dart';
@@ -327,7 +325,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
   }
 
   Widget buildFavoriteIcon(WatchedTVShow show) {
-    final double _width = MediaQuery.of(context).size.width;
+    // final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
 
     return Padding(
@@ -391,12 +389,12 @@ Widget buildShowDetails(WatchedTVShow show, double _width, double _height) {
     child: FutureBuilder<List<Episode>>(
         future: episodes,
         builder: (context, snapshot) {
-          print(snapshot.error);
+          // print(snapshot.error);
           if (snapshot.hasData) {
             show.episodes = snapshot.data as List<Episode>;
             return WatchedDetailView(show: show);
           } else {
-            return WatchedDetailViewPlaceholder();
+            return const WatchedDetailViewPlaceholder();
           }
         }),
   );

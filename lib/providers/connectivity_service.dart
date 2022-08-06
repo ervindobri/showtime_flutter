@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 
-enum ConnectivityStatus {
-  WiFi,
-  Cellular,
-  Offline
-}
+enum ConnectivityStatus { wiFi, cellular, offline }
 
 class ConnectivityService {
   // Create our public controller
-  StreamController<ConnectivityStatus> connectionStatusController = StreamController<ConnectivityStatus>();
+  StreamController<ConnectivityStatus> connectionStatusController =
+      StreamController<ConnectivityStatus>();
 
   ConnectivityService() {
     // Subscribe to the connectivity Changed Stream
@@ -23,13 +20,13 @@ class ConnectivityService {
   ConnectivityStatus _getStatusFromResult(ConnectivityResult result) {
     switch (result) {
       case ConnectivityResult.mobile:
-        return ConnectivityStatus.Cellular;
+        return ConnectivityStatus.cellular;
       case ConnectivityResult.wifi:
-        return ConnectivityStatus.WiFi;
+        return ConnectivityStatus.wiFi;
       case ConnectivityResult.none:
-        return ConnectivityStatus.Offline;
+        return ConnectivityStatus.offline;
       default:
-        return ConnectivityStatus.Offline;
+        return ConnectivityStatus.offline;
     }
   }
 }

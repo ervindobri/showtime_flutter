@@ -41,10 +41,7 @@ class CustomAppbar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                      // color: GlobalColors.greenColor,
-                      child:
-                          Image(image: AssetImage('showTIME.png'), height: 40)),
+                  const Image(image: AssetImage('showTIME.png'), height: 40),
                   InkWell(
                     onTap: () async {
                       showDialog(
@@ -53,17 +50,13 @@ class CustomAppbar extends StatelessWidget {
                               elevation: 24,
                               shape: RoundedRectangleBorder(
                                   borderRadius: GlobalStyles.radius24),
-                              child: SignOutDialog()),
+                              child: const SignOutDialog()),
                           barrierColor: Colors.white.withOpacity(.4));
                     },
-                    child: Container(
-                      // color: CupertinoColors.black,
-                      // width: 100,
-                      child: Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.signOutAlt,
-                          color: GlobalColors.primaryGreen,
-                        ),
+                    child: const Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.signOutAlt,
+                        color: GlobalColors.primaryGreen,
                       ),
                     ),
                   ),
@@ -81,9 +74,9 @@ class CustomAppbar extends StatelessWidget {
       context: context,
       animationType: DialogTransitionType.slideFromLeftFade,
       barrierDismissible: true,
-      duration: Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 100),
       builder: (BuildContext context) {
-        return ProfileDialog();
+        return const ProfileDialog();
       },
     );
   }

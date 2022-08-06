@@ -1,8 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
-import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:show_time/components/custom_elevation.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
@@ -35,7 +35,7 @@ class WatchedDetailView extends StatefulWidget {
 }
 
 class _WatchedDetailViewState extends State<WatchedDetailView>
-    with AnimationMixin, AutomaticKeepAliveClientMixin {
+    with AnimationMixin {
   late Future<List<dynamic>> episodes;
   late double _percentage;
   late int _lastWatchedDay;
@@ -54,7 +54,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
 
   String countdown = "";
 
-  late Timer _timer;
+  // late Timer _timer;
 
   int _selectedSeason = 1;
   int _selectedEpisode = 1;
@@ -64,10 +64,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
   TimerController timerController = Get.put(TimerController())!;
   UIController uiController = Get.put(UIController())!;
   ShowController showController = Get.put(ShowController())!;
-
-// Setting to true will force the tab to never be disposed. This could be dangerous.
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void setState(fn) {
@@ -457,57 +453,55 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
     List<Widget> badges = getBadges();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
-      child: Container(
-          // color: Colors.grey,
-          child: Column(
+      child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: AutoSizeText("Badges",
-                      style: GlobalStyles.sectionStyle()),
-                ),
-                AutoSizeText(
-                  "About",
-                  style: TextStyle(
-                    color: GlobalColors.primaryGreen,
-                    fontFamily: 'Raleway',
-                    fontSize: _width / 20,
-                  ),
-                ),
-              ],
+      Padding(
+        padding: const EdgeInsets.only(bottom: 10.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: AutoSizeText("Badges",
+                  style: GlobalStyles.sectionStyle()),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16.0),
-            child: SizedBox(
-              width: _width,
-              height: 68,
-              child: AnimationLimiter(
-                child: ListView.builder(
-                  itemCount: badges.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return AnimationConfiguration.staggeredList(
-                      position: index,
-                      duration: const Duration(milliseconds: 375),
-                      child: SlideAnimation(
-                        horizontalOffset: 20.0,
-                        child: badges[index],
-                      ),
-                    );
-                  },
-                ),
+            AutoSizeText(
+              "About",
+              style: TextStyle(
+                color: GlobalColors.primaryGreen,
+                fontFamily: 'Raleway',
+                fontSize: _width / 20,
               ),
             ),
-          )
+          ],
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(bottom: 16.0),
+        child: SizedBox(
+          width: _width,
+          height: 68,
+          child: AnimationLimiter(
+            child: ListView.builder(
+              itemCount: badges.length,
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (BuildContext context, int index) {
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  duration: const Duration(milliseconds: 375),
+                  child: SlideAnimation(
+                    horizontalOffset: 20.0,
+                    child: badges[index],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      )
         ],
-      )),
+      ),
     );
   }
 
@@ -688,6 +682,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                                 builder: (BuildContext context,
                                     StateSetter setState) {
                                   //TODO: fix episode selecter with getx
+
                                   return CupertinoPicker(
                                     itemExtent: 30,
                                     useMagnifier: false,
@@ -722,8 +717,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
   }
 
   Widget displayActions() {
-    final _width = MediaQuery.of(context).size.width;
-    final _height = MediaQuery.of(context).size.height;
+    // final _width = MediaQuery.of(context).size.width;
+    // final _height = MediaQuery.of(context).size.height;
 
     if (widget.show.calculatedProgress < 1.0) {
       return widget.show.nextEpisodeAired
@@ -970,11 +965,11 @@ class UnwatchDialog extends StatelessWidget {
                 Get.back();
               }
             },
-            child: SizedBox(
+            child: const SizedBox(
               width: 100,
               height: 30,
               // color: Colors.grey,
-              child: const Center(
+              child: Center(
                 child: Text(
                   'Unwatch',
                   style: TextStyle(

@@ -7,16 +7,18 @@ import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/utils/navigation.dart';
 
 class SignOutDialog extends StatelessWidget {
+  const SignOutDialog({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    // final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return SizedBox(
         height: height * .6,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Padding(
             padding: EdgeInsets.all(24.0),
-            child: const FaIcon(
+            child: FaIcon(
               FontAwesomeIcons.questionCircle,
               color: GlobalColors.primaryGreen,
               size: kIsWeb ? 100 : 100,

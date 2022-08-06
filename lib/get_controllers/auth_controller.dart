@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -17,7 +19,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthController extends GetxController {
-  Rx<SessionUser> sessionUser = Rx<SessionUser>(new SessionUser(
+  Rx<SessionUser> sessionUser = Rx<SessionUser>(SessionUser(
       id: 0, firstName: "", lastName: "", emailAddress: "", age: 0, sex: ""));
   //TODO: resolve floor dependency issue
   var usersWithBiometricAuth = <UserData>[].obs;
@@ -25,12 +27,12 @@ class AuthController extends GetxController {
   UserDao get dao => _dao;
   bool selected = false;
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   SessionUser? get user => sessionUser.value;
 
-  final Duration _loginTime = Duration(milliseconds: 500);
+  final Duration _loginTime = const Duration(milliseconds: 500);
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  final _storage = FlutterSecureStorage();
+  final _storage = const FlutterSecureStorage();
 
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -60,7 +62,10 @@ class AuthController extends GetxController {
     try {
       nameController.text = (await _storage.read(key: 'email'))!;
       passwordController.text = (await _storage.read(key: 'password'))!;
-    } catch (e) {}
+      // ignore: empty_catches
+    } catch (e) {
+      print(e);
+    }
   }
 
   void getUserData() {
@@ -123,7 +128,7 @@ class AuthController extends GetxController {
   }
 
   void signOut() async {
-    await _auth.signOut().then((value) => Get.offAll(LoginScreen()));
+    await _auth.signOut().then((value) => Get.offAll(const LoginScreen()));
   }
 
   void signInWithGoogle() async {
@@ -141,9 +146,7 @@ class AuthController extends GetxController {
 
     await _auth.signInWithCredential(credential).then((result) {
       print("result:$result");
-      if (result != null) {
-        Get.off(SplashScreen());
-      }
+      Get.off(const SplashScreen());
     });
   }
 
@@ -153,15 +156,14 @@ class AuthController extends GetxController {
   }
 
   Future<void> fetchAccounts() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     List<UserData> users = (await dao.fetchEnabledBiometricUsers())!;
     usersWithBiometricAuth.addAll(users);
     print("Accounts with biometric: ${usersWithBiometricAuth.length}");
   }
 
   Future<void> addUser(String email, String password) async {
-    if (_dao != null &&
-        usersWithBiometricAuth
+    if (usersWithBiometricAuth
             .where((user) => user.email == email)
             .toList()
             .isEmpty) {
@@ -189,7 +191,7 @@ class AuthController extends GetxController {
   }
 
   void setDao(UserDao userDao) {
-    this._dao = userDao;
+    _dao = userDao;
   }
 
   void rememberInfo(String email, String password) {
@@ -215,10 +217,6 @@ class AuthController extends GetxController {
     FirestoreUtils().updateUserInfo(user!);
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   //region BIOMETRIC_LOGIN
   final LocalAuthentication auth = LocalAuthentication();
@@ -227,7 +225,6 @@ class AuthController extends GetxController {
 
   late List<BiometricType> _availableBiometrics;
   String _authorized = 'Not Authorized';
-  bool _isAuthenticating = false;
 
   Future<void> _checkBiometrics() async {
     bool canCheck = false;
@@ -263,7 +260,6 @@ class AuthController extends GetxController {
           useErrorDialogs: true,
           stickyAuth: true);
       // setState(() {
-      _isAuthenticating = false;
       _authorized = 'Authenticating';
       // });
     } on PlatformException catch (e) {
@@ -278,9 +274,9 @@ class AuthController extends GetxController {
     return _authorized;
   }
 
-  void _cancelAuthentication() {
-    auth.stopAuthentication();
-  }
+  // void _cancelAuthentication() {
+    // auth.stopAuthentication();
+  // }
 
   bool _fingerprintAnimStopped = true;
   bool get fingerprintAnimStopped => _fingerprintAnimStopped;
@@ -314,7 +310,7 @@ class AuthController extends GetxController {
                               usersWithBiometricAuth[index].email,
                               usersWithBiometricAuth[index].password);
                           if (auth == '') {
-                            Get.off(SplashScreen());
+                            Get.off(const SplashScreen());
                           }
                         });
                   }),
@@ -325,7 +321,7 @@ class AuthController extends GetxController {
           String auth = await login(usersWithBiometricAuth.first.email,
               usersWithBiometricAuth.first.password);
           if (auth == '') {
-            Get.off(() => SplashScreen(), transition: Transition.fadeIn);
+            Get.off(() => const SplashScreen(), transition: Transition.fadeIn);
           }
         } else {
           print(usersWithBiometricAuth.length);
@@ -333,6 +329,4 @@ class AuthController extends GetxController {
       }
     });
   }
-
-  
 }

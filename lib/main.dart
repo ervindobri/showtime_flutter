@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart' as bloc;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
-import 'package:show_time/features/authentication/presentation/pages/login.dart';
 import 'package:show_time/features/splash/bloc/splash_bloc.dart';
 import 'core/utils/route_generator.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
@@ -26,7 +25,7 @@ Future<void> main() async {
     debugShowCheckedModeBanner: false,
     theme: appTheme(),
     title: 'showTIME',
-    home: Router(),
+    home: const Router(),
   ));
 }
 
@@ -48,11 +47,13 @@ appTheme() {
 
 //TODO: change get stuff to bloc
 class Router extends StatelessWidget {
+  const Router({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return bloc.BlocProvider<SplashBloc>(
       create: (BuildContext context) => SplashBloc()..add(GetSplashEvent(true)),
-      child: SplashScreen(),
+      child: const SplashScreen(),
     );
   }
 }

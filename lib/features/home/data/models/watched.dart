@@ -65,12 +65,12 @@ class WatchedTVShow extends TVShowDetails {
 
   bool hasMoreEpisodes() {
     bool flag = false;
-    GlobalVariables.scheduledEpisodes.forEach((show) {
+    for (var show in GlobalVariables.scheduledEpisodes) {
       // print("${show[0].embedded['show']['id']} == ${this.id}");
       if (show[0].embedded!['show']['id'].toString() == id) {
         flag = true;
       }
-    });
+    }
     return flag;
   }
 

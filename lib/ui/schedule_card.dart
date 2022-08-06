@@ -36,7 +36,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
   }
 
   void startCountdown() {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         _countdownLabel = widget.episode.getDifference();
       });
@@ -46,7 +46,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
+    // final double height = MediaQuery.of(context).size.height;
     // const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
     return Container(
       // color: Colors.black,

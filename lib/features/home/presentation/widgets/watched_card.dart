@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:get/get.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
@@ -339,7 +338,7 @@ class WatchedCard extends StatelessWidget {
                       controller.showToast(
                           context: context,
                           color: GlobalColors.primaryGreen,
-                          text: "Couldn\'t add episode!",
+                          text: "Couldn't add episode!",
                           icon: Icons.error);
                     }
                   },

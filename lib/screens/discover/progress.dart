@@ -9,12 +9,14 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class OverallProgress extends StatefulWidget {
+  const OverallProgress({Key? key}) : super(key: key);
+
   @override
   _OverallProgressState createState() => _OverallProgressState();
 }
 
 class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
-  var grey = Color(GlobalVariables.DISCOVER_DATA[0][1]);
+  var grey = Color(GlobalVariables.discoverData[0][1]);
   late Animation<double> sizeAnimation;
   late AnimationController animationController;
 
@@ -140,7 +142,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                   sizeFactor: sizeAnimation,
                   child: Container(
                     height: _height * .81,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                         color: GlobalColors.bgColor,
                         borderRadius: BorderRadius.only(
                           topLeft:
@@ -151,14 +153,14 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
+                        SizedBox(
                           height: _height * .35,
                           width: _width,
                           child: TabBarView(controller: _controller, children: [
                             Center(
                                 child: Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(18),
                                       ),
                                       gradient: LinearGradient(
@@ -212,7 +214,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                       bottomData,
                                                       snapshot.data));
                                                 } else {
-                                                  return Center(
+                                                  return const Center(
                                                       child:
                                                           CircularProgressIndicator(
                                                     valueColor:
@@ -227,7 +229,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                             Center(
                                 child: Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(18),
                                       ),
                                       gradient: LinearGradient(
@@ -272,7 +274,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                       bottomData,
                                                       snapshot.data));
                                                 } else {
-                                                  return Center(
+                                                  return const Center(
                                                       child:
                                                           CircularProgressIndicator(
                                                     valueColor:
@@ -287,7 +289,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                             Center(
                                 child: Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(18),
                                       ),
                                       gradient: LinearGradient(
@@ -298,11 +300,11 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                             Colors.grey.shade500
                                           ]),
                                       boxShadow: [
-                                        new BoxShadow(
+                                        BoxShadow(
                                             color: Colors.grey.withOpacity(.3),
                                             blurRadius: 20.0,
                                             spreadRadius: -2,
-                                            offset: Offset(0, 3)),
+                                            offset: const Offset(0, 3)),
                                       ],
                                     ),
                                     height: _height / 3.5,
@@ -339,7 +341,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                       bottomData,
                                                       snapshot.data));
                                                 } else {
-                                                  return Center(
+                                                  return const Center(
                                                       child:
                                                           CircularProgressIndicator(
                                                     valueColor:
@@ -353,7 +355,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                     ))),
                           ]),
                         ),
-                        Container(
+                        SizedBox(
                             height: _height * .45,
                             child: CarouselSlider(
                                 items: [
@@ -363,10 +365,10 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                       width: _width * .85,
                                       height: _height / 3,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(25),
                                         ),
-                                        gradient: LinearGradient(
+                                        gradient: const LinearGradient(
                                             begin: Alignment.bottomLeft,
                                             end: Alignment.topRight,
                                             colors: [
@@ -374,12 +376,12 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                               Colors.lightBlue
                                             ]),
                                         boxShadow: [
-                                          new BoxShadow(
+                                          BoxShadow(
                                               color: GlobalColors.primaryBlue
                                                   .withOpacity(.3),
                                               blurRadius: 10.0,
                                               spreadRadius: 2,
-                                              offset: Offset(0, 3)),
+                                              offset: const Offset(0, 3)),
                                         ],
                                       ),
                                       child: Stack(
@@ -433,7 +435,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                     );
                                                   }
                                                 } else {
-                                                  return Center(
+                                                  return const Center(
                                                       child:
                                                           CircularProgressIndicator(
                                                     valueColor:
@@ -452,10 +454,10 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                       width: _width * .8,
                                       height: _height / 2.5,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(25),
                                         ),
-                                        gradient: LinearGradient(
+                                        gradient: const LinearGradient(
                                             begin: Alignment.bottomLeft,
                                             end: Alignment.topRight,
                                             colors: [
@@ -463,12 +465,12 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                               Colors.white60
                                             ]),
                                         boxShadow: [
-                                          new BoxShadow(
+                                          BoxShadow(
                                               color:
                                                   Colors.grey.withOpacity(.3),
                                               blurRadius: 50.0,
                                               spreadRadius: 5,
-                                              offset: Offset(0, 3)),
+                                              offset: const Offset(0, 3)),
                                         ],
                                       ),
                                       child: Row(
@@ -625,7 +627,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
               }
               return BarTooltipItem(
                   weekDay + '\n' + (rod.y - 1).toInt().toString(),
-                  TextStyle(color: Colors.white));
+                  const TextStyle(color: Colors.white));
             }),
         touchCallback: (barTouchResponse) {
           setState(() {
