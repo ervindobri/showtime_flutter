@@ -30,7 +30,7 @@ class WatchedCardWeb extends StatelessWidget {
   }
 
   Widget buildWatchedCard(BuildContext context) {
-    final double _percentage = show.calculateProgress();
+    final double _percentage = show.calculatedProgress;
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
 
@@ -44,7 +44,7 @@ class WatchedCardWeb extends StatelessWidget {
             ),
             context: context,
             builder: (BuildContext context) {
-              return createRouteShowDetail(show, _width, _height);
+              return buildShowDetails(show, _width, _height);
             },
             isScrollControlled: true);
       },
@@ -129,7 +129,8 @@ class WatchedCardWeb extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(25.0),
                                             border: Border.all(
-                                                color: GlobalColors.greenColor),
+                                                color:
+                                                    GlobalColors.primaryGreen),
                                           ),
                                           child: Row(
                                             mainAxisAlignment:
@@ -139,7 +140,7 @@ class WatchedCardWeb extends StatelessWidget {
                                                 "S",
                                                 style: TextStyle(
                                                   color:
-                                                      GlobalColors.greenColor,
+                                                      GlobalColors.primaryGreen,
                                                   fontSize: maxWidth / 12,
                                                   fontWeight: FontWeight.w900,
                                                 ),
@@ -171,7 +172,8 @@ class WatchedCardWeb extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(25.0),
                                             border: Border.all(
-                                                color: GlobalColors.greenColor),
+                                                color:
+                                                    GlobalColors.primaryGreen),
                                           ),
                                           child: Row(
                                             mainAxisAlignment:
@@ -181,7 +183,7 @@ class WatchedCardWeb extends StatelessWidget {
                                                 "Ep",
                                                 style: TextStyle(
                                                   color:
-                                                      GlobalColors.greenColor,
+                                                      GlobalColors.primaryGreen,
                                                   fontSize: maxWidth / 12,
                                                   fontWeight: FontWeight.w900,
                                                 ),
@@ -220,9 +222,9 @@ class WatchedCardWeb extends StatelessWidget {
                                           fontFamily: 'Raleway',
                                           fontSize: maxWidth / 10,
                                           fontWeight: FontWeight.w700,
-                                          color: GlobalColors.blueColor),
+                                          color: GlobalColors.primaryBlue),
                                     ),
-                                    progressColor: GlobalColors.blueColor,
+                                    progressColor: GlobalColors.primaryBlue,
                                   ),
                                 ),
                               ],
@@ -264,14 +266,14 @@ class WatchedCardWeb extends StatelessWidget {
                   end: Alignment.bottomLeft,
                   colors: [
                     percentage == 1.0
-                        ? GlobalColors.greenColor
+                        ? GlobalColors.primaryGreen
                         : GlobalColors.fireColor,
                     percentage == 1.0
                         ? GlobalColors.lightGreenColor
                         : Colors.orange,
                   ]),
               color: percentage == 1.0
-                  ? GlobalColors.greenColor
+                  ? GlobalColors.primaryGreen
                   : GlobalColors.fireColor,
               borderRadius: BorderRadius.all(Radius.circular(50.0)),
             ),
@@ -302,10 +304,10 @@ class WatchedCardWeb extends StatelessWidget {
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
                     colors: [
-                      GlobalColors.greenColor,
+                      GlobalColors.primaryGreen,
                       GlobalColors.lightGreenColor,
                     ]),
-                color: GlobalColors.greenColor,
+                color: GlobalColors.primaryGreen,
                 borderRadius: BorderRadius.all(Radius.circular(50.0)),
               ),
               child: Center(
@@ -358,13 +360,13 @@ class WatchedCardWeb extends StatelessWidget {
                       FirestoreUtils().updateEpisode(show);
                       controller.showToast(
                           context: context,
-                          color: GlobalColors.greenColor,
+                          color: GlobalColors.primaryGreen,
                           text: "Episode added!",
                           icon: Icons.done);
                     } catch (e) {
                       controller.showToast(
                           context: context,
-                          color: GlobalColors.greenColor,
+                          color: GlobalColors.primaryGreen,
                           text: "Couldn\'t add episode!",
                           icon: Icons.error);
                     }

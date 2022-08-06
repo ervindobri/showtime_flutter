@@ -155,7 +155,7 @@ class ProfileDialog extends StatelessWidget {
                 child: Text(
                   'Edit',
                   style: TextStyle(
-                      color: GlobalColors.greenColor,
+                      color: GlobalColors.primaryGreen,
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
                 ),
@@ -168,7 +168,7 @@ class ProfileDialog extends StatelessWidget {
                 child: Text(
                   'Close',
                   style: TextStyle(
-                      color: GlobalColors.greenColor,
+                      color: GlobalColors.primaryGreen,
                       fontSize: 20,
                       fontWeight: FontWeight.w300),
                 ),

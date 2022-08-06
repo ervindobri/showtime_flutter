@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/core/constants/styles.dart';
 
 class SecondaryButton extends StatelessWidget {
   final String text;
@@ -14,24 +15,20 @@ class SecondaryButton extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     return SizedBox(
       height: 50,
-      child: OutlinedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(Colors.white),
-          shape: MaterialStateProperty.all(new RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(12.0))),
-        ),
+      child: TextButton(
+        style: GlobalStyles.whiteButtonStyle(),
         onPressed: onPressed,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               text,
-              style: TextStyle(
-                color: GlobalColors.greenColor,
+              style: const TextStyle(
+                color: GlobalColors.primaryGreen,
                 fontSize: 16,
               ),
             ),
-            suffixIcon != null ? suffixIcon! : SizedBox()
+            suffixIcon != null ? suffixIcon! : const SizedBox()
           ],
         ),
       ),

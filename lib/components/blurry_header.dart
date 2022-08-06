@@ -4,6 +4,7 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
   final bool hideTitleWhenExpanded;
   final Widget? child;
+  final String? title;
   final Widget back;
   final List<Widget>? actions;
   final Widget? cancel;
@@ -12,6 +13,7 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
   BlurrySliverDelegate({
     required this.backgroundColor,
     this.child,
+    this.title,
     required this.back,
     required this.expandedHeight,
     this.hideTitleWhenExpanded = true,
@@ -22,20 +24,19 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
-    // final appBarSize = expandedHeight - (shrinkOffset);
-    // final proportion = 2 - (expandedHeight / appBarSize);
-
+    final width = MediaQuery.of(context).size.width;
+    final appBarSize = expandedHeight - (shrinkOffset) + minExtent;
+    final progress = shrinkOffset - minExtent / maxExtent;
     return LayoutBuilder(
       builder: (_, constraints) {
         if (constraints.maxWidth > 600) {
           return ClipRRect(
             child: Container(
               height: expandedHeight,
-              color: Colors.transparent,
+              color: backgroundColor,
               child: Padding(
                 padding: const EdgeInsets.all(24),
-                child: Container(
-                    child: Padding(
+                child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 30.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,18 +45,38 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
                       if (actions != null) ...actions!,
                     ],
                   ),
-                )),
+                ),
               ),
             ),
           );
         } else {
           return Container(
-              width: constraints.maxWidth,
-              height: expandedHeight,
-              child: Row(
+              width: width,
+              height: appBarSize,
+              color: backgroundColor,
+              padding: const EdgeInsets.all(12),
+              child: Stack(
+                alignment: Alignment.topCenter,
                 children: [
-                  back,
-                  if (actions != null) ...actions!,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      back,
+                      if (actions != null) ...actions!,
+                    ],
+                  ),
+                  if (title != null)
+                    AnimatedPositioned(
+                      bottom: 10,
+                      duration: kThemeAnimationDuration,
+                      child: Text(
+                        title!,
+                        style: TextStyle.lerp(
+                            const TextStyle(color: Colors.white, fontSize: 20),
+                            const TextStyle(color: Colors.white, fontSize: 16),
+                            progress),
+                      ),
+                    )
                 ],
               ));
         }
@@ -67,7 +88,7 @@ class BlurrySliverDelegate extends SliverPersistentHeaderDelegate {
   double get maxExtent => expandedHeight;
 
   @override
-  double get minExtent => expandedHeight;
+  double get minExtent => 62;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {

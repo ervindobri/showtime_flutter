@@ -32,7 +32,7 @@ Future<void> main() async {
 
 appTheme() {
   return ThemeData(
-    primaryColor: GlobalColors.greenColor,
+    primaryColor: GlobalColors.primaryGreen,
     fontFamily: ShowTheme.defaultFontFamily,
     textTheme: TextTheme(
         bodyText1: GoogleFonts.raleway(
@@ -50,7 +50,6 @@ appTheme() {
 class Router extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return LoginScreen();
     return bloc.BlocProvider<SplashBloc>(
       create: (BuildContext context) => SplashBloc()..add(GetSplashEvent(true)),
       child: SplashScreen(),

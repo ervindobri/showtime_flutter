@@ -73,7 +73,7 @@ class EpisodeTile extends StatelessWidget {
       indicatorStyle: IndicatorStyle(
         width: 30,
         color: episodes.first.getDiffDays() < 0
-            ? GlobalColors.greenColor
+            ? GlobalColors.primaryGreen
             : GlobalColors.fireColor,
         indicatorXY: 0.0,
       ),
@@ -81,7 +81,7 @@ class EpisodeTile extends StatelessWidget {
         decoration: BoxDecoration(boxShadow: [
           new BoxShadow(
               color: episodes.first.getDiffDays() < 0
-                  ? GlobalColors.greenColor.withOpacity(.2)
+                  ? GlobalColors.primaryGreen.withOpacity(.2)
                   : GlobalColors.fireColor.withOpacity(.2),
               blurRadius: 15,
               spreadRadius: -2)
@@ -95,7 +95,7 @@ class EpisodeTile extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 color: episodes.first.getDiffDays() < 0
-                    ? GlobalColors.greenColor
+                    ? GlobalColors.primaryGreen
                     : GlobalColors.fireColor),
             child: Padding(
               padding: const EdgeInsets.all(5.0),

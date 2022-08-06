@@ -186,7 +186,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                           style: ButtonStyle(
                                             backgroundColor:
                                                 MaterialStateProperty.all(
-                                                    GlobalColors.blueColor),
+                                                    GlobalColors.primaryBlue),
                                             shape: MaterialStateProperty.all(
                                               RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.all(
@@ -209,7 +209,8 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                   context: context,
                                                   text: "Show added!",
                                                   gravity: ToastGravity.BOTTOM,
-                                                  color: GlobalColors.blueColor,
+                                                  color:
+                                                      GlobalColors.primaryBlue,
                                                   icon: Icons.done);
                                             } else {
                                               //FOR UPDATING SHOWS RATING
@@ -221,7 +222,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                                   gravity: ToastGravity.BOTTOM,
                                                   icon: Icons.info,
                                                   color:
-                                                      GlobalColors.blueColor);
+                                                      GlobalColors.primaryBlue);
                                             }
                                           },
                                           child: FaIcon(

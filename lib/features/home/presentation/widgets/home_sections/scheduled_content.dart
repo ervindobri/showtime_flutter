@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,10 +9,10 @@ import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
 import 'package:show_time/core/utils/navigation.dart';
 import 'package:show_time/features/home/presentation/bloc/scheduledshows_bloc.dart';
-import 'package:show_time/screens/full_schedule.dart';
 import 'package:show_time/ui/schedule_card.dart';
 
 class ScheduledContent extends StatelessWidget {
+  ScheduledContent({Key? key}) : super(key: key);
   final ScrollController _scheduleScrollController = ScrollController();
 
   @override
@@ -28,37 +29,33 @@ class ScheduledContent extends StatelessWidget {
               Text("Schedule", style: GlobalStyles.sectionStyle()),
               InkWell(
                 onTap: () => NavUtils.navigate(context, '/schedule'),
-                child: Container(
-                  child: Center(
-                    child: Text("All",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: GlobalColors.greenColor,
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.w800,
-                        )),
-                  ),
-                ),
+                child: const Text("All",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: GlobalColors.primaryGreen,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w800,
+                    )),
               ),
             ],
           ),
         ),
         BlocBuilder<ScheduledShowsBloc, ScheduledShowsState>(
           builder: (context, state) {
-            print(state);
             if (state is ScheduledShowsLoaded) {
               final shows = state.shows;
               if (shows.isNotEmpty) {
-                return _buildScheduledShowView(context, shows);
+                return _buildScheduledShowView(
+                  context,
+                  shows.take(5).toList(),
+                );
               } else {
-                return Container(
-                  child: Center(
-                    child: Text("empty as fuck bro"),
-                  ),
+                return const Center(
+                  child: Text("empty as fuck bro"),
                 );
               }
             } else {
-              return LoadingCouch();
+              return const LoadingCouch();
             }
           },
         ),
@@ -69,36 +66,41 @@ class ScheduledContent extends StatelessWidget {
   Widget _buildScheduledShowView(BuildContext context, List shows) {
     double _width = MediaQuery.of(context).size.width;
     double _height = MediaQuery.of(context).size.height;
-    return kIsWeb
-        ? Container(
-            width: _width,
-            height: _height,
-            child: StaggeredGridView.countBuilder(
-              physics: NeverScrollableScrollPhysics(),
-              staggeredTileBuilder: (int index) =>
-                  new StaggeredTile.count(1, 1),
-              mainAxisSpacing: 4.0,
-              crossAxisSpacing: 2.0,
-              itemCount: shows.length,
-              itemBuilder: (context, int index) {
-                return Center(child: ScheduleCard(episode: shows[index]));
-              },
-              crossAxisCount: 4,
-            ),
-          )
-        : Container(
-            width: _width,
-            height: _height * .4,
-            color: GlobalColors.bgColor,
-            child: ListView.builder(
-                controller: _scheduleScrollController,
-                scrollDirection: Axis.horizontal,
-                itemCount: 3,
-                // itemCount: showController.notAired.take(5).length,
-                itemBuilder: (context, int index) {
-                  return Center(
-                      child:
-                          ScheduleCard(episode: shows.take(5).toList()[index]));
-                }));
+    return
+        // kIsWeb
+        //     ? SizedBox(
+        //         width: _width,
+        //         height: _height,
+        //         child: StaggeredGridView.countBuilder(
+        //           physics: const NeverScrollableScrollPhysics(),
+        //           staggeredTileBuilder: (int index) =>
+        //               const StaggeredTile.count(1, 1),
+        //           mainAxisSpacing: 4.0,
+        //           crossAxisSpacing: 2.0,
+        //           itemCount: shows.length,
+        //           itemBuilder: (context, int index) {
+        //             return ScheduleCard(episode: shows[index]);
+        //           },
+        //           crossAxisCount: 4,
+        //         ),
+        //       )
+        //     :
+        SizedBox(
+      width: _width,
+      child: CarouselSlider.builder(
+        options: CarouselOptions(
+          enlargeCenterPage: true,
+          aspectRatio: 16 / 9,
+        ),
+        itemCount: 5,
+        itemBuilder: (_, index, __) {
+          final episode = shows.toList()[index];
+          return SizedBox(
+            // width: 200,
+            child: ScheduleCard(episode: episode),
+          );
+        },
+      ),
+    );
   }
 }

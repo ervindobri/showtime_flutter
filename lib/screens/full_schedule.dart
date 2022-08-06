@@ -50,16 +50,16 @@ class _FullScheduleState extends State<FullSchedule> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: GlobalColors.greenColor,
+        backgroundColor: GlobalColors.primaryGreen,
         shadowColor: Colors.transparent,
         toolbarHeight: 0,
         // leading: null,
       ),
       body: Container(
-        color: GlobalColors.greenColor,
+        color: GlobalColors.primaryGreen,
         child: SafeArea(
           child: Container(
-            color: GlobalColors.greenColor,
+            color: GlobalColors.primaryGreen,
             child: CustomScrollView(
               scrollDirection: Axis.vertical,
               physics: NeverScrollableScrollPhysics(),
@@ -74,13 +74,13 @@ class _FullScheduleState extends State<FullSchedule> {
                     back: CustomBackButton(
                       backPage: 'Home',
                       itemColor: GlobalColors.white,
-                      backgroundColor: GlobalColors.greenColor,
+                      backgroundColor: GlobalColors.primaryGreen,
                     ),
                     actions: getActions(),
                     child: Container(
                       width: _width,
                       decoration: BoxDecoration(
-                          color: GlobalColors.greenColor,
+                          color: GlobalColors.primaryGreen,
                           borderRadius: BorderRadius.only(
                             bottomLeft:
                                 Radius.circular(GlobalVariables.sliverRadius),
@@ -234,14 +234,14 @@ class _FullScheduleState extends State<FullSchedule> {
             ? Text(
                 "Showing ${list.length} result for \"$_searchTerm\"",
                 style: TextStyle(
-                    color: GlobalColors.greenColor,
+                    color: GlobalColors.primaryGreen,
                     fontFamily: 'Raleway',
                     fontSize: 20),
               )
             : Text(
                 "Showing ${list.length} results for \"$_searchTerm\"",
                 style: TextStyle(
-                    color: GlobalColors.greenColor,
+                    color: GlobalColors.primaryGreen,
                     fontFamily: 'Raleway',
                     fontSize: 20),
               ),
@@ -354,7 +354,7 @@ class _FullScheduleState extends State<FullSchedule> {
   getActions() {
     return InkWell(
       highlightColor: GlobalColors.greyTextColor,
-      splashColor: GlobalColors.blueColor,
+      splashColor: GlobalColors.primaryBlue,
       onTap: () {
         //switch view
         print("switching view");
@@ -368,7 +368,7 @@ class _FullScheduleState extends State<FullSchedule> {
           padding: const EdgeInsets.all(5.0),
           child: FaIcon(
             FontAwesomeIcons.adjust,
-            color: GlobalColors.greenColor,
+            color: GlobalColors.primaryGreen,
             size: 15,
           ),
         ),
@@ -382,7 +382,7 @@ class _FullScheduleState extends State<FullSchedule> {
       case -1:
         view = Center(
           child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation(GlobalColors.greenColor),
+            valueColor: AlwaysStoppedAnimation(GlobalColors.primaryGreen),
           ),
         );
         break;

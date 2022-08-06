@@ -370,12 +370,12 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                             begin: Alignment.bottomLeft,
                                             end: Alignment.topRight,
                                             colors: [
-                                              GlobalColors.blueColor,
+                                              GlobalColors.primaryBlue,
                                               Colors.lightBlue
                                             ]),
                                         boxShadow: [
                                           new BoxShadow(
-                                              color: GlobalColors.blueColor
+                                              color: GlobalColors.primaryBlue
                                                   .withOpacity(.3),
                                               blurRadius: 10.0,
                                               spreadRadius: 2,
@@ -579,7 +579,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
       barRods: [
         BarChartRodData(
           y: isTouched ? y + 1 : y,
-          colors: isTouched ? [GlobalColors.greenColor] : [barColor],
+          colors: isTouched ? [GlobalColors.primaryGreen] : [barColor],
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
@@ -597,7 +597,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
       alignment: BarChartAlignment.spaceEvenly,
       barTouchData: BarTouchData(
         touchTooltipData: BarTouchTooltipData(
-            tooltipBgColor: GlobalColors.blueColor,
+            tooltipBgColor: GlobalColors.primaryBlue,
             getTooltipItem: (group, groupIndex, rod, rodIndex) {
               String weekDay = '';
               switch (group.x.toInt()) {
@@ -780,7 +780,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
     final LineChartBarData lineChartBarData1 = LineChartBarData(
       spots: spotList,
       isCurved: true,
-      colors: [GlobalColors.greenColor],
+      colors: [GlobalColors.primaryGreen],
       barWidth: 8,
       isStrokeCapRound: true,
       dotData: FlDotData(

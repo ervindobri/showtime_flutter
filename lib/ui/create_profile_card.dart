@@ -173,27 +173,27 @@ class _CreateProfileState extends State<CreateProfile>
                                               fillColor: Colors.white,
                                               hintText: 'John',
                                               focusColor:
-                                                  GlobalColors.greenColor,
+                                                  GlobalColors.primaryGreen,
                                               enabledBorder:
                                                   const OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color:
-                                                        GlobalColors.blueColor),
+                                                    color: GlobalColors
+                                                        .primaryBlue),
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(50.0)),
                                               ),
                                               border: const OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color:
-                                                        GlobalColors.blueColor),
+                                                    color: GlobalColors
+                                                        .primaryBlue),
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(50.0)),
                                               ),
                                               focusedBorder:
                                                   const OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color:
-                                                        GlobalColors.greenColor,
+                                                    color: GlobalColors
+                                                        .primaryGreen,
                                                     width: 2),
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(50.0)),
@@ -269,27 +269,27 @@ class _CreateProfileState extends State<CreateProfile>
                                                       .greyTextColor,
                                                   fontWeight: FontWeight.w300),
                                               focusColor:
-                                                  GlobalColors.greenColor,
+                                                  GlobalColors.primaryGreen,
                                               enabledBorder:
                                                   const OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color:
-                                                        GlobalColors.blueColor),
+                                                    color: GlobalColors
+                                                        .primaryBlue),
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(50.0)),
                                               ),
                                               border: const OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color:
-                                                        GlobalColors.blueColor),
+                                                    color: GlobalColors
+                                                        .primaryBlue),
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(50.0)),
                                               ),
                                               focusedBorder:
                                                   const OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    color:
-                                                        GlobalColors.greenColor,
+                                                    color: GlobalColors
+                                                        .primaryGreen,
                                                     width: 2),
                                                 borderRadius: BorderRadius.all(
                                                     Radius.circular(50.0)),
@@ -338,7 +338,8 @@ class _CreateProfileState extends State<CreateProfile>
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(50.0)),
                                             border: Border.all(
-                                                color: GlobalColors.blueColor),
+                                                color:
+                                                    GlobalColors.primaryBlue),
                                           ),
                                           child: CupertinoTheme(
                                             data: CupertinoThemeData(
@@ -426,7 +427,8 @@ class _CreateProfileState extends State<CreateProfile>
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(50.0)),
                                             border: Border.all(
-                                                color: GlobalColors.blueColor),
+                                                color:
+                                                    GlobalColors.primaryBlue),
                                           ),
                                           child: CupertinoPicker(
                                             // controller: sexController,

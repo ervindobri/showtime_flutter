@@ -16,7 +16,7 @@ class CustomButton extends StatelessWidget {
       required this.onTap,
       // required this.onSelectItemChanged,
       this.itemColor = GlobalColors.white,
-      this.backgroundColor = GlobalColors.blueColor,
+      this.backgroundColor = GlobalColors.primaryBlue,
       required this.title,
       required this.icon})
       : super(key: key);

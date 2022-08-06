@@ -291,7 +291,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                           .shade300,
                                                                       borderRadius:
                                                                           ShowTheme
-                                                                              .radius25,
+                                                                              .radius24,
                                                                       boxShadow: [
                                                                         new BoxShadow(
                                                                             color: Colors.black.withOpacity(
@@ -326,7 +326,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                           .shade300,
                                                                       borderRadius:
                                                                           ShowTheme
-                                                                              .radius25,
+                                                                              .radius24,
                                                                       boxShadow: [
                                                                         new BoxShadow(
                                                                             color: Colors.black.withOpacity(
@@ -605,7 +605,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                             .grey
                                                                             .shade300,
                                                                         borderRadius:
-                                                                            ShowTheme.radius25,
+                                                                            ShowTheme.radius24,
                                                                         boxShadow: [
                                                                           new BoxShadow(
                                                                               color: Colors.black.withOpacity(.3),
@@ -634,7 +634,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                                             .grey
                                                                             .shade300,
                                                                         borderRadius:
-                                                                            ShowTheme.radius25,
+                                                                            ShowTheme.radius24,
                                                                         boxShadow: [
                                                                           new BoxShadow(
                                                                               color: Colors.black.withOpacity(.3),

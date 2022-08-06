@@ -11,19 +11,19 @@ class SignOutDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    return Container(
-        height: 320,
+    return SizedBox(
+        height: height * .6,
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: FaIcon(
+          const Padding(
+            padding: EdgeInsets.all(24.0),
+            child: const FaIcon(
               FontAwesomeIcons.questionCircle,
-              color: GlobalColors.greenColor,
+              color: GlobalColors.primaryGreen,
               size: kIsWeb ? 100 : 100,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
             child: Center(
               child: AutoSizeText(
                 'Are you sure you want to sign out?',
@@ -47,7 +47,7 @@ class SignOutDialog extends StatelessWidget {
                   color: GlobalColors.greyTextColor),
             ),
           ),
-          Spacer(),
+          const Spacer(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24.0),
             child: Row(
@@ -55,17 +55,17 @@ class SignOutDialog extends StatelessWidget {
                 children: [
                   InkWell(
                     onTap: () => Navigator.pop(context),
-                    child: Container(
+                    child: SizedBox(
                       width: kIsWeb
                           ? 150
                           : MediaQuery.of(context).size.width * .25,
-                      child: Center(
+                      child: const Center(
                         child: AutoSizeText(
                           'Close',
                           minFontSize: kIsWeb ? 30 : 20,
                           maxFontSize: kIsWeb ? 40 : 25,
                           style: TextStyle(
-                              color: GlobalColors.greenColor,
+                              color: GlobalColors.primaryGreen,
                               fontWeight: FontWeight.w300),
                         ),
                       ),
@@ -78,17 +78,17 @@ class SignOutDialog extends StatelessWidget {
                       // await authController.signOutGoogle();
                       NavUtils.navigateReplaced(context, '/login');
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: kIsWeb
                           ? 150
                           : MediaQuery.of(context).size.width * .25,
-                      child: Center(
+                      child: const Center(
                         child: AutoSizeText(
                           'Sign Out',
                           minFontSize: kIsWeb ? 30 : 20,
                           maxFontSize: kIsWeb ? 40 : 25,
                           style: TextStyle(
-                              color: GlobalColors.greenColor,
+                              color: GlobalColors.primaryGreen,
                               fontWeight: FontWeight.w900),
                         ),
                       ),

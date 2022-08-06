@@ -33,7 +33,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
   );
   bool isSearchClicked = false;
   final TextEditingController _filter = new TextEditingController();
-  final bgColor = GlobalColors.blueColor;
+  final bgColor = GlobalColors.primaryBlue;
 
   Widget _textField() {
     return CupertinoTextField(
@@ -224,7 +224,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                                   back: CustomBackButton(
                                     backPage: 'Home',
                                     itemColor: GlobalColors.white,
-                                    backgroundColor: GlobalColors.blueColor,
+                                    backgroundColor: GlobalColors.primaryBlue,
                                   ),
                                 ),
                               ),
@@ -578,13 +578,13 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
         back: CustomBackButton(
           backPage: 'Home',
           itemColor: GlobalColors.white,
-          backgroundColor: GlobalColors.blueColor,
+          backgroundColor: GlobalColors.primaryBlue,
         ),
         // actions: getActions(),
         child: Container(
           width: _width,
           decoration: BoxDecoration(
-              color: GlobalColors.blueColor,
+              color: GlobalColors.primaryBlue,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(GlobalVariables.sliverRadius),
                 bottomRight: Radius.circular(GlobalVariables.sliverRadius),

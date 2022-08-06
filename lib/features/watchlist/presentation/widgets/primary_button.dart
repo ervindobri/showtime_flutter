@@ -21,12 +21,13 @@ class PrimaryButton extends StatelessWidget {
     return SizedBox(
       height: 50,
       child: CustomElevation(
-        color: GlobalColors.greenColor.withOpacity(.3),
+        color: GlobalColors.primaryGreen.withOpacity(.3),
         spreadRadius: 2,
         blurRadius: 15,
         child: TextButton(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(GlobalColors.greenColor),
+            backgroundColor:
+                MaterialStateProperty.all(GlobalColors.primaryGreen),
             overlayColor:
                 MaterialStateProperty.all(GlobalColors.darkGreenColor),
             shape: MaterialStateProperty.all(new RoundedRectangleBorder(

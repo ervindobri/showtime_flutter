@@ -14,41 +14,38 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class HomeView extends StatefulWidget {
+  const HomeView({Key? key}) : super(key: key);
+
   @override
   _HomeViewState createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> with AnimationMixin {
-  //GetX
-
-  var _scrollController = new ScrollController();
-
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _drawerKey = new GlobalKey<ScaffoldState>();
     final email = sl<AuthRepository>().userCredential?.user?.email;
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      // new line
-      key: _drawerKey,
-      backgroundColor: GlobalColors.white,
-      body: SafeArea(
-        child: Stack(
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Stack(
           children: [
             MultiBlocProvider(
               providers: [
-                BlocProvider(
-                  create: (context) =>
-                      sl<WatchedShowsBloc>()..add(LoadWatchedShowsEvent(email)),
+                BlocProvider.value(
+                  value: sl<WatchedShowsBloc>()
+                    ..add(LoadWatchedShowsEvent(email)),
                 ),
-                BlocProvider(
-                  create: (context) =>
-                      sl<ScheduledShowsBloc>()..add(LoadScheduledShowsEvent()),
+                BlocProvider.value(
+                  value: sl<ScheduledShowsBloc>()
+                    ..add(
+                      LoadScheduledShowsEvent(),
+                    ),
                 ),
               ],
               child: homeScreenBody(context),
             ),
-            Positioned(
+            const Positioned(
               top: 0,
               child: CustomAppbar(),
             ),
@@ -69,73 +66,58 @@ class _HomeViewState extends State<HomeView> with AnimationMixin {
             width: _width,
             height: _height,
             color: GlobalColors.bgColor,
-            child: Scrollbar(
-              isAlwaysShown: kIsWeb ? true : false,
-              controller: _scrollController,
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 50,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Center(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            //TODO: shimmer not working on web
-                            Shimmer.fromColors(
-                              highlightColor: GlobalColors.greenColor,
-                              baseColor: GlobalColors.blueColor,
-                              direction: ShimmerDirection.ltr,
-                              period: const Duration(seconds: 10),
-                              child: Container(
-                                height: _height * 0.07,
-                                width: kIsWeb ? _width * .5 : _width * .8,
-                                decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(25.0)),
-                                  gradient: LinearGradient(
-                                      begin: Alignment.topRight,
-                                      end: Alignment.bottomLeft,
-                                      colors: [
-                                        GlobalColors.greenColor,
-                                        GlobalColors.blueColor,
-                                      ]),
-                                ),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  const SizedBox(height: 50 + 42 + 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Center(
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Shimmer.fromColors(
+                            highlightColor: GlobalColors.primaryGreen,
+                            baseColor: GlobalColors.primaryBlue,
+                            direction: ShimmerDirection.ltr,
+                            period: const Duration(seconds: 10),
+                            child: Container(
+                              height: _height * 0.07,
+                              width: kIsWeb ? _width * .5 : _width * .8,
+                              decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(24.0)),
+                                gradient: LinearGradient(
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
+                                    colors: [
+                                      GlobalColors.primaryGreen,
+                                      GlobalColors.primaryBlue,
+                                    ]),
                               ),
                             ),
-                            Center(
-                              child: Text(
-                                showGreetings(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Raleway',
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w700),
-                              ),
+                          ),
+                          Center(
+                            child: Text(
+                              showGreetings(),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontFamily: 'Raleway',
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                    BlocBuilder<WatchedShowsBloc, WatchedShowsState>(
-                      builder: (context, state) {
-                        print(state);
-                        return DiscoverContent();
-                      },
-                    ),
-                    ScheduledContent(),
-                    Container(
-                      height: 200,
-                      width: _width,
-                    )
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 16),
+                  DiscoverContent(),
+                  const SizedBox(height: 16),
+                  ScheduledContent(),
+                ],
               ),
             ),
           ),
@@ -159,6 +141,6 @@ class _HomeViewState extends State<HomeView> with AnimationMixin {
       greetings = 'Good Night';
     }
     // print(firstName);
-    return greetings + ", User!";
+    return greetings + ", Ervin!";
   }
 }

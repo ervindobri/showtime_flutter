@@ -36,7 +36,7 @@ abstract class ShowTheme {
       fontFamily: defaultFontFamily,
       fontSize: width / 15,
       fontWeight: FontWeight.w700,
-      color: GlobalColors.blueColor);
+      color: GlobalColors.primaryBlue);
 
   static var listWatchCardBadgeStyle = TextStyle(
     color: Colors.white,
@@ -45,7 +45,7 @@ abstract class ShowTheme {
     fontSize: height / 30,
   );
 
-  static const radius25 = const BorderRadius.all(Radius.circular(25));
+  static const radius24 = BorderRadius.all(Radius.circular(24));
 
   static var topRadius25 = const BorderRadius.only(
     topLeft: Radius.circular(25),
@@ -61,7 +61,7 @@ abstract class ShowTheme {
     color: GlobalColors.greyTextColor,
     fontFamily: defaultFontFamily,
     fontWeight: FontWeight.w700,
-    // fontSize: _width / 15,
+    fontSize: 16,
   );
 
   static var listWatchCardDaysStyle = TextStyle(

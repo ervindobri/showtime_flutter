@@ -46,7 +46,7 @@ class FilterMenuSheet extends StatelessWidget {
                           splashColor: Colors.transparent,
                           child: FaIcon(
                             FontAwesomeIcons.timesCircle,
-                            color: GlobalColors.greenColor,
+                            color: GlobalColors.primaryGreen,
                             size: kIsWeb
                                 ? 100
                                 : MediaQuery.of(context).size.width / 3,
@@ -73,14 +73,15 @@ class FilterMenuSheet extends StatelessWidget {
                                     Text(
                                       "Rating",
                                       style: GoogleFonts.raleway(
-                                          color: GlobalColors.greenColor,
+                                          color: GlobalColors.primaryGreen,
                                           fontSize: 25),
                                     ),
                                     // Obx(
                                     //       () =>
                                     RadialRangeSlider(
-                                      textColor: GlobalColors.greenColor,
-                                      backgroundColor: GlobalColors.greenColor,
+                                      textColor: GlobalColors.primaryGreen,
+                                      backgroundColor:
+                                          GlobalColors.primaryGreen,
                                       radiusFactor: .5,
                                     )
                                     // ),
@@ -101,7 +102,7 @@ class FilterMenuSheet extends StatelessWidget {
                                     Text(
                                       "Runtime",
                                       style: GoogleFonts.raleway(
-                                          color: GlobalColors.greenColor,
+                                          color: GlobalColors.primaryGreen,
                                           fontSize: 25),
                                     ),
                                     Obx(
@@ -109,7 +110,7 @@ class FilterMenuSheet extends StatelessWidget {
                                         min: 0.0,
                                         max: 60.0,
                                         stepSize: 5,
-                                        activeColor: GlobalColors.greenColor,
+                                        activeColor: GlobalColors.primaryGreen,
                                         showLabels: true,
                                         showTicks: true,
                                         enableIntervalSelection: true,
@@ -136,7 +137,7 @@ class FilterMenuSheet extends StatelessWidget {
                                     Text(
                                       "Genres",
                                       style: GoogleFonts.raleway(
-                                          color: GlobalColors.greenColor,
+                                          color: GlobalColors.primaryGreen,
                                           fontSize: 25),
                                     ),
                                     MultiSelectChipField<String?>(
@@ -149,7 +150,7 @@ class FilterMenuSheet extends StatelessWidget {
                                       textStyle: GoogleFonts.raleway(
                                           color: GlobalColors.greyTextColor),
                                       selectedChipColor:
-                                          GlobalColors.greenColor,
+                                          GlobalColors.primaryGreen,
                                       selectedTextStyle: GoogleFonts.raleway(
                                           color: GlobalColors.white),
                                       decoration: BoxDecoration(
@@ -175,7 +176,7 @@ class FilterMenuSheet extends StatelessWidget {
                         onPressed: onFilter,
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
-                                GlobalColors.blueColor)),
+                                GlobalColors.primaryBlue)),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
@@ -203,7 +204,7 @@ class FilterMenuSheet extends StatelessWidget {
                               splashColor: Colors.transparent,
                               child: FaIcon(
                                 FontAwesomeIcons.timesCircle,
-                                color: GlobalColors.greenColor,
+                                color: GlobalColors.primaryGreen,
                                 size: kIsWeb
                                     ? 100
                                     : MediaQuery.of(context).size.width / 3,
@@ -223,14 +224,14 @@ class FilterMenuSheet extends StatelessWidget {
                                 Text(
                                   "Rating",
                                   style: GoogleFonts.raleway(
-                                      color: GlobalColors.greenColor,
+                                      color: GlobalColors.primaryGreen,
                                       fontSize: 25),
                                 ),
                                 // Obx(
                                 //       () =>
                                 RadialRangeSlider(
-                                  textColor: GlobalColors.greenColor,
-                                  backgroundColor: GlobalColors.greenColor,
+                                  textColor: GlobalColors.primaryGreen,
+                                  backgroundColor: GlobalColors.primaryGreen,
                                   radiusFactor: .65,
                                 )
                                 // ),
@@ -247,7 +248,7 @@ class FilterMenuSheet extends StatelessWidget {
                                     Text(
                                       "Runtime",
                                       style: GoogleFonts.raleway(
-                                          color: GlobalColors.greenColor,
+                                          color: GlobalColors.primaryGreen,
                                           fontSize: 25),
                                     ),
                                     Obx(
@@ -255,7 +256,7 @@ class FilterMenuSheet extends StatelessWidget {
                                         min: 0.0,
                                         max: 60.0,
                                         stepSize: 5,
-                                        activeColor: GlobalColors.greenColor,
+                                        activeColor: GlobalColors.primaryGreen,
                                         showLabels: true,
                                         showTicks: true,
                                         enableIntervalSelection: true,
@@ -280,7 +281,7 @@ class FilterMenuSheet extends StatelessWidget {
                                     Text(
                                       "Genres",
                                       style: GoogleFonts.raleway(
-                                          color: GlobalColors.greenColor,
+                                          color: GlobalColors.primaryGreen,
                                           fontSize: 25),
                                     ),
                                     MultiSelectChipField<String?>(
@@ -293,7 +294,7 @@ class FilterMenuSheet extends StatelessWidget {
                                       textStyle: GoogleFonts.raleway(
                                           color: GlobalColors.greyTextColor),
                                       selectedChipColor:
-                                          GlobalColors.greenColor,
+                                          GlobalColors.primaryGreen,
                                       selectedTextStyle: GoogleFonts.raleway(
                                           color: GlobalColors.white),
                                       decoration: BoxDecoration(
@@ -319,7 +320,7 @@ class FilterMenuSheet extends StatelessWidget {
                               onPressed: onFilter,
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
-                                      GlobalColors.greenColor)),
+                                      GlobalColors.primaryGreen)),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(

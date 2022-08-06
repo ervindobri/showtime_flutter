@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:show_time/components/custom_elevation.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/core/constants/styles.dart';
 import 'package:show_time/core/utils/navigation.dart';
 import 'package:show_time/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:show_time/features/authentication/presentation/widgets/reset_content.dart';
@@ -26,682 +27,339 @@ class _LoginSheetState extends State<LoginSheet> with TickerProviderStateMixin {
 
   bool _showPassword = true;
 
-  FaIcon eye = FaIcon(FontAwesomeIcons.eye, color: GlobalColors.greenColor);
+  FaIcon eye =
+      const FaIcon(FontAwesomeIcons.eye, color: GlobalColors.primaryGreen);
   int _state = 0;
   var animationName = 'Shrink';
-  CarouselController _carouselController = CarouselController();
+  final CarouselController _carouselController = CarouselController();
   TextEditingController nameController =
       TextEditingController(text: 'dobriervin@yahoo.com');
   TextEditingController passwordController =
       TextEditingController(text: 'djcaponegood');
   TextEditingController repasswordController = TextEditingController();
-  TextEditingController resetController = TextEditingController();
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  double textFieldHeight = 45;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-      // TODO: implement listener
       if (state is LoginSuccessful) {
         NavUtils.navigateReplaced(context, '/home', args: state.user);
       }
     }, builder: (context, state) {
-      print(state);
       return StatefulBuilder(
         builder: (context, setState) {
           return Container(
-            height: _height * .8,
+            height: _height * .75,
             width: _width,
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(24)),
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                )),
             child: CarouselSlider(
                 carouselController: _carouselController,
                 options: CarouselOptions(
                   scrollDirection: Axis.horizontal,
-                  scrollPhysics: NeverScrollableScrollPhysics(),
+                  scrollPhysics: const NeverScrollableScrollPhysics(),
                   viewportFraction: 1.0,
                   aspectRatio: .5,
                 ),
                 items: [
-                  Container(
-                    height: _height * .8,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(24)),
-                    child: Stack(
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Container(
-                          height: _height,
-                          child: Center(
+                          height: 4,
+                          width: 100,
+                          margin: const EdgeInsets.only(bottom: 48),
+                          decoration: BoxDecoration(
+                              color: GlobalColors.greyTextColor.withOpacity(.3),
+                              borderRadius: BorderRadius.circular(24)),
+                        ),
+                        Expanded(
+                          child: Form(
+                            key: _formKey,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Container(
-                                    height: 5,
-                                    width: 50,
-                                    decoration: BoxDecoration(
-                                        color: GlobalColors.greyTextColor
-                                            .withOpacity(.3),
-                                        borderRadius:
-                                            BorderRadius.circular(24)),
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "E-mail address",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Raleway',
+                                        fontWeight: FontWeight.normal,
+                                        color: GlobalColors.greyTextColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    TextFormField(
+                                      validator: (value) =>
+                                          EmailValidator.validate(value!)
+                                              ? null
+                                              : "E-mail address is not valid",
+                                      controller: nameController,
+                                      keyboardType: TextInputType.emailAddress,
+                                      autofocus: false,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontFamily: 'Raleway',
+                                          color: GlobalColors.greyTextColor),
+                                      decoration:
+                                          GlobalStyles.formInputDecoration(),
+                                    )
+                                  ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 25.0),
-                                  child: Container(
-                                    child: Form(
-                                      key: _formKey,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 25.0,
-                                                        vertical: 5.0),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      "E-mail address",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontFamily: 'Raleway',
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 15.0),
-                                                child: Container(
-                                                  // height: textFieldHeight,
-                                                  child: TextFormField(
-                                                    validator: (value) =>
-                                                        EmailValidator.validate(
-                                                                value!)
-                                                            ? null
-                                                            : "E-mail address is not valid",
-                                                    controller: nameController,
-                                                    keyboardType: TextInputType
-                                                        .emailAddress,
-                                                    autofocus: false,
-                                                    style: new TextStyle(
-                                                        fontSize: 15.0,
-                                                        fontFamily: 'Raleway',
-                                                        color: GlobalColors
-                                                            .greyTextColor),
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      errorStyle: TextStyle(
-                                                          fontFamily: 'Raleway',
-                                                          color: GlobalColors
-                                                              .orangeColor),
-                                                      contentPadding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 5.0,
-                                                              horizontal: 10.0),
-                                                      filled: true,
-                                                      fillColor: Colors.white,
-                                                      hintText:
-                                                          'johndoe@example.com',
-                                                      focusColor: GlobalColors
-                                                          .greenColor,
-                                                      enabledBorder:
-                                                          const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: GlobalColors
-                                                                .blueColor),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    50.0)),
-                                                      ),
-                                                      border:
-                                                          const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: GlobalColors
-                                                                .blueColor),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    50.0)),
-                                                      ),
-                                                      focusedBorder:
-                                                          const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: GlobalColors
-                                                                .greenColor,
-                                                            width: 2),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    50.0)),
-                                                      ),
-                                                      errorBorder:
-                                                          const OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: GlobalColors
-                                                                .orangeColor,
-                                                            width: 2),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    50.0)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 25.0,
-                                                        vertical: 0.0),
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      "Password",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontFamily: 'Raleway',
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.w600),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 15.0),
-                                                child: Stack(
-                                                  children: [
-                                                    Container(
-                                                      // height: textFieldHeight,
-                                                      child: TextFormField(
-                                                        validator: (value) {
-                                                          // debugPrint(value);
-                                                          // return passwordValidator(
-                                                          //         value!);
-                                                        },
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .visiblePassword,
-                                                        controller:
-                                                            passwordController,
-                                                        obscureText:
-                                                            _showPassword,
-                                                        style: new TextStyle(
-                                                            fontSize: 15.0,
-                                                            fontFamily:
-                                                                'Raleway',
-                                                            color: GlobalColors
-                                                                .greyTextColor),
-                                                        decoration:
-                                                            const InputDecoration(
-                                                                contentPadding:
-                                                                    EdgeInsets.symmetric(
-                                                                        vertical:
-                                                                            1.0,
-                                                                        horizontal:
-                                                                            10.0),
-                                                                errorStyle: TextStyle(
-                                                                    fontFamily:
-                                                                        'Raleway',
-                                                                    color: GlobalColors
-                                                                        .orangeColor),
-                                                                errorText: null,
-                                                                errorMaxLines:
-                                                                    1,
-                                                                filled: true,
-                                                                fillColor:
-                                                                    Colors
-                                                                        .white,
-                                                                hintText:
-                                                                    'password1234',
-                                                                focusColor:
-                                                                    GlobalColors
-                                                                        .greenColor,
-                                                                enabledBorder:
-                                                                    const OutlineInputBorder(
-                                                                  borderSide:
-                                                                      const BorderSide(
-                                                                          color:
-                                                                              GlobalColors.greenColor),
-                                                                  borderRadius: const BorderRadius
-                                                                          .all(
-                                                                      Radius.circular(
-                                                                          50.0)),
-                                                                ),
-                                                                border:
-                                                                    const OutlineInputBorder(
-                                                                  borderSide:
-                                                                      const BorderSide(
-                                                                          color:
-                                                                              GlobalColors.greenColor),
-                                                                  borderRadius: const BorderRadius
-                                                                          .all(
-                                                                      Radius.circular(
-                                                                          50.0)),
-                                                                ),
-                                                                focusedBorder:
-                                                                    const OutlineInputBorder(
-                                                                  borderSide: const BorderSide(
-                                                                      color: GlobalColors
-                                                                          .greenColor,
-                                                                      width:
-                                                                          1.5),
-                                                                  borderRadius: const BorderRadius
-                                                                          .all(
-                                                                      Radius.circular(
-                                                                          50.0)),
-                                                                ),
-                                                                errorBorder:
-                                                                    const OutlineInputBorder(
-                                                                  borderSide: const BorderSide(
-                                                                      color: GlobalColors
-                                                                          .orangeColor,
-                                                                      width:
-                                                                          1.5),
-                                                                  borderRadius: const BorderRadius
-                                                                          .all(
-                                                                      Radius.circular(
-                                                                          50.0)),
-                                                                )),
-                                                      ),
-                                                    ),
-                                                    if (logging)
-                                                      Container(
-                                                        height: textFieldHeight,
-                                                        child: Align(
-                                                            alignment: Alignment
-                                                                .centerRight,
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      15.0),
-                                                              child: InkWell(
-                                                                  onTap: () {
-                                                                    setState(
-                                                                        () {
-                                                                      _showPassword =
-                                                                          !_showPassword;
-                                                                      eye = _showPassword
-                                                                          ? FaIcon(
-                                                                              FontAwesomeIcons.eye,
-                                                                              color: GlobalColors.greenColor,
-                                                                            )
-                                                                          : FaIcon(
-                                                                              FontAwesomeIcons.eyeSlash,
-                                                                              color: GlobalColors.greenColor,
-                                                                            );
-                                                                    });
-                                                                  },
-                                                                  child: eye),
-                                                            )),
-                                                      ),
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          AnimatedSizeAndFade(
-                                            vsync: this,
-                                            child: logging
-                                                ? Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    25.0,
-                                                                vertical: 25.0),
-                                                        child: Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Text(
-                                                              "Remember me",
-                                                              style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  fontFamily:
-                                                                      'Raleway',
-                                                                  color: GlobalColors
-                                                                      .greyTextColor,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    25.0),
-                                                        child: RoundCheckBox(
-                                                          isChecked:
-                                                              this.selected,
-                                                          checkedColor:
-                                                              GlobalColors
-                                                                  .greenColor,
-                                                          // uncheckedColor: GlobalColors.greyTextColor,
-                                                          borderColor:
-                                                              GlobalColors
-                                                                  .greenColor,
-                                                          size: 25,
-                                                          onTap: (value) =>
-                                                              setState(() {
-                                                            // this.selected =
-                                                            //     value!;
-                                                            // authController
-                                                            //     .selected = value;
-                                                          }),
-                                                        ),
-                                                      ),
-                                                    ],
+                                const SizedBox(height: 16),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Password",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Raleway',
+                                        color: GlobalColors.greyTextColor,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    TextFormField(
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
+                                      controller: passwordController,
+                                      obscureText: _showPassword,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: 'Raleway',
+                                        color: GlobalColors.greyTextColor,
+                                      ),
+                                      decoration:
+                                          GlobalStyles.formInputDecoration(
+                                              suffix:
+                                                  // logging
+                                                  // ?
+                                                  InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            _showPassword = !_showPassword;
+                                            eye = _showPassword
+                                                ? const FaIcon(
+                                                    FontAwesomeIcons.eye,
+                                                    color: GlobalColors
+                                                        .primaryGreen,
                                                   )
-                                                : Column(
-                                                    children: [
-                                                      Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    25.0,
-                                                                vertical: 0.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Text(
-                                                              "Password again",
-                                                              style: TextStyle(
-                                                                  fontSize: 20,
-                                                                  fontFamily:
-                                                                      'Raleway',
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
+                                                : const FaIcon(
+                                                    FontAwesomeIcons.eyeSlash,
+                                                    color: GlobalColors
+                                                        .primaryGreen,
+                                                  );
+                                          });
+                                        },
+                                        child: eye,
+                                      )
+                                              // : const SizedBox(),
+                                              ),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                AnimatedSizeAndFade(
+                                  vsync: this,
+                                  child: logging
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: const [
+                                                Text(
+                                                  "Remember me",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'Raleway',
+                                                      color: GlobalColors
+                                                          .greyTextColor,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                ),
+                                              ],
+                                            ),
+                                            RoundCheckBox(
+                                              isChecked: selected,
+                                              checkedColor:
+                                                  GlobalColors.primaryGreen,
+                                              // uncheckedColor: GlobalColors.greyTextColor,
+                                              borderColor:
+                                                  GlobalColors.primaryGreen,
+                                              size: 24,
+                                              onTap: (value) => setState(() {
+                                                selected = value!;
+                                                // authController
+                                                //     .selected = value;
+                                              }),
+                                            ),
+                                          ],
+                                        )
+                                      : Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              "Password again",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: 'Raleway',
+                                                color:
+                                                    GlobalColors.greyTextColor,
+                                                fontWeight: FontWeight.normal,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Stack(
+                                              children: [
+                                                TextFormField(
+                                                  validator: (value) {
+                                                    // if (value !=
+                                                    //     authController
+                                                    //         .passwordController
+                                                    //         .text) {
+                                                    //   return "Passwords do not match!";
+                                                    // }
+                                                    // return null;
+                                                  },
+                                                  keyboardType: TextInputType
+                                                      .visiblePassword,
+                                                  controller:
+                                                      repasswordController,
+                                                  obscureText: true,
+                                                  style: const TextStyle(
+                                                      fontSize: 15.0,
+                                                      fontFamily: 'Raleway',
+                                                      color: GlobalColors
+                                                          .greyTextColor),
+                                                  decoration: GlobalStyles
+                                                      .formInputDecoration(),
+                                                ),
+                                                if (logging)
+                                                  Align(
+                                                      alignment:
+                                                          Alignment.centerRight,
+                                                      child: Padding(
                                                         padding:
                                                             const EdgeInsets
                                                                     .symmetric(
                                                                 horizontal:
                                                                     15.0),
-                                                        child: Stack(
-                                                          children: [
-                                                            Container(
-                                                              // height: textFieldHeight,
-                                                              child:
-                                                                  TextFormField(
-                                                                validator:
-                                                                    (value) {
-                                                                  // if (value !=
-                                                                  //     authController
-                                                                  //         .passwordController
-                                                                  //         .text) {
-                                                                  //   return "Passwords do not match!";
-                                                                  // }
-                                                                  // return null;
-                                                                },
-                                                                keyboardType:
-                                                                    TextInputType
-                                                                        .visiblePassword,
-                                                                controller:
-                                                                    repasswordController,
-                                                                obscureText:
-                                                                    true,
-                                                                style: new TextStyle(
-                                                                    fontSize:
-                                                                        15.0,
-                                                                    fontFamily:
-                                                                        'Raleway',
-                                                                    color: GlobalColors
-                                                                        .greyTextColor),
-                                                                decoration:
-                                                                    const InputDecoration(
-                                                                        contentPadding: EdgeInsets.symmetric(
-                                                                            vertical:
-                                                                                1.0,
-                                                                            horizontal:
-                                                                                10.0),
-                                                                        errorStyle: TextStyle(
-                                                                            fontFamily:
-                                                                                'Raleway',
-                                                                            color: GlobalColors
-                                                                                .orangeColor),
-                                                                        errorText:
-                                                                            null,
-                                                                        errorMaxLines:
-                                                                            1,
-                                                                        filled:
-                                                                            true,
-                                                                        fillColor:
-                                                                            Colors
-                                                                                .white,
-                                                                        hintText:
-                                                                            'password1234',
-                                                                        focusColor:
-                                                                            GlobalColors
-                                                                                .greenColor,
-                                                                        enabledBorder:
-                                                                            const OutlineInputBorder(
-                                                                          borderSide:
-                                                                              const BorderSide(color: GlobalColors.greenColor),
-                                                                          borderRadius:
-                                                                              const BorderRadius.all(Radius.circular(50.0)),
-                                                                        ),
-                                                                        border:
-                                                                            const OutlineInputBorder(
-                                                                          borderSide:
-                                                                              const BorderSide(color: GlobalColors.greenColor),
-                                                                          borderRadius:
-                                                                              const BorderRadius.all(Radius.circular(50.0)),
-                                                                        ),
-                                                                        focusedBorder:
-                                                                            const OutlineInputBorder(
-                                                                          borderSide: const BorderSide(
-                                                                              color: GlobalColors.greenColor,
-                                                                              width: 1.5),
-                                                                          borderRadius:
-                                                                              const BorderRadius.all(Radius.circular(50.0)),
-                                                                        ),
-                                                                        errorBorder:
-                                                                            const OutlineInputBorder(
-                                                                          borderSide: const BorderSide(
-                                                                              color: GlobalColors.orangeColor,
-                                                                              width: 1.5),
-                                                                          borderRadius:
-                                                                              const BorderRadius.all(Radius.circular(50.0)),
-                                                                        )),
-                                                              ),
-                                                            ),
-                                                            if (logging)
-                                                              Container(
-                                                                height:
-                                                                    textFieldHeight,
-                                                                child: Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerRight,
-                                                                    child:
-                                                                        Padding(
-                                                                      padding: const EdgeInsets
-                                                                              .symmetric(
-                                                                          horizontal:
-                                                                              15.0),
-                                                                      child: InkWell(
-                                                                          onTap: () {
-                                                                            setState(() {
-                                                                              _showPassword = !_showPassword;
-                                                                              eye = _showPassword
-                                                                                  ? FaIcon(
-                                                                                      FontAwesomeIcons.eye,
-                                                                                      color: GlobalColors.greenColor,
-                                                                                    )
-                                                                                  : FaIcon(
-                                                                                      FontAwesomeIcons.eyeSlash,
-                                                                                      color: GlobalColors.greenColor,
-                                                                                    );
-                                                                            });
-                                                                          },
-                                                                          child: eye),
-                                                                    )),
-                                                              ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                            fadeDuration: const Duration(
-                                                milliseconds: 200),
-                                            sizeDuration: const Duration(
-                                                milliseconds: 200),
+                                                        child: InkWell(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                _showPassword =
+                                                                    !_showPassword;
+                                                                eye = _showPassword
+                                                                    ? const FaIcon(
+                                                                        FontAwesomeIcons
+                                                                            .eye,
+                                                                        color: GlobalColors
+                                                                            .primaryGreen,
+                                                                      )
+                                                                    : const FaIcon(
+                                                                        FontAwesomeIcons
+                                                                            .eyeSlash,
+                                                                        color: GlobalColors
+                                                                            .primaryGreen,
+                                                                      );
+                                                              });
+                                                            },
+                                                            child: eye),
+                                                      )),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                  fadeDuration:
+                                      const Duration(milliseconds: 200),
+                                  sizeDuration:
+                                      const Duration(milliseconds: 200),
+                                ),
+                                const Spacer(),
+                                Column(
+                                  children: [
+                                    TextButton(
+                                      style: GlobalStyles.greenButtonStyle(),
+                                      onPressed: () async {
+                                        await validateForm(context);
+                                      },
+                                      child: buttonChild(
+                                          _state, logging, Colors.white),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    TextButton(
+                                      style: GlobalStyles.whiteButtonStyle(),
+                                      onPressed: () {
+                                        setState(() {
+                                          logging = !logging;
+                                          if (!logging) {
+                                            nameController.clear();
+                                            passwordController.clear();
+                                            repasswordController.clear();
+                                          }
+                                        });
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          logging
+                                              ? "Register"
+                                              : "Back to login",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontFamily: 'Raleway',
+                                            color: GlobalColors.primaryGreen,
+                                            fontWeight: FontWeight.w600,
                                           ),
-                                        ],
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    const SizedBox(height: 12),
+                                    TextButton(
+                                      onPressed: () {
+                                        _carouselController.nextPage(
+                                            duration: const Duration(
+                                                milliseconds: 100),
+                                            curve: Curves.easeIn);
+                                      },
+                                      child: Text(
+                                        "Forgot your password?",
+                                        style: GoogleFonts.raleway(
+                                            color: GlobalColors.greyTextColor
+                                                .withOpacity(.4),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    )
+                                  ],
                                 ),
+
+                                ///Actions
                               ],
                             ),
                           ),
                         ),
-                        Positioned(
-                          bottom: 0,
-                          left: _width / 10,
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Container(
-                              height: _height / 3,
-                              width: _width * .8,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  CustomElevation(
-                                    color:
-                                        GlobalColors.greenColor.withOpacity(.5),
-                                    spreadRadius: -2,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: GlobalColors.greenColor,
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                      ),
-                                      child: TextButton(
-                                        //     borderRadius: BorderRadius.circular(12.0)),
-                                        onPressed: () async {
-                                          await validateForm(context);
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: buttonChild(
-                                              _state, logging, Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 5.0),
-                                    child: OutlinedButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  Colors.white),
-                                          overlayColor:
-                                              MaterialStateProperty.all<Color>(
-                                                  GlobalColors.lightGreenColor
-                                                      .withOpacity(.4)),
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            logging = !logging;
-                                            if (!logging) {
-                                              nameController.clear();
-                                              passwordController.clear();
-                                              repasswordController.clear();
-                                            }
-                                          });
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8.0, right: 8.0),
-                                          child: Container(
-                                            height: textFieldHeight,
-                                            child: Center(
-                                              child: Text(
-                                                logging
-                                                    ? "Register"
-                                                    : "Back to login",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    fontFamily: 'Raleway',
-                                                    color:
-                                                        GlobalColors.greenColor,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                            ),
-                                          ),
-                                        )),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      _carouselController.nextPage(
-                                          duration: Duration(milliseconds: 100),
-                                          curve: Curves.easeIn);
-                                    },
-                                    child: Text(
-                                      "Forgot your password?",
-                                      style: GoogleFonts.raleway(
-                                          color: GlobalColors.greyTextColor
-                                              .withOpacity(.4),
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w300),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ), //BUTTONS
                       ],
                     ),
                   ),
-                  ResetContent(resetController: resetController)
+                  ResetContent(carouselController: _carouselController)
                 ]),
           );
         },

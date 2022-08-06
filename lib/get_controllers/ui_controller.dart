@@ -62,7 +62,7 @@ class UIController extends GetxController {
                 child: Text(
                   'Close',
                   style: TextStyle(
-                      color: GlobalColors.greenColor,
+                      color: GlobalColors.primaryGreen,
                       fontSize: 20,
                       fontWeight: FontWeight.w300),
                 ),
@@ -79,15 +79,14 @@ class UIController extends GetxController {
                 showToast(
                   text: 'Show unwatched!',
                   icon: Icons.done,
-                  color: GlobalColors.greenColor,
+                  color: GlobalColors.primaryGreen,
                   context: context,
                 );
                 //removed
                 GlobalVariables.watchedShowList
                     .removeWhere((element) => element.name == showName);
-                                            NavUtils.back(context);
-                                            NavUtils.back(context);
-
+                NavUtils.back(context);
+                NavUtils.back(context);
               } catch (exception) {
                 showToast(
                     text: "Couldn'\t unwatch show!",
@@ -105,7 +104,7 @@ class UIController extends GetxController {
                 child: Text(
                   'Unwatch',
                   style: TextStyle(
-                      color: GlobalColors.greenColor,
+                      color: GlobalColors.primaryGreen,
                       fontSize: 20,
                       fontWeight: FontWeight.w900),
                 ),

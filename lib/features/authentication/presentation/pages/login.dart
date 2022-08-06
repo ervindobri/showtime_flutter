@@ -25,7 +25,8 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
   bool selected = false; // remember me
   bool logging = true;
 
-  FaIcon eye = FaIcon(FontAwesomeIcons.eye, color: GlobalColors.greenColor);
+  FaIcon eye =
+      const FaIcon(FontAwesomeIcons.eye, color: GlobalColors.primaryGreen);
   var animationName = 'Shrink';
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -87,145 +88,116 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
         resizeToAvoidBottomInset: false,
         appBar: GlobalStyles.noAppbar,
         body: Stack(
+          alignment: Alignment.topCenter,
           children: [
-            AnimatedPositioned(
-              duration: Duration(milliseconds: 300),
-              top: !startAnimation ? _height / 3 : 30,
-              curve: Curves.decelerate,
-              left: _width / 4,
-              right: _width / 4,
-              child: Container(
-                width: _width / 2,
-                height: _height * .1,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/showTIMEsmall.png"),
-                        fit: BoxFit.cover)),
+            Container(
+              width: _width / 2,
+              height: _height * .1,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/showTIMEsmall.png"),
+                    fit: BoxFit.cover),
               ),
             ),
-            Container(
+            SizedBox(
               width: _width,
               height: _height,
               child: FlareActor("assets/flowingbg.flr",
                   isPaused: _isBgAnimStopped,
+                  snapToEnd: true,
                   fit: BoxFit.cover,
                   animation: "in"),
             ),
-            FadeTransition(
-              opacity: Tween<double>(
-                begin: 0,
-                end: 1,
-              ).animate(animation),
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: Offset(0, 1),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(24),
-                          child: BackdropFilter(
-                            filter:
-                                ImageFilter.blur(sigmaX: 24.0, sigmaY: 24.0),
-                            child: Container(
-                              height: _height * .6,
-                              width: _width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(24),
-                                color: GlobalColors.white.withOpacity(.4),
+            Positioned(
+              bottom: 24,
+              left: 24,
+              right: 24,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 48.0, sigmaY: 24.0),
+                  child: Container(
+                    height: _height * .6,
+                    width: _width,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      color: GlobalColors.white.withOpacity(.4),
+                    ),
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              IconButton(
+                                iconSize: 64,
+                                icon: Container(
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: Image(
+                                      image:
+                                          AssetImage('assets/google_logo.png'),
+                                      height: 48,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  print("google sign in!");
+                                  // authController.signInWithGoogle();
+                                  //TODO: auth with google
+                                },
                               ),
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 30.0),
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      SecondaryButton(
-                                        text: "",
-                                        suffixIcon: Image(
-                                          image: AssetImage(
-                                              'assets/google_logo.png'),
-                                          height: 30,
-                                        ),
-                                        onPressed: () async {
-                                          print("google sign in!");
-                                          // authController.signInWithGoogle();
-                                          //TODO: auth with google
-                                        },
-                                      ),
-                                      //TODO: auth bloc - canCheckBiometrics
-                                      if (true) ...[
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text("or"),
-                                        ),
-                                        InkWell(
-                                          highlightColor:
-                                              GlobalColors.greenColor,
-                                          onTap: () {
-                                            //TODO: auth with biometry
-                                          },
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(25.0),
-                                            child: Container(
-                                              width: 60,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  shape: BoxShape.circle),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: FlareActor(
-                                                    "assets/fingerprint.flr",
-                                                    isPaused:
-                                                        _fingerprintAnimStopped,
-                                                    fit: BoxFit.contain,
-                                                    animation: "Untitled"),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                      Expanded(
-                                        child: Align(
-                                          alignment:
-                                              FractionalOffset.bottomCenter,
-                                          child: InkWell(
-                                            onTap: openBottomSheet,
-                                            child: Container(
-                                              child: Text(
-                                                  GlobalStrings
-                                                      .emailLoginInstead,
-                                                  style: GlobalStyles
-                                                          .theme(context)
-                                                      .textTheme
-                                                      .bodyText1!
-                                                      .copyWith(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                          color: GlobalColors
-                                                              .white,
-                                                          fontWeight:
-                                                              FontWeight.w900)),
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    ]),
+                              //TODO: auth bloc - canCheckBiometrics
+                              if (true) ...[
+                                const Text("or"),
+                                IconButton(
+                                  iconSize: 64,
+                                  highlightColor: GlobalColors.primaryGreen,
+                                  onPressed: () {
+                                    //TODO: auth with biometry
+                                  },
+                                  icon: Container(
+                                    width: 64,
+                                    height: 64,
+                                    decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: FlareActor(
+                                          "assets/fingerprint.flr",
+                                          isPaused: _fingerprintAnimStopped,
+                                          fit: BoxFit.contain,
+                                          animation: "Untitled"),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: FractionalOffset.bottomCenter,
+                              child: TextButton(
+                                onPressed: openBottomSheet,
+                                child: Text(GlobalStrings.emailLoginInstead,
+                                    style: GlobalStyles.theme(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(
+                                            decoration:
+                                                TextDecoration.underline,
+                                            color: GlobalColors.white,
+                                            fontWeight: FontWeight.w900)),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                    ],
+                          )
+                        ]),
                   ),
                 ),
               ),
@@ -248,9 +220,9 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         context: context,
         builder: (context) {
-          return BlocProvider(
-            create: (context) => sl<AuthBloc>(),
-            child: LoginSheet(),
+          return BlocProvider.value(
+            value: sl<AuthBloc>(),
+            child: const LoginSheet(),
           );
         });
   }

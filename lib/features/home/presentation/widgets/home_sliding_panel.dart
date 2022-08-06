@@ -22,98 +22,65 @@ class HomeSlidingPanel extends StatefulWidget {
 }
 
 class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
-  PanelController _pc = new PanelController();
-  PanelState _panelState = PanelState.CLOSED;
+  final PanelController _pc = PanelController();
+  final PanelState _panelState = PanelState.CLOSED;
 
-  final GlobalKey<ScaffoldState> _slidingPanelKey =
-      new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _slidingPanelKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-    late double _panelHeightOpen = height * .8;
-    late double _panelHeightClosed = 100;
+    late double maxPanelHeight = height * .7;
+    late double minPanelHeight = 100;
     return SlidingUpPanel(
       controller: _pc,
-      maxHeight: _panelHeightOpen,
-      minHeight: _panelHeightClosed,
+      maxHeight: maxPanelHeight,
+      minHeight: minPanelHeight,
       key: _slidingPanelKey,
       defaultPanelState: _panelState,
       boxShadow: [
         BoxShadow(
-          color: GlobalColors.greenColor.withOpacity(0.15),
+          color: GlobalColors.primaryGreen.withOpacity(0.15),
           spreadRadius: 10,
           blurRadius: 25,
-          offset: Offset(0, -10), // changes position of shadow
+          offset: const Offset(0, -10), // changes position of shadow
         ),
       ],
       panelSnapping: true,
       collapsed: Center(
         child: Container(
-          height: height * 0.8,
+          height: maxPanelHeight,
           width: width,
-          decoration: BoxDecoration(
-            borderRadius: ShowTheme.radius25,
-            color: GlobalColors.greenColor,
+          decoration: const BoxDecoration(
+            borderRadius: ShowTheme.radius24,
+            color: GlobalColors.primaryGreen,
           ),
           child: Shimmer.fromColors(
             period: const Duration(milliseconds: 3500),
             baseColor: Colors.white54,
             highlightColor: Colors.white,
-            child: kIsWeb && width > 646
-                ? InkWell(
-                    // onTap: () => _pc.open(),
-                    child: Center(
-                      child: Container(
-                        width: width / 3,
-                        height: 50,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(24)),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              FaIcon(
-                                FontAwesomeIcons.arrowAltCircleUp,
-                                color: GlobalColors.greenColor,
-                              ),
-                              Text(
-                                "Open panel",
-                                style: TextStyle(
-                                    color: GlobalColors.greenColor,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: height / 30),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : Container(
-                    height: 30,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: width * .3,
-                          height: 6,
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25.0))),
-                        ),
-                      ],
-                    ),
+            child: SizedBox(
+              height: 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: width * .3,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
                   ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
       panel: Container(
-        height: height * 0.8,
+        height: maxPanelHeight,
         width: width,
         decoration: BoxDecoration(
           borderRadius: ShowTheme.topRadius25,
@@ -122,8 +89,8 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
               colors: [
-                GlobalColors.greenColor,
-                GlobalColors.blueColor,
+                GlobalColors.primaryGreen,
+                GlobalColors.primaryBlue,
               ]),
         ),
         child: Padding(
@@ -131,20 +98,16 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Container(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Container(
-                    child: Text("What are we watching today?",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: height / 30,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: 'Raleway',
-                        )),
-                  ),
-                ),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24.0),
+                child: Text("What are we watching today?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Raleway',
+                    )),
               ),
               blinkWidget(width),
               SizedBox(
@@ -169,7 +132,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
       child: SizedBox(
         width: kIsWeb ? 150 : min(width * 0.6, 90),
         height: kIsWeb ? 150 : min(width * 0.6, 90),
-        child: FlareActor(
+        child: const FlareActor(
           'assets/blink.flr',
           animation: 'Blink',
           fit: BoxFit.cover,
@@ -179,88 +142,89 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
   }
 
   Widget lastWatchedWidget(double height) {
-    return Column(
-      children: <Widget>[
-        //Label - LAst watched
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text("Last watched",
-                style: GlobalStyles.theme(context)
-                    .textTheme
-                    .bodyText1!
-                    .copyWith(
-                        color: Colors.white, fontWeight: FontWeight.w600)),
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          //Label - LAst watched
+          Text("Last watched",
+              style: GlobalStyles.theme(context)
+                  .textTheme
+                  .bodyText1!
+                  .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: StreamBuilder(
+                stream: FirestoreUtils()
+                    .watchedShows
+                    .orderBy('lastWatched', descending: true)
+                    .snapshots(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  // print(snapshot.connectionState);
+                  if (snapshot.hasData && snapshot.data != null) {
+                    // print("data");
+                    if (snapshot.data!.docs.length > 0) {
+                      GlobalVariables.watchedShowList.clear();
+                      // allWatchedShows.clear();
+                      snapshot.data!.docs.forEach((f) {
+                        WatchedTVShow show =
+                            WatchedTVShow.fromFirestore(f.data(), f.id);
+                        GlobalVariables.watchedShowList.add(show);
+                      });
+                      return buildCarouselSlider(
+                          GlobalVariables.watchedShowList.take(5).toList());
+                    } else {
+                      return SizedBox(
+                          height: height / 3,
+                          child: Center(
+                              child: Padding(
+                            padding: const EdgeInsets.all(25.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                AutoSizeText(
+                                  "Your watchlist is empty",
+                                  textAlign: TextAlign.center,
+                                ),
+                                AutoSizeText(
+                                  "Press the eye above for magic",
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          )));
+                    }
+                  } else {
+                    // print("no stream");
+                    return SizedBox(
+                        height: height / 3,
+                        child: Center(
+                            child: Padding(
+                          padding: const EdgeInsets.all(25.0),
+                          child: Text(
+                            "Press the eye above for magic",
+                            textAlign: TextAlign.center,
+                            style: GlobalStyles.theme(context)
+                                .textTheme
+                                .bodyText1!
+                                .copyWith(fontSize: 16),
+                          ),
+                        )));
+                  }
+                }),
           ),
-        ),
-        StreamBuilder(
-            stream: FirestoreUtils()
-                .watchedShows
-                .orderBy('lastWatched', descending: true)
-                .snapshots(),
-            builder: (context, AsyncSnapshot snapshot) {
-              // print(snapshot.connectionState);
-              if (snapshot.hasData && snapshot.data != null) {
-                // print("data");
-                if (snapshot.data!.docs.length > 0) {
-                  GlobalVariables.watchedShowList.clear();
-                  // allWatchedShows.clear();
-                  snapshot.data!.docs.forEach((f) {
-                    WatchedTVShow show =
-                        new WatchedTVShow.fromFirestore(f.data(), f.id);
-                    GlobalVariables.watchedShowList.add(show);
-                  });
-                  return createCarouselSlider(
-                      GlobalVariables.watchedShowList.take(5).toList());
-                } else {
-                  return Container(
-                      height: height / 3,
-                      child: Center(
-                          child: Padding(
-                        padding: const EdgeInsets.all(25.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AutoSizeText(
-                              "Your watchlist is empty",
-                              textAlign: TextAlign.center,
-                            ),
-                            AutoSizeText(
-                              "Press the eye above for magic",
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      )));
-                }
-              } else {
-                // print("no stream");
-                return Container(
-                    height: height / 3,
-                    child: Center(
-                        child: Padding(
-                      padding: const EdgeInsets.all(25.0),
-                      child: Text(
-                        "Press the eye above for magic",
-                        textAlign: TextAlign.center,
-                        style: GlobalStyles.theme(context)
-                            .textTheme
-                            .bodyText1!
-                            .copyWith(fontSize: 16),
-                      ),
-                    )));
-              }
-            }),
-      ],
+        ],
+      ),
     );
   }
 
-  Widget createCarouselSlider(List<WatchedTVShow> data) {
+  Widget buildCarouselSlider(List<WatchedTVShow> data) {
     final width = MediaQuery.of(context).size.width;
     if (kIsWeb) {
       return Center(
-        child: Container(
+        child: SizedBox(
           width: width,
           height: 300,
           child: ListView.builder(
@@ -276,17 +240,20 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
         ),
       );
     } else {
-      return Center(
-        child: CarouselSlider.builder(
-          itemCount: data.length,
-          itemBuilder: (BuildContext context, int itemIndex, int what) =>
-              WatchedCard(
+      return CarouselSlider.builder(
+        itemCount: data.length,
+        itemBuilder: (_, int itemIndex, __) => Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: WatchedCard(
             show: data[itemIndex],
           ),
-          options: CarouselOptions(
-            height: width * .7,
-            enableInfiniteScroll: false,
-          ),
+        ),
+        options: CarouselOptions(
+          autoPlay: true,
+          clipBehavior: Clip.none,
+          enableInfiniteScroll: false,
+          viewportFraction: .9,
+          aspectRatio: 16 / 9,
         ),
       );
     }

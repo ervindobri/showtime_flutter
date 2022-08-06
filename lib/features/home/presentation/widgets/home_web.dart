@@ -78,7 +78,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
               ).animate(animation),
               child: SlideTransition(
                 position: Tween<Offset>(
-                  begin: Offset(0, .1),
+                  begin: const Offset(0, .1),
                   end: Offset.zero,
                 ).animate(animation),
                 child: Container(
@@ -86,10 +86,10 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                   width: _width * .3,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(24),
-                      color: GlobalColors.greenColor,
+                      color: GlobalColors.primaryGreen,
                       boxShadow: [
                         BoxShadow(
-                            color: GlobalColors.greenColor.withOpacity(.3),
+                            color: GlobalColors.primaryGreen.withOpacity(.3),
                             blurRadius: 50,
                             spreadRadius: 5)
                       ]),
@@ -107,13 +107,13 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                         MaterialStateProperty.all(Colors.white),
                                     shape: MaterialStateProperty.all(
                                         RoundedRectangleBorder(
-                                            side: BorderSide(
+                                            side: const BorderSide(
                                                 color:
                                                     GlobalColors.greyTextColor,
                                                 width: .3),
                                             borderRadius:
                                                 BorderRadius.circular(12)))),
-                                child: Container(
+                                child: SizedBox(
                                   width: 150,
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -121,7 +121,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Image(
+                                        const Image(
                                           image: AssetImage(
                                               'assets/google_logo.png'),
                                           height: 30,
@@ -140,7 +140,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                 },
                               ),
                             ),
-                            Container(
+                            SizedBox(
                               height: _height / 2,
                               width: _width,
                               child: CarouselSlider(
@@ -148,7 +148,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                   options: CarouselOptions(
                                     scrollDirection: Axis.horizontal,
                                     scrollPhysics:
-                                        NeverScrollableScrollPhysics(),
+                                        const NeverScrollableScrollPhysics(),
                                     viewportFraction: 1.0,
                                     aspectRatio: .5,
                                   ),
@@ -200,9 +200,9 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                         5.0),
                                                                 child: Row(
                                                                   children: [
-                                                                    Text(
+                                                                    const Text(
                                                                       "E-mail address",
-                                                                      style: TextStyle(
+                                                                      style: const TextStyle(
                                                                           fontSize:
                                                                               20,
                                                                           fontFamily:
@@ -265,18 +265,18 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                           'johndoe@example.com',
                                                                       focusColor:
                                                                           GlobalColors
-                                                                              .greenColor,
+                                                                              .primaryGreen,
                                                                       enabledBorder:
                                                                           const OutlineInputBorder(
                                                                         borderSide:
-                                                                            BorderSide(color: GlobalColors.blueColor),
+                                                                            BorderSide(color: GlobalColors.primaryBlue),
                                                                         borderRadius:
                                                                             BorderRadius.all(Radius.circular(50.0)),
                                                                       ),
                                                                       border:
                                                                           const OutlineInputBorder(
                                                                         borderSide:
-                                                                            BorderSide(color: GlobalColors.blueColor),
+                                                                            BorderSide(color: GlobalColors.primaryBlue),
                                                                         borderRadius:
                                                                             BorderRadius.all(Radius.circular(50.0)),
                                                                       ),
@@ -284,7 +284,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                           const OutlineInputBorder(
                                                                         borderSide: BorderSide(
                                                                             color:
-                                                                                GlobalColors.greenColor,
+                                                                                GlobalColors.primaryGreen,
                                                                             width: 2),
                                                                         borderRadius:
                                                                             BorderRadius.all(Radius.circular(50.0)),
@@ -315,9 +315,9 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                         0.0),
                                                                 child: Row(
                                                                   children: [
-                                                                    Text(
+                                                                    const Text(
                                                                       "Password",
-                                                                      style: TextStyle(
+                                                                      style: const TextStyle(
                                                                           fontSize:
                                                                               20,
                                                                           fontFamily:
@@ -369,17 +369,17 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                             filled: true,
                                                                             fillColor: Colors.white,
                                                                             hintText: 'password1234',
-                                                                            focusColor: GlobalColors.greenColor,
+                                                                            focusColor: GlobalColors.primaryGreen,
                                                                             enabledBorder: const OutlineInputBorder(
-                                                                              borderSide: const BorderSide(color: GlobalColors.greenColor),
+                                                                              borderSide: const BorderSide(color: GlobalColors.primaryGreen),
                                                                               borderRadius: const BorderRadius.all(Radius.circular(50.0)),
                                                                             ),
                                                                             border: const OutlineInputBorder(
-                                                                              borderSide: const BorderSide(color: GlobalColors.greenColor),
+                                                                              borderSide: const BorderSide(color: GlobalColors.primaryGreen),
                                                                               borderRadius: const BorderRadius.all(Radius.circular(50.0)),
                                                                             ),
                                                                             focusedBorder: const OutlineInputBorder(
-                                                                              borderSide: const BorderSide(color: GlobalColors.greenColor, width: 1.5),
+                                                                              borderSide: const BorderSide(color: GlobalColors.primaryGreen, width: 1.5),
                                                                               borderRadius: const BorderRadius.all(Radius.circular(50.0)),
                                                                             ),
                                                                             errorBorder: const OutlineInputBorder(
@@ -389,7 +389,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                       ),
                                                                     ),
                                                                     if (logging)
-                                                                      Container(
+                                                                      SizedBox(
                                                                         height:
                                                                             textFieldHeight,
                                                                         child: Align(
@@ -401,13 +401,13 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                                     setState(() {
                                                                                       _showPassword = !_showPassword;
                                                                                       eye = _showPassword
-                                                                                          ? FaIcon(
+                                                                                          ? const FaIcon(
                                                                                               FontAwesomeIcons.eye,
-                                                                                              color: GlobalColors.greenColor,
+                                                                                              color: GlobalColors.primaryGreen,
                                                                                             )
-                                                                                          : FaIcon(
+                                                                                          : const FaIcon(
                                                                                               FontAwesomeIcons.eyeSlash,
-                                                                                              color: GlobalColors.greenColor,
+                                                                                              color: GlobalColors.primaryGreen,
                                                                                             );
                                                                                     });
                                                                                   },
@@ -438,9 +438,9 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                           mainAxisAlignment:
                                                                               MainAxisAlignment.spaceBetween,
                                                                           children: [
-                                                                            Text(
+                                                                            const Text(
                                                                               "Remember me",
-                                                                              style: TextStyle(fontSize: 15, fontFamily: 'Raleway', color: GlobalColors.greyTextColor, fontWeight: FontWeight.w600),
+                                                                              style: const TextStyle(fontSize: 15, fontFamily: 'Raleway', color: GlobalColors.greyTextColor, fontWeight: FontWeight.w600),
                                                                             ),
                                                                           ],
                                                                         ),
@@ -453,10 +453,10 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                           isChecked:
                                                                               this.selected,
                                                                           checkedColor:
-                                                                              GlobalColors.greenColor,
+                                                                              GlobalColors.primaryGreen,
                                                                           // uncheckedColor: GlobalColors.greyTextColor,
                                                                           animationDuration:
-                                                                              Duration(milliseconds: 200),
+                                                                              const Duration(milliseconds: 200),
                                                                           borderColor:
                                                                               Colors.white,
                                                                           size:
@@ -483,7 +483,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                         child:
                                                                             Row(
                                                                           children: [
-                                                                            Text(
+                                                                            const Text(
                                                                               "Password again",
                                                                               style: TextStyle(fontSize: 20, fontFamily: 'Raleway', color: Colors.white, fontWeight: FontWeight.w600),
                                                                             ),
@@ -517,17 +517,17 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                                     filled: true,
                                                                                     fillColor: Colors.white,
                                                                                     hintText: 'password1234',
-                                                                                    focusColor: GlobalColors.greenColor,
+                                                                                    focusColor: GlobalColors.primaryGreen,
                                                                                     enabledBorder: const OutlineInputBorder(
-                                                                                      borderSide: const BorderSide(color: GlobalColors.greenColor),
+                                                                                      borderSide: const BorderSide(color: GlobalColors.primaryGreen),
                                                                                       borderRadius: const BorderRadius.all(Radius.circular(50.0)),
                                                                                     ),
                                                                                     border: const OutlineInputBorder(
-                                                                                      borderSide: const BorderSide(color: GlobalColors.greenColor),
+                                                                                      borderSide: const BorderSide(color: GlobalColors.primaryGreen),
                                                                                       borderRadius: const BorderRadius.all(Radius.circular(50.0)),
                                                                                     ),
                                                                                     focusedBorder: const OutlineInputBorder(
-                                                                                      borderSide: const BorderSide(color: GlobalColors.greenColor, width: 1.5),
+                                                                                      borderSide: const BorderSide(color: GlobalColors.primaryGreen, width: 1.5),
                                                                                       borderRadius: const BorderRadius.all(Radius.circular(50.0)),
                                                                                     ),
                                                                                     errorBorder: const OutlineInputBorder(
@@ -537,7 +537,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                               ),
                                                                             ),
                                                                             if (logging)
-                                                                              Container(
+                                                                              SizedBox(
                                                                                 height: textFieldHeight,
                                                                                 child: Align(
                                                                                     alignment: Alignment.centerRight,
@@ -548,13 +548,13 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                                             setState(() {
                                                                                               _showPassword = !_showPassword;
                                                                                               eye = _showPassword
-                                                                                                  ? FaIcon(
+                                                                                                  ? const FaIcon(
                                                                                                       FontAwesomeIcons.eye,
-                                                                                                      color: GlobalColors.greenColor,
+                                                                                                      color: GlobalColors.primaryGreen,
                                                                                                     )
-                                                                                                  : FaIcon(
+                                                                                                  : const FaIcon(
                                                                                                       FontAwesomeIcons.eyeSlash,
-                                                                                                      color: GlobalColors.greenColor,
+                                                                                                      color: GlobalColors.primaryGreen,
                                                                                                     );
                                                                                             });
                                                                                           },
@@ -721,7 +721,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                 child: buttonChild(
                                                     _state,
                                                     logging,
-                                                    GlobalColors.greenColor),
+                                                    GlobalColors.primaryGreen),
                                               ),
                                               CustomElevation(
                                                 color: CupertinoColors.black
@@ -759,7 +759,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                           const EdgeInsets.only(
                                                               left: 8.0,
                                                               right: 8.0),
-                                                      child: Container(
+                                                      child: SizedBox(
                                                         height: textFieldHeight,
                                                         width: _width / 2,
                                                         child: Center(
@@ -767,7 +767,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                             logging
                                                                 ? "Register"
                                                                 : "Back to login",
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 fontSize: 15,
                                                                 fontFamily:
                                                                     'Raleway',
@@ -784,7 +784,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                               TextButton(
                                                 onPressed: () {
                                                   _carouselController.nextPage(
-                                                      duration: Duration(
+                                                      duration: const Duration(
                                                           milliseconds: 300),
                                                       curve: Curves.easeIn);
                                                 },
@@ -804,7 +804,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                         ), //BUTTONS
                                       ],
                                     ),
-                                    Container(
+                                    SizedBox(
                                       width: _width,
                                       height: _height * .7,
                                       child: Padding(
@@ -860,12 +860,12 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                   hintText:
                                                       'johndoe@example.com',
                                                   focusColor:
-                                                      GlobalColors.greenColor,
+                                                      GlobalColors.primaryGreen,
                                                   enabledBorder:
                                                       const OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                         color: GlobalColors
-                                                            .blueColor),
+                                                            .primaryBlue),
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
@@ -875,7 +875,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                       const OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                         color: GlobalColors
-                                                            .blueColor),
+                                                            .primaryBlue),
                                                     borderRadius:
                                                         BorderRadius.all(
                                                             Radius.circular(
@@ -885,7 +885,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                       const OutlineInputBorder(
                                                     borderSide: BorderSide(
                                                         color: GlobalColors
-                                                            .greenColor,
+                                                            .primaryGreen,
                                                         width: 2),
                                                     borderRadius:
                                                         BorderRadius.all(
@@ -938,21 +938,20 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
-                                                  Padding(
+                                                  const Padding(
                                                     padding:
-                                                        const EdgeInsets.all(
-                                                            8.0),
-                                                    child: FaIcon(
+                                                        EdgeInsets.all(8.0),
+                                                    child: const FaIcon(
                                                         FontAwesomeIcons
                                                             .syncAlt,
                                                         color: GlobalColors
-                                                            .greenColor),
+                                                            .primaryGreen),
                                                   ),
                                                   Text(
                                                     "Reset Password",
                                                     style: GoogleFonts.raleway(
                                                         color: GlobalColors
-                                                            .greenColor,
+                                                            .primaryGreen,
                                                         fontWeight:
                                                             FontWeight.w600),
                                                   ),
@@ -982,9 +981,10 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                       //go back
                                                       _carouselController
                                                           .previousPage(
-                                                              duration: Duration(
-                                                                  milliseconds:
-                                                                      300),
+                                                              duration:
+                                                                  const Duration(
+                                                                      milliseconds:
+                                                                          300),
                                                               curve: Curves
                                                                   .easeIn);
                                                     },
@@ -993,10 +993,10 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                           const EdgeInsets.only(
                                                               left: 12.0,
                                                               right: 12.0),
-                                                      child: Container(
+                                                      child: SizedBox(
                                                         height: textFieldHeight,
                                                         width: _width / 2,
-                                                        child: Center(
+                                                        child: const Center(
                                                           child: Text(
                                                             "Back",
                                                             style: TextStyle(
@@ -1004,7 +1004,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                                 fontFamily:
                                                                     'Raleway',
                                                                 color: GlobalColors
-                                                                    .greenColor,
+                                                                    .primaryGreen,
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .w600),
@@ -1033,7 +1033,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
   }
 }
 
-Widget buttonChild(_state, logging, Color color) {
+Widget buttonChild(int _state, logging, Color color) {
   if (_state == 0) {
     return Center(
       child: Stack(
@@ -1049,12 +1049,9 @@ Widget buttonChild(_state, logging, Color color) {
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: FaIcon(
-                FontAwesomeIcons.longArrowAltRight,
-                color: color,
-              ),
+            child: FaIcon(
+              FontAwesomeIcons.longArrowAltRight,
+              color: color,
             ),
           )
         ],
@@ -1062,7 +1059,7 @@ Widget buttonChild(_state, logging, Color color) {
     );
   } else if (_state == 1) {
     return Center(
-      child: Container(
+      child: SizedBox(
         height: 24,
         width: 24,
         child: CircularProgressIndicator(

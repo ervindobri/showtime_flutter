@@ -5,6 +5,7 @@ import 'package:show_time/core/constants/custom_variables.dart';
 
 class Utils {
   static showToast({required String text, IconData? icon}) {
-    Fluttertoast.showToast(msg: text, backgroundColor: GlobalColors.greenColor);
+    Fluttertoast.showToast(
+        msg: text, backgroundColor: GlobalColors.primaryGreen);
   }
 }

@@ -52,8 +52,8 @@ class ShowController extends GetxController {
                   //somehow duplicates get in FFS
                   watchedShowIds.add(int.parse(doc.id));
                 }
-                WatchedTVShow show =
-                    new WatchedTVShow.fromFirestore((doc.data() as Map<String, dynamic>), doc.id);
+                WatchedTVShow show = new WatchedTVShow.fromFirestore(
+                    (doc.data() as Map<String, dynamic>), doc.id);
                 result.add(show);
               })
             });
@@ -101,10 +101,12 @@ class ShowController extends GetxController {
           await new Network().getDetailUpdates(showID: show.id);
       var snapshots = FirestoreUtils().watchedShows.doc(show.id).snapshots();
       snapshots.first.then((value) {
-        show.currentSeason = (value.data() as Map<String, dynamic>)['currentSeason'];
+        show.currentSeason =
+            (value.data() as Map<String, dynamic>)['currentSeason'];
         show.totalSeasons = list[0];
         show.episodePerSeason = Map<String, int>.from(list[1]);
-        show.currentEpisode = (value.data()as Map<String, dynamic>)['currentEpisode'];
+        show.currentEpisode =
+            (value.data() as Map<String, dynamic>)['currentEpisode'];
         // return show;
       });
     } catch (e) {
@@ -119,7 +121,7 @@ class ShowController extends GetxController {
       "Title": a.name,
       "Year": a.startDate,
       "Runtime": a.runtime,
-      "Progress": a.calculateProgress(),
+      "Progress": a.calculatedProgress,
       "Rating": a.rating ?? 0.0
     };
     return criteriaMap[criteria];
