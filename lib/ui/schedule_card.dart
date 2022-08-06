@@ -50,7 +50,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
     // const BorderRadius _radius = BorderRadius.all(Radius.circular(25.0));
     return Container(
       // color: Colors.black,
-      padding: const EdgeInsets.fromLTRB(0, 12, 0, 48),
+      padding: const EdgeInsets.fromLTRB(0, 12, 0, 24),
       child: Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.center,
@@ -61,10 +61,11 @@ class _ScheduleCardState extends State<ScheduleCard> {
               borderRadius: BorderRadius.all(Radius.circular(24)),
               boxShadow: [
                 BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 15.0,
-                    spreadRadius: -5,
-                    offset: Offset(0, 5)),
+                  color: Colors.grey,
+                  blurRadius: 15.0,
+                  spreadRadius: -5,
+                  offset: Offset(0, 5),
+                ),
               ],
             ),
             child: Column(
@@ -113,7 +114,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                                     textAlign: TextAlign.right,
                                     overflow: TextOverflow.fade,
                                     maxLines: 1,
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.poppins(
                                       color: Colors.white,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,
@@ -122,7 +123,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                           ),
                           Text(widget.episode.name!,
                               textAlign: TextAlign.right,
-                              style: GoogleFonts.roboto(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontStyle: FontStyle.italic,
                                 fontSize: 14,
@@ -136,7 +137,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 widget.episode.getDiffDays() >= 0
                     ? Text(
                         "Episode available to watch.",
-                        style: GoogleFonts.roboto(
+                        style: GoogleFonts.poppins(
                             color: GlobalColors.greyTextColor.withOpacity(.4),
                             fontSize: 32,
                             fontWeight: FontWeight.w700),
@@ -144,7 +145,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
                     : FittedBox(
                         child: Text(
                           _countdownLabel,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.poppins(
                               color: GlobalColors.greyTextColor.withOpacity(.4),
                               fontSize: 24,
                               fontWeight: FontWeight.w700),

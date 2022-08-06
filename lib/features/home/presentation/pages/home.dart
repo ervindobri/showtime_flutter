@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:show_time/controllers/auth_controller.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
-import 'package:show_time/features/authentication/domain/repositories/auth_repo.dart';
 import 'package:show_time/features/home/presentation/bloc/scheduledshows_bloc.dart';
 import 'package:show_time/features/home/presentation/bloc/watched_shows_bloc.dart';
 import 'package:show_time/features/home/presentation/widgets/custom_appbar.dart';
@@ -23,7 +23,7 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> with AnimationMixin {
   @override
   Widget build(BuildContext context) {
-    final email = sl<AuthRepository>().userCredential?.user?.email;
+    final email = sl<AuthController>().currentUserEmail.value;
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(

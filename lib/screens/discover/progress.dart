@@ -95,7 +95,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                               Center(
                                 child: Text(
                                   "Weekly",
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w700,
                                       fontSize: _width / 22),
                                 ),
@@ -103,7 +103,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                               Center(
                                 child: Text(
                                   "Monthly",
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w700,
                                       fontSize: _width / 22),
                                 ),
@@ -111,7 +111,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                               Center(
                                 child: Text(
                                   "Yearly",
-                                  style: GoogleFonts.roboto(
+                                  style: GoogleFonts.poppins(
                                       fontWeight: FontWeight.w700,
                                       fontSize: _width / 22),
                                 ),
@@ -178,7 +178,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                           padding: const EdgeInsets.all(3.0),
                                           child: Text(
                                             "Per Week",
-                                            style: GoogleFonts.roboto(
+                                            style: GoogleFonts.poppins(
                                                 fontSize: 15,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700),
@@ -247,7 +247,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                           padding: const EdgeInsets.all(3.0),
                                           child: Text(
                                             "Month",
-                                            style: GoogleFonts.roboto(
+                                            style: GoogleFonts.poppins(
                                                 fontSize: 15,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700),
@@ -314,7 +314,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                           padding: const EdgeInsets.all(3.0),
                                           child: Text(
                                             "Year",
-                                            style: GoogleFonts.roboto(
+                                            style: GoogleFonts.poppins(
                                                 fontSize: 15,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.w700),
@@ -391,7 +391,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                 horizontal: 15.0, vertical: 8),
                                             child: Text(
                                               "Days of the week",
-                                              style: GoogleFonts.roboto(
+                                              style: GoogleFonts.poppins(
                                                   fontSize: _width / 15,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.w700),
@@ -423,7 +423,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                     return Center(
                                                       child: Text(
                                                         "Watch some shows first!",
-                                                        style: GoogleFonts.roboto(
+                                                        style: GoogleFonts.poppins(
                                                             fontSize:
                                                                 _width / 12,
                                                             color: GlobalColors
@@ -493,7 +493,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                               animation: true,
                                               center: Text(
                                                 "${(Statistics().getOverallPercent() * 100).toInt().toString()} %",
-                                                style: GoogleFonts.roboto(
+                                                style: GoogleFonts.poppins(
                                                     fontSize: _width / 12,
                                                     color:
                                                         GlobalColors.fireColor,
@@ -511,7 +511,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                               children: [
                                                 Text(
                                                   "O",
-                                                  style: GoogleFonts.roboto(
+                                                  style: GoogleFonts.poppins(
                                                       fontSize: _width / 10,
                                                       color: GlobalColors
                                                           .fireColor,
@@ -520,7 +520,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                 ),
                                                 Text(
                                                   "V",
-                                                  style: GoogleFonts.roboto(
+                                                  style: GoogleFonts.poppins(
                                                       fontSize: _width / 10,
                                                       color: GlobalColors
                                                           .fireColor,
@@ -529,7 +529,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                                                 ),
                                                 Text(
                                                   "R",
-                                                  style: GoogleFonts.roboto(
+                                                  style: GoogleFonts.poppins(
                                                       fontSize: _width / 10,
                                                       color: GlobalColors
                                                           .fireColor,

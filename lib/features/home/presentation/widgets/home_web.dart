@@ -2,23 +2,21 @@
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:show_time/components/custom_elevation.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
-import 'package:show_time/features/splash/bloc/splash_bloc.dart';
-import 'package:show_time/get_controllers/auth_controller.dart';
-import 'package:show_time/get_controllers/ui_controller.dart';
+import 'package:show_time/controllers/auth_controller.dart';
+import 'package:show_time/controllers/ui_controller.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/network/firebase_utils.dart';
-import 'package:show_time/features/splash/presentation/pages/splash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:get/get.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 class HomeWeb extends StatefulWidget {
@@ -29,8 +27,8 @@ class HomeWeb extends StatefulWidget {
 }
 
 class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
-  AuthController authController = Get.find();
-  UIController uiController = Get.find();
+  AuthController authController = sl<AuthController>();
+  UiController uiController = sl<UiController>();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final CarouselController _carouselController = CarouselController();
 
@@ -178,323 +176,346 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                               padding:
                                                   const EdgeInsets.symmetric(
                                                       horizontal: 25.0),
-                                              child: GetBuilder<AuthController>(
-                                                  init: authController,
-                                                  builder: (_) => Form(
-                                              key: _formKey,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .start,
-                                                children: [
-                                                  Column(
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets
-                                                                .symmetric(
-                                                            horizontal:
-                                                                25.0,
-                                                            vertical:
-                                                                5.0),
-                                                        child: Row(
-                                                          children: const [
-                                                            Text(
-                                                              "E-mail address",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      20,
-                                                                  fontFamily:
-                                                                      'Raleway',
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontWeight:
-                                                                      FontWeight.w600),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets
-                                                                .symmetric(
-                                                            horizontal:
-                                                                16.0),
-                                                        child: TextFormField(
-                                                            validator: (value) => EmailValidator
-                                                                    .validate(
-                                                                        value!)
-                                                                ? null
-                                                                : "E-mail address is not valid",
-                                                            controller:
-                                                                authController
-                                                                    .nameController,
-                                                            keyboardType:
-                                                                TextInputType
-                                                                    .emailAddress,
-                                                            autofocus:
-                                                                false,
-                                                            style: const TextStyle(
-                                                                fontSize:
-                                                                    16.0,
-                                                                fontFamily:
-                                                                    'Raleway',
-                                                                color: GlobalColors
-                                                                    .greyTextColor),
-                                                            decoration:
-                                                                GlobalStyles
-                                                                    .formInputDecoration()),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets
-                                                                .symmetric(
-                                                            horizontal:
-                                                                25.0,
-                                                            vertical:
-                                                                0.0),
-                                                        child: Row(
-                                                          children: const [
-                                                            Text(
-                                                              "Password",
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      20,
-                                                                  fontFamily:
-                                                                      'Raleway',
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontWeight:
-                                                                      FontWeight.w600),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Padding(
-                                                        padding: const EdgeInsets
-                                                                .symmetric(
-                                                            horizontal:
-                                                                16.0),
-                                                        child: Stack(
-                                                          children: [
-                                                            TextFormField(
-                                                              validator:
-                                                                  (value) {
-                                                                debugPrint(
-                                                                    value);
-                                                                return authController
-                                                                    .passwordValidator(
-                                                                        value!);
-                                                              },
-                                                              keyboardType:
-                                                                  TextInputType
-                                                                      .visiblePassword,
-                                                              controller:
-                                                                  authController
-                                                                      .passwordController,
-                                                              obscureText:
-                                                                  _showPassword,
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize:
-                                                                    16.0,
-                                                                fontFamily:
-                                                                    'Raleway',
-                                                                color: GlobalColors
-                                                                    .greyTextColor,
+                                              child: Form(
+                                                key: _formKey,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      25.0,
+                                                                  vertical:
+                                                                      5.0),
+                                                          child: Row(
+                                                            children: const [
+                                                              Text(
+                                                                "E-mail address",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontFamily:
+                                                                        'Raleway',
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
                                                               ),
-                                                              decoration:
-                                                                  GlobalStyles
-                                                                      .formInputDecoration(),
-                                                            ),
-                                                            if (logging)
-                                                              SizedBox(
-                                                                height:
-                                                                    textFieldHeight,
-                                                                child:
-                                                                    Align(
-                                                                  alignment:
-                                                                      Alignment.centerRight,
-                                                                  child:
-                                                                      Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.symmetric(horizontal: 16.0),
-                                                                    child: InkWell(
-                                                                        onTap: () {
-                                                                          setState(
-                                                                            () {
-                                                                              _showPassword = !_showPassword;
-                                                                              eye = _showPassword
-                                                                                  ? const FaIcon(
-                                                                                      FontAwesomeIcons.eye,
-                                                                                      color: GlobalColors.primaryGreen,
-                                                                                    )
-                                                                                  : const FaIcon(
-                                                                                      FontAwesomeIcons.eyeSlash,
-                                                                                      color: GlobalColors.primaryGreen,
-                                                                                    );
-                                                                            },
-                                                                          );
-                                                                        },
-                                                                        child: eye),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  AnimatedSizeAndFade(
-                                                    vsync: this,
-                                                    child: logging
-                                                        ? Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        25.0,
-                                                                    vertical:
-                                                                        25.0),
-                                                                child:
-                                                                    Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment.spaceBetween,
-                                                                  children: const [
-                                                                    Text(
-                                                                      "Remember me",
-                                                                      style: TextStyle(
-                                                                          fontSize: 16,
-                                                                          fontFamily: 'Raleway',
-                                                                          color: GlobalColors.greyTextColor,
-                                                                          fontWeight: FontWeight.w600),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        25.0),
-                                                                child:
-                                                                    RoundCheckBox(
-                                                                  isChecked:
-                                                                      selected,
-                                                                  checkedColor:
-                                                                      GlobalColors.primaryGreen,
-                                                                  // uncheckedColor: GlobalColors.greyTextColor,
-                                                                  animationDuration:
-                                                                      const Duration(milliseconds: 200),
-                                                                  borderColor:
-                                                                      Colors.white,
-                                                                  size:
-                                                                      25,
-                                                                  onTap: (value) =>
-                                                                      setState(
-                                                                    () {
-                                                                      selected =
-                                                                          value!;
-                                                                      authController.selected =
-                                                                          value;
-                                                                    },
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          )
-                                                        : Column(
-                                                            children: [
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        25.0,
-                                                                    vertical:
-                                                                        0.0),
-                                                                child:
-                                                                    Row(
-                                                                  children: const [
-                                                                    Text(
-                                                                      "Password again",
-                                                                      style: TextStyle(
-                                                                          fontSize: 20,
-                                                                          fontFamily: 'Raleway',
-                                                                          color: Colors.white,
-                                                                          fontWeight: FontWeight.w600),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        16.0),
-                                                                child:
-                                                                    Stack(
-                                                                  children: [
-                                                                    TextFormField(
-                                                                        validator: (value) {
-                                                                    if (value != authController.passwordController.text) {
-                                                                      return "Passwords do not match!";
-                                                                    }
-                                                                    return null;
-                                                                        },
-                                                                        keyboardType: TextInputType.visiblePassword,
-                                                                        controller: authController.repasswordController,
-                                                                        obscureText: true,
-                                                                        style: const TextStyle(fontSize: 16.0, fontFamily: 'Raleway', color: GlobalColors.greyTextColor),
-                                                                        decoration: GlobalStyles.formInputDecoration(),
-                                                                      ),
-                                                                    if (logging)
-                                                                      SizedBox(
-                                                                        height: textFieldHeight,
-                                                                        child: Align(
-                                                                            alignment: Alignment.centerRight,
-                                                                            child: Padding(
-                                                                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                                                              child: InkWell(
-                                                                                  onTap: () {
-                                                                                    setState(() {
-                                                                                      _showPassword = !_showPassword;
-                                                                                      eye = _showPassword
-                                                                                          ? const FaIcon(
-                                                                                              FontAwesomeIcons.eye,
-                                                                                              color: GlobalColors.primaryGreen,
-                                                                                            )
-                                                                                          : const FaIcon(
-                                                                                              FontAwesomeIcons.eyeSlash,
-                                                                                              color: GlobalColors.primaryGreen,
-                                                                                            );
-                                                                                    });
-                                                                                  },
-                                                                                  child: eye),
-                                                                            )),
-                                                                      ),
-                                                                  ],
-                                                                ),
-                                                              )
                                                             ],
                                                           ),
-                                                    fadeDuration:
-                                                        const Duration(
-                                                            milliseconds:
-                                                                200),
-                                                    sizeDuration:
-                                                        const Duration(
-                                                            milliseconds:
-                                                                200),
-                                                  ),
-                                                ],
-                                              ),
-                                                  ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      16.0),
+                                                          child: TextFormField(
+                                                              validator: (value) =>
+                                                                  EmailValidator.validate(
+                                                                          value!)
+                                                                      ? null
+                                                                      : "E-mail address is not valid",
+                                                              controller:
+                                                                  authController
+                                                                      .nameController,
+                                                              keyboardType:
+                                                                  TextInputType
+                                                                      .emailAddress,
+                                                              autofocus: false,
+                                                              style: const TextStyle(
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  fontFamily:
+                                                                      'Raleway',
+                                                                  color: GlobalColors
+                                                                      .greyTextColor),
+                                                              decoration:
+                                                                  GlobalStyles
+                                                                      .formInputDecoration()),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                      children: [
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      25.0,
+                                                                  vertical:
+                                                                      0.0),
+                                                          child: Row(
+                                                            children: const [
+                                                              Text(
+                                                                "Password",
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontFamily:
+                                                                        'Raleway',
+                                                                    color: Colors
+                                                                        .white,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      16.0),
+                                                          child: Stack(
+                                                            children: [
+                                                              TextFormField(
+                                                                validator:
+                                                                    (value) {
+                                                                  debugPrint(
+                                                                      value);
+                                                                  return authController
+                                                                      .passwordValidator(
+                                                                          value!);
+                                                                },
+                                                                keyboardType:
+                                                                    TextInputType
+                                                                        .visiblePassword,
+                                                                controller:
+                                                                    authController
+                                                                        .passwordController,
+                                                                obscureText:
+                                                                    _showPassword,
+                                                                style:
+                                                                    const TextStyle(
+                                                                  fontSize:
+                                                                      16.0,
+                                                                  fontFamily:
+                                                                      'Raleway',
+                                                                  color: GlobalColors
+                                                                      .greyTextColor,
+                                                                ),
+                                                                decoration:
+                                                                    GlobalStyles
+                                                                        .formInputDecoration(),
+                                                              ),
+                                                              if (logging)
+                                                                SizedBox(
+                                                                  height:
+                                                                      textFieldHeight,
+                                                                  child: Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .centerRight,
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                          horizontal:
+                                                                              16.0),
+                                                                      child: InkWell(
+                                                                          onTap: () {
+                                                                            setState(
+                                                                              () {
+                                                                                _showPassword = !_showPassword;
+                                                                                eye = _showPassword
+                                                                                    ? const FaIcon(
+                                                                                        FontAwesomeIcons.eye,
+                                                                                        color: GlobalColors.primaryGreen,
+                                                                                      )
+                                                                                    : const FaIcon(
+                                                                                        FontAwesomeIcons.eyeSlash,
+                                                                                        color: GlobalColors.primaryGreen,
+                                                                                      );
+                                                                              },
+                                                                            );
+                                                                          },
+                                                                          child: eye),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    AnimatedSizeAndFade(
+                                                      vsync: this,
+                                                      child: logging
+                                                          ? Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                      horizontal:
+                                                                          25.0,
+                                                                      vertical:
+                                                                          25.0),
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: const [
+                                                                      Text(
+                                                                        "Remember me",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                16,
+                                                                            fontFamily:
+                                                                                'Raleway',
+                                                                            color:
+                                                                                GlobalColors.greyTextColor,
+                                                                            fontWeight: FontWeight.w600),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                      horizontal:
+                                                                          25.0),
+                                                                  child:
+                                                                      RoundCheckBox(
+                                                                    isChecked:
+                                                                        selected,
+                                                                    checkedColor:
+                                                                        GlobalColors
+                                                                            .primaryGreen,
+                                                                    // uncheckedColor: GlobalColors.greyTextColor,
+                                                                    animationDuration:
+                                                                        const Duration(
+                                                                            milliseconds:
+                                                                                200),
+                                                                    borderColor:
+                                                                        Colors
+                                                                            .white,
+                                                                    size: 25,
+                                                                    onTap: (value) =>
+                                                                        setState(
+                                                                      () {
+                                                                        selected =
+                                                                            value!;
+                                                                        authController.selected =
+                                                                            value;
+                                                                      },
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
+                                                          : Column(
+                                                              children: [
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                      horizontal:
+                                                                          25.0,
+                                                                      vertical:
+                                                                          0.0),
+                                                                  child: Row(
+                                                                    children: const [
+                                                                      Text(
+                                                                        "Password again",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                20,
+                                                                            fontFamily:
+                                                                                'Raleway',
+                                                                            color:
+                                                                                Colors.white,
+                                                                            fontWeight: FontWeight.w600),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                      horizontal:
+                                                                          16.0),
+                                                                  child: Stack(
+                                                                    children: [
+                                                                      TextFormField(
+                                                                        validator:
+                                                                            (value) {
+                                                                          if (value !=
+                                                                              authController.passwordController.text) {
+                                                                            return "Passwords do not match!";
+                                                                          }
+                                                                          return null;
+                                                                        },
+                                                                        keyboardType:
+                                                                            TextInputType.visiblePassword,
+                                                                        controller:
+                                                                            authController.repasswordController,
+                                                                        obscureText:
+                                                                            true,
+                                                                        style: const TextStyle(
+                                                                            fontSize:
+                                                                                16.0,
+                                                                            fontFamily:
+                                                                                'Raleway',
+                                                                            color:
+                                                                                GlobalColors.greyTextColor),
+                                                                        decoration:
+                                                                            GlobalStyles.formInputDecoration(),
+                                                                      ),
+                                                                      if (logging)
+                                                                        SizedBox(
+                                                                          height:
+                                                                              textFieldHeight,
+                                                                          child: Align(
+                                                                              alignment: Alignment.centerRight,
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                                                child: InkWell(
+                                                                                    onTap: () {
+                                                                                      setState(() {
+                                                                                        _showPassword = !_showPassword;
+                                                                                        eye = _showPassword
+                                                                                            ? const FaIcon(
+                                                                                                FontAwesomeIcons.eye,
+                                                                                                color: GlobalColors.primaryGreen,
+                                                                                              )
+                                                                                            : const FaIcon(
+                                                                                                FontAwesomeIcons.eyeSlash,
+                                                                                                color: GlobalColors.primaryGreen,
+                                                                                              );
+                                                                                      });
+                                                                                    },
+                                                                                    child: eye),
+                                                                              )),
+                                                                        ),
+                                                                    ],
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                      fadeDuration:
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  200),
+                                                      sizeDuration:
+                                                          const Duration(
+                                                              milliseconds:
+                                                                  200),
+                                                    ),
+                                                  ],
                                                 ),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -539,17 +560,17 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                         });
                                                         //TODO: remember info on web
 
-                                                        Get.to(() =>
-                                                            BlocProvider<
-                                                                SplashBloc>(
-                                                              create: (BuildContext
-                                                                      context) =>
-                                                                  SplashBloc()
-                                                                    ..add(GetSplashEvent(
-                                                                        true)),
-                                                              child:
-                                                                  const SplashScreen(),
-                                                            ));
+                                                        // Get.to(() =>
+                                                        //     BlocProvider<
+                                                        //         SplashBloc>(
+                                                        //       create: (BuildContext
+                                                        //               context) =>
+                                                        //           SplashBloc()
+                                                        //             ..add(GetSplashEvent(
+                                                        //                 true)),
+                                                        //       child:
+                                                        //           const SplashScreen(),
+                                                        //     ));
                                                       } else {
                                                         setState(() {
                                                           _state = 0;

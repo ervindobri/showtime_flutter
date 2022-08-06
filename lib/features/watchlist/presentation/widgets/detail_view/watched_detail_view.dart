@@ -10,17 +10,18 @@ import 'package:show_time/core/utils/navigation.dart';
 import 'package:show_time/core/utils/utils.dart';
 import 'package:show_time/features/watchlist/presentation/widgets/primary_button.dart';
 import 'package:show_time/features/watchlist/presentation/widgets/secondary_button.dart';
-import 'package:show_time/get_controllers/show_controller.dart';
-import 'package:show_time/get_controllers/timer_controller.dart';
-import 'package:show_time/get_controllers/ui_controller.dart';
+import 'package:show_time/controllers/show_controller.dart';
+import 'package:show_time/controllers/timer_controller.dart';
+import 'package:show_time/controllers/ui_controller.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:show_time/ui/toast.dart';
@@ -61,9 +62,9 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
 
   int _episodeLength = 24;
 
-  TimerController timerController = Get.put(TimerController())!;
-  UIController uiController = Get.put(UIController())!;
-  ShowController showController = Get.put(ShowController())!;
+  TimerController timerController = sl<TimerController>();
+  UiController uiController = sl<UiController>();
+  ShowController showController = sl<ShowController>();
 
   @override
   void setState(fn) {
@@ -159,7 +160,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                             color: GlobalColors.primaryGreen,
                             image: DecorationImage(
                                 image: NetworkImage(
-                                  widget.show.imageThumbnailPath!,
+                                  widget.show.imageThumbnailPath,
                                 ),
                                 fit: BoxFit.cover),
                             borderRadius: const BorderRadius.only(
@@ -191,7 +192,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(24.0),
                               child: CachedNetworkImage(
-                                imageUrl: widget.show.imageThumbnailPath!,
+                                imageUrl: widget.show.imageThumbnailPath,
                                 progressIndicatorBuilder:
                                     (context, url, downloadProgress) => Center(
                                         child: CircularProgressIndicator(
@@ -336,7 +337,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                       children: <Widget>[
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: Text(show.name!,
+                          child: Text(show.name,
                               maxLines: 2,
                               style: const TextStyle(
                                   fontFamily: 'Raleway',
@@ -364,6 +365,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                                   ),
                                 ),
                                 progressColor: GlobalColors.primaryBlue,
+                                backgroundColor:
+                                    GlobalColors.primaryBlue.withOpacity(.2),
                               ),
                             ),
                             Expanded(
@@ -455,51 +458,51 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
       child: Column(
         children: [
-      Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: AutoSizeText("Badges",
-                  style: GlobalStyles.sectionStyle()),
-            ),
-            AutoSizeText(
-              "About",
-              style: TextStyle(
-                color: GlobalColors.primaryGreen,
-                fontFamily: 'Raleway',
-                fontSize: _width / 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(bottom: 16.0),
-        child: SizedBox(
-          width: _width,
-          height: 68,
-          child: AnimationLimiter(
-            child: ListView.builder(
-              itemCount: badges.length,
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (BuildContext context, int index) {
-                return AnimationConfiguration.staggeredList(
-                  position: index,
-                  duration: const Duration(milliseconds: 375),
-                  child: SlideAnimation(
-                    horizontalOffset: 20.0,
-                    child: badges[index],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: AutoSizeText("Badges",
+                      style: GlobalStyles.sectionStyle()),
+                ),
+                AutoSizeText(
+                  "About",
+                  style: TextStyle(
+                    color: GlobalColors.primaryGreen,
+                    fontFamily: 'Raleway',
+                    fontSize: _width / 20,
                   ),
-                );
-              },
+                ),
+              ],
             ),
           ),
-        ),
-      )
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: SizedBox(
+              width: _width,
+              height: 68,
+              child: AnimationLimiter(
+                child: ListView.builder(
+                  itemCount: badges.length,
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int index) {
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: const Duration(milliseconds: 375),
+                      child: SlideAnimation(
+                        horizontalOffset: 20.0,
+                        child: badges[index],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          )
         ],
       ),
     );
@@ -640,7 +643,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                                         value + widget.show.currentSeason;
                                     _episodeLength = widget
                                         .show
-                                        .episodePerSeason![
+                                        .episodePerSeason[
                                             _selectedSeason.toString()]!
                                         .toInt();
                                   });
@@ -648,7 +651,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                                 },
                                 children: List.generate(
                                     int.parse(widget
-                                            .show.episodePerSeason!.keys.last) -
+                                            .show.episodePerSeason.keys.last) -
                                         widget.show.currentSeason +
                                         1,
                                     (index) => Text(
@@ -839,17 +842,18 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Obx(
-                                () => AutoSizeText(
-                                  timerController.countDown.value,
-                                  maxFontSize: 24,
-                                  minFontSize: 12, // for smaller screens
-                                  maxLines: 1,
-                                  style: GoogleFonts.lato(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white),
-                                ),
-                              ),
+                              child: ValueListenableBuilder<String>(
+                                  valueListenable: timerController.countDown,
+                                  builder: (context, value, __) {
+                                    return Text(
+                                      value,
+                                      maxLines: 1,
+                                      style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                          color: Colors.white),
+                                    );
+                                  }),
                             ),
                           ],
                         ),
@@ -962,7 +966,7 @@ class UnwatchDialog extends StatelessWidget {
                     icon: Icons.error,
                     context: context,
                     color: GlobalColors.fireColor);
-                Get.back();
+                // Get.back();
               }
             },
             child: const SizedBox(

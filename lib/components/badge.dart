@@ -92,7 +92,7 @@ class DetailBadge extends StatelessWidget {
             child: Center(
               child: AutoSizeText(
                 text,
-                style: GoogleFonts.roboto(
+                style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: MediaQuery.of(context).size.height / 20,
                     fontWeight: FontWeight.w700),

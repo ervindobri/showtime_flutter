@@ -7,10 +7,11 @@ class ProfileDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return CustomDialogWidget(
       backgroundColor: Colors.grey.shade100,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(25)),
+        borderRadius: BorderRadius.all(Radius.circular(24)),
       ),
       title: const Center(
         child: Text(
@@ -18,17 +19,18 @@ class ProfileDialog extends StatelessWidget {
         ),
       ),
       titleTextStyle: const TextStyle(
-          fontFamily: 'Raleway',
-          fontSize: 25,
-          fontWeight: FontWeight.w700,
-          color: GlobalColors.greyTextColor),
+        fontFamily: 'Raleway',
+        fontSize: 20,
+        fontWeight: FontWeight.w500,
+        color: GlobalColors.greyTextColor,
+      ),
       titlePadding: const EdgeInsets.only(
-          top: 5.0,
-          // bottom: 10.0,
-          left: 25.0,
-          right: 25.0),
+        top: 8.0,
+        left: 24.0,
+        right: 24.0,
+      ),
       content: SizedBox(
-        height: 260,
+        height: height * .4,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -44,13 +46,13 @@ class ProfileDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text(
                     "First Name : ",
                     style: TextStyle(
                         fontFamily: 'Raleway',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                         color: GlobalColors.greyTextColor),
                   ),
@@ -59,7 +61,7 @@ class ProfileDialog extends StatelessWidget {
                     "firstname",
                     style: TextStyle(
                         fontFamily: 'Raleway',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w100,
                         color: GlobalColors.greyTextColor),
                   ),
@@ -69,13 +71,13 @@ class ProfileDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text(
                     "Last Name : ",
                     style: TextStyle(
                         fontFamily: 'Raleway',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                         color: GlobalColors.greyTextColor),
                   ),
@@ -84,7 +86,7 @@ class ProfileDialog extends StatelessWidget {
                     "lastName",
                     style: TextStyle(
                         fontFamily: 'Raleway',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w100,
                         color: GlobalColors.greyTextColor),
                   ),
@@ -94,13 +96,13 @@ class ProfileDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text(
                     "Age : ",
                     style: TextStyle(
                         fontFamily: 'Raleway',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                         color: GlobalColors.greyTextColor),
                   ),
@@ -109,7 +111,7 @@ class ProfileDialog extends StatelessWidget {
                     "age",
                     style: TextStyle(
                         fontFamily: 'Raleway',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w100,
                         color: GlobalColors.greyTextColor),
                   ),
@@ -119,13 +121,13 @@ class ProfileDialog extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: const [
                   Text(
                     "Sex : ",
                     style: TextStyle(
                         fontFamily: 'Raleway',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
                         color: GlobalColors.greyTextColor),
                   ),
@@ -134,7 +136,7 @@ class ProfileDialog extends StatelessWidget {
                     // "${authController.sessionUser.value.sex}",
                     style: TextStyle(
                         fontFamily: 'Raleway',
-                        fontSize: 20,
+                        fontSize: 16,
                         fontWeight: FontWeight.w100,
                         color: GlobalColors.greyTextColor),
                   ),

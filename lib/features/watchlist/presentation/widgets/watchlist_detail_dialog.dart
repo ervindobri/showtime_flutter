@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
@@ -40,7 +40,7 @@ class WatchlistDetailDialog extends StatelessWidget {
                     image: DecorationImage(
                       fit: BoxFit.contain,
                       image: NetworkImage(
-                        show.imageThumbnailPath!,
+                        show.imageThumbnailPath,
                       ),
                     ),
                     borderRadius: BorderRadius.circular(20),
@@ -132,7 +132,7 @@ class WatchlistDetailDialog extends StatelessWidget {
                                   Text(
                                     show.currentSeason.toString(),
                                     style: GoogleFonts.raleway(
-                                        color: Get.theme.primaryColor,
+                                        // color: context.theme.primaryColor,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 35),
                                   ),
@@ -151,7 +151,7 @@ class WatchlistDetailDialog extends StatelessWidget {
                                   Text(
                                     show.currentEpisode.toString(),
                                     style: GoogleFonts.raleway(
-                                        color: Get.theme.primaryColor,
+                                        // color: context.theme.primaryColor,
                                         fontWeight: FontWeight.w700,
                                         fontSize: 35),
                                   ),

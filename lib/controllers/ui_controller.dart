@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
+
 import 'package:show_time/components/toast.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/utils/navigation.dart';
@@ -11,11 +11,10 @@ import 'package:show_time/network/firebase_utils.dart';
 /// This widget helps manage the state of re appearing UI elements
 /// like Alert Dialogs, Snackbars, Toasts
 ///
-class UIController extends GetxController {
+class UiController {
   late FToast fToast;
 
   int hoverTimeout = 0;
-
 
   unwatchDialog(context, {required String showName, required String showID}) {
     return CustomDialogWidget(
@@ -41,14 +40,16 @@ class UIController extends GetxController {
           fontSize: 17,
           fontWeight: FontWeight.w700,
           color: GlobalColors.greyTextColor),
-      titlePadding:
-          const EdgeInsets.only(top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
+      titlePadding: const EdgeInsets.only(
+          top: 5.0, bottom: 25.0, left: 25.0, right: 25.0),
       elevation: 5,
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 10, bottom: 5),
           child: InkWell(
-            onTap: () => Get.back(),
+            onTap: () => {
+              // Get.back();
+            },
             child: const SizedBox(
               width: 60,
               height: 30,
@@ -88,7 +89,7 @@ class UIController extends GetxController {
                     icon: Icons.error,
                     context: context,
                     color: GlobalColors.fireColor);
-                Get.back();
+                // Get.back();
               }
             },
             child: const SizedBox(

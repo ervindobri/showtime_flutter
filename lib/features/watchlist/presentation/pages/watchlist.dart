@@ -1,19 +1,35 @@
+import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:show_time/components/back.dart';
 import 'package:show_time/components/blurry_header.dart';
-import 'package:show_time/components/custom_elevation.dart';
 import 'package:show_time/components/loading_couch.dart';
+import 'package:show_time/controllers/auth_controller.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
 import 'package:show_time/features/home/presentation/bloc/watched_shows_bloc.dart';
 import 'package:show_time/features/watchlist/presentation/widgets/watchlist_card.dart';
 import 'package:flutter/material.dart';
-import 'package:animate_icons/animate_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:show_time/injection_container.dart';
+
+class WatchlistWrapper extends StatelessWidget {
+  const WatchlistWrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final email = sl<AuthController>().currentUserEmail.value;
+    print(email);
+    return BlocProvider.value(
+      value: sl<WatchedShowsBloc>()..add(LoadWatchedShowsEvent(email)),
+      child: const DiscoverWatchList(),
+    );
+  }
+}
 
 class DiscoverWatchList extends StatefulWidget {
   const DiscoverWatchList({Key? key}) : super(key: key);
@@ -22,32 +38,18 @@ class DiscoverWatchList extends StatefulWidget {
   _DiscoverWatchListState createState() => _DiscoverWatchListState();
 }
 
-class _DiscoverWatchListState extends State<DiscoverWatchList>
-    with SingleTickerProviderStateMixin {
+class _DiscoverWatchListState extends State<DiscoverWatchList> {
   final ScrollController _scrollController = ScrollController();
 
   late bool _sorting;
   String criteria = "Criteria";
   bool isPlaying = false;
-  late Animation animation;
-  late AnimateIconController controller;
 
   @override
   void initState() {
     super.initState();
-    _sorting = false;
-    controller = AnimateIconController();
+    _sorting = true;
     criteria = GlobalVariables.sortCategories[0];
-  }
-
-  _onpressed() {
-    setState(() {
-      if (controller.isStart()) {
-        controller.animateToEnd();
-      } else if (controller.isEnd()) {
-        controller.animateToStart();
-      }
-    });
   }
 
   @override
@@ -92,71 +94,51 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                       ),
                     );
                   } else {
-                    return const SliverFillRemaining(child: LoadingCouch());
+                    return const SliverFillRemaining(
+                      child: LoadingCouch(
+                        color: GlobalColors.watchlistBlue,
+                      ),
+                    );
                   }
                 },
               ),
             ],
           ),
           Positioned(
-            bottom: 50,
-            left: 50,
-            child: _sorting
-                ? CustomElevation(
-                    color: Colors.blueAccent.withOpacity(.3),
-                    child: TextButton(
-                      onPressed: () {
-                        _onpressed();
-                        // showController.sort(criteria);
-                        // print("sorting!");
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              criteria,
-                              style: const TextStyle(
+              bottom: 24,
+              right: 24,
+              child: _sorting
+                  ? ClipOval(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                        child: InkWell(
+                          customBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          splashColor:
+                              GlobalColors.watchlistBlue.withOpacity(.2),
+                          onTap: () {
+                            //TODO: sort watchlist
+                          },
+                          child: Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: GlobalColors.watchlistBlue.withOpacity(.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Center(
+                              child: FaIcon(
+                                FontAwesomeIcons.sort,
                                 color: Colors.white,
-                                fontFamily: 'Raleway',
-                                fontSize: 16,
+                                size: 32,
                               ),
                             ),
                           ),
-                          AnimateIcons(
-                            controller: controller,
-                            startIcon: Icons.keyboard_arrow_up,
-                            endIcon: Icons.keyboard_arrow_down,
-                            // add this tooltip for the start icon
-                            startTooltip: 'Icons.add_circle',
-                            // add this tooltip for the end icon
-                            endTooltip: 'Icons.add_circle_outline',
-                            size: 35.0,
-                            duration: const Duration(milliseconds: 200),
-                            startIconColor: Colors.white,
-                            endIconColor: Colors.white,
-                            clockwise: false,
-                            onStartIconPress: () {
-                              _onpressed();
-                              // showController.sort(criteria);
-                              return true;
-                            },
-                            onEndIconPress: () {
-                              _onpressed();
-                              // showController.sort(criteria);
-                              return true;
-                            },
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Container(),
-                  ),
-          ),
+                    )
+                  : const SizedBox()),
         ],
       ),
     );
@@ -285,7 +267,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                   maxFontSize: 30,
                   maxLines: 3,
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
+                  style: GoogleFonts.poppins(
                       color: GlobalColors.watchlistBlue,
                       fontSize: 25,
                       fontWeight: FontWeight.w700),
@@ -311,7 +293,7 @@ class _DiscoverWatchListState extends State<DiscoverWatchList>
                     maxFontSize: 20,
                     maxLines: 3,
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.roboto(
+                    style: GoogleFonts.poppins(
                         fontSize: 25, decoration: TextDecoration.underline),
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:show_time/core/constants/theme_utils.dart';
 import 'package:show_time/core/utils/navigation.dart';
 import 'package:show_time/features/home/presentation/widgets/watched_card_web.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:show_time/features/home/presentation/widgets/watched_card.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -157,25 +159,24 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
-            child: StreamBuilder(
-                stream: FirestoreUtils()
-                    .watchedShows
-                    .orderBy('lastWatched', descending: true)
-                    .snapshots(),
-                builder: (context, AsyncSnapshot snapshot) {
-                  // print(snapshot.connectionState);
+            child: StreamBuilder<QuerySnapshot>(
+                stream: sl<FirestoreUtils>().getWatchedShows,
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData && snapshot.data != null) {
-                    // print("data");
-                    if (snapshot.data!.docs.length > 0) {
+                    print("data: ${snapshot.data?.docs}");
+                    if (snapshot.data?.docs.isNotEmpty ?? false) {
                       GlobalVariables.watchedShowList.clear();
                       // allWatchedShows.clear();
-                      snapshot.data!.docs.forEach((f) {
-                        WatchedTVShow show =
-                            WatchedTVShow.fromFirestore(f.data(), f.id);
-                        GlobalVariables.watchedShowList.add(show);
-                      });
-                      return buildCarouselSlider(
-                          GlobalVariables.watchedShowList.take(5).toList());
+                      final shows = snapshot.data?.docs
+                              .map(
+                                (DocumentSnapshot f) =>
+                                    WatchedTVShow.fromFirestore(
+                                        f.data() as Map<String, dynamic>, f.id),
+                              )
+                              .toList() ??
+                          [];
+                      print(shows);
+                      return buildCarouselSlider(shows.take(5).toList());
                     } else {
                       return SizedBox(
                           height: height / 3,
@@ -223,6 +224,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
 
   Widget buildCarouselSlider(List<WatchedTVShow> data) {
     final width = MediaQuery.of(context).size.width;
+    print(data);
     if (kIsWeb) {
       return Center(
         child: SizedBox(

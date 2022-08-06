@@ -2,27 +2,25 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:show_time/database/database.dart';
 import 'package:show_time/database/user_data.dart';
 import 'package:show_time/database/user_data_dao.dart';
 import 'package:show_time/models/user.dart';
 import 'package:show_time/network/firebase_utils.dart';
-import 'package:show_time/features/authentication/presentation/pages/login.dart';
-import 'package:show_time/features/splash/presentation/pages/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:get/get.dart';
+
 import 'package:google_sign_in/google_sign_in.dart';
 
-class AuthController extends GetxController {
-  Rx<SessionUser> sessionUser = Rx<SessionUser>(SessionUser(
-      id: 0, firstName: "", lastName: "", emailAddress: "", age: 0, sex: ""));
-  //TODO: resolve floor dependency issue
-  var usersWithBiometricAuth = <UserData>[].obs;
+class AuthController {
+  ValueNotifier<String?> currentUserEmail = ValueNotifier(null);
+  ValueNotifier<SessionUser> sessionUser = ValueNotifier<SessionUser>(
+      SessionUser(
+          id: 0, firstName: "", lastName: "", email: "", age: 0, sex: ""));
+  ValueNotifier<List<UserData>> usersWithBiometricAuth =
+      ValueNotifier(<UserData>[]);
   late UserDao _dao;
   UserDao get dao => _dao;
   bool selected = false;
@@ -39,24 +37,24 @@ class AuthController extends GetxController {
   TextEditingController repasswordController = TextEditingController();
   TextEditingController resetController = TextEditingController();
 
-  @override
-  Future<void> onInit() async {
-    super.onInit();
-    getUserData();
+  // @override
+  // Future<void> onInit() async {
+  //   super.onInit();
+  //   getUserData();
 
-    if (!kIsWeb) {
-      final database =
-          await $FloorAppDatabase.databaseBuilder('users.db').build();
-      _dao = database.userDao;
-      fetchAccounts();
-      getSavedData();
-      _checkBiometrics();
-      _getAvailableBiometrics();
-    }
-    nameController.text = "dobriervin@yahoo.com";
-    passwordController.text = "djcaponegood";
-    print("Set default login data!");
-  }
+  //   if (!kIsWeb) {
+  //     final database =
+  //         await $FloorAppDatabase.databaseBuilder('users.db').build();
+  //     _dao = database.userDao;
+  //     fetchAccounts();
+  //     getSavedData();
+  //     _checkBiometrics();
+  //     _getAvailableBiometrics();
+  //   }
+  //   nameController.text = "dobriervin@yahoo.com";
+  //   passwordController.text = "djcaponegood";
+  //   print("Set default login data!");
+  // }
 
   void getSavedData() async {
     try {
@@ -69,8 +67,8 @@ class AuthController extends GetxController {
   }
 
   void getUserData() {
-    SessionUser user = SessionUser(
-        firstName: '', emailAddress: '', lastName: '', age: 0, sex: '');
+    SessionUser user =
+        SessionUser(firstName: '', email: '', lastName: '', age: 0, sex: '');
     FirebaseFirestore.instance
         .doc("${_auth.currentUser?.email}/user")
         .snapshots()
@@ -78,7 +76,7 @@ class AuthController extends GetxController {
         .then((element) {
       if (element.exists) {
         user.id = _auth.currentUser!.uid;
-        user.emailAddress = _auth.currentUser!.email!;
+        user.email = _auth.currentUser!.email!;
         user.firstName = element.data()!['firstName'];
         user.lastName = element.data()!['lastName'];
         user.sex = element.data()!['sex'];
@@ -128,7 +126,7 @@ class AuthController extends GetxController {
   }
 
   void signOut() async {
-    await _auth.signOut().then((value) => Get.offAll(const LoginScreen()));
+    // await _auth.signOut().then((value) => Get.offAll(const LoginScreen()));
   }
 
   void signInWithGoogle() async {
@@ -146,7 +144,7 @@ class AuthController extends GetxController {
 
     await _auth.signInWithCredential(credential).then((result) {
       print("result:$result");
-      Get.off(const SplashScreen());
+      // Get.off(const SplashScreen());
     });
   }
 
@@ -158,15 +156,15 @@ class AuthController extends GetxController {
   Future<void> fetchAccounts() async {
     await Future.delayed(const Duration(seconds: 1));
     List<UserData> users = (await dao.fetchEnabledBiometricUsers())!;
-    usersWithBiometricAuth.addAll(users);
-    print("Accounts with biometric: ${usersWithBiometricAuth.length}");
+    usersWithBiometricAuth.value.addAll(users);
+    print("Accounts with biometric: ${usersWithBiometricAuth.value.length}");
   }
 
   Future<void> addUser(String email, String password) async {
-    if (usersWithBiometricAuth
-            .where((user) => user.email == email)
-            .toList()
-            .isEmpty) {
+    if (usersWithBiometricAuth.value
+        .where((user) => user.email == email)
+        .toList()
+        .isEmpty) {
       final temp = UserData(0, user!.id, email, password, true);
       print(temp);
       await _dao.insertUser(temp); //no error
@@ -208,7 +206,7 @@ class AuthController extends GetxController {
 
   void updateUserInfo(String firstName, String lastName, int age, String sex) {
     user!.id = _auth.currentUser!.uid;
-    user!.emailAddress = _auth.currentUser!.email!;
+    user!.email = _auth.currentUser!.email!;
     user!.firstName = firstName;
     user!.lastName = lastName;
     user!.age = age;
@@ -216,7 +214,6 @@ class AuthController extends GetxController {
     // print(currentUser);
     FirestoreUtils().updateUserInfo(user!);
   }
-
 
   //region BIOMETRIC_LOGIN
   final LocalAuthentication auth = LocalAuthentication();
@@ -275,7 +272,7 @@ class AuthController extends GetxController {
   }
 
   // void _cancelAuthentication() {
-    // auth.stopAuthentication();
+  // auth.stopAuthentication();
   // }
 
   bool _fingerprintAnimStopped = true;
@@ -285,46 +282,46 @@ class AuthController extends GetxController {
     _authenticate().then((value) async {
       if (_authorized == 'Authorized') {
         _fingerprintAnimStopped = false;
-        if (usersWithBiometricAuth.length > 1) {
-          showCupertinoModalPopup(
-              context: Get.context!,
-              builder: (BuildContext context) {
-                return CupertinoActionSheet(
-                  title: const Text('Account'),
-                  message: const Text(
-                      'Choose in which account would you like to sign-in'),
-                  cancelButton: CupertinoActionSheetAction(
-                    child: const Text('Cancel'),
-                    isDefaultAction: true,
-                    onPressed: () {
-                      Navigator.pop(context, 'Cancel');
-                    },
-                  ),
-                  actions:
-                      List.generate(usersWithBiometricAuth.length, (index) {
-                    return CupertinoActionSheetAction(
-                        child: Text(usersWithBiometricAuth[index].email),
-                        onPressed: () async {
-                          //log-in with the biometric account
-                          String auth = await login(
-                              usersWithBiometricAuth[index].email,
-                              usersWithBiometricAuth[index].password);
-                          if (auth == '') {
-                            Get.off(const SplashScreen());
-                          }
-                        });
-                  }),
-                );
-              });
-        } else if (usersWithBiometricAuth.length == 1) {
-          print("logging in! ${usersWithBiometricAuth.first.password}");
-          String auth = await login(usersWithBiometricAuth.first.email,
-              usersWithBiometricAuth.first.password);
+        if (usersWithBiometricAuth.value.length > 1) {
+          // showCupertinoModalPopup(
+          // context: context!,
+          //     builder: (BuildContext context) {
+          //       return CupertinoActionSheet(
+          //         title: const Text('Account'),
+          //         message: const Text(
+          //             'Choose in which account would you like to sign-in'),
+          //         cancelButton: CupertinoActionSheetAction(
+          //           child: const Text('Cancel'),
+          //           isDefaultAction: true,
+          //           onPressed: () {
+          //             Navigator.pop(context, 'Cancel');
+          //           },
+          //         ),
+          //         actions:
+          //             List.generate(usersWithBiometricAuth.value.length, (index) {
+          //           return CupertinoActionSheetAction(
+          //               child: Text(usersWithBiometricAuth.value[index].email),
+          //               onPressed: () async {
+          //                 //log-in with the biometric account
+          //                 String auth = await login(
+          //                     usersWithBiometricAuth.value[index].email,
+          //                     usersWithBiometricAuth.value[index].password);
+          //                 if (auth == '') {
+          //                   // Get.off(const SplashScreen());
+          //                 }
+          //               });
+          //         }),
+          //       );
+          //     });
+        } else if (usersWithBiometricAuth.value.length == 1) {
+          print("logging in! ${usersWithBiometricAuth.value.first.password}");
+          String auth = await login(usersWithBiometricAuth.value.first.email,
+              usersWithBiometricAuth.value.first.password);
           if (auth == '') {
-            Get.off(() => const SplashScreen(), transition: Transition.fadeIn);
+            // Get.off(() => const SplashScreen(), transition: Transition.fadeIn);
           }
         } else {
-          print(usersWithBiometricAuth.length);
+          print(usersWithBiometricAuth.value.length);
         }
       }
     });

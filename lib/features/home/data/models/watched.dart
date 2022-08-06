@@ -1,67 +1,57 @@
+// ignore_for_file: prefer_initializing_formals
+
+import 'package:equatable/equatable.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/models/tvshow_details.dart';
 
-class WatchedTVShow extends TVShowDetails {
-  int currentSeason;
-  int currentEpisode;
-  String? firstWatchDate;
-  String? lastWatchDate;
-  bool? favorite;
-  Map<String, dynamic>? criteriaMap;
-  int watchedTimes;
+part 'watched_ext.dart';
+
+class WatchedTVShow extends Equatable {
+  final String id;
+  final String name;
+  final DateTime startDate;
+  final String imageThumbnailPath;
+  final int runtime;
+  final num rating;
+  final List<String> genres;
+  final String? firstWatchDate;
+  final Map<String, dynamic>? criteriaMap;
 
   WatchedTVShow(
-      {id,
-      name,
-      startDate,
-      imageThumbnailPath,
-      runtime,
-      rating,
-      genres,
-      episodes,
-      totalSeasons,
-      episodePerSeason,
-      required this.currentSeason,
-      required this.currentEpisode,
+      {required this.id,
+      required this.name,
+      required this.startDate,
+      this.imageThumbnailPath = "",
+      required this.runtime,
+      this.rating = 0.0,
+      this.genres = const <String>[],
+      episodes = const <Episode>[],
+      this.totalSeasons = 0,
+      this.episodePerSeason = const {},
+      currentSeason = 0,
+      currentEpisode = 0,
       this.firstWatchDate,
-      this.lastWatchDate,
+      lastWatchDate,
       this.criteriaMap,
       this.favorite,
       this.watchedTimes = 0})
-      : super(
-            id: id,
-            name: name,
-            startDate: startDate,
-            runtime: runtime,
-            rating: rating,
-            genres: genres,
-            imageThumbnailPath: imageThumbnailPath,
-            episodes: episodes,
-            totalSeasons: totalSeasons,
-            episodePerSeason: episodePerSeason);
+      : lastWatchDate = lastWatchDate,
+        episodes = episodes,
+        currentSeason = currentSeason,
+        currentEpisode = currentEpisode;
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is WatchedTVShow &&
-          runtimeType == other.runtimeType &&
-          currentSeason == other.currentSeason &&
-          currentEpisode == other.currentEpisode &&
-          firstWatchDate == other.firstWatchDate &&
-          lastWatchDate == other.lastWatchDate &&
-          favorite == other.favorite &&
-          criteriaMap == other.criteriaMap &&
-          watchedTimes == other.watchedTimes;
+  //These fields will change dynamically
+  int totalSeasons;
+  Map<String, int> episodePerSeason;
+  bool? favorite;
+  String? lastWatchDate;
+  int currentSeason = 0;
+  int currentEpisode = 0;
+  List<Episode> episodes;
+  int watchedTimes;
 
-  @override
-  int get hashCode =>
-      currentSeason.hashCode ^
-      currentEpisode.hashCode ^
-      firstWatchDate.hashCode ^
-      lastWatchDate.hashCode ^
-      favorite.hashCode ^
-      criteriaMap.hashCode ^
-      watchedTimes.hashCode;
+  get startDateString => startDate.toString();
 
   bool hasMoreEpisodes() {
     bool flag = false;
@@ -91,16 +81,16 @@ class WatchedTVShow extends TVShowDetails {
 
   nextEpisodeAirDate() {
     if (calculateWatchedEpisodes() == 0) {
-      if (episodes![0].airDate != "") {
-        var airDate = DateTime.parse("${episodes![0].airDate} 12:00:00.000");
+      if (episodes[0].airDate != "") {
+        var airDate = DateTime.parse("${episodes[0].airDate} 12:00:00.000");
         var diff = airDate.difference(DateTime.now());
         return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
       }
     } else if (calculateWatchedEpisodes() > 0) {
-      if (episodes![calculateWatchedEpisodes()].airDate != "") {
+      if (episodes[calculateWatchedEpisodes()].airDate != "") {
         try {
           var airDate = DateTime.parse(
-              "${episodes![calculateWatchedEpisodes()].airDate} 12:00:00.000");
+              "${episodes[calculateWatchedEpisodes()].airDate} 12:00:00.000");
           var diff = airDate.difference(DateTime.now());
           return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
         } catch (e) {
@@ -116,11 +106,11 @@ class WatchedTVShow extends TVShowDetails {
   bool get nextEpisodeAired => nextEpisodeAirDate()[0].inDays < 0;
 
   int get totalEpisodesThisSeason =>
-      episodePerSeason?[currentSeason.toString()] ?? 0;
-      
+      episodePerSeason[currentSeason.toString()] ?? 0;
+
   int calculateWatchedEpisodes() {
     int watchedEpisodes = 0;
-    episodePerSeason!.forEach((key, int value) {
+    episodePerSeason.forEach((String key, int value) {
       if (int.parse(key) < currentSeason.toInt()) {
         watchedEpisodes += value;
       } else if (currentSeason == int.parse(key)) {
@@ -132,7 +122,7 @@ class WatchedTVShow extends TVShowDetails {
 
   int get calculateTotalEpisodes {
     int totalEpisodes = 0;
-    episodePerSeason!.forEach((key, value) {
+    episodePerSeason.forEach((key, value) {
       totalEpisodes += value;
     });
     return totalEpisodes;
@@ -150,9 +140,9 @@ class WatchedTVShow extends TVShowDetails {
   }
 
   incrementEpisodeWatch() {
-    if (currentSeason < totalSeasons!.toInt()) {
+    if (currentSeason < totalSeasons.toInt()) {
       if (currentEpisode <
-          episodePerSeason![currentSeason.toString()]!.toInt()) {
+          episodePerSeason[currentSeason.toString()]!.toInt()) {
         currentEpisode++;
       } else {
         //do nothing
@@ -161,7 +151,7 @@ class WatchedTVShow extends TVShowDetails {
       }
     } else {
       if (currentEpisode <
-          episodePerSeason![currentSeason.toString()]!.toInt()) {
+          episodePerSeason[currentSeason.toString()]!.toInt()) {
         currentEpisode++;
       }
     }
@@ -184,12 +174,26 @@ class WatchedTVShow extends TVShowDetails {
         DateTime.now().day.toString();
   }
 
-  factory WatchedTVShow.fromJson(Map<String, dynamic> json) {
-    // print(json['runtime']);
+  factory WatchedTVShow.fromDetails(TVShowDetails show) {
+    return WatchedTVShow(
+        id: show.id,
+        name: show.name,
+        startDate: show.startDate,
+        runtime: show.runtime,
+        rating: show.rating,
+        imageThumbnailPath: show.imageThumbnailPath ?? "",
+        totalSeasons: show.totalSeasons ?? 0,
+        episodePerSeason: show.episodePerSeason ?? {},
+        currentSeason: 1,
+        currentEpisode: 0,
+        favorite: false);
+  }
 
-    var show = WatchedTVShow(
-        name: json['name'],
-        startDate: json['start_date'],
+  factory WatchedTVShow.fromJson(Map<String, dynamic> json) {
+    return WatchedTVShow(
+        id: json['id'] ?? "",
+        name: json['name'] ?? "",
+        startDate: json['start_date'] ?? "",
         runtime: json['runtime'] ?? 0,
         rating: json['rating'] ?? 0.0,
         imageThumbnailPath:
@@ -202,31 +206,33 @@ class WatchedTVShow extends TVShowDetails {
         lastWatchDate: json['lastWatched'],
         favorite: json['favorite'] ?? false,
         watchedTimes: json['watchedTimes'] ?? 0);
-    return show;
   }
   factory WatchedTVShow.fromFirestore(
       Map<String, dynamic> json, dynamic collId) {
     return WatchedTVShow(
         id: collId,
-        name: json['name'],
-        startDate: json['start_date'],
+        name: json['name'] ?? "",
+        startDate: DateTime.parse(json['start_date'] ?? "0000-00-00"),
         runtime: json['runtime'] ?? 0,
-        rating: json['rating'] ?? 0.0,
+        rating: json['rating'],
         imageThumbnailPath: json['image_thumbnail_path'].contains('https')
             ? json['image_thumbnail_path']
             : json['image_thumbnail_path'].replaceFirst('http', 'https'),
         totalSeasons: json['total_seasons'],
         episodePerSeason: Map<String, int>.from(json['episodesPerSeason']),
-        currentSeason: json['currentSeason'],
-        currentEpisode: json['currentEpisode'],
-        firstWatchDate: json['startedWatching'],
-        lastWatchDate: json['lastWatched'],
+        currentSeason: json['currentSeason'] ?? "",
+        currentEpisode: json['currentEpisode'] ?? "",
+        firstWatchDate: json['startedWatching'] ?? "",
+        lastWatchDate: json['lastWatched'] ?? "",
         favorite: json['favorite'] ?? false,
         watchedTimes: json['watchedTimes'] ?? 0);
   }
 
   String newestEpisodeDifference() {
-    String diff = episodes!.last.getDifference();
+    String diff = episodes.last.getDifference();
     return diff;
   }
+
+  @override
+  List<Object?> get props => [id, name];
 }

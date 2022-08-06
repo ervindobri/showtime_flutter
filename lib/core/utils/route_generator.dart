@@ -1,13 +1,9 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:show_time/features/authentication/domain/repositories/auth_repo.dart';
 import 'package:show_time/features/authentication/presentation/pages/login.dart';
-import 'package:show_time/features/home/presentation/bloc/watched_shows_bloc.dart';
 import 'package:show_time/features/home/presentation/pages/home.dart';
 import 'package:show_time/features/splash/presentation/pages/splash.dart';
 import 'package:show_time/features/browse/presentation/pages/browse_shows.dart';
 import 'package:flutter/material.dart';
 import 'package:show_time/features/watchlist/presentation/pages/watchlist.dart';
-import 'package:show_time/injection_container.dart';
 import 'package:show_time/screens/discover/most_popular_shows.dart';
 import 'package:show_time/screens/discover/progress.dart';
 import 'package:show_time/screens/full_schedule.dart';
@@ -25,14 +21,7 @@ class RouteGenerator {
       case '/discover_1':
         return MaterialPageRoute(builder: (_) => const MostPopularShows());
       case '/discover_2':
-        final email = sl<AuthRepository>().userCredential?.user?.email;
-
-        return MaterialPageRoute(
-            builder: (_) => BlocProvider(
-                  create: (context) =>
-                      sl<WatchedShowsBloc>()..add(LoadWatchedShowsEvent(email)),
-                  child: const DiscoverWatchList(),
-                ));
+        return MaterialPageRoute(builder: (_) => const WatchlistWrapper());
       case '/discover_3':
         return MaterialPageRoute(builder: (_) => const MostPopularShows());
       case '/splash':

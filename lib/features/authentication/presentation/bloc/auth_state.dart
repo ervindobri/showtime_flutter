@@ -8,7 +8,7 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class LoginSuccessful extends AuthState {
-  final dynamic user;
+  final UserCredential user;
   LoginSuccessful(this.user);
 }
 

@@ -87,6 +87,7 @@ class ScheduledContent extends StatelessWidget {
       child: CarouselSlider.builder(
         options: CarouselOptions(
           enlargeCenterPage: true,
+          clipBehavior: Clip.none,
           aspectRatio: 16 / 9,
         ),
         itemCount: 5,

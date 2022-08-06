@@ -16,6 +16,8 @@ class GlobalColors {
   static const lightGreenColor = Color(0xFF80E6CE);
   static const darkGreenColor = Color(0xFF029c78);
   static const greyTextColor = Color(0xFF565656);
+  static const placeholderGrey = Color.fromARGB(255, 222, 222, 222);
+
 
   static const fireColor = Color(0xFFF3403F);
   static const lightFireColor = Color(0xFFFF8EB4);

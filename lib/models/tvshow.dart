@@ -25,31 +25,33 @@ class AllTVShowList {
 
 class TVShow {
   String id;
-  String? name;
-  String? language;
-  String? type;
+  String name;
+  String language;
+  String type;
   List<dynamic>? genres;
-  String? startDate;
+  String startDateString;
   dynamic rating;
-  String? updated;
+  String updated;
   String? status;
   String? imageThumbnailPath;
   dynamic runtime;
-  String? summary;
+  String summary;
 
   TVShow(
       {required this.id,
-      this.name,
-      this.language,
-      this.type,
+      required this.name,
+      required this.language,
+      required this.type,
       this.genres,
-      this.startDate,
+      required this.startDateString,
       this.rating,
-      this.updated,
+      required this.updated,
       this.status,
       this.runtime,
-      this.summary,
+      required this.summary,
       this.imageThumbnailPath});
+
+  DateTime get startDate => DateTime.parse(startDateString);
 
   factory TVShow.fromJson(Map<String, dynamic> json) {
     // print(json['name']);
@@ -61,9 +63,8 @@ class TVShow {
       runtime: json['runtime'] ?? 0,
       summary: json['summary'] ?? "",
       genres: json['genres'].length > 0 ? json['genres'] : ['N/A'],
-      startDate: json['premiered'] ?? "",
-      rating:
-          json['rating']['average'] ?? 0.0,
+      startDateString: json['premiered'] ?? "0000-00-00",
+      rating: json['rating']['average'] ?? 0.0,
       updated: json['updated'].toString(),
       status: json['status'],
       imageThumbnailPath: json['image'] != null
@@ -74,6 +75,6 @@ class TVShow {
 
   @override
   String toString() {
-    return 'TVShow{id: $id, name: $name, language: $language, type: $type, genres: $genres, startDate: $startDate, rating: $rating, updated: $updated, status: $status, imageThumbnailPath: $imageThumbnailPath, runtime: $runtime, summary: $summary}';
+    return 'TVShow{id: $id, name: $name, language: $language, type: $type, genres: $genres, startDate: $startDateString, rating: $rating, updated: $updated, status: $status, imageThumbnailPath: $imageThumbnailPath, runtime: $runtime, summary: $summary}';
   }
 }

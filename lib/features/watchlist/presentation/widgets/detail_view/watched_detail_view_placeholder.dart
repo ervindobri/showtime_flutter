@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fade_shimmer/fade_shimmer.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
@@ -20,8 +21,8 @@ class _WatchedDetailViewPlaceholderState
   List<AnimationController> listControllers = [];
   List<Animation> listAnimations = [];
 
-  var startingColor = Colors.grey;
-  var endColor = Colors.grey.shade100;
+  var startingColor = GlobalColors.placeholderGrey.withOpacity(.2);
+  var endColor = GlobalColors.placeholderGrey;
 
   @override
   void initState() {
@@ -83,7 +84,7 @@ class _WatchedDetailViewPlaceholderState
       width: _width,
       height: _height * .95,
       decoration: const BoxDecoration(
-        color: GlobalColors.bgColor,
+        color: GlobalColors.white,
       ),
       child: SizedBox(
         height: _height * .95,
@@ -95,17 +96,17 @@ class _WatchedDetailViewPlaceholderState
               children: <Widget>[
                 SizedBox(
                   height: _height * .55,
-                  // color: GlobalColors.blueColor,
+                  // color: GlobalColors.placeholderGrey,
                   child: Stack(
                     alignment: Alignment.topCenter,
                     children: <Widget>[
                       Container(
                         height: _height * .4,
                         decoration: const BoxDecoration(
-                          color: GlobalColors.greyTextColor,
+                          color: GlobalColors.placeholderGrey,
                           borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(25.0),
-                            bottomLeft: Radius.circular(25.0),
+                            bottomRight: Radius.circular(24),
+                            bottomLeft: Radius.circular(24),
                           ),
                         ),
                       ),
@@ -114,47 +115,25 @@ class _WatchedDetailViewPlaceholderState
                         child: Container(
                           height: _height / 3.5,
                           width: _width * .4,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(25.0)),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(.2),
-                                spreadRadius: 2,
-                                blurRadius: 15,
-                                offset:
-                                    const Offset(10, 0), // changes position of shadow
-                              ),
-                            ],
+                          decoration: const BoxDecoration(
+                            color: GlobalColors.placeholderGrey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(24),
+                            ),
                           ),
                         ),
                       ),
                       Positioned(
-                          bottom: 0,
-                          child: _yourProgressPlaceholder(_height, _width)),
+                        bottom: 0,
+                        child: _yourProgressPlaceholder(_height, _width),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
             displayBadgesPlaceholder(_height, _width),
-            // FadeIn(.35,_checkIfPopular(_percentage, show.lastWatchDate, show.hasMoreEpisodes())),
-            
-            // ignore: todo
-            //TODO: when is next episode coming?
-
-            // ignore: todo
-            //TODO: related shows
-            
-            Expanded(
-              child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 10.0),
-                    child: displayActions(),
-                  )),
-            ),
+            displayActions(),
           ],
         ),
       ),
@@ -163,23 +142,15 @@ class _WatchedDetailViewPlaceholderState
 
   Widget _yourProgressPlaceholder(double _height, double _width) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: AnimatedBuilder(
         builder: (context, child) {
           return Container(
             width: _width * .85,
             height: _height * .25,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(25.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(24)),
               color: _colorTween.value,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(.3),
-                  spreadRadius: 2,
-                  blurRadius: 10,
-                  offset: const Offset(2, 5), // changes position of shadow
-                ),
-              ],
             ),
           );
         },
@@ -191,58 +162,52 @@ class _WatchedDetailViewPlaceholderState
   Widget displayBadgesPlaceholder(double _height, double _width) {
     // List<Widget> badges = [];
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       child: Column(
         children: [
-      Padding(
-        padding: const EdgeInsets.only(bottom: 10.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Shimmer.fromColors(
-                baseColor: GlobalColors.greyTextColor,
-                highlightColor: Colors.white,
-                child: AutoSizeText(
-                  "Badges",
-                  style: TextStyle(
-                    color: GlobalColors.greyTextColor,
-                    fontWeight: FontWeight.w700,
-                    fontSize: _width / 20,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Shimmer.fromColors(
+                    baseColor: GlobalColors.placeholderGrey.withOpacity(.2),
+                    highlightColor: GlobalColors.placeholderGrey,
+                    child: AutoSizeText(
+                      "Badges",
+                      style: TextStyle(
+                        color: GlobalColors.placeholderGrey.withOpacity(.2),
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 15.0),
+            child: SizedBox(
+              width: _width,
+              height: 64,
+              child: Row(
+                children: List.generate(
+                  3,
+                  (index) => Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: FadeShimmer.round(
+                      size: 48,
+                      baseColor: GlobalColors.placeholderGrey,
+                      highlightColor: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(bottom: 15.0),
-        child: SizedBox(
-          width: _width,
-          height: _height / 9,
-          child: Row(
-            children: List.generate(
-                3,
-                (index) => Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: AnimatedBuilder(
-                        builder: (context, child) {
-                          return Container(
-                            width: _height / 9,
-                            height: _height / 9,
-                            decoration: BoxDecoration(
-                                color: listAnimations[index].value,
-                                shape: BoxShape.circle),
-                          );
-                        },
-                        animation: listAnimations[index],
-                      ),
-                    )),
-          ),
-        ),
-      )
+          )
         ],
       ),
     );
@@ -250,33 +215,30 @@ class _WatchedDetailViewPlaceholderState
 
   Widget displayActions() {
     final _width = MediaQuery.of(context).size.width;
-    // final _height = MediaQuery.of(context).size.height;
-    // var timerService = Provider.of<TimerService>(context);
-
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: _width / 2.5,
-                height: _width / 7,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                  color: Colors.grey,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: GlobalColors.placeholderGrey,
+                  ),
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: _width / 2.5,
-                height: _width / 7,
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(25.0)),
-                  color: Colors.grey,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    color: GlobalColors.placeholderGrey,
+                  ),
                 ),
               ),
             )

@@ -31,7 +31,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
   List<String> countdown = [];
   late Timer _timer;
 
-  var countDownStyle = GoogleFonts.roboto(
+  var countDownStyle = GoogleFonts.poppins(
       textStyle: const TextStyle(
           fontSize: 24,
           fontFamily: 'Raleway',
@@ -277,7 +277,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                         minFontSize: 10,
                                                         maxFontSize: 15,
                                                         style:
-                                                            GoogleFonts.roboto(
+                                                            GoogleFonts.poppins(
                                                                 fontSize:
                                                                     _width / 24,
                                                                 fontWeight:
@@ -290,7 +290,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                       AutoSizeText(
                                                         "1/${widget.episodes.length.toString()}",
                                                         style:
-                                                            GoogleFonts.roboto(
+                                                            GoogleFonts.poppins(
                                                                 fontSize:
                                                                     _width / 24,
                                                                 fontWeight:

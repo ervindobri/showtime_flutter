@@ -1,10 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:get/get.dart';
+
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
 import 'package:show_time/features/watchlist/presentation/widgets/watchlist_card.dart';
-import 'package:show_time/get_controllers/ui_controller.dart';
+import 'package:show_time/controllers/ui_controller.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -22,7 +23,7 @@ class WatchedCardWeb extends StatelessWidget {
       required this.maxHeight})
       : super(key: key);
 
-  final UIController? uiController = Get.put(UIController());
+  final UiController? uiController = sl<UiController>();
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +93,7 @@ class WatchedCardWeb extends StatelessWidget {
                                       padding: const EdgeInsets.only(
                                           right: 50, left: 12, top: 5),
                                       child: AutoSizeText(
-                                        show.name!,
+                                        show.name,
                                         minFontSize:
                                             (maxWidth / 10).roundToDouble(),
                                         maxFontSize:
@@ -127,8 +128,7 @@ class WatchedCardWeb extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(25.0),
                                           border: Border.all(
-                                              color:
-                                                  GlobalColors.primaryGreen),
+                                              color: GlobalColors.primaryGreen),
                                         ),
                                         child: Row(
                                           mainAxisAlignment:
@@ -170,8 +170,7 @@ class WatchedCardWeb extends StatelessWidget {
                                           borderRadius:
                                               BorderRadius.circular(25.0),
                                           border: Border.all(
-                                              color:
-                                                  GlobalColors.primaryGreen),
+                                              color: GlobalColors.primaryGreen),
                                         ),
                                         child: Row(
                                           mainAxisAlignment:
@@ -244,8 +243,8 @@ class WatchedCardWeb extends StatelessWidget {
 
   Widget _checkFireDisplay(double percentage, String lastWatchDate) {
     var lastWatched = DateTime.parse("$lastWatchDate 00:00:00.000");
-    var prevMonth = DateTime(
-        DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    var prevMonth =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     int diffDays = lastWatched.difference(prevMonth).inDays;
     // print(percentage);
     if (diffDays.abs() < 15) {
@@ -341,40 +340,36 @@ class WatchedCardWeb extends StatelessWidget {
                   offset: const Offset(2, 0)),
             ],
           ),
-          child: GetBuilder<UIController>(
-              init: uiController,
-              builder: (controller) {
-                return TextButton(
-                  style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(Colors.black),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0))),
-                  ),
-                  onPressed: () {
-                    try {
-                      show.incrementEpisodeWatch();
-                      show.setLastWatchedDate();
-                      FirestoreUtils().updateEpisode(show);
-                      controller.showToast(
-                          context: context,
-                          color: GlobalColors.primaryGreen,
-                          text: "Episode added!",
-                          icon: Icons.done);
-                    } catch (e) {
-                      controller.showToast(
-                          context: context,
-                          color: GlobalColors.primaryGreen,
-                          text: "Couldn't add episode!",
-                          icon: Icons.error);
-                    }
-                  },
-                  child: const FaIcon(
-                    Icons.add_to_queue,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                );
-              }),
+          child: TextButton(
+            style: ButtonStyle(
+              overlayColor: MaterialStateProperty.all(Colors.black),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0))),
+            ),
+            onPressed: () {
+              try {
+                show.incrementEpisodeWatch();
+                show.setLastWatchedDate();
+                FirestoreUtils().updateEpisode(show);
+                // controller.showToast(
+                //     context: context,
+                //     color: GlobalColors.primaryGreen,
+                //     text: "Episode added!",
+                //     icon: Icons.done);
+              } catch (e) {
+                // controller.showToast(
+                //     context: context,
+                //     color: GlobalColors.primaryGreen,
+                //     text: "Couldn't add episode!",
+                //     icon: Icons.error);
+              }
+            },
+            child: const FaIcon(
+              Icons.add_to_queue,
+              color: Colors.white,
+              size: 40,
+            ),
+          ),
         ),
       );
     } else {

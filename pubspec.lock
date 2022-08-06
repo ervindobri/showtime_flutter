@@ -324,7 +324,7 @@ packages:
     source: hosted
     version: "2.1.17"
   equatable:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: equatable
       url: "https://pub.dartlang.org"
@@ -337,6 +337,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.1"
+  fade_shimmer:
+    dependency: "direct main"
+    description:
+      name: fade_shimmer
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -541,13 +548,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.2.0"
-  get:
-    dependency: "direct main"
-    description:
-      name: get
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.6.5"
   get_it:
     dependency: "direct main"
     description:
@@ -638,7 +638,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.4"
+    version: "0.13.5"
   http_multi_server:
     dependency: transitive
     description:

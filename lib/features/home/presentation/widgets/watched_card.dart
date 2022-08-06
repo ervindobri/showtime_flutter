@@ -1,9 +1,9 @@
-import 'package:get/get.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
 import 'package:show_time/features/watchlist/presentation/widgets/watchlist_card.dart';
-import 'package:show_time/get_controllers/ui_controller.dart';
+import 'package:show_time/controllers/ui_controller.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,7 +14,7 @@ class WatchedCard extends StatelessWidget {
   final WatchedTVShow show;
   WatchedCard({Key? key, required this.show}) : super(key: key);
 
-  UIController? uiController = Get.put(UIController());
+  UiController? uiController = sl<UiController>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +48,18 @@ class WatchedCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(25.0),
-                  topRight: Radius.circular(85.0),
-                  bottomLeft: Radius.circular(50.0),
-                  bottomRight: Radius.circular(50.0),
+                  topLeft: Radius.circular(24.0),
+                  topRight: Radius.circular(96.0),
+                  bottomLeft: Radius.circular(24.0),
+                  bottomRight: Radius.circular(24.0),
                 ),
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.black.withOpacity(.2),
-                      blurRadius: 15.0,
-                      spreadRadius: -2,
-                      offset: const Offset(2, -2)),
+                    color: Colors.black.withOpacity(.2),
+                    blurRadius: 15.0,
+                    spreadRadius: -2,
+                    offset: const Offset(2, -2),
+                  ),
                 ],
               ),
               child: Column(
@@ -73,7 +74,7 @@ class WatchedCard extends StatelessWidget {
                               padding: const EdgeInsets.only(
                                   right: 50, left: 12, top: 5),
                               child: Text(
-                                show.name!,
+                                show.name,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: ShowTheme.watchCardTitleStyle.copyWith(
@@ -314,41 +315,37 @@ class WatchedCard extends StatelessWidget {
             ],
           ),
           padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
-          child: GetBuilder<UIController>(
-              init: uiController,
-              builder: (controller) {
-                return TextButton(
-                  style: ButtonStyle(
-                    overlayColor: MaterialStateProperty.all(Colors.black),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0))),
-                  ),
-                  onPressed: () {
-                    try {
-                      show.incrementEpisodeWatch();
-                      show.setLastWatchedDate();
-                      FirestoreUtils().updateEpisode(show);
-                      controller.showToast(
-                          context: context,
-                          color: GlobalColors.primaryGreen,
-                          text: "Episode added!",
-                          icon: Icons.done);
-                    } catch (e) {
-                      controller.showToast(
-                          context: context,
-                          color: GlobalColors.primaryGreen,
-                          text: "Couldn't add episode!",
-                          icon: Icons.error);
-                    }
-                  },
-                  child: const FaIcon(
-                    Icons.add_to_queue,
-                    color: Colors.white,
-                    size: 40,
-                  ),
-                );
-              }),
+          child: TextButton(
+            style: ButtonStyle(
+              overlayColor: MaterialStateProperty.all(Colors.black),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0))),
+            ),
+            onPressed: () {
+              try {
+                show.incrementEpisodeWatch();
+                show.setLastWatchedDate();
+                FirestoreUtils().updateEpisode(show);
+                // controller.showToast(
+                //     context: context,
+                //     color: GlobalColors.primaryGreen,
+                //     text: "Episode added!",
+                //     icon: Icons.done);
+              } catch (e) {
+                // controller.showToast(
+                //     context: context,
+                //     color: GlobalColors.primaryGreen,
+                //     text: "Couldn't add episode!",
+                //     icon: Icons.error);
+              }
+            },
+            child: const FaIcon(
+              Icons.add_to_queue,
+              color: Colors.white,
+              size: 40,
+            ),
+          ),
         ),
       );
     } else {

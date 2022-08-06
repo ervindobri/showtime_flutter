@@ -126,8 +126,8 @@ class _WatchedDetailViewState extends State<DetailView>
                                               (index) {
                                             return AnimationConfiguration
                                                 .staggeredList(
-                                              duration:
-                                                  const Duration(milliseconds: 200),
+                                              duration: const Duration(
+                                                  milliseconds: 200),
                                               position: index,
                                               child: FadeInAnimation(
                                                 delay: Duration(
@@ -144,7 +144,8 @@ class _WatchedDetailViewState extends State<DetailView>
                                                         horizontal: 5.0),
                                                     child: Container(
                                                       height: _height / 20,
-                                                      decoration: const BoxDecoration(
+                                                      decoration:
+                                                          const BoxDecoration(
                                                         color: GlobalColors
                                                             .primaryBlue,
                                                         borderRadius: _radius,
@@ -161,7 +162,7 @@ class _WatchedDetailViewState extends State<DetailView>
                                                             minFontSize: 13,
                                                             maxLines: 1,
                                                             style: GoogleFonts
-                                                                .roboto(
+                                                                .poppins(
                                                                     color: Colors
                                                                         .white,
                                                                     fontWeight:
@@ -241,8 +242,8 @@ class _WatchedDetailViewState extends State<DetailView>
                                                               });
                                                             },
                                                             // textColor:
-                                                                // GlobalColors
-                                                                    // .primaryGreen,
+                                                            // GlobalColors
+                                                            // .primaryGreen,
                                                             child: const Center(
                                                               child: Text(
                                                                   "Show More"),
@@ -258,7 +259,7 @@ class _WatchedDetailViewState extends State<DetailView>
                                                           Text(
                                                             widget.show
                                                                 .parseHtmlString(),
-                                                            style: GoogleFonts.roboto(
+                                                            style: GoogleFonts.poppins(
                                                                 fontSize:
                                                                     _width / 26,
                                                                 color: GlobalColors
@@ -272,8 +273,8 @@ class _WatchedDetailViewState extends State<DetailView>
                                                               });
                                                             },
                                                             // textColor:
-                                                                // GlobalColors
-                                                                    // .primaryGreen,
+                                                            // GlobalColors
+                                                            // .primaryGreen,
                                                             child: const Center(
                                                               child: Text(
                                                                   "Show Less"),

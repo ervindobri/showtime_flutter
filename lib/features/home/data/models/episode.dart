@@ -27,6 +27,10 @@ class Episode {
 
   Map<String, dynamic>? embedded;
 
+  DateTime get airDatetime {
+    return DateTime.parse("$airDate $airTime");
+  }
+
   Episode(
       {required this.id,
       this.season,
@@ -82,7 +86,7 @@ class Episode {
       var airDate = DateTime.parse("${this.airDate} $airTime:00.000");
       var diff = airDate.difference(DateTime.now());
 
-      return "${diff.inDays.abs()}:${diff.inHours.remainder(24).abs()}:${diff.inMinutes.remainder(60).abs()}:${(diff.inSeconds.remainder(60).abs())}";
+      return "${diff.inDays.abs()}D ${diff.inHours.remainder(24).abs()}H ${diff.inMinutes.remainder(60).abs()}M ${(diff.inSeconds.remainder(60).abs())}S";
     }
     return "";
   }

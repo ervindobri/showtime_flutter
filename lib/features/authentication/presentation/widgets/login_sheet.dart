@@ -6,12 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
+import 'package:show_time/controllers/auth_controller.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
 import 'package:show_time/core/utils/navigation.dart';
 import 'package:show_time/features/authentication/presentation/bloc/auth_bloc.dart';
 import 'package:show_time/features/authentication/presentation/widgets/reset_content.dart';
 import 'package:show_time/features/home/presentation/widgets/home_web.dart';
+import 'package:show_time/injection_container.dart';
+import 'package:show_time/models/user.dart';
 
 class LoginSheet extends StatefulWidget {
   const LoginSheet({Key? key}) : super(key: key);
@@ -45,6 +48,7 @@ class _LoginSheetState extends State<LoginSheet> with TickerProviderStateMixin {
     final _height = MediaQuery.of(context).size.height;
     return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
       if (state is LoginSuccessful) {
+        sl<AuthController>().currentUserEmail.value = state.user.user!.email!;
         NavUtils.navigateReplaced(context, '/home', args: state.user);
       }
     }, builder: (context, state) {
@@ -231,7 +235,7 @@ class _LoginSheetState extends State<LoginSheet> with TickerProviderStateMixin {
                                                 TextFormField(
                                                   validator: (value) {
                                                     return null;
-                                                  
+
                                                     // if (value !=
                                                     //     authController
                                                     //         .passwordController
@@ -384,7 +388,7 @@ class _LoginSheetState extends State<LoginSheet> with TickerProviderStateMixin {
           //     _state = 2;
           //   });
           //   //TODO: add biometric switch
-            // await authController.addUser(authController.nameController.text, authController.passwordController.text);
+          // await authController.addUser(authController.nameController.text, authController.passwordController.text);
           //   authController.rememberInfo(authController.nameController.text,
           //       authController.passwordController.text);
           //   Get.off(() => BlocProvider<SplashBloc>(

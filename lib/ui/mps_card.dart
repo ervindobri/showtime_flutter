@@ -100,7 +100,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: AutoSizeText(
-              widget.show.name!,
+              widget.show.name,
               style: TextStyle(
                   fontFamily: 'Raleway',
                   fontSize: _width / 20,
@@ -263,8 +263,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                         GlobalColors.pinkColor),
                                                 child: Center(
                                                   child: AutoSizeText(
-                                                    widget.show.startDate!
-                                                        .split('-')[0],
+                                                    widget.show.startDateString.split('-')[0],
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
                                                         color: Colors.white,
@@ -317,7 +316,7 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                       .watchedShowList
                                                       .add(show);
                                                   //TODO: change status alert
-                                                  
+
                                                   // StatusAlert.show(
                                                   //   context,
                                                   //   duration: Duration(seconds: 2),
@@ -458,11 +457,9 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                       borderRadius:
                                                           BorderRadius.only(
                                                         topLeft:
-                                                            Radius.circular(
-                                                                24),
+                                                            Radius.circular(24),
                                                         topRight:
-                                                            Radius.circular(
-                                                                24),
+                                                            Radius.circular(24),
                                                       ),
                                                     ),
                                                     context: context,

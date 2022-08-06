@@ -5,5 +5,4 @@ abstract class AuthRepository {
   postLogin(LoginType type, String email, String password);
   postRegister(String email, String password);
 
-  UserCredential? userCredential;
 }

@@ -1,8 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
+
 import 'package:show_time/core/constants/custom_variables.dart';
-import 'package:show_time/get_controllers/ui_controller.dart';
+import 'package:show_time/controllers/ui_controller.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/models/tvshow_details.dart';
 import 'package:show_time/network/network.dart';
@@ -24,7 +25,7 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
   late TVShowDetails showDetails;
 
   bool _added = false;
-  UIController uiController = Get.put(UIController())!;
+  UiController uiController = sl<UiController>();
   getDetailResults({required TVShow show}) =>
       Network().getDetailResults(show: show);
 
@@ -112,10 +113,10 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                             SizedBox(
                               width: 150,
                               child: AutoSizeText(
-                                widget.show.name!,
+                                widget.show.name,
                                 maxLines: 2,
-                                style: Get.textTheme.bodyText1!.copyWith(
-                                    color: GlobalColors.greyTextColor),
+                                // style: context.bodyText1!.copyWith(
+                                // color: GlobalColors.greyTextColor),
                               ),
                             ),
                             Row(
@@ -171,60 +172,51 @@ class _ShowCardState extends State<ShowCard> with AnimationMixin {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 20.0),
-                                  child: GetBuilder<UIController>(
-                                      init: uiController,
-                                      builder: (uiController) {
-                                        return TextButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    GlobalColors.primaryBlue),
-                                            shape: MaterialStateProperty.all(
-                                              const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(20),
-                                                ),
-                                              ),
-                                            ),
+                                  child: TextButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              GlobalColors.primaryBlue),
+                                      shape: MaterialStateProperty.all(
+                                        const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(20),
                                           ),
-                                          onPressed: () {
-                                            // print(_added);
-                                            if (!_added) {
-                                              var show = FirestoreUtils()
-                                                  .addToWatchedShows(
-                                                      showDetails);
-                                              GlobalVariables.watchedShowList
-                                                  .add(show);
-                                              setState(() {
-                                                _added = true;
-                                              });
-                                              uiController.showToast(
-                                                  context: context,
-                                                  text: "Show added!",
-                                                  gravity: ToastGravity.BOTTOM,
-                                                  color:
-                                                      GlobalColors.primaryBlue,
-                                                  icon: Icons.done);
-                                            } else {
-                                              //FOR UPDATING SHOWS RATING
-                                              // _updateRating(showDetails);
-                                              uiController.showToast(
-                                                  context: context,
-                                                  text:
-                                                      "${widget.show.name} already added!",
-                                                  gravity: ToastGravity.BOTTOM,
-                                                  icon: Icons.info,
-                                                  color:
-                                                      GlobalColors.primaryBlue);
-                                            }
-                                          },
-                                          child: FaIcon(
-                                            FontAwesomeIcons.couch,
-                                            color: Colors.white,
-                                            size: _height / 17,
-                                          ),
-                                        );
-                                      }),
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      // print(_added);
+                                      if (!_added) {
+                                        var show = FirestoreUtils()
+                                            .addToWatchedShows(showDetails);
+                                        GlobalVariables.watchedShowList
+                                            .add(show);
+                                        setState(() {
+                                          _added = true;
+                                        });
+                                        uiController.showToast(
+                                            context: context,
+                                            text: "Show added!",
+                                            gravity: ToastGravity.BOTTOM,
+                                            color: GlobalColors.primaryBlue,
+                                            icon: Icons.done);
+                                      } else {
+                                        uiController.showToast(
+                                            context: context,
+                                            text:
+                                                "${widget.show.name} already added!",
+                                            gravity: ToastGravity.BOTTOM,
+                                            icon: Icons.info,
+                                            color: GlobalColors.primaryBlue);
+                                      }
+                                    },
+                                    child: FaIcon(
+                                      FontAwesomeIcons.couch,
+                                      color: Colors.white,
+                                      size: _height / 17,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),

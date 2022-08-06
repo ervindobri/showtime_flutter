@@ -139,7 +139,7 @@ class ImageSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10, right: 30.0),
                     child: Center(
-                      child: AutoSizeText(show.name!,
+                      child: AutoSizeText(show.name,
                           maxLines: 3,
                           maxFontSize: 28.0,
                           minFontSize: 13,

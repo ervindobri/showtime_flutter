@@ -3,13 +3,13 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
-import 'package:show_time/get_controllers/auth_controller.dart';
-import 'package:show_time/get_controllers/ui_controller.dart';
-import 'package:show_time/features/home/presentation/pages/home.dart';
+import 'package:show_time/controllers/auth_controller.dart';
+import 'package:show_time/controllers/ui_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
 import 'package:google_fonts/google_fonts.dart';
+import 'package:show_time/injection_container.dart';
 
 class CreateProfile extends StatefulWidget {
   const CreateProfile({Key? key}) : super(key: key);
@@ -29,9 +29,8 @@ class _CreateProfileState extends State<CreateProfile>
   final TextEditingController sexController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-
-  AuthController authController = Get.put(AuthController())!;
-  UIController uiController = Get.put(UIController())!;
+  final authController = sl<AuthController>();
+  final uiController = sl<UiController>();
 
   @override
   void initState() {
@@ -99,7 +98,7 @@ class _CreateProfileState extends State<CreateProfile>
                         child: AutoSizeText(
                           "Complete your profile",
                           maxLines: 2,
-                          style: GoogleFonts.roboto(
+                          style: GoogleFonts.poppins(
                             fontSize: 20,
                           ),
                         ),
@@ -112,7 +111,7 @@ class _CreateProfileState extends State<CreateProfile>
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               //TODO: ADD AVATARS FOR USERS
-                              
+
                               // Padding(
                               //   padding: const EdgeInsets.all(8.0),
                               //   child: CircleAvatar(
@@ -131,7 +130,7 @@ class _CreateProfileState extends State<CreateProfile>
                                   children: [
                                     Text(
                                       "first Name",
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.poppins(
                                           color: GlobalColors.greyTextColor,
                                           fontSize: _width / 20,
                                           fontWeight: FontWeight.w300),
@@ -156,10 +155,10 @@ class _CreateProfileState extends State<CreateProfile>
                                               return null;
                                             }
                                           },
-                                          decoration: GlobalStyles.formInputDecoration(),
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  GlobalColors.greyTextColor,
+                                          decoration: GlobalStyles
+                                              .formInputDecoration(),
+                                          style: GoogleFonts.poppins(
+                                              color: GlobalColors.greyTextColor,
                                               fontSize: _width / 20,
                                               fontWeight: FontWeight.w500),
                                           onEditingComplete: () => node
@@ -177,7 +176,7 @@ class _CreateProfileState extends State<CreateProfile>
                                   children: [
                                     Text(
                                       "last Name",
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.poppins(
                                           color: GlobalColors.greyTextColor,
                                           fontSize: _width / 20,
                                           fontWeight: FontWeight.w300),
@@ -214,48 +213,44 @@ class _CreateProfileState extends State<CreateProfile>
                                             hintText: 'Doe',
                                             hintStyle: TextStyle(
                                                 fontFamily: 'Raleway',
-                                                color: GlobalColors
-                                                    .greyTextColor,
+                                                color:
+                                                    GlobalColors.greyTextColor,
                                                 fontWeight: FontWeight.w300),
                                             focusColor:
                                                 GlobalColors.primaryGreen,
-                                            enabledBorder:
-                                                OutlineInputBorder(
+                                            enabledBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: GlobalColors
-                                                      .primaryBlue),
+                                                  color:
+                                                      GlobalColors.primaryBlue),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                             border: OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: GlobalColors
-                                                      .primaryBlue),
+                                                  color:
+                                                      GlobalColors.primaryBlue),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
-                                            focusedBorder:
-                                                OutlineInputBorder(
+                                            focusedBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: GlobalColors
-                                                      .primaryGreen,
+                                                  color:
+                                                      GlobalColors.primaryGreen,
                                                   width: 2),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
-                                            errorBorder:
-                                                OutlineInputBorder(
+                                            errorBorder: OutlineInputBorder(
                                               borderSide: BorderSide(
-                                                  color: GlobalColors
-                                                      .orangeColor,
+                                                  color:
+                                                      GlobalColors.orangeColor,
                                                   width: 2),
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50.0)),
                                             ),
                                           ),
-                                          style: GoogleFonts.roboto(
-                                              color:
-                                                  GlobalColors.greyTextColor,
+                                          style: GoogleFonts.poppins(
+                                              color: GlobalColors.greyTextColor,
                                               fontSize: _width / 20,
                                               fontWeight: FontWeight.w500),
                                         ),
@@ -271,7 +266,7 @@ class _CreateProfileState extends State<CreateProfile>
                                   children: [
                                     Text(
                                       "age",
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.poppins(
                                           color: GlobalColors.greyTextColor,
                                           fontSize: _width / 20,
                                           fontWeight: FontWeight.w300),
@@ -287,8 +282,7 @@ class _CreateProfileState extends State<CreateProfile>
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(50.0)),
                                           border: Border.all(
-                                              color:
-                                                  GlobalColors.primaryBlue),
+                                              color: GlobalColors.primaryBlue),
                                         ),
                                         child: CupertinoTheme(
                                           data: CupertinoThemeData(
@@ -301,7 +295,7 @@ class _CreateProfileState extends State<CreateProfile>
                                                 Colors.transparent,
                                             textTheme: CupertinoTextThemeData(
                                               pickerTextStyle:
-                                                  GoogleFonts.roboto(
+                                                  GoogleFonts.poppins(
                                                       color: GlobalColors
                                                           .greyTextColor,
                                                       fontSize: 25),
@@ -309,8 +303,7 @@ class _CreateProfileState extends State<CreateProfile>
                                           ),
                                           child: CupertinoPicker(
                                             looping: true,
-                                            backgroundColor:
-                                                Colors.transparent,
+                                            backgroundColor: Colors.transparent,
                                             // selectionOverlay: Container(
                                             //     child: Padding(
                                             //       padding: const EdgeInsets.only(left: 10.0),
@@ -325,8 +318,7 @@ class _CreateProfileState extends State<CreateProfile>
                                             //     )
                                             // ),
                                             itemExtent: 50,
-                                            onSelectedItemChanged:
-                                                (int value) {
+                                            onSelectedItemChanged: (int value) {
                                               ageController.text =
                                                   (value + 1).toString();
                                             },
@@ -334,9 +326,8 @@ class _CreateProfileState extends State<CreateProfile>
                                                 100,
                                                 (index) => Center(
                                                       child: Text(
-                                                        (index + 1)
-                                                            .toString(),
-                                                        style: GoogleFonts.roboto(
+                                                        (index + 1).toString(),
+                                                        style: GoogleFonts.poppins(
                                                             color: GlobalColors
                                                                 .greyTextColor,
                                                             fontSize:
@@ -360,7 +351,7 @@ class _CreateProfileState extends State<CreateProfile>
                                   children: [
                                     Text(
                                       "sex",
-                                      style: GoogleFonts.roboto(
+                                      style: GoogleFonts.poppins(
                                           fontSize: _width / 20,
                                           fontWeight: FontWeight.w300,
                                           color: GlobalColors.greyTextColor),
@@ -376,8 +367,7 @@ class _CreateProfileState extends State<CreateProfile>
                                           borderRadius: const BorderRadius.all(
                                               Radius.circular(50.0)),
                                           border: Border.all(
-                                              color:
-                                                  GlobalColors.primaryBlue),
+                                              color: GlobalColors.primaryBlue),
                                         ),
                                         child: CupertinoPicker(
                                           // controller: sexController,
@@ -397,9 +387,8 @@ class _CreateProfileState extends State<CreateProfile>
                                           // ),
                                           itemExtent: 50,
                                           onSelectedItemChanged: (int value) {
-                                            sexController.text =
-                                                GlobalVariables
-                                                    .sexCategories[value];
+                                            sexController.text = GlobalVariables
+                                                .sexCategories[value];
                                           },
                                           children: List.generate(
                                               GlobalVariables
@@ -413,16 +402,13 @@ class _CreateProfileState extends State<CreateProfile>
                                                             right: 15.0),
                                                     child: Text(
                                                       GlobalVariables
-                                                              .sexCategories[
-                                                          index],
-                                                      style: GoogleFonts.roboto(
+                                                          .sexCategories[index],
+                                                      style: GoogleFonts.poppins(
                                                           color: GlobalColors
                                                               .greyTextColor,
-                                                          fontSize:
-                                                              _width / 20,
+                                                          fontSize: _width / 20,
                                                           fontWeight:
-                                                              FontWeight
-                                                                  .w500),
+                                                              FontWeight.w500),
                                                     ),
                                                   ))),
                                         ),
@@ -433,10 +419,7 @@ class _CreateProfileState extends State<CreateProfile>
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(15.0),
-                                child: GetBuilder<AuthController>(
-                                  init: authController,
-                                  builder: (_) {
-                                return TextButton(
+                                child: TextButton(
                                   // maxWidth: _width / 3,
                                   // minWidth: _width / 3,
                                   // state: buttonState,
@@ -447,21 +430,19 @@ class _CreateProfileState extends State<CreateProfile>
                                     Future.delayed(const Duration(seconds: 1),
                                         () {
                                       setState(() {
-                                        if (_formKey.currentState!
-                                            .validate()) {
+                                        if (_formKey.currentState!.validate()) {
                                           // print("validated");
                                           authController.updateUserInfo(
                                               firstNameController.text,
                                               lastNameController.text,
-                                              int.parse(
-                                                  ageController.text),
+                                              int.parse(ageController.text),
                                               sexController.text);
 
                                           // buttonState = ButtonState.success;
                                           // if (buttonState ==
                                           //     ButtonState.success) {
                                           Timer.run(() {
-                                            Get.to(const HomeView());
+                                            // Get.to(const HomeView());
                                           });
                                         }
                                         // else {
@@ -472,48 +453,11 @@ class _CreateProfileState extends State<CreateProfile>
                                   },
                                   child: Text(
                                     "Save",
-                                    style: GoogleFonts.roboto(
+                                    style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w500,
                                         fontSize: _width / 20),
                                   ),
-                                  // padding: const EdgeInsets.all(8.0),
-                                  // progressIndicatorAligment: MainAxisAlignment
-                                  //     .center,
-                                  // radius: 25.0,
-                                  // stateWidgets: {
-                                  //   ButtonState.idle: Text(
-                                  //     "Save",
-                                  //     style: GoogleFonts.roboto(
-                                  //         color: Colors.white,
-                                  //         fontWeight: FontWeight.w500,
-                                  //         fontSize: _width / 20
-                                  //     ),
-                                  //   ),
-                                  //   ButtonState.loading: Container(),
-                                  //   ButtonState.fail: Text(
-                                  //     "Submit Failed",
-                                  //     style: GoogleFonts.roboto(
-                                  //         color: Colors.white,
-                                  //         fontWeight: FontWeight.w500),
-                                  //   ),
-                                  //   ButtonState.success: FaIcon(
-                                  //     FontAwesomeIcons.check,
-                                  //     color: Colors.white,
-                                  //   )
-                                  // },
-                                  // stateColors: {
-                                  //   ButtonState.idle: GlobalColors
-                                  //       .blueColor,
-                                  //   ButtonState.loading: GlobalColors
-                                  //       .blueColor,
-                                  //   ButtonState.fail: GlobalColors
-                                  //       .fireColor,
-                                  //   ButtonState.success: GlobalColors
-                                  //       .greenColor,
-                                  // },
-                                );
-                                  },
                                 ),
                               )
                             ],

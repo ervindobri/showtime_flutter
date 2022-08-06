@@ -37,7 +37,6 @@ class AuthRepositoryImpl extends AuthRepository {
     if (await networkInfo.isConnected) {
       try {
         final remoteContentRate = await getUsecase();
-        userCredential = remoteContentRate;
         return Right(remoteContentRate);
       } on CustomServerException catch (e) {
         return Left(CustomServerFailure(e.message));

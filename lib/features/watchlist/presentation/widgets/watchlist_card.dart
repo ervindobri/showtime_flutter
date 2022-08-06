@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
+
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hovering/hovering.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
-import 'package:show_time/get_controllers/ui_controller.dart';
+import 'package:show_time/controllers/ui_controller.dart';
 import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:show_time/network/network.dart';
 import 'package:show_time/features/watchlist/presentation/widgets/detail_view/watched_detail_view_placeholder.dart';
@@ -30,7 +32,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
 
   bool _added = true;
   bool dialogOpen = false;
-  UIController uiController = Get.put(UIController());
+  UiController uiController = sl<UiController>();
   late Timer hoverTimer;
 
   @override
@@ -84,13 +86,13 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                     onTap: () {
                       if (kIsWeb || MediaQuery.of(context).size.width > 666) {
                         //open details popup
-                        Get.defaultDialog(
-                            title: widget.show.name!,
-                            content: Container(
-                              width: 500,
-                              height: 500,
-                              color: GlobalColors.bgColor,
-                            ));
+                        // Get.defaultDialog(
+                        //     title: widget.show.name,
+                        //     content: Container(
+                        //       width: 500,
+                        //       height: 500,
+                        //       color: GlobalColors.bgColor,
+                        //     ));
                       } else {
                         showModalBottomSheet<dynamic>(
                             shape: const RoundedRectangleBorder(
@@ -160,7 +162,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
                                         image: NetworkImage(
-                                            widget.show.imageThumbnailPath!),
+                                            widget.show.imageThumbnailPath),
                                         fit: BoxFit.cover),
                                     borderRadius: BorderRadius.circular(24),
                                     // topLeft: Radius.circular(24.0),
@@ -240,8 +242,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                       width: 70,
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                            image:
-                                NetworkImage(widget.show.imageThumbnailPath!),
+                            image: NetworkImage(widget.show.imageThumbnailPath),
                             fit: BoxFit.cover),
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -251,15 +252,19 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            widget.show.name!,
-                            maxLines: 2,
-                            style: ShowTheme.listWatchCardTitleStyle.copyWith(
-                              fontSize: 16,
+                          SizedBox(
+                            width: cardWidth - 100,
+                            child: Text(
+                              widget.show.name,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: ShowTheme.listWatchCardTitleStyle.copyWith(
+                                fontSize: 16,
+                              ),
                             ),
                           ),
                           Text(
-                            widget.show.startDate ?? "",
+                            widget.show.startDate.year.toString(),
                             style: ShowTheme.listWatchCardTitleStyle.copyWith(
                                 fontSize: 14,
                                 color:
@@ -302,6 +307,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                   right: 24,
                   top: cardHeight / 2 - 16,
                   child: Container(
+                    width: cardWidth / 4,
                     decoration: BoxDecoration(
                       border: Border.all(
                         width: 2,
@@ -309,11 +315,24 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                       ),
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding: const EdgeInsets.fromLTRB(24, 8, 24, 8),
+                    padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("S${widget.show.currentSeason}"),
-                        Text("E${widget.show.currentEpisode}"),
+                        Text(
+                          "S${widget.show.currentSeason}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
+                        Text(
+                          "E${widget.show.currentEpisode}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
                       ],
                     ),
                   ))

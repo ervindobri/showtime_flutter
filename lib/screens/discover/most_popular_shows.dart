@@ -144,7 +144,8 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                           height: _height / 2,
                                           decoration: BoxDecoration(
                                               color: pink,
-                                              borderRadius: const BorderRadius.only(
+                                              borderRadius:
+                                                  const BorderRadius.only(
                                                 topLeft: Radius.circular(
                                                     GlobalVariables
                                                         .sliverRadius),
@@ -166,23 +167,25 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               // print(snapshot.hasData);
 
                                               if (GlobalVariables
-                                                          .limitedShows.length >
-                                                      index) {
+                                                      .limitedShows.length >
+                                                  index) {
                                                 // print("already got this batch ! - ${GlobalVariables.limitedShows.length} / ${index}");
                                                 return Container(
                                                     // height: _height,
-                                                    decoration: const BoxDecoration(
-                                                        color: GlobalColors
-                                                            .bgColor,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          topLeft: Radius.circular(
-                                                              GlobalVariables
-                                                                  .sliverRadius),
-                                                          topRight: Radius.circular(
-                                                              GlobalVariables
-                                                                  .sliverRadius),
-                                                        )),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            color: GlobalColors
+                                                                .bgColor,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius.circular(
+                                                                  GlobalVariables
+                                                                      .sliverRadius),
+                                                              topRight: Radius.circular(
+                                                                  GlobalVariables
+                                                                      .sliverRadius),
+                                                            )),
                                                     child: Padding(
                                                       padding: const EdgeInsets
                                                               .symmetric(
@@ -233,18 +236,20 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                   return Container();
                                                 } else {
                                                   return Container(
-                                                    decoration: const BoxDecoration(
-                                                        color: GlobalColors
-                                                            .bgColor,
-                                                        borderRadius:
-                                                            BorderRadius.only(
-                                                          topLeft: Radius.circular(
-                                                              GlobalVariables
-                                                                  .sliverRadius),
-                                                          topRight: Radius.circular(
-                                                              GlobalVariables
-                                                                  .sliverRadius),
-                                                        )),
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            color: GlobalColors
+                                                                .bgColor,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius.circular(
+                                                                  GlobalVariables
+                                                                      .sliverRadius),
+                                                              topRight: Radius.circular(
+                                                                  GlobalVariables
+                                                                      .sliverRadius),
+                                                            )),
                                                     child: Shimmer.fromColors(
                                                       highlightColor:
                                                           Colors.white,
@@ -343,14 +348,13 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                           );
                                                         },
                                                         crossAxisCount: 4,
-                                                        staggeredTileBuilder:
-                                                            (int index) =>
-                                                                StaggeredTile
-                                                                        .count(
-                                                                    2,
-                                                                    index.isEven
-                                                                        ? 4
-                                                                        : 4),
+                                                        staggeredTileBuilder: (int
+                                                                index) =>
+                                                            StaggeredTile.count(
+                                                                2,
+                                                                index.isEven
+                                                                    ? 4
+                                                                    : 4),
                                                       ),
                                                     ),
                                                   );
@@ -396,13 +400,14 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                           selectedIndex: _selectedIndex,
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 10, vertical: 3),
-                                          duration: const Duration(milliseconds: 500),
+                                          duration:
+                                              const Duration(milliseconds: 500),
                                           color: Colors.grey[800],
                                           activeColor: pink,
                                           backgroundColor: pink,
                                           tabBackgroundColor: Colors.white,
                                           tabMargin: const EdgeInsets.all(5),
-                                          textStyle: GoogleFonts.roboto(
+                                          textStyle: GoogleFonts.poppins(
                                             fontSize: 15,
                                             color: pink,
                                           ),
@@ -461,7 +466,8 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                             height: _height / 2,
                                             decoration: BoxDecoration(
                                                 color: pink,
-                                                borderRadius: const BorderRadius.only(
+                                                borderRadius:
+                                                    const BorderRadius.only(
                                                   topLeft: Radius.circular(
                                                       GlobalVariables
                                                           .sliverRadius),
@@ -480,23 +486,28 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               builder: (context,
                                                   AsyncSnapshot snapshot) {
                                                 // print(GlobalVariables.limitedShows.length);
-                                                if (GlobalVariables.limitedShows
-                                                            .length >
-                                                        index) {
+                                                if (GlobalVariables
+                                                        .limitedShows.length >
+                                                    index) {
                                                   return Container(
                                                       // height: _height,
-                                                      decoration: const BoxDecoration(
-                                                          color: GlobalColors
-                                                              .bgColor,
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            topLeft: Radius.circular(
-                                                                GlobalVariables
-                                                                    .sliverRadius),
-                                                            topRight: Radius.circular(
-                                                                GlobalVariables
-                                                                    .sliverRadius),
-                                                          )),
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                              color:
+                                                                  GlobalColors
+                                                                      .bgColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        GlobalVariables
+                                                                            .sliverRadius),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        GlobalVariables
+                                                                            .sliverRadius),
+                                                              )),
                                                       child: Padding(
                                                         padding:
                                                             const EdgeInsets
@@ -546,18 +557,23 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                   } else {
                                                     // print("fetching data;");
                                                     return Container(
-                                                      decoration: const BoxDecoration(
-                                                          color: GlobalColors
-                                                              .bgColor,
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            topLeft: Radius.circular(
-                                                                GlobalVariables
-                                                                    .sliverRadius),
-                                                            topRight: Radius.circular(
-                                                                GlobalVariables
-                                                                    .sliverRadius),
-                                                          )),
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                              color:
+                                                                  GlobalColors
+                                                                      .bgColor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .only(
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        GlobalVariables
+                                                                            .sliverRadius),
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        GlobalVariables
+                                                                            .sliverRadius),
+                                                              )),
                                                       child: Shimmer.fromColors(
                                                         highlightColor:
                                                             Colors.white,
@@ -646,8 +662,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                           crossAxisCount: 4,
                                                           staggeredTileBuilder: (int
                                                                   index) =>
-                                                              StaggeredTile
-                                                                      .count(
+                                                              StaggeredTile.count(
                                                                   2,
                                                                   index.isEven
                                                                       ? 4
@@ -697,14 +712,14 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                             selectedIndex: _selectedIndex,
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 10, vertical: 3),
-                                            duration:
-                                                const Duration(milliseconds: 500),
+                                            duration: const Duration(
+                                                milliseconds: 500),
                                             color: Colors.grey[800],
                                             activeColor: pink,
                                             backgroundColor: pink,
                                             tabBackgroundColor: Colors.white,
                                             tabMargin: const EdgeInsets.all(5),
-                                            textStyle: GoogleFonts.roboto(
+                                            textStyle: GoogleFonts.poppins(
                                               fontSize: 15,
                                               color: pink,
                                             ),
@@ -785,7 +800,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
     return CupertinoTextField(
       onSubmitted: (value) {
         //TODO: implement SEARCH in MPS
-        
+
         // setState(() {
         //   _searchTerm = value;
         // });

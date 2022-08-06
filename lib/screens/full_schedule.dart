@@ -1,16 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:show_time/components/back.dart';
 import 'package:show_time/components/popular_appbar.dart';
-import 'package:show_time/get_controllers/show_controller.dart';
+import 'package:show_time/controllers/show_controller.dart';
 import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/ui/full_schedule_card.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:show_time/ui/schedule_timeline.dart';
 
@@ -30,13 +31,13 @@ class _FullScheduleState extends State<FullSchedule> {
 
   final int _loadingDuration = 569; // milliseconds
 
-  ShowController showController = Get.put(ShowController())!;
+  ShowController showController = sl<ShowController>();
 
   @override
   void initState() {
     super.initState();
     _searchTerm = "";
-    list = showController.scheduledEpisodes;
+    list = showController.scheduledEpisodes.value;
     list = list.toSet().toList();
   }
 
@@ -140,7 +141,8 @@ class _FullScheduleState extends State<FullSchedule> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 20.0),
                                     child: AnimatedSwitcher(
-                                        duration: const Duration(milliseconds: 200),
+                                        duration:
+                                            const Duration(milliseconds: 200),
                                         child: getCurrentView(_height, _width)),
                                   ),
                                 ],
@@ -359,7 +361,8 @@ class _FullScheduleState extends State<FullSchedule> {
         });
       },
       child: Container(
-        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+        decoration:
+            const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
         child: const Padding(
           padding: EdgeInsets.all(5.0),
           child: FaIcon(
