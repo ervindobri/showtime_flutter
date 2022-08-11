@@ -20,13 +20,19 @@ Future<void> main() async {
   );
   await di.init();
 
-  runApp(MaterialApp(
-    onGenerateRoute: RouteGenerator.generateRoute,
-    debugShowCheckedModeBanner: false,
-    theme: appTheme(),
-    title: 'showTIME',
-    home: const Router(),
-  ));
+  runApp(
+    MaterialApp(
+      onGenerateRoute: RouteGenerator.generateRoute,
+      debugShowCheckedModeBanner: false,
+      theme: appTheme(), //TODO: extract & define theme
+      title: 'showTIME',
+      home: bloc.BlocProvider<SplashBloc>(
+        create: (BuildContext context) =>
+            SplashBloc()..add(GetSplashEvent(true)),
+        child: const SplashScreen(),
+      ),
+    ),
+  );
 }
 
 appTheme() {
@@ -43,17 +49,4 @@ appTheme() {
     bottomSheetTheme:
         BottomSheetThemeData(backgroundColor: Colors.black.withOpacity(0)),
   );
-}
-
-//TODO: change get stuff to bloc
-class Router extends StatelessWidget {
-  const Router({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return bloc.BlocProvider<SplashBloc>(
-      create: (BuildContext context) => SplashBloc()..add(GetSplashEvent(true)),
-      child: const SplashScreen(),
-    );
-  }
 }

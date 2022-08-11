@@ -54,11 +54,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        toolbarHeight: 0,
-        backgroundColor: bgColor,
-        shadowColor: Colors.transparent,
-      ),
+      appBar: GlobalStyles.noAppbar,
       body: Container(
         color: bgColor,
         child: SafeArea(

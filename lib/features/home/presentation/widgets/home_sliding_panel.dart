@@ -74,7 +74,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
                     height: 6,
                     decoration: const BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                        borderRadius: BorderRadius.all(Radius.circular(24))),
                   ),
                 ],
               ),
@@ -144,18 +144,19 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
 
   Widget lastWatchedWidget(double height) {
     final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
-    print(MediaQuery.of(context).viewPadding.bottom);
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           //Label - LAst watched
-          Text("Last watched",
-              style: GlobalStyles.theme(context)
-                  .textTheme
-                  .bodyText1!
-                  .copyWith(color: Colors.white, fontWeight: FontWeight.w600)),
+          Text(
+            "Last watched",
+            style: GlobalStyles.theme(context).textTheme.bodyText1!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
@@ -178,24 +179,23 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
                       return buildCarouselSlider(shows.take(5).toList());
                     } else {
                       return SizedBox(
-                          height: height / 3,
                           child: Center(
                               child: Padding(
-                            padding: const EdgeInsets.all(25.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                AutoSizeText(
-                                  "Your watchlist is empty",
-                                  textAlign: TextAlign.center,
-                                ),
-                                AutoSizeText(
-                                  "Press the eye above for magic",
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
+                        padding: const EdgeInsets.all(24),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            AutoSizeText(
+                              "Your watchlist is empty",
+                              textAlign: TextAlign.center,
                             ),
-                          )));
+                            AutoSizeText(
+                              "Press the eye above for magic",
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      )));
                     }
                   } else {
                     // print("no stream");
@@ -203,7 +203,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
                         height: height / 3,
                         child: Center(
                             child: Padding(
-                          padding: const EdgeInsets.all(25.0),
+                          padding: const EdgeInsets.all(24),
                           child: Text(
                             "Press the eye above for magic",
                             textAlign: TextAlign.center,

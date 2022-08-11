@@ -20,24 +20,21 @@ class CustomAppbar extends StatelessWidget {
         filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
         child: Container(
           width: width,
-          decoration: BoxDecoration(color: Colors.white.withOpacity(.7)),
-          padding: const EdgeInsets.all(12),
+          // decoration: BoxDecoration(color: Colors.white.withOpacity(.7)),
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 12),
           child: Column(
             children: [
               SizedBox(height: topPadding),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0.0),
-                    child: InkWell(
-                      onTap: () => showProfileDialog(context),
-                      child: const Center(
-                        child: FaIcon(
-                          FontAwesomeIcons.userCircle,
-                          color: GlobalColors.primaryGreen,
-                          // size: 40,
-                        ),
+                  InkWell(
+                    onTap: () => showProfileDialog(context),
+                    child: const Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.userCircle,
+                        color: GlobalColors.primaryGreen,
+                        // size: 40,
                       ),
                     ),
                   ),

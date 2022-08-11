@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'custom_variables.dart';
 
@@ -9,6 +10,7 @@ class GlobalStyles {
     toolbarHeight: 0,
     backgroundColor: Colors.transparent,
     shadowColor: Colors.transparent,
+    systemOverlayStyle: SystemUiOverlayStyle.dark,
   );
 
   static ThemeData theme(BuildContext context) => Theme.of(context);
