@@ -4,11 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:show_time/components/loading_couch.dart';
+import 'package:show_time/controllers/auth_controller.dart';
+import 'package:show_time/controllers/storage_controller.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/utils/navigation.dart';
 import 'package:show_time/features/splash/bloc/splash_bloc.dart';
 import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/providers/connectivity_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -152,15 +155,17 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
         ),
       );
     }
-    return BlocConsumer<SplashBloc, SplashState>(listener: (context, state) {
+    return BlocConsumer<SplashBloc, SplashState>(
+        listener: (context, state) async {
       if (state is SplashInitial) {
         print("Check if loaded!");
         //check if loaded
       } else if (state is SplashError) {
         print("Splash listener: Error");
       } else if (state is SplashLoaded) {
+        final email = await sl<StorageController>().read(key: 'email');
+        sl<AuthController>().currentUserEmail.value = email;
         NavUtils.navigateReplaced(context, '/home');
-        print("going to home1!!");
       }
     }, builder: (context, SplashState state) {
       print(state);

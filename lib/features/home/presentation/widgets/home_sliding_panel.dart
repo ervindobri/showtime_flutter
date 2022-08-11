@@ -97,7 +97,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
               ]),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 15.0),
+          padding: const EdgeInsets.only(top: 24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -113,9 +113,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
                     )),
               ),
               blinkWidget(width),
-              SizedBox(
-                height: width / 10,
-              ),
+              const Spacer(),
               // Last watched shows
               lastWatchedWidget(height),
             ],

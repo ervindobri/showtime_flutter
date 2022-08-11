@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:show_time/controllers/auth_controller.dart';
 import 'package:show_time/controllers/filter_controller.dart';
 import 'package:show_time/controllers/show_controller.dart';
+import 'package:show_time/controllers/storage_controller.dart';
 import 'package:show_time/controllers/timer_controller.dart';
 import 'package:show_time/controllers/ui_controller.dart';
 import 'package:show_time/core/network/network_info.dart';
@@ -37,21 +39,29 @@ Future<void> init() async {
   registerShows();
 
   // sl.registerLazySingleton(() => InputConverter());
-  //TODO: register database etc.
 
-  sl.registerLazySingleton(() => AuthController());
-  sl.registerLazySingleton(() => FilterController());
-  sl.registerLazySingleton(() => UiController());
-  sl.registerLazySingleton(() => TimerController());
+  sl.registerLazySingleton<AuthController>(() => AuthController());
+  sl.registerLazySingleton<FilterController>(() => FilterController());
+  sl.registerLazySingleton<UiController>(() => UiController());
+  sl.registerLazySingleton<TimerController>(() => TimerController());
 
   final auth = FirebaseAuth.instance;
   final firestore = FirebaseFirestore.instance;
   sl.registerLazySingleton(() => auth);
   sl.registerLazySingleton(() => firestore);
-  sl.registerLazySingleton<FirestoreUtils>(() => FirestoreUtils());
+  sl.registerLazySingleton<FirestoreUtils>(
+    () => FirestoreUtils(),
+  );
+  const storage = FlutterSecureStorage();
+  sl.registerLazySingleton<StorageController>(
+      () => const StorageController(storage: storage));
 
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
-  sl.registerLazySingleton(() => InternetConnectionChecker());
+  sl.registerLazySingleton<NetworkInfo>(
+    () => NetworkInfoImpl(sl()),
+  );
+  sl.registerLazySingleton<InternetConnectionChecker>(
+    () => InternetConnectionChecker(),
+  );
 }
 
 void registerShows() {
