@@ -115,8 +115,8 @@ class UiController {
   showToast(
       {required BuildContext context,
       required String text,
-      required IconData icon,
-      required Color color,
+      IconData? icon,
+      Color color = GlobalColors.primaryGreen,
       ToastGravity gravity = ToastGravity.TOP}) {
     fToast = FToast();
     fToast.init(context);

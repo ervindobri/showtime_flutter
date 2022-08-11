@@ -31,22 +31,17 @@ class _ScheduleTimelineState extends State<ScheduleTimeline> {
   Widget build(BuildContext context) {
     // final _width = MediaQuery.of(context).size.width;
     // final _height = MediaQuery.of(context).size.height;
-    return Padding(
-      padding: const EdgeInsets.only(left: 35, bottom: 50),
-      child: SizedBox(
-        height: itemsCopy.length * 200.0,
-        child: ListView.builder(
-            controller: _scrollController,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: itemsCopy.length,
-            itemBuilder: (_, index) => EpisodeTile(
-                  isFirst: index == 0 ? true : false,
-                  isLast: index == itemsCopy.length - 1 ? true : false,
-                  episodes: itemsCopy[index],
-                )),
-      ),
-    );
+    return ListView.builder(
+        controller: _scrollController,
+        padding: const EdgeInsets.fromLTRB(42, 24, 4, 48),
+        // physics: const NeverScrollableScrollPhysics(),
+        // shrinkWrap: true,
+        itemCount: itemsCopy.length,
+        itemBuilder: (_, index) => EpisodeTile(
+              isFirst: index == 0 ? true : false,
+              isLast: index == itemsCopy.length - 1 ? true : false,
+              episodes: itemsCopy[index],
+            ));
   }
 }
 
@@ -80,10 +75,10 @@ class EpisodeTile extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: episodes.first.getDiffDays() < 0
-                  ? GlobalColors.primaryGreen.withOpacity(.2)
-                  : GlobalColors.fireColor.withOpacity(.2),
-              blurRadius: 15,
-              spreadRadius: -2,
+                  ? GlobalColors.greyTextColor.withOpacity(.1)
+                  : GlobalColors.fireColor.withOpacity(.1),
+              blurRadius: 12,
+              spreadRadius: -8,
             )
           ],
         ),
@@ -94,10 +89,11 @@ class EpisodeTile extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: episodes.first.getDiffDays() < 0
-                    ? GlobalColors.primaryGreen
-                    : GlobalColors.fireColor),
+              borderRadius: BorderRadius.circular(12),
+              color: episodes.first.getDiffDays() < 0
+                  ? Colors.white
+                  : GlobalColors.fireColor,
+            ),
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Row(
@@ -105,19 +101,34 @@ class EpisodeTile extends StatelessWidget {
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: 100,
-                        child: Text(episodes.first.name!,
-                            style: ShowTheme.listWatchCardSubStyle),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            episodes.first.embedded?['show']['name'] ?? "",
+                            style: ShowTheme.listWatchCardSubStyle.copyWith(
+                              color: GlobalColors.greyTextColor,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Text(
+                            episodes.first.name!,
+                            style: ShowTheme.listWatchCardSubStyle
+                                .copyWith(color: GlobalColors.greyTextColor),
+                          ),
+                        ],
                       ),
-                      Text(episodes.first.getAirDateLabel(),
-                          maxLines: 1,
-                          style: GoogleFonts.raleway(
-                              fontSize: 25,
-                              fontWeight: FontWeight.w700,
-                              color: GlobalColors.white)),
+                      Text(
+                        episodes.first.getAirDateLabel(),
+                        maxLines: 1,
+                        style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: GlobalColors.greyTextColor,
+                        ),
+                      ),
                     ],
                   ),
                   Container(

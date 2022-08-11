@@ -145,6 +145,8 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
   }
 
   Widget lastWatchedWidget(double height) {
+    final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
+    print(MediaQuery.of(context).viewPadding.bottom);
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -163,7 +165,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
                 stream: sl<FirestoreUtils>().getWatchedShows,
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData && snapshot.data != null) {
-                    print("data: ${snapshot.data?.docs}");
+                    // print("data: ${snapshot.data?.docs}");
                     if (snapshot.data?.docs.isNotEmpty ?? false) {
                       GlobalVariables.watchedShowList.clear();
                       // allWatchedShows.clear();
@@ -175,7 +177,6 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
                               )
                               .toList() ??
                           [];
-                      print(shows);
                       return buildCarouselSlider(shows.take(5).toList());
                     } else {
                       return SizedBox(
@@ -217,6 +218,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
                   }
                 }),
           ),
+          SizedBox(height: bottomPadding),
         ],
       ),
     );
@@ -224,7 +226,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
 
   Widget buildCarouselSlider(List<WatchedTVShow> data) {
     final width = MediaQuery.of(context).size.width;
-    print(data);
+    // print(data);
     if (kIsWeb) {
       return Center(
         child: SizedBox(

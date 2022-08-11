@@ -108,8 +108,8 @@ class FirestoreUtils {
     return searchHistory.doc(value).set({"term": value, "date": date});
   }
 
-  getSearchHistory() {
-    return searchHistory.orderBy('date', descending: true).limit(6).snapshots();
+  Stream<QuerySnapshot<Map<String, dynamic>>> getSearchHistory() {
+    return searchHistory.orderBy('date', descending: true).limit(6).snapshots() as Stream<QuerySnapshot<Map<String, dynamic>>>;
   }
 
   Future<void> resetPassword(String email) async {

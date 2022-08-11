@@ -62,6 +62,7 @@ class WatchedCard extends StatelessWidget {
                   ),
                 ],
               ),
+              padding: const EdgeInsets.all(8),
               child: Column(
                 children: <Widget>[
                   Column(
@@ -210,15 +211,14 @@ class WatchedCard extends StatelessWidget {
                 ],
               ),
             ),
-            _checkFireDisplay(context, _percentage, show.lastWatchDate!),
-            floatingActions(context, _percentage, _width / 2.5),
+            _checkFireDisplay(context, _percentage),
+            floatingActions(context, _percentage),
           ],
         ));
   }
 
-  Widget _checkFireDisplay(
-      BuildContext context, double percentage, String lastWatchDate) {
-    var lastWatched = DateTime.parse("$lastWatchDate 00:00:00.000");
+  Widget _checkFireDisplay(BuildContext context, double percentage) {
+    var lastWatched = DateTime.parse("${show.lastWatchDate}");
     var prevMonth =
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
     int diffDays = lastWatched.difference(prevMonth).inDays;
@@ -296,8 +296,7 @@ class WatchedCard extends StatelessWidget {
     }
   }
 
-  Widget floatingActions(
-      BuildContext context, double _percentage, double cardWidth) {
+  Widget floatingActions(BuildContext context, double _percentage) {
     if (_percentage < 1.0) {
       return Positioned(
         bottom: -24,

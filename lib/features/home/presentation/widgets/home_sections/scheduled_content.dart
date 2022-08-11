@@ -2,15 +2,26 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:show_time/components/loading_couch.dart';
+import 'package:show_time/controllers/show_controller.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
 import 'package:show_time/core/utils/navigation.dart';
+import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/features/home/presentation/bloc/scheduledshows_bloc.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/ui/schedule_card.dart';
 
-class ScheduledContent extends StatelessWidget {
+class ScheduledContent extends StatefulWidget {
   const ScheduledContent({Key? key}) : super(key: key);
+
+  @override
+  State<ScheduledContent> createState() => _ScheduledContentState();
+}
+
+class _ScheduledContentState extends State<ScheduledContent> {
   // final ScrollController _scheduleScrollController = ScrollController();
+  final CarouselController controller = CarouselController();
+  int _current = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +48,14 @@ class ScheduledContent extends StatelessWidget {
             ],
           ),
         ),
-        BlocBuilder<ScheduledShowsBloc, ScheduledShowsState>(
+        BlocConsumer<ScheduledShowsBloc, ScheduledShowsState>(
+          listener: (_, state) {
+            if (state is ScheduledShowsLoaded) {
+              print(state.shows);
+              sl<ShowController>().notAiredList.value =
+                  state.shows as List<Episode>;
+            }
+          },
           builder: (context, state) {
             if (state is ScheduledShowsLoaded) {
               final shows = state.shows;
@@ -60,7 +78,7 @@ class ScheduledContent extends StatelessWidget {
     );
   }
 
-  Widget _buildScheduledShowView(BuildContext context, List shows) {
+  Widget _buildScheduledShowView(BuildContext context, List listOfEpisodes) {
     double _width = MediaQuery.of(context).size.width;
     // double _height = MediaQuery.of(context).size.height;
     return
@@ -84,20 +102,48 @@ class ScheduledContent extends StatelessWidget {
         //     :
         SizedBox(
       width: _width,
-      child: CarouselSlider.builder(
-        options: CarouselOptions(
-          enlargeCenterPage: true,
-          clipBehavior: Clip.none,
-          aspectRatio: 16 / 9,
-        ),
-        itemCount: 5,
-        itemBuilder: (_, index, __) {
-          final episode = shows.toList()[index];
-          return SizedBox(
-            // width: 200,
-            child: ScheduleCard(episode: episode),
-          );
-        },
+      child: Column(
+        children: [
+          CarouselSlider.builder(
+            carouselController: controller,
+            options: CarouselOptions(
+              enlargeCenterPage: true,
+              clipBehavior: Clip.none,
+              aspectRatio: 16 / 9,
+              onPageChanged: (index, reason) {
+                setState(() => _current = index);
+              },
+            ),
+            itemCount: 5,
+            itemBuilder: (_, index, __) {
+              final episode = listOfEpisodes.toList()[index];
+              return SizedBox(
+                // width: 200,
+                child: ScheduleCard(episode: episode),
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          ValueListenableBuilder(
+              valueListenable: ValueNotifier(_current),
+              builder: (context, value, __) {
+                return Wrap(
+                  spacing: 8,
+                  children: List.generate(
+                    listOfEpisodes.length,
+                    (index) => Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                          color: value == index
+                              ? GlobalColors.primaryGreen
+                              : Colors.white,
+                          shape: BoxShape.circle),
+                    ),
+                  ),
+                );
+              })
+        ],
       ),
     );
   }

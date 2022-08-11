@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/features/home/data/models/countdown.dart';
 import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/models/tvshow_details.dart';
@@ -28,7 +29,7 @@ class FullScheduleCard extends StatefulWidget {
 
 class _FullScheduleCardState extends State<FullScheduleCard>
     with AnimationMixin {
-  List<String> countdown = [];
+  late Countdown countdown;
   late Timer _timer;
 
   var countDownStyle = GoogleFonts.poppins(
@@ -70,7 +71,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
       curve: Curves.easeInCubic,
     );
     setState(() {
-      countdown = widget.episodes[0].getDifference().split(':');
+      countdown = widget.episodes[0].getDifference();
     });
     startTimer();
     _tapped = false;
@@ -88,7 +89,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
   void startTimer() {
     const oneSec = Duration(seconds: 1);
     _timer = Timer.periodic(oneSec, (Timer timer) {
-      setState(() => countdown = widget.episodes[0].getDifference().split(':'));
+      setState(() => countdown = widget.episodes[0].getDifference());
     });
   }
 
@@ -163,7 +164,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                           borderRadius: _radius,
                           boxShadow: [
                             BoxShadow(
-                              color: int.parse(countdown[0]) <= 3
+                              color: countdown.days <= 3
                                   ? GlobalColors.fireColor.withOpacity(.3)
                                   : GlobalColors.primaryGreen.withOpacity(.3),
                               blurRadius: 15.0,
@@ -224,7 +225,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                                   top: 20.0),
                                               child: Center(
                                                 child: Text(
-                                                    "${countdown[0].toString()} : ${countdown[1].toString()} : ${countdown[2].toString()} : ${countdown[3].toString()}",
+                                                    countdown.displayLetters,
                                                     style: countDownStyle),
                                               ),
                                             ),
@@ -560,7 +561,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                       visible: !_tapped ? true : false,
                       child: Positioned(
                         right: 0,
-                        child: int.parse(countdown[0]) > 0
+                        child: countdown.days > 0
                             ? ClipRRect(
                                 borderRadius: const BorderRadius.only(
                                   bottomLeft: Radius.circular(24.0),
@@ -592,7 +593,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                           direction: Axis.vertical,
                                           children: [
                                             AutoSizeText(
-                                                countdown[0].toString(),
+                                                countdown.days.toString(),
                                                 maxLines: 1,
                                                 minFontSize: 10,
                                                 maxFontSize: 18,
@@ -609,7 +610,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                               ),
                                             ),
                                             AutoSizeText(
-                                                countdown[1].toString(),
+                                                countdown.hours.toString(),
                                                 maxFontSize: 20,
                                                 style: countDownStyle),
                                             Padding(
@@ -624,7 +625,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                               ),
                                             ),
                                             AutoSizeText(
-                                                countdown[2].toString(),
+                                                countdown.minutes.toString(),
                                                 maxFontSize: 20,
                                                 style: countDownStyle),
                                             Padding(
@@ -639,7 +640,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                                               ),
                                             ),
                                             AutoSizeText(
-                                                countdown[3].toString(),
+                                                countdown.seconds.toString(),
                                                 maxFontSize: 20,
                                                 style: countDownStyle),
                                           ],
@@ -663,7 +664,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                   decoration: BoxDecoration(
                       borderRadius: _radius,
                       gradient: LinearGradient(
-                        colors: int.parse(countdown[0]) <= 3
+                        colors: countdown.days <= 3
                             ? [Colors.orange, GlobalColors.orangeColor]
                             : [
                                 GlobalColors.primaryGreen,
@@ -672,7 +673,7 @@ class _FullScheduleCardState extends State<FullScheduleCard>
                         stops: const [.01, 20],
                       )),
                   child: Center(
-                      child: Text(getTopLabel(countdown[0]),
+                      child: Text(getTopLabel(countdown.days),
                           style: TextStyle(
                               color: CupertinoColors.white,
                               fontSize: _width / 20,
@@ -687,14 +688,14 @@ class _FullScheduleCardState extends State<FullScheduleCard>
     );
   }
 
-  String getTopLabel(String countdown) {
+  String getTopLabel(int days) {
     // print(countdown);
-    if (int.parse(countdown) > 0) {
-      return "In ${int.parse(countdown).abs()} day(s)";
-    } else if (int.parse(countdown) == 0) {
+    if (days > 0) {
+      return "In ${days.abs()} day(s)";
+    } else if (days == 0) {
       return "Available to watch";
     } else {
-      return "${int.parse(countdown).abs()} day(s) ago";
+      return "${days.abs()} day(s) ago";
     }
   }
 

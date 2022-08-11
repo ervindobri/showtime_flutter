@@ -55,7 +55,8 @@ Future<void> init() async {
 }
 
 void registerShows() {
-  sl.registerLazySingleton<ShowController>(() => ShowController());
+  sl.registerLazySingleton<ShowController>(
+      () => ShowController(firestoreService: sl()));
   sl.registerFactory(
     () => ScheduledShowsBloc(getScheduledShows: sl()),
   );

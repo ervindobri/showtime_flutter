@@ -129,7 +129,8 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-
+    final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
+    print(MediaQuery.of(context).viewPadding.bottom);
     return Container(
       width: _width,
       height: _height * .95,
@@ -295,6 +296,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                 ),
               ),
             ),
+            SizedBox(height: bottomPadding),
           ],
         ),
       ),
@@ -722,7 +724,6 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
   Widget displayActions() {
     // final _width = MediaQuery.of(context).size.width;
     // final _height = MediaQuery.of(context).size.height;
-
     if (widget.show.calculatedProgress < 1.0) {
       return widget.show.nextEpisodeAired
           ? Row(
@@ -790,7 +791,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                               return createBottomSheet();
                             });
                       }),
-                )
+                ),
               ],
             )
           : Row(
@@ -860,7 +861,7 @@ class _WatchedDetailViewState extends State<WatchedDetailView>
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             );
     } else {

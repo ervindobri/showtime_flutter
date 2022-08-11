@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:roundcheckbox/roundcheckbox.dart';
 import 'package:show_time/controllers/auth_controller.dart';
+import 'package:show_time/controllers/show_controller.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/styles.dart';
 import 'package:show_time/core/utils/navigation.dart';
@@ -46,9 +47,10 @@ class _LoginSheetState extends State<LoginSheet> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final _width = MediaQuery.of(context).size.width;
     final _height = MediaQuery.of(context).size.height;
-    return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+    return BlocConsumer<AuthBloc, AuthState>(listener: (context, state) async {
       if (state is LoginSuccessful) {
         sl<AuthController>().currentUserEmail.value = state.user.user!.email!;
+        await sl<ShowController>().initialize();
         NavUtils.navigateReplaced(context, '/home', args: state.user);
       }
     }, builder: (context, state) {

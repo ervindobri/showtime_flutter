@@ -31,26 +31,25 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
   var animationName = 'Shrink';
 
   final GoogleSignIn googleSignIn = GoogleSignIn();
-  late bool _fingerprintAnimStopped;
+  bool _fingerprintAnimStopped = true;
   bool _isBgAnimStopped = true;
 
-  late Animation<double> animation;
-  late AnimationController _controller;
+  // late Animation<double> animation;
+  // late AnimationController _controller;
 
   //TODO: fix animation
   @override
   void initState() {
     super.initState();
-    _fingerprintAnimStopped = true;
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 550),
-      vsync: this,
-    );
+    // _controller = AnimationController(
+    //   duration: const Duration(milliseconds: 300),
+    //   vsync: this,
+    // );
 
-    animation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInCubic,
-    );
+    // animation = CurvedAnimation(
+    //   parent: _controller,
+    //   curve: Curves.easeInCubic,
+    // );
     initialTimer();
   }
 
@@ -65,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
 
   initialTimer() async {
     if (!kIsWeb) {
-      await Future.delayed(const Duration(milliseconds: 1000));
+      await Future.delayed(const Duration(milliseconds: 800));
       // if (!controller.)
       setState(() {
         startAnimation = true;
@@ -74,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
     }
 
     await Future.delayed(const Duration(milliseconds: 300));
-    _controller.forward();
+    // _controller.forward();
   }
 
   @override
@@ -105,7 +104,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
               height: _height,
               child: FlareActor("assets/flowingbg.flr",
                   isPaused: _isBgAnimStopped,
-                  snapToEnd: true,
                   fit: BoxFit.cover,
                   animation: "in"),
             ),
@@ -211,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 

@@ -116,7 +116,7 @@ class _HomeViewState extends State<HomeView> with AnimationMixin {
                   const SizedBox(height: 16),
                   const DiscoverContent(),
                   const SizedBox(height: 16),
-                  const ScheduledContent(),
+                  ScheduledContent(),
                 ],
               ),
             ),

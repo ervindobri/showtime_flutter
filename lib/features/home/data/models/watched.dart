@@ -2,6 +2,7 @@
 
 import 'package:equatable/equatable.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/features/home/data/models/countdown.dart';
 import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/models/tvshow_details.dart';
 
@@ -229,7 +230,7 @@ class WatchedTVShow extends Equatable {
   }
 
   String newestEpisodeDifference() {
-    String diff = episodes.last.getDifference();
+    String diff = episodes.last.getDifference().displayLetters;
     return diff;
   }
 

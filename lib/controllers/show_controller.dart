@@ -5,11 +5,15 @@ import 'package:show_time/features/home/data/models/watched.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:show_time/network/network.dart';
 
-class ShowController  {
+class ShowController {
+  final FirestoreUtils firestoreService;
+  ShowController({required this.firestoreService});
+
   ValueNotifier<List<WatchedTVShow>> watchedShows =
       ValueNotifier(<WatchedTVShow>[]);
   List<int> watchedShowIds = [];
-  ValueNotifier<List<List<Episode>>> scheduledEpisodes = ValueNotifier(<List<Episode>>[]);
+  ValueNotifier<List<List<Episode>>> scheduledEpisodes =
+      ValueNotifier(<List<Episode>>[]);
   ValueNotifier<List<Episode>> notAiredList = ValueNotifier(<Episode>[]);
 
   ValueNotifier<List<WatchedTVShow>> sortedList =
@@ -27,18 +31,24 @@ class ShowController  {
   ValueNotifier<String> searchTerm = ValueNotifier('');
   ValueNotifier<bool> loaded = ValueNotifier(false);
 
-  void initialize() {
+  Future<void> initialize() async {
     watchedShowIds.clear();
-    fetchWatchedShows();
-    fetchScheduledEpisodes();
+
+    // Fetch watched shows from firestore
+    await fetchWatchedShows();
+
+    // Fetch scheduled episodes from tvmaze
+    await fetchScheduledEpisodes();
+
+    // Setup Episodes that are airing soon
+    getNotAired();
     loaded.value = true;
   }
 
-  void fetchWatchedShows() async {
-    watchedShows.dispose();
+  Future<void> fetchWatchedShows() async {
+    // watchedShows.dispose();
     List<WatchedTVShow> result = [];
-    await FirestoreUtils()
-        .watchedShows
+    await firestoreService.watchedShows
         .get()
         .then((QuerySnapshot querySnapshot) {
       for (var doc in querySnapshot.docs) {
@@ -58,12 +68,10 @@ class ShowController  {
     sortedList.value = watchedShows.value;
   }
 
-  void fetchScheduledEpisodes() async {
-    print("Fetching scheduled episodes! ${watchedShowIds.length}");
-    await FirestoreUtils().getEpisodeList(watchedShowIds).then((value) {
+  Future<void> fetchScheduledEpisodes() async {
+    await firestoreService.getEpisodeList(watchedShowIds).then((value) {
       scheduledEpisodes.value = value;
     });
-    getNotAired();
   }
 
   void getNotAired() {
@@ -86,7 +94,7 @@ class ShowController  {
   getShowData(WatchedTVShow show) async {
     try {
       List<dynamic> list = await Network().getDetailUpdates(showID: show.id);
-      var snapshots = FirestoreUtils().watchedShows.doc(show.id).snapshots();
+      var snapshots = firestoreService.watchedShows.doc(show.id).snapshots();
       snapshots.first.then((value) {
         show.currentSeason =
             (value.data() as Map<String, dynamic>)['currentSeason'];

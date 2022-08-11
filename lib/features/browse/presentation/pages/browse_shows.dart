@@ -3,13 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:show_time/components/back.dart';
 import 'package:show_time/components/custom_elevation.dart';
 import 'package:show_time/components/popular_appbar.dart';
+import 'package:show_time/controllers/ui_controller.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/core/constants/styles.dart';
+import 'package:show_time/injection_container.dart';
 import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/network/firebase_utils.dart';
 import 'package:show_time/network/network.dart';
 import 'package:show_time/ui/search_card.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,56 +37,6 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
   bool isSearchClicked = false;
   final TextEditingController _filter = TextEditingController();
   final bgColor = GlobalColors.primaryBlue;
-
-  Widget _textField() {
-    return CupertinoTextField(
-      onSubmitted: (value) {
-        if (value != "") {
-          setState(() => _searchShows(value));
-        } else {
-          Fluttertoast.showToast(
-              msg: "Search failed!",
-              toastLength: Toast.LENGTH_LONG,
-              backgroundColor: bgColor,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 2);
-        }
-      },
-      controller: _filter,
-      clearButtonMode: OverlayVisibilityMode.editing,
-      keyboardType: TextInputType.text,
-      placeholder: "Search..",
-      placeholderStyle: const TextStyle(
-        color: GlobalColors.greyTextColor,
-        fontSize: 20.0,
-        fontFamily: 'Raleway',
-      ),
-      cursorColor: GlobalColors.greyTextColor,
-      cursorWidth: 3,
-      style: const TextStyle(
-        color: GlobalColors.greyTextColor,
-        fontSize: 20.0,
-        fontFamily: 'Raleway',
-      ),
-      prefix: const Padding(
-        padding: EdgeInsets.only(left: 8.0),
-        child: Icon(
-          Icons.search,
-          color: GlobalColors.greyTextColor,
-        ),
-      ),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.grey.withOpacity(.2),
-                blurRadius: 25.0,
-                spreadRadius: -25,
-                offset: const Offset(0, 5)),
-          ],
-          color: Colors.white),
-    );
-  }
 
   @override
   void initState() {
@@ -117,12 +69,11 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                 ? FutureBuilder(
                     future: showSearchObject,
                     builder: (context, AsyncSnapshot<AllTVShowList> snapshot) {
-//            print(snapshot.connectionState);
                       if (!snapshot.hasData) {
                         return CustomScrollView(
                             // physics: NeverScrollableScrollPhysics(),
                             slivers: [
-                              sliverHeader(_width, _height),
+                              buildSliverHeader(),
                               SliverFillRemaining(
                                   child: Container(
                                 height: _height,
@@ -155,7 +106,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                           return CustomScrollView(
                             physics: const ClampingScrollPhysics(),
                             slivers: [
-                              sliverHeader(_width, _height),
+                              buildSliverHeader(),
                               SliverFillRemaining(
                                 child: Container(
                                   height: _height,
@@ -190,41 +141,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                           return CustomScrollView(
                             // physics: NeverScrollableScrollPhysics(),
                             slivers: [
-                              SliverPersistentHeader(
-                                pinned: true,
-                                floating: true,
-                                delegate: PopularSliverDelegate(
-                                  child: Container(
-                                    width: _width,
-                                    height: _height * .15,
-                                    decoration: const BoxDecoration(
-                                        color: Color(0xFFFF006F),
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(25.0),
-                                          bottomRight: Radius.circular(25.0),
-                                        )),
-                                    // color: Colors.black,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 30.0, vertical: 10),
-                                          child: _textField(),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  expandedHeight: _height * .15,
-                                  hideTitleWhenExpanded: false,
-                                  back: const CustomBackButton(
-                                    backPage: 'Home',
-                                    itemColor: GlobalColors.white,
-                                    backgroundColor: GlobalColors.primaryBlue,
-                                  ),
-                                ),
-                              ),
+                              buildSliverHeader(),
                               SliverFillRemaining(
                                 child: FlareActor("assets/notfound.flr",
                                     color: bgColor.withOpacity(.3),
@@ -240,7 +157,7 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                 : CustomScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     slivers: [
-                      sliverHeader(_width, _height),
+                      buildSliverHeader(),
                       SliverFillRemaining(
                         // hasScrollBody: false,
                         // fillOverscroll: false,
@@ -288,21 +205,23 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 30.0, vertical: 40),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 40),
               child: Text(
                 "Last searches",
                 style: TextStyle(
-                    color: GlobalColors.greyTextColor,
-                    fontSize: _width / 20,
-                    fontFamily: 'Raleway',
-                    fontWeight: FontWeight.w600),
+                  color: GlobalColors.greyTextColor,
+                  fontSize: 16,
+                  fontFamily: 'Raleway',
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-            StreamBuilder<QuerySnapshot>(
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                 stream: FirestoreUtils().getSearchHistory(),
-                builder: (context, AsyncSnapshot snapshot) {
+                builder: (context,
+                    AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                        snapshot) {
                   if (snapshot.hasData) {
                     // snapshot.data.docs.forEach((element) {
                     //   print(element.data());
@@ -329,9 +248,10 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                                     child: CustomElevation(
                                       color: Colors.grey.withOpacity(.2),
                                       child: TextButton(
+                                        style: GlobalStyles.whiteButtonStyle(),
                                         // color: Colors.white,
                                         // highlightColor:
-                                            // Colors.greenAccent.shade200,
+                                        // Colors.greenAccent.shade200,
                                         // shape: const RoundedRectangleBorder(
                                         //   borderRadius: BorderRadius.all(
                                         //     Radius.circular(25.0),
@@ -340,15 +260,16 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
                                         onPressed: () {
                                           setState(() {
                                             _searchShows(snapshot
-                                                .data.docs[index]
+                                                .data?.docs[index]
                                                 .data()['term']);
                                           });
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
-                                            snapshot.data.docs[index]
-                                                .data()['term'],
+                                            snapshot.data?.docs[index]
+                                                    .data()['term'] ??
+                                                "",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 decoration:
@@ -395,13 +316,10 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
             builder: (context, AsyncSnapshot<AllTVShowList> snapshot) {
               if (!snapshot.hasData) {
                 return SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: Center(
-                    child: Theme(
-                      data: Theme.of(context).copyWith(colorScheme: ColorScheme.fromSwatch().copyWith(secondary: bgColor)),
-                      child: const CircularProgressIndicator(
-                        strokeWidth: 6.5,
-                      ),
+                  height: _height * 0.6,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: GlobalColors.primaryBlue,
                     ),
                   ),
                 );
@@ -494,11 +412,11 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: TextField(
             controller: _controller,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w500,
               fontFamily: 'Raleway',
-              fontSize: MediaQuery.of(context).size.width / 30,
+              fontSize: 16,
             ),
             onTap: () => _icon = const Icon(
               Icons.clear,
@@ -558,39 +476,101 @@ class _AllTVShowsState extends State<AllTVShows> with TickerProviderStateMixin {
     );
   }
 
-  sliverHeader(double _width, double _height) {
+  Widget buildSliverHeader() {
+    return PopularSliverHeader(
+      onSearchSubmitted: (value) {
+        if (value != "") {
+          setState(() => _searchShows(value));
+        } else {
+          sl<UiController>().showToast(
+            context: context,
+            text: 'Search failed!',
+            color: GlobalColors.primaryBlue,
+          );
+        }
+      },
+    );
+  }
+}
+
+class PopularSliverHeader extends StatefulWidget {
+  final Color backgroundColor;
+  final ValueChanged<String>? onSearchSubmitted;
+  const PopularSliverHeader(
+      {Key? key,
+      this.backgroundColor = GlobalColors.primaryBlue,
+      this.onSearchSubmitted})
+      : super(key: key);
+
+  @override
+  State<PopularSliverHeader> createState() => _PopularSliverHeaderState();
+}
+
+class _PopularSliverHeaderState extends State<PopularSliverHeader> {
+  @override
+  Widget build(BuildContext context) {
+    double _width = MediaQuery.of(context).size.width;
+    double _height = MediaQuery.of(context).size.height;
     return SliverPersistentHeader(
       pinned: true,
       floating: true,
       delegate: PopularSliverDelegate(
         // hideTitleWhenExpanded: true,
-        expandedHeight: _height * .15,
-        back: const CustomBackButton(
-          backPage: 'Home',
-          itemColor: GlobalColors.white,
-          backgroundColor: GlobalColors.primaryBlue,
-        ),
-        // actions: getActions(),
-        child: Container(
-          width: _width,
-          decoration: const BoxDecoration(
-              color: GlobalColors.primaryBlue,
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(GlobalVariables.sliverRadius),
-                bottomRight: Radius.circular(GlobalVariables.sliverRadius),
-              )),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30.0, vertical: 5),
-                child: _textField(),
-              ),
-            ],
+        backgroundColor: widget.backgroundColor,
+        expandedHeight: 92,
+        back: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+          child: CustomBackButton(
+            backPage: 'Home',
+            itemColor: GlobalColors.white,
+            backgroundColor: widget.backgroundColor,
           ),
         ),
+        // actions: getActions(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
+          child: _textField(),
+        ),
       ),
+    );
+  }
+
+  Widget _textField() {
+    return CupertinoTextField(
+      onSubmitted: widget.onSearchSubmitted,
+      // controller: _filter,
+      clearButtonMode: OverlayVisibilityMode.editing,
+      keyboardType: TextInputType.text,
+      placeholder: "Search..",
+      placeholderStyle: const TextStyle(
+        color: GlobalColors.greyTextColor,
+        fontSize: 20.0,
+        fontFamily: 'Raleway',
+      ),
+      cursorColor: GlobalColors.greyTextColor,
+      cursorWidth: 3,
+      style: const TextStyle(
+        color: GlobalColors.greyTextColor,
+        fontSize: 20.0,
+        fontFamily: 'Raleway',
+      ),
+      prefix: const Padding(
+        padding: EdgeInsets.only(left: 8.0),
+        child: Icon(
+          Icons.search,
+          color: GlobalColors.greyTextColor,
+        ),
+      ),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withOpacity(.2),
+                blurRadius: 25.0,
+                spreadRadius: -25,
+                offset: const Offset(0, 5)),
+          ],
+          color: Colors.white),
     );
   }
 }

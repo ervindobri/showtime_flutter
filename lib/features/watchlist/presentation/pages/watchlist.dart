@@ -23,7 +23,6 @@ class WatchlistWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final email = sl<AuthController>().currentUserEmail.value;
-    print(email);
     return BlocProvider.value(
       value: sl<WatchedShowsBloc>()..add(LoadWatchedShowsEvent(email)),
       child: const DiscoverWatchList(),

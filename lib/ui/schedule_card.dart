@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:show_time/core/constants/theme_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:show_time/features/home/data/models/countdown.dart';
 import 'package:show_time/features/home/data/models/episode.dart';
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +24,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
   void initState() {
     super.initState();
     //Initialize the label text
-    _countdownLabel = widget.episode.getDifference();
+    _countdownLabel = widget.episode.getDifference().displayLetters;
     startCountdown();
   }
 
@@ -38,7 +39,7 @@ class _ScheduleCardState extends State<ScheduleCard> {
   void startCountdown() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
-        _countdownLabel = widget.episode.getDifference();
+        _countdownLabel = widget.episode.getDifference().displayLetters;
       });
     });
   }
@@ -135,21 +136,13 @@ class _ScheduleCardState extends State<ScheduleCard> {
                 ),
                 const SizedBox(height: 16),
                 widget.episode.getDiffDays() >= 0
-                    ? Text(
-                        "Episode available to watch.",
+                    ? const SizedBox()
+                    : Text(
+                        _countdownLabel,
                         style: GoogleFonts.poppins(
                             color: GlobalColors.greyTextColor.withOpacity(.4),
-                            fontSize: 32,
+                            fontSize: 24,
                             fontWeight: FontWeight.w700),
-                      )
-                    : FittedBox(
-                        child: Text(
-                          _countdownLabel,
-                          style: GoogleFonts.poppins(
-                              color: GlobalColors.greyTextColor.withOpacity(.4),
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700),
-                        ),
                       ),
                 // const SizedBox(height: 48),
               ],
@@ -160,41 +153,44 @@ class _ScheduleCardState extends State<ScheduleCard> {
             child: Container(
               height: 48,
               decoration: BoxDecoration(
-                  color: widget.episode.getDiffDays() > 3
-                      ? GlobalColors.lightGreenColor
-                      : GlobalColors.orangeColor,
-                  borderRadius: ShowTheme.radius50,
-                  boxShadow: [
-                    BoxShadow(
-                        color: widget.episode.getDiffDays() > 3
-                            ? GlobalColors.lightGreenColor.withOpacity(.5)
-                            : GlobalColors.fireColor.withOpacity(1),
-                        blurRadius: 8.0,
-                        spreadRadius: -2,
-                        offset: const Offset(0, 2))
-                  ]),
+                color: widget.episode.getDiffDays() > 3
+                    ? GlobalColors.lightGreenColor
+                    : GlobalColors.orangeColor,
+                borderRadius: ShowTheme.radius50,
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.episode.getDiffDays() > 3
+                        ? GlobalColors.lightGreenColor.withOpacity(.5)
+                        : GlobalColors.fireColor.withOpacity(1),
+                    blurRadius: 8.0,
+                    spreadRadius: -2,
+                    offset: const Offset(0, 2),
+                  )
+                ],
+              ),
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 24),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(widget.episode.getAirDateLabel(),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontFamily: 'Raleway',
-                      )),
                   Text(
-                      widget.episode.getDiffDays() >= 0
-                          ? "Available"
-                          : widget.episode.airTime!,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: 'Raleway',
-                      )),
+                    widget.episode.getAirDateLabel(),
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      fontSize: 12,
+                    ),
+                  ),
+                  Text(
+                    widget.episode.getDiffDays() >= 0
+                        ? "Available"
+                        : widget.episode.airTime!,
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                      fontSize: 14,
+                    ),
+                  ),
                 ],
               ),
             ),

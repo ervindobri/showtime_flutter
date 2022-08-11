@@ -1,4 +1,5 @@
 import 'package:show_time/core/constants/custom_variables.dart';
+import 'package:show_time/features/home/data/models/countdown.dart';
 
 class EpisodeList {
   final List<Episode> episodes;
@@ -81,14 +82,19 @@ class Episode {
     }
   }
 
-  String getDifference() {
+  Countdown getDifference() {
     if (airDate != null) {
       var airDate = DateTime.parse("${this.airDate} $airTime:00.000");
       var diff = airDate.difference(DateTime.now());
 
-      return "${diff.inDays.abs()}D ${diff.inHours.remainder(24).abs()}H ${diff.inMinutes.remainder(60).abs()}M ${(diff.inSeconds.remainder(60).abs())}S";
+      return Countdown(
+        diff.inDays.abs(),
+        diff.inHours.remainder(24).abs(),
+        diff.inMinutes.remainder(60).abs(),
+        diff.inSeconds.remainder(60).abs(),
+      );
     }
-    return "";
+    return const Countdown.zero();
   }
 
   int getDiffDays() {
