@@ -101,9 +101,9 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
             padding: const EdgeInsets.all(8.0),
             child: AutoSizeText(
               widget.show.name,
-              style: TextStyle(
+              style: const TextStyle(
                   fontFamily: 'Raleway',
-                  fontSize: _width / 20,
+                  fontSize: 16,
                   color: GlobalColors.greyTextColor,
                   fontWeight: FontWeight.w700),
             ),
@@ -263,7 +263,8 @@ class _PopularCardState extends State<PopularCard> with AnimationMixin {
                                                         GlobalColors.pinkColor),
                                                 child: Center(
                                                   child: AutoSizeText(
-                                                    widget.show.startDateString.split('-')[0],
+                                                    widget.show.startDateString
+                                                        .split('-')[0],
                                                     textAlign: TextAlign.left,
                                                     style: TextStyle(
                                                         color: Colors.white,

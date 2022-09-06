@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_initializing_formals
 
 import 'package:equatable/equatable.dart';
+
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/features/home/data/models/countdown.dart';
 import 'package:show_time/features/home/data/models/episode.dart';
@@ -80,18 +81,26 @@ class WatchedTVShow extends Equatable {
     return diffDays;
   }
 
-  nextEpisodeAirDate() {
-    if (calculateWatchedEpisodes() == 0) {
+  // Get difference in Duration and airing time formatted of next episode
+  List<dynamic> nextEpisodeAirDate() {
+    final int watchedEpisodes = calculateWatchedEpisodes();
+    if (watchedEpisodes == 0) {
+      if (episodes.isEmpty) {
+        return [Duration.zero, ""];
+      }
       if (episodes[0].airDate != "") {
         var airDate = DateTime.parse("${episodes[0].airDate} 12:00:00.000");
         var diff = airDate.difference(DateTime.now());
         return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
       }
-    } else if (calculateWatchedEpisodes() > 0) {
-      if (episodes[calculateWatchedEpisodes()].airDate != "") {
+    } else if (watchedEpisodes > 0) {
+      if (episodes.isEmpty) {
+        return [Duration.zero, ""];
+      }
+      if (episodes[watchedEpisodes].airDate != "") {
         try {
           var airDate = DateTime.parse(
-              "${episodes[calculateWatchedEpisodes()].airDate} 12:00:00.000");
+              "${episodes[watchedEpisodes].airDate} 12:00:00.000");
           var diff = airDate.difference(DateTime.now());
           return [diff, "${airDate.year}/${airDate.month}/${airDate.day}"];
         } catch (e) {
@@ -160,7 +169,7 @@ class WatchedTVShow extends Equatable {
 
   @override
   String toString() {
-    return 'WatchedTVShow{currentSeason: $currentSeason, currentEpisode: $currentEpisode, firstWatchDate: $firstWatchDate, lastWatchDate: $lastWatchDate, favorite: $favorite, criteriaMap: $criteriaMap}';
+    return 'WatchedTVShow(id: $id, name: $name, startDate: $startDate, imageThumbnailPath: $imageThumbnailPath, runtime: $runtime, rating: $rating, genres: $genres, firstWatchDate: $firstWatchDate, criteriaMap: $criteriaMap)';
   }
 
   setLastWatchedDate() {
@@ -230,6 +239,9 @@ class WatchedTVShow extends Equatable {
   }
 
   String newestEpisodeDifference() {
+    if (episodes.isEmpty) {
+      return "";
+    }
     String diff = episodes.last.getDifference().displayLetters;
     return diff;
   }

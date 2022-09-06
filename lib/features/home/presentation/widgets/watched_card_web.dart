@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
+import 'package:show_time/features/watchlist/presentation/widgets/detail_view/watched_detail_view.dart';
 import 'package:show_time/features/watchlist/presentation/widgets/watchlist_card.dart';
 import 'package:show_time/controllers/ui_controller.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
@@ -44,9 +45,7 @@ class WatchedCardWeb extends StatelessWidget {
                   topRight: Radius.circular(25.0)),
             ),
             context: context,
-            builder: (BuildContext context) {
-              return buildShowDetails(show, _width, _height);
-            },
+            builder: (_) => WatchedDetailWrapper(show: show),
             isScrollControlled: true);
       },
       child: Container(

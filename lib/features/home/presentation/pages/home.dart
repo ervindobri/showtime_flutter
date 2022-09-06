@@ -52,9 +52,9 @@ class _HomeViewState extends State<HomeView>
                 children: const <Widget>[
                   CustomAppbar(),
                   UserGreetings(),
-                  SizedBox(height: 16),
+                  SizedBox(height: 24),
                   DiscoverContent(),
-                  SizedBox(height: 16),
+                  SizedBox(height: 24),
                   ScheduledContent(),
                 ],
               ),

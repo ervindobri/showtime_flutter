@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:multi_select_flutter/util/multi_select_item.dart';
+// import 'package:multi_select_flutter/util/multi_select_item.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class FilterController {
@@ -15,8 +15,8 @@ class FilterController {
     "Thriller",
     "Espionage"
   ];
-  var genreItems =
-      genres.map((genre) => MultiSelectItem<String>(genre, genre)).toList();
+  // var genreItems =
+      // genres.map((genre) => MultiSelectItem<String>(genre, genre)).toList();
 
   late List<String?> selectedGenres;
 

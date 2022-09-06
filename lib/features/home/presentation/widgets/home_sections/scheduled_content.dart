@@ -42,7 +42,7 @@ class _ScheduledContentState extends State<ScheduledContent> {
                       fontSize: 16,
                       color: GlobalColors.primaryGreen,
                       decoration: TextDecoration.underline,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                     )),
               ),
             ],
@@ -51,7 +51,6 @@ class _ScheduledContentState extends State<ScheduledContent> {
         BlocConsumer<ScheduledShowsBloc, ScheduledShowsState>(
           listener: (_, state) {
             if (state is ScheduledShowsLoaded) {
-              print(state.shows);
               sl<ShowController>().notAiredList.value =
                   state.shows as List<Episode>;
             }
@@ -64,11 +63,8 @@ class _ScheduledContentState extends State<ScheduledContent> {
                   context,
                   shows.take(5).toList(),
                 );
-              } else {
-                return const Center(
-                  child: Text("empty as fuck bro"),
-                );
               }
+              return const Center(child: Text("empty as fuck bro"));
             } else {
               return const LoadingCouch();
             }
@@ -81,26 +77,7 @@ class _ScheduledContentState extends State<ScheduledContent> {
   Widget _buildScheduledShowView(BuildContext context, List listOfEpisodes) {
     double _width = MediaQuery.of(context).size.width;
     // double _height = MediaQuery.of(context).size.height;
-    return
-        // kIsWeb
-        //     ? SizedBox(
-        //         width: _width,
-        //         height: _height,
-        //         child: StaggeredGridView.countBuilder(
-        //           physics: const NeverScrollableScrollPhysics(),
-        //           staggeredTileBuilder: (int index) =>
-        //               const StaggeredTile.count(1, 1),
-        //           mainAxisSpacing: 4.0,
-        //           crossAxisSpacing: 2.0,
-        //           itemCount: shows.length,
-        //           itemBuilder: (context, int index) {
-        //             return ScheduleCard(episode: shows[index]);
-        //           },
-        //           crossAxisCount: 4,
-        //         ),
-        //       )
-        //     :
-        SizedBox(
+    return SizedBox(
       width: _width,
       child: Column(
         children: [
@@ -117,10 +94,7 @@ class _ScheduledContentState extends State<ScheduledContent> {
             itemCount: 5,
             itemBuilder: (_, index, __) {
               final episode = listOfEpisodes.toList()[index];
-              return SizedBox(
-                // width: 200,
-                child: ScheduleCard(episode: episode),
-              );
+              return ScheduleCard(episode: episode);
             },
           ),
           const SizedBox(height: 24),
@@ -137,7 +111,7 @@ class _ScheduledContentState extends State<ScheduledContent> {
                       decoration: BoxDecoration(
                           color: value == index
                               ? GlobalColors.primaryGreen
-                              : Colors.white,
+                              : GlobalColors.primaryGreen.withOpacity(.2),
                           shape: BoxShape.circle),
                     ),
                   ),

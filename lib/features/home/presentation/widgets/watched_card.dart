@@ -1,5 +1,6 @@
 import 'package:show_time/core/constants/custom_variables.dart';
 import 'package:show_time/core/constants/theme_utils.dart';
+import 'package:show_time/features/watchlist/presentation/widgets/detail_view/watched_detail_view.dart';
 import 'package:show_time/features/watchlist/presentation/widgets/watchlist_card.dart';
 import 'package:show_time/controllers/ui_controller.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
@@ -34,9 +35,8 @@ class WatchedCard extends StatelessWidget {
                     topRight: Radius.circular(24)),
               ),
               context: context,
-              builder: (BuildContext context) {
-                return buildShowDetails(show, _width, _height);
-              },
+                          builder: (_) => WatchedDetailWrapper(show: show),
+
               isScrollControlled: true);
         },
         child: Stack(
@@ -65,148 +65,147 @@ class WatchedCard extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: <Widget>[
-                  Column(
+                  Row(
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Flexible(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  right: 50, left: 12, top: 5),
-                              child: Text(
-                                show.name,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: ShowTheme.watchCardTitleStyle.copyWith(
-                                  fontSize: 16,
-                                ),
-                              ),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              right: 50, left: 12, top: 5),
+                          child: Text(
+                            show.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: ShowTheme.watchCardTitleStyle.copyWith(
+                              fontSize: 16,
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Center(
-                          child: Column(
-                            children: <Widget>[
-                              //Season
-                              Container(
-                                padding:
-                                    const EdgeInsets.only(left: 10, right: 10),
-                                width: _width / 3.5,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  border: Border.all(
-                                      color: GlobalColors.primaryGreen),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "S",
-                                      style: TextStyle(
-                                        color: GlobalColors.primaryGreen,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width /
-                                                12,
-                                        fontWeight: FontWeight.w900,
-                                      ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        "${show.currentSeason}",
+                  Expanded(
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Center(
+                            child: Column(
+                              children: <Widget>[
+                                //Season
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 10),
+                                  width: _width / 3.5,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    border: Border.all(
+                                        color: GlobalColors.primaryGreen),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        "S",
                                         style: TextStyle(
-                                          fontWeight: FontWeight.w300,
+                                          color: GlobalColors.primaryGreen,
                                           fontSize: MediaQuery.of(context)
                                                   .size
                                                   .width /
-                                              15,
-                                          color: GlobalColors.greyTextColor,
+                                              12,
+                                          fontWeight: FontWeight.w900,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              //Episode
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                padding:
-                                    const EdgeInsets.only(left: 10, right: 10),
-                                width: _width / 3.5,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  border: Border.all(
-                                      color: GlobalColors.primaryGreen),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      "Ep",
-                                      style: TextStyle(
-                                        color: GlobalColors.primaryGreen,
-                                        fontSize:
-                                            MediaQuery.of(context).size.width /
-                                                12,
-                                        fontWeight: FontWeight.w900,
+                                      Center(
+                                        child: Text(
+                                          "${show.currentSeason}",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                15,
+                                            color: GlobalColors.greyTextColor,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                    Center(
-                                      child: Text(
-                                        "${show.currentEpisode}",
+                                    ],
+                                  ),
+                                ),
+                                //Episode
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                      left: 10, right: 10),
+                                  width: _width / 3.5,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    border: Border.all(
+                                        color: GlobalColors.primaryGreen),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        "Ep",
                                         style: TextStyle(
-                                          fontWeight: FontWeight.w300,
+                                          color: GlobalColors.primaryGreen,
                                           fontSize: MediaQuery.of(context)
                                                   .size
                                                   .width /
-                                              15,
-                                          color: GlobalColors.greyTextColor,
+                                              12,
+                                          fontWeight: FontWeight.w900,
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      Center(
+                                        child: Text(
+                                          "${show.currentEpisode}",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                15,
+                                            color: GlobalColors.greyTextColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 10),
-                          child: CircularPercentIndicator(
-                            radius: _width / 4,
-                            lineWidth: 12.0,
-                            circularStrokeCap: CircularStrokeCap.round,
-                            percent: _percentage,
-                            center: Text(
-                              "${(_percentage * 100).floor()} %",
-                              style: const TextStyle(
-                                  fontFamily: 'Helvetica',
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w700,
-                                  color: GlobalColors.primaryBlue),
+                              ],
                             ),
-                            progressColor: GlobalColors.primaryBlue,
-                            backgroundColor:
-                                GlobalColors.primaryBlue.withOpacity(.2),
                           ),
                         ),
-                      ),
-                    ],
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, vertical: 10),
+                            child: CircularPercentIndicator(
+                              radius: 48,
+                              lineWidth: 12.0,
+                              circularStrokeCap: CircularStrokeCap.round,
+                              percent: _percentage,
+                              center: Text(
+                                "${(_percentage * 100).floor()} %",
+                                style: const TextStyle(
+                                    fontFamily: 'Helvetica',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w700,
+                                    color: GlobalColors.primaryBlue),
+                              ),
+                              progressColor: GlobalColors.primaryBlue,
+                              backgroundColor:
+                                  GlobalColors.primaryBlue.withOpacity(.2),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   )
                 ],
               ),

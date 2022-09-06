@@ -115,61 +115,381 @@ class _MostPopularShowsState extends State<MostPopularShows>
       ),
       body: Container(
         color: pink,
-        child: SafeArea(
-          child: Container(
-            color: pink,
-            child: FutureBuilder(
-                future: future,
-                builder: (context, AsyncSnapshot snapshot) {
-                  if (GlobalVariables.limitedShows.isNotEmpty) {
-                    return CustomScrollView(
-                        // key: UniqueKey(),
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: _controller,
-                        slivers: [
-                          getSliverHeader(_width, _height),
-                          SliverFillRemaining(
-                            child: Stack(
+        child: FutureBuilder(
+            future: future,
+            builder: (context, AsyncSnapshot snapshot) {
+              if (GlobalVariables.limitedShows.isNotEmpty) {
+                return CustomScrollView(
+                    // key: UniqueKey(),
+                    physics: const NeverScrollableScrollPhysics(),
+                    controller: _controller,
+                    slivers: [
+                      getSliverHeader(_width, _height),
+                      SliverFillRemaining(
+                        child: Stack(
+                          children: [
+                            ListView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              // direction: Axis.vertical,
                               children: [
-                                ListView(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  // direction: Axis.vertical,
-                                  children: [
-                                    if (!animationController.isCompleted)
-                                      SizeTransition(
-                                        axis: Axis.vertical,
-                                        axisAlignment: 1,
-                                        sizeFactor: sizeAnimation,
-                                        child: Container(
-                                          height: _height / 2,
-                                          decoration: BoxDecoration(
-                                              color: pink,
-                                              borderRadius:
-                                                  const BorderRadius.only(
-                                                topLeft: Radius.circular(
-                                                    GlobalVariables
-                                                        .sliverRadius),
-                                                topRight: Radius.circular(
-                                                    GlobalVariables
-                                                        .sliverRadius),
-                                              )),
-                                        ),
-                                      ),
-                                    CarouselSlider.builder(
-                                      itemBuilder: (BuildContext context,
-                                          int index, int what) {
-                                        return FutureBuilder(
-                                            future: getShowList(
-                                                limitMap[index + 1]!),
-                                            builder: (context,
-                                                AsyncSnapshot snapshot) {
-                                              // print(snapshot.connectionState);
-                                              // print(snapshot.hasData);
+                                if (!animationController.isCompleted)
+                                  SizeTransition(
+                                    axis: Axis.vertical,
+                                    axisAlignment: 1,
+                                    sizeFactor: sizeAnimation,
+                                    child: Container(
+                                      height: _height / 2,
+                                      decoration: BoxDecoration(
+                                          color: pink,
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(
+                                                GlobalVariables.sliverRadius),
+                                            topRight: Radius.circular(
+                                                GlobalVariables.sliverRadius),
+                                          )),
+                                    ),
+                                  ),
+                                CarouselSlider.builder(
+                                  itemBuilder: (BuildContext context, int index,
+                                      int what) {
+                                    return FutureBuilder(
+                                        future:
+                                            getShowList(limitMap[index + 1]!),
+                                        builder:
+                                            (context, AsyncSnapshot snapshot) {
+                                          // print(snapshot.connectionState);
+                                          // print(snapshot.hasData);
 
-                                              if (GlobalVariables
-                                                      .limitedShows.length >
-                                                  index) {
-                                                // print("already got this batch ! - ${GlobalVariables.limitedShows.length} / ${index}");
+                                          if (GlobalVariables
+                                                  .limitedShows.length >
+                                              index) {
+                                            // print("already got this batch ! - ${GlobalVariables.limitedShows.length} / ${index}");
+                                            return Container(
+                                                // height: _height,
+                                                decoration: const BoxDecoration(
+                                                    color: GlobalColors.bgColor,
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft: Radius.circular(
+                                                          GlobalVariables
+                                                              .sliverRadius),
+                                                      topRight: Radius.circular(
+                                                          GlobalVariables
+                                                              .sliverRadius),
+                                                    )),
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 10.0),
+                                                  child: mostPopularList(
+                                                      GlobalVariables
+                                                          .limitedShows[index]),
+                                                ));
+                                          } else {
+                                            if (snapshot.hasData) {
+                                              if (snapshot.data.length > 0) {
+                                                GlobalVariables.limitedShows
+                                                    .add(snapshot.data);
+                                                return Container(
+                                                    // height: _height,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                            color: GlobalColors
+                                                                .bgColor,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .only(
+                                                              topLeft: Radius.circular(
+                                                                  GlobalVariables
+                                                                      .sliverRadius),
+                                                              topRight: Radius.circular(
+                                                                  GlobalVariables
+                                                                      .sliverRadius),
+                                                            )),
+                                                    child: Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          horizontal: 10.0),
+                                                      child: mostPopularList(
+                                                          GlobalVariables
+                                                                  .limitedShows[
+                                                              index]),
+                                                    ));
+                                              }
+                                              // popularShows = [...GlobalVariables.limitedShows[index]]; //notice the spread operator
+                                              return Container();
+                                            } else {
+                                              return Container(
+                                                decoration: const BoxDecoration(
+                                                    color: GlobalColors.bgColor,
+                                                    borderRadius:
+                                                        BorderRadius.only(
+                                                      topLeft: Radius.circular(
+                                                          GlobalVariables
+                                                              .sliverRadius),
+                                                      topRight: Radius.circular(
+                                                          GlobalVariables
+                                                              .sliverRadius),
+                                                    )),
+                                                child: Shimmer.fromColors(
+                                                  highlightColor: Colors.white,
+                                                  baseColor:
+                                                      Colors.grey.shade300,
+                                                  direction:
+                                                      ShimmerDirection.ttb,
+                                                  child: StaggeredGridView
+                                                      .countBuilder(
+                                                    itemCount: 12,
+                                                    mainAxisSpacing: 4.0,
+                                                    crossAxisSpacing: 4.0,
+                                                    itemBuilder:
+                                                        (BuildContext context,
+                                                            int index) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .symmetric(
+                                                                horizontal:
+                                                                    8.0),
+                                                        child: Column(
+                                                          children: [
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Container(
+                                                                height:
+                                                                    _height /
+                                                                        20,
+                                                                width: _width,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade300,
+                                                                  borderRadius:
+                                                                      ShowTheme
+                                                                          .radius24,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                        color: Colors.black.withOpacity(
+                                                                            .3),
+                                                                        blurRadius:
+                                                                            15.0,
+                                                                        spreadRadius:
+                                                                            -4,
+                                                                        offset: const Offset(
+                                                                            0,
+                                                                            5)),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .all(8.0),
+                                                              child: Container(
+                                                                height:
+                                                                    _height /
+                                                                        3.1,
+                                                                width: _width,
+                                                                // color: Colors.blue,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: Colors
+                                                                      .grey
+                                                                      .shade300,
+                                                                  borderRadius:
+                                                                      ShowTheme
+                                                                          .radius24,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                        color: Colors.black.withOpacity(
+                                                                            .3),
+                                                                        blurRadius:
+                                                                            15.0,
+                                                                        spreadRadius:
+                                                                            -4,
+                                                                        offset: const Offset(
+                                                                            0,
+                                                                            5)),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                    crossAxisCount: 4,
+                                                    staggeredTileBuilder:
+                                                        (int index) =>
+                                                            StaggeredTile.count(
+                                                                2,
+                                                                index.isEven
+                                                                    ? 4
+                                                                    : 4),
+                                                  ),
+                                                ),
+                                              );
+                                            }
+                                          }
+                                        });
+                                  },
+                                  options: CarouselOptions(
+                                      height: _height,
+                                      enableInfiniteScroll: false,
+                                      onPageChanged: (val, reason) {
+                                        setState(() {
+                                          if (val == 0) {
+                                            _selectedIndex = val;
+                                          } else if (val == maxPages - 1) {
+                                            _selectedIndex = 2;
+                                          } else {
+                                            _selectedIndex = 1;
+                                            label = limitMap[val + 1]![1]
+                                                .toString();
+                                          }
+                                        });
+                                      },
+                                      aspectRatio: 1,
+                                      viewportFraction: 1,
+                                      initialPage: _selectedIndex),
+                                  itemCount: maxPages,
+                                )
+                              ],
+                            ),
+                            Positioned(
+                              bottom: 20,
+                              left: _width / 2 - 100,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(25.0)),
+                                  child: GNav(
+                                      gap: 8,
+                                      iconSize: 20,
+                                      selectedIndex: _selectedIndex,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 3),
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      color: Colors.grey[800],
+                                      activeColor: pink,
+                                      backgroundColor: pink,
+                                      tabBackgroundColor: Colors.white,
+                                      tabMargin: const EdgeInsets.all(5),
+                                      textStyle: GoogleFonts.poppins(
+                                        fontSize: 15,
+                                        color: pink,
+                                      ),
+                                      tabs: [
+                                        const GButton(
+                                          iconColor: Colors.white,
+                                          icon: FontAwesomeIcons
+                                              .chevronCircleLeft,
+                                          text: '1-10',
+                                        ),
+                                        GButton(
+                                          text: label,
+                                          iconColor: Colors.white,
+                                          icon: Icons.queue_play_next_rounded,
+                                        ),
+                                        const GButton(
+                                            text: '91-100',
+                                            iconColor: Colors.white,
+                                            icon: FontAwesomeIcons
+                                                .chevronCircleRight),
+                                      ],
+                                      onTabChange: (index) {
+                                        setState(() {
+                                          _selectedIndex = index;
+                                        });
+                                      }),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ]);
+              } else {
+                if (snapshot.hasData) {
+                  getShowLinks(snapshot.data!.take(maxShows));
+                  return CustomScrollView(
+                      // key: UniqueKey(),
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: _controller,
+                      slivers: [
+                        getSliverHeader(_width, _height),
+                        SliverFillRemaining(
+                          child: Stack(
+                            children: [
+                              ListView(
+                                // direction: Axis.vertical,
+                                children: [
+                                  if (!animationController.isCompleted)
+                                    SizeTransition(
+                                      axis: Axis.vertical,
+                                      axisAlignment: 1,
+                                      sizeFactor: sizeAnimation,
+                                      child: Container(
+                                        height: _height / 2,
+                                        decoration: BoxDecoration(
+                                            color: pink,
+                                            borderRadius:
+                                                const BorderRadius.only(
+                                              topLeft: Radius.circular(
+                                                  GlobalVariables.sliverRadius),
+                                              topRight: Radius.circular(
+                                                  GlobalVariables.sliverRadius),
+                                            )),
+                                      ),
+                                    ),
+                                  CarouselSlider(
+                                    items: List.generate(maxPages, (index) {
+                                      // Future<dynamic> popular = getShowList(limitMap[index + 1]);
+                                      return FutureBuilder(
+                                          future:
+                                              getShowList(limitMap[index + 1]!),
+                                          builder: (context,
+                                              AsyncSnapshot snapshot) {
+                                            // print(GlobalVariables.limitedShows.length);
+                                            if (GlobalVariables
+                                                    .limitedShows.length >
+                                                index) {
+                                              return Container(
+                                                  // height: _height,
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: GlobalColors
+                                                              .bgColor,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft: Radius.circular(
+                                                                GlobalVariables
+                                                                    .sliverRadius),
+                                                            topRight: Radius.circular(
+                                                                GlobalVariables
+                                                                    .sliverRadius),
+                                                          )),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 10.0),
+                                                    child: mostPopularList(
+                                                        GlobalVariables
+                                                                .limitedShows[
+                                                            index]),
+                                                  ));
+                                            } else {
+                                              if (snapshot.hasData) {
+                                                GlobalVariables.limitedShows
+                                                    .add(snapshot.data);
+                                                // popularShows = [...GlobalVariables.limitedShows[index]]; //notice the spread operator
                                                 return Container(
                                                     // height: _height,
                                                     decoration:
@@ -196,602 +516,243 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                               index]),
                                                     ));
                                               } else {
-                                                if (snapshot.hasData) {
-                                                  if (snapshot.data.length >
-                                                      0) {
-                                                    GlobalVariables.limitedShows
-                                                        .add(snapshot.data);
-                                                    return Container(
-                                                        // height: _height,
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                                color:
-                                                                    GlobalColors
-                                                                        .bgColor,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          GlobalVariables
-                                                                              .sliverRadius),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          GlobalVariables
-                                                                              .sliverRadius),
-                                                                )),
-                                                        child: Padding(
+                                                // print("fetching data;");
+                                                return Container(
+                                                  decoration:
+                                                      const BoxDecoration(
+                                                          color: GlobalColors
+                                                              .bgColor,
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft: Radius.circular(
+                                                                GlobalVariables
+                                                                    .sliverRadius),
+                                                            topRight: Radius.circular(
+                                                                GlobalVariables
+                                                                    .sliverRadius),
+                                                          )),
+                                                  child: Shimmer.fromColors(
+                                                    highlightColor:
+                                                        Colors.white,
+                                                    baseColor:
+                                                        Colors.grey.shade300,
+                                                    direction:
+                                                        ShimmerDirection.ttb,
+                                                    child: StaggeredGridView
+                                                        .countBuilder(
+                                                      itemCount: 12,
+                                                      mainAxisSpacing: 4.0,
+                                                      crossAxisSpacing: 4.0,
+                                                      itemBuilder:
+                                                          (BuildContext context,
+                                                              int index) {
+                                                        return Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      10.0),
-                                                          child: mostPopularList(
-                                                              GlobalVariables
-                                                                      .limitedShows[
-                                                                  index]),
-                                                        ));
-                                                  }
-                                                  // popularShows = [...GlobalVariables.limitedShows[index]]; //notice the spread operator
-                                                  return Container();
-                                                } else {
-                                                  return Container(
-                                                    decoration:
-                                                        const BoxDecoration(
-                                                            color: GlobalColors
-                                                                .bgColor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topLeft: Radius.circular(
-                                                                  GlobalVariables
-                                                                      .sliverRadius),
-                                                              topRight: Radius.circular(
-                                                                  GlobalVariables
-                                                                      .sliverRadius),
-                                                            )),
-                                                    child: Shimmer.fromColors(
-                                                      highlightColor:
-                                                          Colors.white,
-                                                      baseColor:
-                                                          Colors.grey.shade300,
-                                                      direction:
-                                                          ShimmerDirection.ttb,
-                                                      child: StaggeredGridView
-                                                          .countBuilder(
-                                                        itemCount: 12,
-                                                        mainAxisSpacing: 4.0,
-                                                        crossAxisSpacing: 4.0,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          return Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    horizontal:
-                                                                        8.0),
-                                                            child: Column(
-                                                              children: [
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          8.0),
-                                                                  child:
-                                                                      Container(
-                                                                    height:
-                                                                        _height /
-                                                                            20,
-                                                                    width:
-                                                                        _width,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .shade300,
-                                                                      borderRadius:
-                                                                          ShowTheme
-                                                                              .radius24,
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                            color: Colors.black.withOpacity(
-                                                                                .3),
-                                                                            blurRadius:
-                                                                                15.0,
-                                                                            spreadRadius:
-                                                                                -4,
-                                                                            offset:
-                                                                                const Offset(0, 5)),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          8.0),
-                                                                  child:
-                                                                      Container(
-                                                                    height:
-                                                                        _height /
-                                                                            3.1,
-                                                                    width:
-                                                                        _width,
-                                                                    // color: Colors.blue,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .grey
-                                                                          .shade300,
-                                                                      borderRadius:
-                                                                          ShowTheme
-                                                                              .radius24,
-                                                                      boxShadow: [
-                                                                        BoxShadow(
-                                                                            color: Colors.black.withOpacity(
-                                                                                .3),
-                                                                            blurRadius:
-                                                                                15.0,
-                                                                            spreadRadius:
-                                                                                -4,
-                                                                            offset:
-                                                                                const Offset(0, 5)),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        },
-                                                        crossAxisCount: 4,
-                                                        staggeredTileBuilder: (int
-                                                                index) =>
-                                                            StaggeredTile.count(
-                                                                2,
-                                                                index.isEven
-                                                                    ? 4
-                                                                    : 4),
-                                                      ),
-                                                    ),
-                                                  );
-                                                }
-                                              }
-                                            });
-                                      },
-                                      options: CarouselOptions(
-                                          height: _height,
-                                          enableInfiniteScroll: false,
-                                          onPageChanged: (val, reason) {
-                                            setState(() {
-                                              if (val == 0) {
-                                                _selectedIndex = val;
-                                              } else if (val == maxPages - 1) {
-                                                _selectedIndex = 2;
-                                              } else {
-                                                _selectedIndex = 1;
-                                                label = limitMap[val + 1]![1]
-                                                    .toString();
-                                              }
-                                            });
-                                          },
-                                          aspectRatio: 1,
-                                          viewportFraction: 1,
-                                          initialPage: _selectedIndex),
-                                      itemCount: maxPages,
-                                    )
-                                  ],
-                                ),
-                                Positioned(
-                                  bottom: 20,
-                                  left: _width / 2 - 100,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(25.0)),
-                                      child: GNav(
-                                          gap: 8,
-                                          iconSize: 20,
-                                          selectedIndex: _selectedIndex,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 3),
-                                          duration:
-                                              const Duration(milliseconds: 500),
-                                          color: Colors.grey[800],
-                                          activeColor: pink,
-                                          backgroundColor: pink,
-                                          tabBackgroundColor: Colors.white,
-                                          tabMargin: const EdgeInsets.all(5),
-                                          textStyle: GoogleFonts.poppins(
-                                            fontSize: 15,
-                                            color: pink,
-                                          ),
-                                          tabs: [
-                                            const GButton(
-                                              iconColor: Colors.white,
-                                              icon: FontAwesomeIcons
-                                                  .chevronCircleLeft,
-                                              text: '1-10',
-                                            ),
-                                            GButton(
-                                              text: label,
-                                              iconColor: Colors.white,
-                                              icon:
-                                                  Icons.queue_play_next_rounded,
-                                            ),
-                                            const GButton(
-                                                text: '91-100',
-                                                iconColor: Colors.white,
-                                                icon: FontAwesomeIcons
-                                                    .chevronCircleRight),
-                                          ],
-                                          onTabChange: (index) {
-                                            setState(() {
-                                              _selectedIndex = index;
-                                            });
-                                          }),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ]);
-                  } else {
-                    if (snapshot.hasData) {
-                      getShowLinks(snapshot.data!.take(maxShows));
-                      return CustomScrollView(
-                          // key: UniqueKey(),
-                          physics: const NeverScrollableScrollPhysics(),
-                          controller: _controller,
-                          slivers: [
-                            getSliverHeader(_width, _height),
-                            SliverFillRemaining(
-                              child: Stack(
-                                children: [
-                                  ListView(
-                                    // direction: Axis.vertical,
-                                    children: [
-                                      if (!animationController.isCompleted)
-                                        SizeTransition(
-                                          axis: Axis.vertical,
-                                          axisAlignment: 1,
-                                          sizeFactor: sizeAnimation,
-                                          child: Container(
-                                            height: _height / 2,
-                                            decoration: BoxDecoration(
-                                                color: pink,
-                                                borderRadius:
-                                                    const BorderRadius.only(
-                                                  topLeft: Radius.circular(
-                                                      GlobalVariables
-                                                          .sliverRadius),
-                                                  topRight: Radius.circular(
-                                                      GlobalVariables
-                                                          .sliverRadius),
-                                                )),
-                                          ),
-                                        ),
-                                      CarouselSlider(
-                                        items: List.generate(maxPages, (index) {
-                                          // Future<dynamic> popular = getShowList(limitMap[index + 1]);
-                                          return FutureBuilder(
-                                              future: getShowList(
-                                                  limitMap[index + 1]!),
-                                              builder: (context,
-                                                  AsyncSnapshot snapshot) {
-                                                // print(GlobalVariables.limitedShows.length);
-                                                if (GlobalVariables
-                                                        .limitedShows.length >
-                                                    index) {
-                                                  return Container(
-                                                      // height: _height,
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                              color:
-                                                                  GlobalColors
-                                                                      .bgColor,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        GlobalVariables
-                                                                            .sliverRadius),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        GlobalVariables
-                                                                            .sliverRadius),
-                                                              )),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    10.0),
-                                                        child: mostPopularList(
-                                                            GlobalVariables
-                                                                    .limitedShows[
-                                                                index]),
-                                                      ));
-                                                } else {
-                                                  if (snapshot.hasData) {
-                                                    GlobalVariables.limitedShows
-                                                        .add(snapshot.data);
-                                                    // popularShows = [...GlobalVariables.limitedShows[index]]; //notice the spread operator
-                                                    return Container(
-                                                        // height: _height,
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                                color:
-                                                                    GlobalColors
-                                                                        .bgColor,
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .only(
-                                                                  topLeft: Radius
-                                                                      .circular(
-                                                                          GlobalVariables
-                                                                              .sliverRadius),
-                                                                  topRight: Radius
-                                                                      .circular(
-                                                                          GlobalVariables
-                                                                              .sliverRadius),
-                                                                )),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      10.0),
-                                                          child: mostPopularList(
-                                                              GlobalVariables
-                                                                      .limitedShows[
-                                                                  index]),
-                                                        ));
-                                                  } else {
-                                                    // print("fetching data;");
-                                                    return Container(
-                                                      decoration:
-                                                          const BoxDecoration(
-                                                              color:
-                                                                  GlobalColors
-                                                                      .bgColor,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .only(
-                                                                topLeft: Radius
-                                                                    .circular(
-                                                                        GlobalVariables
-                                                                            .sliverRadius),
-                                                                topRight: Radius
-                                                                    .circular(
-                                                                        GlobalVariables
-                                                                            .sliverRadius),
-                                                              )),
-                                                      child: Shimmer.fromColors(
-                                                        highlightColor:
-                                                            Colors.white,
-                                                        baseColor: Colors
-                                                            .grey.shade300,
-                                                        direction:
-                                                            ShimmerDirection
-                                                                .ttb,
-                                                        child: StaggeredGridView
-                                                            .countBuilder(
-                                                          itemCount: 12,
-                                                          mainAxisSpacing: 4.0,
-                                                          crossAxisSpacing: 4.0,
-                                                          itemBuilder:
-                                                              (BuildContext
-                                                                      context,
-                                                                  int index) {
-                                                            return Padding(
-                                                              padding: const EdgeInsets
                                                                       .symmetric(
                                                                   horizontal:
                                                                       8.0),
-                                                              child: Column(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            8.0),
-                                                                    child:
-                                                                        Container(
-                                                                      height:
-                                                                          _height /
-                                                                              20,
-                                                                      width:
-                                                                          _width,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .shade300,
-                                                                        borderRadius:
-                                                                            ShowTheme.radius24,
-                                                                        boxShadow: [
-                                                                          BoxShadow(
-                                                                              color: Colors.black.withOpacity(.3),
-                                                                              blurRadius: 15.0,
-                                                                              spreadRadius: -4,
-                                                                              offset: const Offset(0, 5)),
-                                                                        ],
-                                                                      ),
-                                                                    ),
+                                                          child: Column(
+                                                            children: [
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child:
+                                                                    Container(
+                                                                  height:
+                                                                      _height /
+                                                                          20,
+                                                                  width: _width,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                                    borderRadius:
+                                                                        ShowTheme
+                                                                            .radius24,
+                                                                    boxShadow: [
+                                                                      BoxShadow(
+                                                                          color: Colors.black.withOpacity(
+                                                                              .3),
+                                                                          blurRadius:
+                                                                              15.0,
+                                                                          spreadRadius:
+                                                                              -4,
+                                                                          offset: const Offset(
+                                                                              0,
+                                                                              5)),
+                                                                    ],
                                                                   ),
-                                                                  Padding(
-                                                                    padding:
-                                                                        const EdgeInsets.all(
-                                                                            8.0),
-                                                                    child:
-                                                                        Container(
-                                                                      height:
-                                                                          _height /
-                                                                              3.1,
-                                                                      width:
-                                                                          _width,
-                                                                      // color: Colors.blue,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        color: Colors
-                                                                            .grey
-                                                                            .shade300,
-                                                                        borderRadius:
-                                                                            ShowTheme.radius24,
-                                                                        boxShadow: [
-                                                                          BoxShadow(
-                                                                              color: Colors.black.withOpacity(.3),
-                                                                              blurRadius: 15.0,
-                                                                              spreadRadius: -4,
-                                                                              offset: const Offset(0, 5)),
-                                                                        ],
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ],
+                                                                ),
                                                               ),
-                                                            );
-                                                          },
-                                                          crossAxisCount: 4,
-                                                          staggeredTileBuilder: (int
-                                                                  index) =>
-                                                              StaggeredTile.count(
-                                                                  2,
-                                                                  index.isEven
-                                                                      ? 4
-                                                                      : 4),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                                }
-                                              });
-                                        }),
-                                        options: CarouselOptions(
-                                            height: _height,
-                                            enableInfiniteScroll: false,
-                                            onPageChanged: (val, reason) {
-                                              setState(() {
-                                                if (val == 0) {
-                                                  _selectedIndex = val;
-                                                } else if (val ==
-                                                    maxPages - 1) {
-                                                  _selectedIndex = 2;
-                                                } else {
-                                                  _selectedIndex = 1;
-                                                  label = limitMap[val + 1]![1]
-                                                      .toString();
-                                                }
-                                              });
-                                            },
-                                            aspectRatio: 1,
-                                            viewportFraction: 1,
-                                            initialPage: _selectedIndex),
-                                      )
-                                    ],
-                                  ),
-                                  Positioned(
-                                    bottom: 20,
-                                    left: _width / 2 - 100,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0)),
-                                        child: GNav(
-                                            gap: 8,
-                                            iconSize: 20,
-                                            selectedIndex: _selectedIndex,
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10, vertical: 3),
-                                            duration: const Duration(
-                                                milliseconds: 500),
-                                            color: Colors.grey[800],
-                                            activeColor: pink,
-                                            backgroundColor: pink,
-                                            tabBackgroundColor: Colors.white,
-                                            tabMargin: const EdgeInsets.all(5),
-                                            textStyle: GoogleFonts.poppins(
-                                              fontSize: 15,
-                                              color: pink,
-                                            ),
-                                            tabs: [
-                                              const GButton(
-                                                iconColor: Colors.white,
-                                                icon: Icons
-                                                    .queue_play_next_rounded,
-                                                text: '1-10',
-                                              ),
-                                              GButton(
-                                                text: label,
-                                                iconColor: Colors.white,
-                                                icon: Icons
-                                                    .queue_play_next_rounded,
-                                              ),
-                                              const GButton(
-                                                text: '91-100',
-                                                iconColor: Colors.white,
-                                                icon: Icons
-                                                    .queue_play_next_rounded,
-                                              ),
-                                            ],
-                                            onTabChange: (index) {
-                                              setState(() {
-                                                _selectedIndex = index;
-                                              });
-                                            }),
-                                      ),
-                                    ),
-                                  ),
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .all(
+                                                                        8.0),
+                                                                child:
+                                                                    Container(
+                                                                  height:
+                                                                      _height /
+                                                                          3.1,
+                                                                  width: _width,
+                                                                  // color: Colors.blue,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                                    borderRadius:
+                                                                        ShowTheme
+                                                                            .radius24,
+                                                                    boxShadow: [
+                                                                      BoxShadow(
+                                                                          color: Colors.black.withOpacity(
+                                                                              .3),
+                                                                          blurRadius:
+                                                                              15.0,
+                                                                          spreadRadius:
+                                                                              -4,
+                                                                          offset: const Offset(
+                                                                              0,
+                                                                              5)),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        );
+                                                      },
+                                                      crossAxisCount: 4,
+                                                      staggeredTileBuilder: (int
+                                                              index) =>
+                                                          StaggeredTile.count(
+                                                              2,
+                                                              index.isEven
+                                                                  ? 4
+                                                                  : 4),
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          });
+                                    }),
+                                    options: CarouselOptions(
+                                        height: _height,
+                                        enableInfiniteScroll: false,
+                                        onPageChanged: (val, reason) {
+                                          setState(() {
+                                            if (val == 0) {
+                                              _selectedIndex = val;
+                                            } else if (val == maxPages - 1) {
+                                              _selectedIndex = 2;
+                                            } else {
+                                              _selectedIndex = 1;
+                                              label = limitMap[val + 1]![1]
+                                                  .toString();
+                                            }
+                                          });
+                                        },
+                                        aspectRatio: 1,
+                                        viewportFraction: 1,
+                                        initialPage: _selectedIndex),
+                                  )
                                 ],
                               ),
-                            ),
-                          ]);
-                    } else {
-                      // print("Waiting on IMDB data");
-                      return CustomScrollView(
-                        // key: UniqueKey(),
-                        controller: _controller,
-                        slivers: [
-                          getSliverHeader(_width, _height),
-                          // displayLabel(_width),
-                          SliverFillRemaining(
-                            child: Container(
-                                decoration: const BoxDecoration(
-                                    color: GlobalColors.bgColor,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(
-                                          GlobalVariables.sliverRadius),
-                                      topRight: Radius.circular(
-                                          GlobalVariables.sliverRadius),
-                                    )),
-                                child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
-                                    child: Center(
-                                      child: CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation(pink),
-                                      ),
-                                    ))),
+                              Positioned(
+                                bottom: 20,
+                                left: _width / 2 - 100,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0)),
+                                    child: GNav(
+                                        gap: 8,
+                                        iconSize: 20,
+                                        selectedIndex: _selectedIndex,
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 3),
+                                        duration:
+                                            const Duration(milliseconds: 500),
+                                        color: Colors.grey[800],
+                                        activeColor: pink,
+                                        backgroundColor: pink,
+                                        tabBackgroundColor: Colors.white,
+                                        tabMargin: const EdgeInsets.all(5),
+                                        textStyle: GoogleFonts.poppins(
+                                          fontSize: 15,
+                                          color: pink,
+                                        ),
+                                        tabs: [
+                                          const GButton(
+                                            iconColor: Colors.white,
+                                            icon: Icons.queue_play_next_rounded,
+                                            text: '1-10',
+                                          ),
+                                          GButton(
+                                            text: label,
+                                            iconColor: Colors.white,
+                                            icon: Icons.queue_play_next_rounded,
+                                          ),
+                                          const GButton(
+                                            text: '91-100',
+                                            iconColor: Colors.white,
+                                            icon: Icons.queue_play_next_rounded,
+                                          ),
+                                        ],
+                                        onTabChange: (index) {
+                                          setState(() {
+                                            _selectedIndex = index;
+                                          });
+                                        }),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      );
-                    }
-                  }
+                        ),
+                      ]);
+                } else {
+                  // print("Waiting on IMDB data");
+                  return CustomScrollView(
+                    // key: UniqueKey(),
+                    controller: _controller,
+                    slivers: [
+                      getSliverHeader(_width, _height),
+                      // displayLabel(_width),
+                      SliverFillRemaining(
+                        child: Container(
+                            decoration: const BoxDecoration(
+                                color: GlobalColors.bgColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(
+                                      GlobalVariables.sliverRadius),
+                                  topRight: Radius.circular(
+                                      GlobalVariables.sliverRadius),
+                                )),
+                            child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation(pink),
+                                  ),
+                                ))),
+                      ),
+                    ],
+                  );
                 }
-                // }
-                ),
-          ),
-        ),
+              }
+            }
+            // }
+            ),
       ),
     );
   }
@@ -848,15 +809,17 @@ class _MostPopularShowsState extends State<MostPopularShows>
     // print(showLinks[0]);
   }
 
-  getShowList(List<dynamic> limits) async {
+  Future<List<TVShow>> getShowList(List<dynamic> limits) async {
     List<TVShow> data = [];
     // print(showLinks.length);
     for (String show in GlobalVariables.showLinks.skip(limits[0]).take(10)) {
-      TVShow tvshow = (await apiService.getShowResults(imdbLink: show))!;
+      TVShow? tvshow = (await apiService.getShowResults(imdbLink: show));
       // print(tvshow);
-      data.add(tvshow);
+      if (tvshow != null) {
+        data.add(tvshow);
+      }
     }
-    return await Future(() => data);
+    return data;
   }
 
   Widget mostPopularList(List<TVShow> data) {
@@ -866,8 +829,8 @@ class _MostPopularShowsState extends State<MostPopularShows>
       shrinkWrap: false,
       // physics: ClampingScrollPhysics(),
       itemCount: data.length,
-      mainAxisSpacing: 1.0,
-      crossAxisSpacing: 2.0,
+      mainAxisSpacing: 16.0,
+      crossAxisSpacing: 4.0,
       padding: const EdgeInsets.only(bottom: 140.0),
       itemBuilder: (BuildContext context, int index) {
         // print(index);
@@ -918,6 +881,7 @@ class _MostPopularShowsState extends State<MostPopularShows>
   getSliverHeader(double _width, double _height) {
     return SliverPersistentHeader(
       delegate: PopularSliverDelegate(
+        backgroundColor: pink,
         child: Container(
           width: _width,
           decoration: BoxDecoration(

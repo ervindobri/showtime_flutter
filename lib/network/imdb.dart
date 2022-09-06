@@ -34,13 +34,14 @@ class APIService {
   Future<TVShow?> getShowResults({required String imdbLink}) async {
     try {
       var searchURL = GlobalVariables.imdbShowUrl + imdbLink;
-      // print(searchURL);
+      print(searchURL);
       final response = await http.get(Uri.parse(searchURL));
 
       if (response.statusCode == 200) {
         return TVShow.fromJson(json.decode(response.body));
       } else {
-        print("Couldn't get  IMDB show data from TVMAZE.");
+        print(
+            "Couldn't get  IMDB show data from TVMAZE: ${response.statusCode}");
       }
     } catch (e) {
       print(e);

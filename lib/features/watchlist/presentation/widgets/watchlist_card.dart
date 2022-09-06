@@ -101,10 +101,8 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                                   topRight: Radius.circular(24.0)),
                             ),
                             context: context,
-                            builder: (_) {
-                              return buildShowDetails(
-                                  widget.show, _width, _height);
-                            },
+                            builder: (_) =>
+                                WatchedDetailWrapper(show: widget.show),
                             isScrollControlled: true);
                       }
                     },
@@ -225,9 +223,7 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
                       topRight: Radius.circular(24.0)),
                 ),
                 context: context,
-                builder: (_) {
-                  return buildShowDetails(widget.show, _width, _height);
-                },
+                builder: (_) => WatchedDetailWrapper(show: widget.show),
                 isScrollControlled: true);
           },
           child: Stack(
@@ -398,23 +394,4 @@ class _WatchedCardInListState extends State<WatchedCardInList> {
       ),
     );
   }
-}
-
-Widget buildShowDetails(WatchedTVShow show, double _width, double _height) {
-  var episodes = Network().getEpisodes(showID: show.id);
-  return ClipRRect(
-    borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
-    child: FutureBuilder<List<Episode>>(
-        future: episodes,
-        builder: (context, snapshot) {
-          // print(snapshot.error);
-          if (snapshot.hasData) {
-            show.episodes = snapshot.data as List<Episode>;
-            return WatchedDetailView(show: show);
-          } else {
-            return const WatchedDetailViewPlaceholder();
-          }
-        }),
-  );
 }

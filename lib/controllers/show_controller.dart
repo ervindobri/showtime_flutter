@@ -28,6 +28,9 @@ class ShowController {
   // ignore: invalid_use_of_protected_member
   List<WatchedTVShow> get watched => watchedShows.value;
 
+  ValueNotifier<WatchedTVShow?> current = ValueNotifier(null);
+  ValueNotifier<List<Episode>> currentEpisodes = ValueNotifier([]);
+
   ValueNotifier<String> searchTerm = ValueNotifier('');
   ValueNotifier<bool> loaded = ValueNotifier(false);
 
@@ -91,18 +94,23 @@ class ShowController {
     notAiredList.value = episodes;
   }
 
-  getShowData(WatchedTVShow show) async {
+  Future<void> getShowData(String id) async {
     try {
-      List<dynamic> list = await Network().getDetailUpdates(showID: show.id);
-      var snapshots = firestoreService.watchedShows.doc(show.id).snapshots();
+      List<dynamic> list = await Network().getDetailUpdates(showID: id);
+      var snapshots = firestoreService.watchedShows.doc(id).snapshots();
       snapshots.first.then((value) {
-        show.currentSeason =
-            (value.data() as Map<String, dynamic>)['currentSeason'];
-        show.totalSeasons = list[0];
-        show.episodePerSeason = Map<String, int>.from(list[1]);
-        show.currentEpisode =
-            (value.data() as Map<String, dynamic>)['currentEpisode'];
-        // return show;
+        // print(value.data());
+        // show.currentSeason =
+        //     (value.data() as Map<String, dynamic>)['currentSeason'];
+        // show.currentEpisode =
+        //     (value.data() as Map<String, dynamic>)['currentEpisode'];
+        current.value = WatchedTVShow.fromFirestore(
+            value.data() as Map<String, dynamic>, id);
+        //TODO: decouple these extra info
+        current.value?.episodes = currentEpisodes.value;
+        current.value?.totalSeasons = list[0];
+        current.value?.episodePerSeason = Map<String, int>.from(list[1]);
+        print(current);
       });
     } catch (e) {
       print(e);
