@@ -219,119 +219,122 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                               // popularShows = [...GlobalVariables.limitedShows[index]]; //notice the spread operator
                                               return Container();
                                             } else {
-                                              return Container(
-                                                decoration: const BoxDecoration(
-                                                    color: GlobalColors.bgColor,
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft: Radius.circular(
-                                                          GlobalVariables
-                                                              .sliverRadius),
-                                                      topRight: Radius.circular(
-                                                          GlobalVariables
-                                                              .sliverRadius),
-                                                    )),
-                                                child: Shimmer.fromColors(
-                                                  highlightColor: Colors.white,
-                                                  baseColor:
-                                                      Colors.grey.shade300,
-                                                  direction:
-                                                      ShimmerDirection.ttb,
-                                                  child: StaggeredGridView
-                                                      .countBuilder(
-                                                    itemCount: 12,
-                                                    mainAxisSpacing: 4.0,
-                                                    crossAxisSpacing: 4.0,
-                                                    itemBuilder:
-                                                        (BuildContext context,
-                                                            int index) {
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .symmetric(
-                                                                horizontal:
-                                                                    8.0),
-                                                        child: Column(
-                                                          children: [
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Container(
-                                                                height:
-                                                                    _height /
-                                                                        20,
-                                                                width: _width,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade300,
-                                                                  borderRadius:
-                                                                      ShowTheme
-                                                                          .radius24,
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                        color: Colors.black.withOpacity(
-                                                                            .3),
-                                                                        blurRadius:
-                                                                            15.0,
-                                                                        spreadRadius:
-                                                                            -4,
-                                                                        offset: const Offset(
-                                                                            0,
-                                                                            5)),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Padding(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8.0),
-                                                              child: Container(
-                                                                height:
-                                                                    _height /
-                                                                        3.1,
-                                                                width: _width,
-                                                                // color: Colors.blue,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: Colors
-                                                                      .grey
-                                                                      .shade300,
-                                                                  borderRadius:
-                                                                      ShowTheme
-                                                                          .radius24,
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                        color: Colors.black.withOpacity(
-                                                                            .3),
-                                                                        blurRadius:
-                                                                            15.0,
-                                                                        spreadRadius:
-                                                                            -4,
-                                                                        offset: const Offset(
-                                                                            0,
-                                                                            5)),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                    crossAxisCount: 4,
-                                                    staggeredTileBuilder:
-                                                        (int index) =>
-                                                            StaggeredTile.count(
-                                                                2,
-                                                                index.isEven
-                                                                    ? 4
-                                                                    : 4),
-                                                  ),
-                                                ),
+                                              //   return Container(
+                                              //     decoration: const BoxDecoration(
+                                              //         color: GlobalColors.bgColor,
+                                              //         borderRadius:
+                                              //             BorderRadius.only(
+                                              //           topLeft: Radius.circular(
+                                              //               GlobalVariables
+                                              //                   .sliverRadius),
+                                              //           topRight: Radius.circular(
+                                              //               GlobalVariables
+                                              //                   .sliverRadius),
+                                              //         )),
+                                              //     child: Shimmer.fromColors(
+                                              //       highlightColor: Colors.white,
+                                              //       baseColor:
+                                              //           Colors.grey.shade300,
+                                              //       direction:
+                                              //           ShimmerDirection.ttb,
+                                              //       child: StaggeredGridView
+                                              //           .countBuilder(
+                                              //         itemCount: 12,
+                                              //         mainAxisSpacing: 4.0,
+                                              //         crossAxisSpacing: 4.0,
+                                              //         itemBuilder:
+                                              //             (BuildContext context,
+                                              //                 int index) {
+                                              //           return Padding(
+                                              //             padding:
+                                              //                 const EdgeInsets
+                                              //                         .symmetric(
+                                              //                     horizontal:
+                                              //                         8.0),
+                                              //             child: Column(
+                                              //               children: [
+                                              //                 Padding(
+                                              //                   padding:
+                                              //                       const EdgeInsets
+                                              //                           .all(8.0),
+                                              //                   child: Container(
+                                              //                     height:
+                                              //                         _height /
+                                              //                             20,
+                                              //                     width: _width,
+                                              //                     decoration:
+                                              //                         BoxDecoration(
+                                              //                       color: Colors
+                                              //                           .grey
+                                              //                           .shade300,
+                                              //                       borderRadius:
+                                              //                           ShowTheme
+                                              //                               .radius24,
+                                              //                       boxShadow: [
+                                              //                         BoxShadow(
+                                              //                             color: Colors.black.withOpacity(
+                                              //                                 .3),
+                                              //                             blurRadius:
+                                              //                                 15.0,
+                                              //                             spreadRadius:
+                                              //                                 -4,
+                                              //                             offset: const Offset(
+                                              //                                 0,
+                                              //                                 5)),
+                                              //                       ],
+                                              //                     ),
+                                              //                   ),
+                                              //                 ),
+                                              //                 Padding(
+                                              //                   padding:
+                                              //                       const EdgeInsets
+                                              //                           .all(8.0),
+                                              //                   child: Container(
+                                              //                     height:
+                                              //                         _height /
+                                              //                             3.1,
+                                              //                     width: _width,
+                                              //                     // color: Colors.blue,
+                                              //                     decoration:
+                                              //                         BoxDecoration(
+                                              //                       color: Colors
+                                              //                           .grey
+                                              //                           .shade300,
+                                              //                       borderRadius:
+                                              //                           ShowTheme
+                                              //                               .radius24,
+                                              //                       boxShadow: [
+                                              //                         BoxShadow(
+                                              //                             color: Colors.black.withOpacity(
+                                              //                                 .3),
+                                              //                             blurRadius:
+                                              //                                 15.0,
+                                              //                             spreadRadius:
+                                              //                                 -4,
+                                              //                             offset: const Offset(
+                                              //                                 0,
+                                              //                                 5)),
+                                              //                       ],
+                                              //                     ),
+                                              //                   ),
+                                              //                 ),
+                                              //               ],
+                                              //             ),
+                                              //           );
+                                              //         },
+                                              //         crossAxisCount: 4,
+                                              //         staggeredTileBuilder:
+                                              //             (int index) =>
+                                              //                 StaggeredTile.count(
+                                              //                     2,
+                                              //                     index.isEven
+                                              //                         ? 4
+                                              //                         : 4),
+                                              //       ),
+                                              //     ),
+                                              //   );
+                                              return SizedBox(
+                                                child: Text("TODO: implement"),
                                               );
                                             }
                                           }
@@ -517,127 +520,131 @@ class _MostPopularShowsState extends State<MostPopularShows>
                                                     ));
                                               } else {
                                                 // print("fetching data;");
-                                                return Container(
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                          color: GlobalColors
-                                                              .bgColor,
-                                                          borderRadius:
-                                                              BorderRadius.only(
-                                                            topLeft: Radius.circular(
-                                                                GlobalVariables
-                                                                    .sliverRadius),
-                                                            topRight: Radius.circular(
-                                                                GlobalVariables
-                                                                    .sliverRadius),
-                                                          )),
-                                                  child: Shimmer.fromColors(
-                                                    highlightColor:
-                                                        Colors.white,
-                                                    baseColor:
-                                                        Colors.grey.shade300,
-                                                    direction:
-                                                        ShimmerDirection.ttb,
-                                                    child: StaggeredGridView
-                                                        .countBuilder(
-                                                      itemCount: 12,
-                                                      mainAxisSpacing: 4.0,
-                                                      crossAxisSpacing: 4.0,
-                                                      itemBuilder:
-                                                          (BuildContext context,
-                                                              int index) {
-                                                        return Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .symmetric(
-                                                                  horizontal:
-                                                                      8.0),
-                                                          child: Column(
-                                                            children: [
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child:
-                                                                    Container(
-                                                                  height:
-                                                                      _height /
-                                                                          20,
-                                                                  width: _width,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                                    borderRadius:
-                                                                        ShowTheme
-                                                                            .radius24,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                          color: Colors.black.withOpacity(
-                                                                              .3),
-                                                                          blurRadius:
-                                                                              15.0,
-                                                                          spreadRadius:
-                                                                              -4,
-                                                                          offset: const Offset(
-                                                                              0,
-                                                                              5)),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .all(
-                                                                        8.0),
-                                                                child:
-                                                                    Container(
-                                                                  height:
-                                                                      _height /
-                                                                          3.1,
-                                                                  width: _width,
-                                                                  // color: Colors.blue,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                                    borderRadius:
-                                                                        ShowTheme
-                                                                            .radius24,
-                                                                    boxShadow: [
-                                                                      BoxShadow(
-                                                                          color: Colors.black.withOpacity(
-                                                                              .3),
-                                                                          blurRadius:
-                                                                              15.0,
-                                                                          spreadRadius:
-                                                                              -4,
-                                                                          offset: const Offset(
-                                                                              0,
-                                                                              5)),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        );
-                                                      },
-                                                      crossAxisCount: 4,
-                                                      staggeredTileBuilder: (int
-                                                              index) =>
-                                                          StaggeredTile.count(
-                                                              2,
-                                                              index.isEven
-                                                                  ? 4
-                                                                  : 4),
-                                                    ),
-                                                  ),
+                                                return SizedBox(
+                                                  child:
+                                                      Text("TODO: implement"),
                                                 );
+                                                // return Container(
+                                                //   decoration:
+                                                //       const BoxDecoration(
+                                                //           color: GlobalColors
+                                                //               .bgColor,
+                                                //           borderRadius:
+                                                //               BorderRadius.only(
+                                                //             topLeft: Radius.circular(
+                                                //                 GlobalVariables
+                                                //                     .sliverRadius),
+                                                //             topRight: Radius.circular(
+                                                //                 GlobalVariables
+                                                //                     .sliverRadius),
+                                                //           )),
+                                                //   child: Shimmer.fromColors(
+                                                //     highlightColor:
+                                                //         Colors.white,
+                                                //     baseColor:
+                                                //         Colors.grey.shade300,
+                                                //     direction:
+                                                //         ShimmerDirection.ttb,
+                                                //     child: StaggeredGridView
+                                                //         .countBuilder(
+                                                //       itemCount: 12,
+                                                //       mainAxisSpacing: 4.0,
+                                                //       crossAxisSpacing: 4.0,
+                                                //       itemBuilder:
+                                                //           (BuildContext context,
+                                                //               int index) {
+                                                //         return Padding(
+                                                //           padding:
+                                                //               const EdgeInsets
+                                                //                       .symmetric(
+                                                //                   horizontal:
+                                                //                       8.0),
+                                                //           child: Column(
+                                                //             children: [
+                                                //               Padding(
+                                                //                 padding:
+                                                //                     const EdgeInsets
+                                                //                             .all(
+                                                //                         8.0),
+                                                //                 child:
+                                                //                     Container(
+                                                //                   height:
+                                                //                       _height /
+                                                //                           20,
+                                                //                   width: _width,
+                                                //                   decoration:
+                                                //                       BoxDecoration(
+                                                //                     color: Colors
+                                                //                         .grey
+                                                //                         .shade300,
+                                                //                     borderRadius:
+                                                //                         ShowTheme
+                                                //                             .radius24,
+                                                //                     boxShadow: [
+                                                //                       BoxShadow(
+                                                //                           color: Colors.black.withOpacity(
+                                                //                               .3),
+                                                //                           blurRadius:
+                                                //                               15.0,
+                                                //                           spreadRadius:
+                                                //                               -4,
+                                                //                           offset: const Offset(
+                                                //                               0,
+                                                //                               5)),
+                                                //                     ],
+                                                //                   ),
+                                                //                 ),
+                                                //               ),
+                                                //               Padding(
+                                                //                 padding:
+                                                //                     const EdgeInsets
+                                                //                             .all(
+                                                //                         8.0),
+                                                //                 child:
+                                                //                     Container(
+                                                //                   height:
+                                                //                       _height /
+                                                //                           3.1,
+                                                //                   width: _width,
+                                                //                   // color: Colors.blue,
+                                                //                   decoration:
+                                                //                       BoxDecoration(
+                                                //                     color: Colors
+                                                //                         .grey
+                                                //                         .shade300,
+                                                //                     borderRadius:
+                                                //                         ShowTheme
+                                                //                             .radius24,
+                                                //                     boxShadow: [
+                                                //                       BoxShadow(
+                                                //                           color: Colors.black.withOpacity(
+                                                //                               .3),
+                                                //                           blurRadius:
+                                                //                               15.0,
+                                                //                           spreadRadius:
+                                                //                               -4,
+                                                //                           offset: const Offset(
+                                                //                               0,
+                                                //                               5)),
+                                                //                     ],
+                                                //                   ),
+                                                //                 ),
+                                                //               ),
+                                                //             ],
+                                                //           ),
+                                                //         );
+                                                //       },
+                                                //       crossAxisCount: 4,
+                                                //       staggeredTileBuilder: (int
+                                                //               index) =>
+                                                //           StaggeredTile.count(
+                                                //               2,
+                                                //               index.isEven
+                                                //                   ? 4
+                                                //                   : 4),
+                                                //     ),
+                                                //   ),
+                                                // );
                                               }
                                             }
                                           });
@@ -824,25 +831,27 @@ class _MostPopularShowsState extends State<MostPopularShows>
 
   Widget mostPopularList(List<TVShow> data) {
     // print(data.length);
-
-    return StaggeredGridView.countBuilder(
-      shrinkWrap: false,
-      // physics: ClampingScrollPhysics(),
-      itemCount: data.length,
-      mainAxisSpacing: 16.0,
-      crossAxisSpacing: 4.0,
-      padding: const EdgeInsets.only(bottom: 140.0),
-      itemBuilder: (BuildContext context, int index) {
-        // print(index);
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: PopularCard(show: data[index]),
-        );
-      },
-      crossAxisCount: 4,
-      staggeredTileBuilder: (int index) =>
-          StaggeredTile.count(2, index.isEven ? 3.5 : 3.5),
+    return SizedBox(
+      child: Text("TODO: implement"),
     );
+    // return StaggeredGridView.countBuilder(
+    //   shrinkWrap: false,
+    //   // physics: ClampingScrollPhysics(),
+    //   itemCount: data.length,
+    //   mainAxisSpacing: 16.0,
+    //   crossAxisSpacing: 4.0,
+    //   padding: const EdgeInsets.only(bottom: 140.0),
+    //   itemBuilder: (BuildContext context, int index) {
+    //     // print(index);
+    //     return Padding(
+    //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    //       child: PopularCard(show: data[index]),
+    //     );
+    //   },
+    //   crossAxisCount: 4,
+    //   staggeredTileBuilder: (int index) =>
+    //       StaggeredTile.count(2, index.isEven ? 3.5 : 3.5),
+    // );
   }
 
   displayLabel(double _width) {

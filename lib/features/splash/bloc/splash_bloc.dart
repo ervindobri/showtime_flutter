@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -6,20 +5,15 @@ part 'splash_event.dart';
 part 'splash_state.dart';
 
 class SplashBloc extends Bloc<SplashEvent, SplashState> {
-  SplashBloc() : super(SplashInitial());
-
-  @override
-  Stream<SplashState> mapEventToState(
-    SplashEvent event,
-  ) async* {
-    if (event is GetSplashEvent) {
+  SplashBloc() : super(SplashInitial()) {
+    on<GetSplashEvent>((event, emit) {
       try {
-        yield SplashLoading();
+        emit(SplashLoading());
         //fetch shows and stuff
-        yield SplashLoaded(event.successful);
+        emit(SplashLoaded(event.successful));
       } catch (exception) {
-        yield const SplashError("Fetching stuff failed!");
+        emit(const SplashError("Fetching stuff failed!"));
       }
-    }
+    });
   }
 }

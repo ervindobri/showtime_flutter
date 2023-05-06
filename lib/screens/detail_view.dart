@@ -219,7 +219,7 @@ class _WatchedDetailViewState extends State<DetailView>
                                                 ),
                                               ),
                                               AnimatedSizeAndFade(
-                                                vsync: this,
+                                                // vsync: this,
                                                 child: _tapped
                                                     ? Column(
                                                         crossAxisAlignment:

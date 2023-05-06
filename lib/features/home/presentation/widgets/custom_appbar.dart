@@ -38,7 +38,9 @@ class CustomAppbar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const Image(image: AssetImage('showTIME.png'), height: 40),
+                  const Image(
+                      image: AssetImage('assets/images/showTIME.png'),
+                      height: 40),
                   InkWell(
                     onTap: () async {
                       showDialog(

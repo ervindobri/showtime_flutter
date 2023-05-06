@@ -580,13 +580,13 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
       x: x,
       barRods: [
         BarChartRodData(
-          y: isTouched ? y + 1 : y,
-          colors: isTouched ? [GlobalColors.primaryGreen] : [barColor],
+          toY: isTouched ? y + 1 : y,
+          color: isTouched ? GlobalColors.primaryGreen : barColor,
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: (GlobalVariables.watchedShowList.length / 4).toDouble(),
-            colors: [Colors.white60],
+            fromY: (GlobalVariables.watchedShowList.length / 4).toDouble(),
+            color: Colors.white60,
           ),
         ),
       ],
@@ -626,53 +626,54 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
                   break;
               }
               return BarTooltipItem(
-                  weekDay + '\n' + (rod.y - 1).toInt().toString(),
+                  weekDay + '\n' + (rod.toY - 1).toInt().toString(),
                   const TextStyle(color: Colors.white));
             }),
-        touchCallback: (barTouchResponse) {
-          setState(() {
-            if (barTouchResponse.spot != null
-                // barTouchResponse.touchInput is! FlPanEnd &&
-                // barTouchResponse.touchInput is! FlLongPressEnd
-                ) {
-              touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
-            } else {
-              touchedIndex = -1;
-            }
-          });
-        },
+        // touchCallback: (barTouchResponse) {
+        //   setState(() {
+        //     if (barTouchResponse.spot != null
+        //         // barTouchResponse.touchInput is! FlPanEnd &&
+        //         // barTouchResponse.touchInput is! FlLongPressEnd
+        //         ) {
+        //       touchedIndex = barTouchResponse.spot!.touchedBarGroupIndex;
+        //     } else {
+        //       touchedIndex = -1;
+        //     }
+        //   });
+        // },
       ),
       titlesData: FlTitlesData(
         show: true,
-        bottomTitles: SideTitles(
-          showTitles: true,
-          getTextStyles: (value, _) => const TextStyle(
-              color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
-          margin: 15,
-          getTitles: (double value) {
-            switch (value.toInt()) {
-              case 0:
-                return 'M';
-              case 1:
-                return 'T';
-              case 2:
-                return 'W';
-              case 3:
-                return 'T';
-              case 4:
-                return 'F';
-              case 5:
-                return 'S';
-              case 6:
-                return 'S';
-              default:
-                return '';
-            }
-          },
-        ),
-        leftTitles: SideTitles(
-          showTitles: false,
-        ),
+        // TODO: check props
+        // bottomTitles: SideTitles(
+        //   showTitles: true,
+        //   getTextStyles: (value, _) => const TextStyle(
+        //       color: Colors.white, fontWeight: FontWeight.w700, fontSize: 14),
+        //   margin: 15,
+        //   getTitles: (double value) {
+        //     switch (value.toInt()) {
+        //       case 0:
+        //         return 'M';
+        //       case 1:
+        //         return 'T';
+        //       case 2:
+        //         return 'W';
+        //       case 3:
+        //         return 'T';
+        //       case 4:
+        //         return 'F';
+        //       case 5:
+        //         return 'S';
+        //       case 6:
+        //         return 'S';
+        //       default:
+        //         return '';
+        //     }
+        //   },
+        // ),
+        // leftTitles: SideTitles(
+        //   showTitles: false,
+        // ),
       ),
       borderData: FlBorderData(
         show: false,
@@ -719,40 +720,41 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
         touchTooltipData: LineTouchTooltipData(
           tooltipBgColor: Colors.grey.shade600.withOpacity(0.8),
         ),
-        touchCallback: (LineTouchResponse touchResponse) {},
+        // touchCallback: (_, LineTouchResponse touchResponse) {},
         handleBuiltInTouches: true,
       ),
       gridData: FlGridData(
         show: false,
       ),
       titlesData: FlTitlesData(
-        bottomTitles: SideTitles(
-          showTitles: true,
-          reservedSize: 25,
-          getTextStyles: (_, value) => const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
+          // TODO: check props
+          // bottomTitles: SideTitles(
+          //   showTitles: true,
+          //   reservedSize: 25,
+          //   getTextStyles: (_, value) => const TextStyle(
+          //     color: Colors.white,
+          //     fontWeight: FontWeight.bold,
+          //     fontSize: 12,
+          //   ),
+          //   margin: 10,
+          //   getTitles: (value) {
+          //     return getBottomTitles(bottomData, value);
+          //   },
+          // ),
+          // leftTitles: SideTitles(
+          //   showTitles: true,
+          //   getTextStyles: (_, value) => const TextStyle(
+          //     color: Colors.white,
+          //     fontWeight: FontWeight.bold,
+          //     fontSize: 14,
+          //   ),
+          //   margin: 10,
+          //   getTitles: (value) {
+          //     return getTitlesAccordingToLimits(limits, value);
+          //   },
+          //   reservedSize: 25,
+          // ),
           ),
-          margin: 10,
-          getTitles: (value) {
-            return getBottomTitles(bottomData, value);
-          },
-        ),
-        leftTitles: SideTitles(
-          showTitles: true,
-          getTextStyles: (_, value) => const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-          ),
-          margin: 10,
-          getTitles: (value) {
-            return getTitlesAccordingToLimits(limits, value);
-          },
-          reservedSize: 25,
-        ),
-      ),
       borderData: FlBorderData(
         show: true,
         border: const Border(
@@ -782,7 +784,7 @@ class _OverallProgressState extends State<OverallProgress> with AnimationMixin {
     final LineChartBarData lineChartBarData1 = LineChartBarData(
       spots: spotList,
       isCurved: true,
-      colors: [GlobalColors.primaryGreen],
+      color: GlobalColors.primaryGreen,
       barWidth: 8,
       isStrokeCapRound: true,
       dotData: FlDotData(

@@ -1,4 +1,4 @@
-import 'package:show_time/components/badge.dart';
+import 'package:show_time/components/badge.dart' as showtime_badge;
 import 'package:show_time/models/tvshow.dart';
 import 'package:show_time/models/tvshow_details.dart';
 import 'package:show_time/features/home/data/models/watched.dart';
@@ -83,36 +83,36 @@ class GlobalVariables {
     favorites.clear();
   }
 
-  static const Map<String, Badge> allBadges = {
-    "fresh": Badge(
+  static const Map<String, showtime_badge.Badge> allBadges = {
+    "fresh": showtime_badge.Badge(
         description: "Fresh",
         icon: FontAwesomeIcons.fire,
         colors: [GlobalColors.fireColor, Colors.orange]),
-    "paused": Badge(
+    "paused": showtime_badge.Badge(
         description: "Paused watching",
         icon: FontAwesomeIcons.pause,
         colors: [Colors.purple, Colors.indigo]),
-    "justStarted": Badge(
+    "justStarted": showtime_badge.Badge(
         description: "Just started",
         icon: FontAwesomeIcons.airFreshener,
         colors: [GlobalColors.goldColor, GlobalColors.lightGoldColor]),
-    "watching": Badge(
+    "watching": showtime_badge.Badge(
         description: "Watching",
         icon: FontAwesomeIcons.hourglassHalf,
         colors: [GlobalColors.greyTextColor, Colors.white54]),
-    "finished": Badge(
+    "finished": showtime_badge.Badge(
         description: "Finished",
         icon: FontAwesomeIcons.checkDouble,
         colors: [GlobalColors.primaryGreen, Colors.greenAccent]),
-    "hasMoreEpisodes": Badge(
+    "hasMoreEpisodes": showtime_badge.Badge(
         description: "Running",
         icon: FontAwesomeIcons.pizzaSlice,
         colors: [Colors.orangeAccent, Colors.orange]),
-    "waiting": Badge(
+    "waiting": showtime_badge.Badge(
         description: "Waiting for new episodes",
         icon: FontAwesomeIcons.stopwatch20,
         colors: [Colors.lightBlue, GlobalColors.primaryBlue]),
-    "favorite": Badge(
+    "favorite": showtime_badge.Badge(
         description: "Favorite",
         icon: FontAwesomeIcons.solidHeart,
         colors: [GlobalColors.pinkColor, GlobalColors.lightPinkColor]),

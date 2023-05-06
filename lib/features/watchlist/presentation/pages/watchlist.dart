@@ -330,28 +330,31 @@ class _WatchlistViewState extends State<WatchlistView> {
     return LayoutBuilder(builder: (context, constraints) {
       if (constraints.maxWidth > 600) {
         int items = (constraints.maxWidth / (270)).floor();
-        return Scrollbar(
-          controller: scrollController,
-          child: StaggeredGridView.countBuilder(
-            controller: scrollController,
-            staggeredTileBuilder: (int index) {
-              return StaggeredTile.count(1, index < items ? .5 : 1.5);
-            },
-            mainAxisSpacing: 2.0,
-            crossAxisSpacing: 2.0,
-            itemCount: widget.list.length + items, //4 dummy
-            itemBuilder: (_, index) {
-              if (index < items) {
-                return SizedBox(
-                  height: MediaQuery.of(context).size.height * .005,
-                );
-              } else {
-                return WatchedCardInList(show: widget.list[index - items]);
-              }
-            },
-            crossAxisCount: items,
-          ),
+        return SizedBox(
+          child: Text("TODO: implement"),
         );
+        // return Scrollbar(
+        //   controller: scrollController,
+        //   child: StaggeredGridView.countBuilder(
+        //     controller: scrollController,
+        //     staggeredTileBuilder: (int index) {
+        //       return StaggeredTile.count(1, index < items ? .5 : 1.5);
+        //     },
+        //     mainAxisSpacing: 2.0,
+        //     crossAxisSpacing: 2.0,
+        //     itemCount: widget.list.length + items, //4 dummy
+        //     itemBuilder: (_, index) {
+        //       if (index < items) {
+        //         return SizedBox(
+        //           height: MediaQuery.of(context).size.height * .005,
+        //         );
+        //       } else {
+        //         return WatchedCardInList(show: widget.list[index - items]);
+        //       }
+        //     },
+        //     crossAxisCount: items,
+        //   ),
+        // );
       } else {
         return ListView.separated(
             physics: const AlwaysScrollableScrollPhysics(),

@@ -95,14 +95,14 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
               height: _height * .1,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("assets/showTIMEsmall.png"),
+                    image: AssetImage("assets/images/showTIMEsmall.png"),
                     fit: BoxFit.cover),
               ),
             ),
             SizedBox(
               width: _width,
               height: _height,
-              child: FlareActor("assets/flowingbg.flr",
+              child: FlareActor("assets/animations/flowingbg.flr",
                   isPaused: _isBgAnimStopped,
                   fit: BoxFit.cover,
                   animation: "in"),
@@ -139,8 +139,8 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                                   child: const Padding(
                                     padding: EdgeInsets.all(12.0),
                                     child: Image(
-                                      image:
-                                          AssetImage('assets/google_logo.png'),
+                                      image: AssetImage(
+                                          'assets/images/google_logo.png'),
                                       height: 48,
                                     ),
                                   ),

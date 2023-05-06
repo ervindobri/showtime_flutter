@@ -134,7 +134,7 @@ class _HomeSlidingPanelState extends State<HomeSlidingPanel> {
         width: kIsWeb ? 150 : min(width * 0.6, 90),
         height: kIsWeb ? 150 : min(width * 0.6, 90),
         child: const FlareActor(
-          'assets/blink.flr',
+          'assets/animations/blink.flr',
           animation: 'Blink',
           fit: BoxFit.cover,
         ),

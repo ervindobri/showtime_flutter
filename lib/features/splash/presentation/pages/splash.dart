@@ -101,7 +101,7 @@ class _SplashScreenState extends State<SplashScreen> with AnimationMixin {
                       height: kIsWeb ? 150 : _height * .15,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage("assets/showTIMEsmall.png"),
+                          image: AssetImage("assets/images/showTIMEsmall.png"),
                           fit: BoxFit.cover,
                         ),
                       ),

@@ -349,7 +349,7 @@ class _HomeWebState extends State<HomeWeb> with TickerProviderStateMixin {
                                                       ],
                                                     ),
                                                     AnimatedSizeAndFade(
-                                                      vsync: this,
+                                                      // vsync: this,
                                                       child: logging
                                                           ? Row(
                                                               mainAxisAlignment:

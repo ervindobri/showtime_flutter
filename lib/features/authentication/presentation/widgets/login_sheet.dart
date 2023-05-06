@@ -180,7 +180,7 @@ class _LoginSheetState extends State<LoginSheet> with TickerProviderStateMixin {
                                 ),
                                 const SizedBox(height: 16),
                                 AnimatedSizeAndFade(
-                                  vsync: this,
+                                  // vsync: this,
                                   child: logging
                                       ? Row(
                                           mainAxisAlignment:
